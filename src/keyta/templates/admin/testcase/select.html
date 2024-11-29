@@ -1,0 +1,25 @@
+<select name="{{ widget.name }}"{% include "django/forms/widgets/attrs.html" %}>
+    {% for group_name, group_choices, group_index in widget.optgroups %}
+        {% if group_name %}<optgroup label="{{ group_name }}">{% endif %}
+        {% for option in group_choices %}
+            {% include option.template_name with widget=option %}
+        {% endfor %}
+        {% if group_name %}
+        </optgroup>
+        {% endif %}
+    {% endfor %}
+</select>
+<script>
+    let status = {
+       'Angelegt': '<i class="fa-regular fa-circle mr-2"></i>',
+       'In Arbeit': '<i class="fa-sharp fa-regular fa-circle-half-stroke mr-2"></i>',
+       'Abgeschlossen': '<i class="fa-solid fa-circle mr-2"></i>'
+    };
+    function formatValue(data) {
+        return $('<span>' + status[data.text] + data.text + '</span>')
+    }
+    django.jQuery('#id_{{ widget.name }}').select2({
+        width: 'element',
+        templateResult: formatValue
+    })
+</script>

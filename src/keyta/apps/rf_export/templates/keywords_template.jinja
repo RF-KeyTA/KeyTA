@@ -1,0 +1,15 @@
+*** Keywords ***
+{%- for keyword in keywords %}
+{{ keyword.name }}
+    [Arguments]        {{ keyword_arguments(keyword.args, keyword.kwargs) }}
+    [Documentation]    {%- for line in keyword.doc|splitlines %}
+    ...  {{ line }}
+    {%- endfor %}
+
+    {%- for step in keyword.steps %}
+    {{ call_keyword(step) }}
+    {%- endfor %}
+    {%- if keyword.return_value %}
+    RETURN      {{ keyword.return_value }}
+    {%- endif %}
+{% endfor %}

@@ -1,0 +1,67 @@
+{% load i18n admin_urls static admin_modify %}
+<div class="js-inline-admin-formset inline-group" id="{{ inline_admin_formset.formset.prefix }}-group"
+     data-inline-type="tabular"
+     data-inline-formset="{{ inline_admin_formset.inline_formset_data }}">
+    <div class="tabular table-responsive inline-related {% if forloop.last %}last-related{% endif %}">
+        {{ inline_admin_formset.formset.management_form }}
+        <fieldset class="module {{ inline_admin_formset.classes }}">
+            {{ inline_admin_formset.formset.non_form_errors }}
+            <table class="table table-hover text-nowrap">
+                <thead>
+                    <tr>
+                        <th class="original">
+                            <span class="sort">
+                                
+                            </span>
+                        </th>
+                        {% for field in inline_admin_formset.fields %}
+                        {% if not field.widget.is_hidden %}
+                        <th class="column-{{ field.name }}{% if field.required %} required{% endif %}">{{ field.label|capfirst }}
+                            {% if field.help_text %}<img src="{% static "admin/img/icon-unknown.svg" %}" class="help help-tooltip" width="10" height="10" alt="({{ field.help_text|striptags }})" title="{{ field.help_text|striptags }}">{% endif %}
+                        </th>
+                        {% endif %}
+                        {% endfor %}
+                    {% if inline_admin_formset.formset.can_delete and inline_admin_formset.has_delete_permission %}
+                        <th class="delete pb-1" style="font-size: 20px; padding-left: 1.2pc"></th>
+                    {% endif %}
+                    </tr>
+                </thead>
+                <tbody id="{{ inline_admin_formset.formset.prefix }}-sortable">
+                    {% for inline_admin_form in inline_admin_formset %}
+                        <tr class="form-row {% if inline_admin_form.original or inline_admin_form.show_url %}has_original{% endif %}{% if forloop.last and inline_admin_formset.has_add_permission %}empty-form{% endif %}"
+                            id="{{ inline_admin_formset.formset.prefix }}-{% if forloop.last and inline_admin_formset.has_add_permission %}empty{% else %}{{ forloop.counter0 }}{% endif %}">
+                            <td class="original">
+                                <p style="font-size: 28px; background-image: none">
+                                    {% if not forloop.last %}
+                                         <i class=" fa-solid fa-sort"></i>
+                                    {% endif %}
+                                </p>
+                                {% if inline_admin_form.needs_explicit_pk_field %}{{ inline_admin_form.pk_field.field }}{% endif %}
+                                {% if inline_admin_form.fk_field %}{{ inline_admin_form.fk_field.field }}{% endif %}
+                            </td>
+                            {% for fieldset in inline_admin_form %}
+                                {% for line in fieldset %}
+                                    {% for field in line %}
+                                        <td class="{% if field.field.name %}field-{{ field.field.name }}{% endif %}{% if field.field.is_hidden %} hidden{% endif %}">
+                                            {% if field.is_readonly %}
+                                                <p>{{ field.contents }}</p>
+                                            {% else %}
+                                                {{ field.field }}
+                                                <div class="help-block text-red">
+                                                    {{ field.field.errors.as_ul }}
+                                                </div>
+                                            {% endif %}
+                                        </td>
+                                    {% endfor %}
+                                {% endfor %}
+                            {% endfor %}
+                            {% if inline_admin_formset.formset.can_delete and inline_admin_formset.has_delete_permission %}
+                                <td class="delete"></td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </fieldset>
+    </div>
+</div>

@@ -1,0 +1,107 @@
+{% extends "admin/base_orig.html" %}
+{% load i18n static jazzmin admin_urls %}
+
+{% block extrastyle %}
+    <link rel="stylesheet" type="text/css" href="/static/css/admin_base.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/admin_submit_line.css">
+{% endblock %}
+
+{% block extrahead %}
+{% endblock %}
+
+{% block navbar %}
+    <nav class="main-header navbar navbar-expand {{ jazzmin_ui.navbar_classes }}" id="jazzy-navbar">
+        <ul class="navbar-nav ml-auto">
+            {% if jazzmin_settings.show_sidebar %}
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+                </li>
+            {% else %}
+                <li class="nav-item">
+                    <a href="{% url 'admin:index' %}" class="brand-link">
+                        <img src="{% static jazzmin_settings.site_logo %}" alt="{{ jazzmin_settings.site_header }} Logo" class="{{ jazzmin_settings.site_logo_classes }} brand-image" style="opacity: .8; margin: 0 0 0 5px;">
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+        <div class="col-12 col-md-auto d-flex flex-grow-1 align-items-center">
+            <h1 class="h4 m-0 pb-1 pr-3 mr-0 border-right">{% block content_title %}{% endblock %}</h1>
+            {% block breadcrumbs %}{% endblock %}
+        </div>
+        {% block page_actions %}{% endblock %}
+    </nav>
+{% endblock %}
+
+{% block sidebar %}
+    {% if jazzmin_settings.show_sidebar %}
+        {% get_side_menu as side_menu_list %}
+        <aside class="main-sidebar elevation-4 {{ jazzmin_ui.sidebar_classes }}" id="jazzy-sidebar">
+            <div class="sidebar">
+                <a href="{% url 'admin:index' %}">
+                    <div class="user-panel mt-3 pb-2 mb-2 d-flex border-bottom-0">
+                        <div class="image">
+                            <img src="{% static jazzmin_settings.site_logo %}" alt="{{ jazzmin_settings.site_header }} Logo" class="{{ jazzmin_settings.site_logo_classes }}">
+                        </div>
+                        <div class="info">
+                            <p class="font-weight-light brand-text">{{ jazzmin_settings.site_brand }}</p>
+                        </div>
+                    </div>
+                </a>
+                <nav class="mt-2">
+                    <ul class="nav nav-pills nav-sidebar {{ jazzmin_ui.sidebar_list_classes }}" data-widget="treeview" role="menu" data-collapsible="false">
+
+                        {% if jazzmin_settings.navigation_expanded %}
+                            {% for app in side_menu_list %}
+                                {% for model in app.models %}
+                                    <li class="nav-item">
+                                    {% if model.url %}
+                                        <a href="{{ model.url }}" class="nav-link">
+                                            <div class="icon-text">
+                                                <i class="nav-icon {{ model.icon }}"></i>
+                                                <p>{{ model.name }}</p>
+                                            </div>
+                                        </a>
+                                    {% else %}
+                                        <span class="nav-link disabled">
+                                            <i class="nav-icon {{ model.icon }}"></i> <p>{{ model.name }}</p>
+                                        </span>
+                                    {% endif %}
+                                    </li>
+                                {% endfor %}
+                            {% endfor %}
+                        {% else %}
+                            {% for app in side_menu_list %}
+                                <li class="nav-item has-treeview">
+                                    <a href="#" class="nav-link">
+                                        <i class="nav-icon {{ app.icon }}"></i>
+                                        <p>{{ app.name|truncatechars:21 }} <i class="fas fa-angle-left right"></i></p>
+                                    </a>
+                                    <ul class="nav nav-treeview" style="display: none;">
+                                        {% for model in app.models %}
+                                            <li class="nav-item">
+                                                <a href="{% if model.url %}{{ model.url }}{% else %}javascript:void(0){% endif %}" class="nav-link">
+                                                    <i class="nav-icon {{ model.icon }}"></i>
+                                                    <p>{{ model.name }}</p>
+                                                </a>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </li>
+                            {% endfor %}
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        </aside>
+    {% endif %}
+{% endblock %}
+
+{% block footer %}
+    {% if not is_popup %}
+        {% if jazzmin_settings.show_ui_builder %}
+            {% include 'jazzmin/includes/ui_builder_panel.html' %}
+        {% endif %}
+    {% endif %}
+{% endblock %}
+
+{% block extrajs %}{% endblock %}

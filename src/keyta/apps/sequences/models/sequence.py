@@ -1,0 +1,46 @@
+from django.db import models
+
+from apps.actions.models import Action
+from apps.keywords.models.keyword import KeywordType
+from apps.windows.models import WindowKeyword
+
+
+class Sequence(WindowKeyword):
+    @property
+    def actions(self):
+        return Action.objects.filter(
+            id__in=self.calls.values_list('to_keyword__pk', flat=True)
+        )
+
+    def save(
+        self, force_insert=False, force_update=False,
+        using=None, update_fields=None
+    ):
+        self.type = KeywordType.SEQUENCE
+        return super().save(force_insert, force_update, using, update_fields)
+
+    @property
+    def resource_ids(self) -> set[int]:
+        return set(self.resource_imports.values_list('resource_id', flat=True))
+
+
+    class Manager(models.Manager):
+        def get_queryset(self):
+            return (
+                super()
+                .get_queryset()
+                .filter(type=KeywordType.SEQUENCE)
+            )
+
+    objects = Manager()
+
+    class Meta:
+        proxy = True
+        verbose_name = 'Sequenz'
+        verbose_name_plural = 'Sequenzen'
+
+
+class SequenceDocumentation(Sequence):
+    class Meta:
+        proxy = True
+        verbose_name = 'Sequenz Dokumentation'

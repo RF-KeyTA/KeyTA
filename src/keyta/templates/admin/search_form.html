@@ -1,0 +1,45 @@
+{% load i18n static admin_list jazzmin %}
+{% get_jazzmin_ui_tweaks as jazzmin_ui %}
+
+<div class="col-12 pb-4" id="change-list-filters">
+    {% if cl.has_filters or cl.search_fields %}
+    <h5>Filter</h5>
+    {% endif %}
+    <form id="changelist-search" class="form-inline" method="GET">
+        {% block filters %}
+            {% if cl.has_filters %}
+                {% for spec in cl.filter_specs %}{% jazzmin_list_filter cl spec %}{% endfor %}
+            {% endif %}
+        {% endblock %}
+
+        {% if cl.search_fields %}
+            <div class="form-group">
+                <input class="form-control" type="text" name="{{ search_var }}" value="{{ cl.query }}" placeholder="{{ cl.search_help_text }}" id="searchbar" size="39">
+            </div>
+        {% endif %}
+
+        {% if cl.has_filters or cl.search_fields %}
+            <div class="form-group" id="search_group">
+                <button type="submit" class="btn {{ jazzmin_ui.button_classes.primary }}">{% trans 'Search' %}</button>
+                {% admin_extra_filters cl as extra_filters %}
+                {% for pair in extra_filters.items %}
+                    {% if pair.0 != search_var %}<input type="hidden" name="{{ pair.0 }}" value="{{ pair.1 }}">{% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
+    </form>
+    <div class="col-12">
+        {% if show_result_count %}
+            <span class="quiet">
+                {% blocktrans count counter=cl.result_count %}{{ counter }} result{% plural %}{{ counter }} results{% endblocktrans %}
+                (<a href="?{% if cl.is_popup %}_popup=1{% endif %}">
+                    {% if cl.show_full_result_count %}
+                        {% blocktrans with full_result_count=cl.full_result_count %}{{ full_result_count }} total{% endblocktrans %}
+                    {% else %}
+                        {% trans "Show all" %}
+                    {% endif %}
+                </a>)
+            </span>
+        {% endif %}
+    </div>
+</div>

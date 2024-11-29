@@ -1,0 +1,31 @@
+[project]
+name = "robotframework-keyta"
+description = "A web UI for Robot Framework"
+authors = [
+    {name = "Marduk Bolanos, imbus Rheinland", email = "testautomatisierung@imbus.de"},
+]
+readme = "README.md"
+license = {text = "Apache 2.0"}
+version = "1.0.0"
+
+dependencies = [
+    "django~=4.2",
+    "django-admin-sortable2==2.2.3",
+    "django-jazzmin~=3.0",
+    "django-select2~=8.2",
+    "django-tinymce~=4.1",
+    "Jinja2~=3.1",
+    "pystray~=0.19",
+    "robotframework"
+]
+requires-python = ">=3.9"
+
+[project.scripts]
+keyta = "keyta.app:run"
+
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[tool.flit.module]
+name = "keyta"

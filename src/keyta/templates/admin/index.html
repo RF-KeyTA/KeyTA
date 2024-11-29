@@ -1,0 +1,51 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static jazzmin %}
+{% get_jazzmin_ui_tweaks as jazzmin_ui %}
+
+{% block bodyclass %}{{ block.super }} dashboard{% endblock %}
+{% block content_title %} {% trans 'Dashboard' %} {% endblock %}
+{% block breadcrumbs %}{% endblock %}
+
+{% block content %}
+    {% get_side_menu using="app_list" as dashboard_list %}
+    {% if dashboard_list %}
+        {% widthratio dashboard_list|length 2 1 as middle %}
+    {% endif %}
+
+    <div class="col-lg-9 col-12">
+        <div class="models">
+            {% for app in dashboard_list %}
+                {% if forloop.counter0|divisibleby:"2" %}
+                    <div class="row">
+                {% endif %}
+                <div class="col-md-6 col-sm-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <table class="table table-sm">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="icon-and-text">
+                                                {% with model=app.models|first %}
+                                                    <div class="icon-item">
+                                                        <a href="{{ model.url }}">
+                                                            <i class="{{ model.icon }}"></i>
+                                                        </a>
+                                                    </div>
+                                                    <a href="{{ model.url }}" style="font-size: 28px;">{{ model.name }}</a>
+                                                {% endwith %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                {% if not forloop.counter0|divisibleby:"2" %}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

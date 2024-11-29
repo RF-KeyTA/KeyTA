@@ -1,0 +1,50 @@
+{% extends "admin/change_form.html" %}
+{% load i18n admin_urls static admin_modify jazzmin %}
+{% get_jazzmin_settings request as jazzmin_settings %}
+
+{% block page_actions %}
+    {% if not add %}
+    <div class="col-12 col-md-auto d-flex align-items-center justify-content-end page-actions">
+        <a href="{% add_preserved_filters add_url is_popup to_field %}?export" class="btn {{ jazzmin_ui.button_classes.success }} float-right">
+            <i class="fa-solid fa-file-export"></i> &nbsp; Export .robot 
+        </a>
+    </div>
+    {% endif %}
+{% endblock %}
+
+{% block field_sets %}
+    <div class="col-12 col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 style="display: inline-flex; margin-bottom: 0px">
+                    {% if not original.name %}
+                        {{ title }}
+                    {% else %}
+                        {{ original.html_status }} {{ original.name }}
+                    {% endif %}
+                </h4>
+                <div id="jazzy-actions" class="{{ jazzmin_ui.actions_classes }} float-right" style="display: inline-flex">
+                {% block submit_buttons_bottom %}
+                    {% submit_row %}
+                    {% block object-tools %}
+                        {% if change %}
+                            {% if not is_popup %}
+                                <div class="object-tools">
+                                    {% block object-tools-items %}
+                                        {% change_form_object_tools %}
+                                        {% block extra_actions %}{% endblock %}
+                                    {% endblock %}
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                    {% endblock %}
+                {% endblock %}
+                </div>
+            </div>
+            <div class="card-body">
+                {% get_changeform_template adminform as changeform_template %}
+                {% include changeform_template %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

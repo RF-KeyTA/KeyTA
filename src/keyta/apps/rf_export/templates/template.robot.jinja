@@ -1,0 +1,18 @@
+{% include 'settings_template.jinja' %}
+
+{% if keywords %}
+{% include 'keywords_template.jinja' %}
+{%- endif %}
+
+*** Test Cases ***
+{%- for testcase in testcases %}
+{{ testcase.name }}
+    {%- if testcase.doc %}
+    [Documentation]    {%- for line in testcase.doc|splitlines %}
+    ...  {{ line }}
+    {%- endfor %}
+    {%- endif %}
+    {%- for step in testcase.steps %}
+    {{ call_keyword(step) }}
+    {%- endfor %}
+{%- endfor %}

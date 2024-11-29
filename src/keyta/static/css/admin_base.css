@@ -1,0 +1,101 @@
+@import "keyta.css";
+
+.fa-solid {
+    color: var(--keyta-secondary-color);
+}
+
+.error-duotone {
+    filter: hue-rotate(150deg)
+}
+
+.icon-item .fa-solid {
+    font-size: 78px;
+}
+
+.nav-sidebar>.nav-item .nav-icon {
+    font-size: 2rem;
+    margin-right: 25px;
+    text-align: center;
+}
+
+.nav-link {
+    padding-left: 12px;
+    padding-right: 8px;
+}
+
+.nav-icon {
+    width: 45px;
+    --fa-primary-color: #ffffff;
+    --fa-secondary-color: var(--keyta-secondary-color);
+    --fa-secondary-opacity: 1;
+}
+
+.icon-and-text{
+    display: flex;
+    align-items: flex-end;
+}
+
+.icon-item {
+    text-align: center;
+    padding-right: 20px;
+    margin: 0;
+    width: 100px;
+}
+
+#jazzy-sidebar {
+  background: linear-gradient(
+      to top right,
+      var(--keyta-primary-color),
+      var(--keyta-tertiary-color),
+      var(--keyta-secondary-color)
+  );
+}
+
+.icon-text {
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+}
+
+.brand-text {
+    color: white;
+    font-size: 22px;
+}
+
+.models .card {
+    background: linear-gradient(
+            to top right,
+            rgba(0, 159, 227, 0.09) 0%,
+            white 100%
+    );
+}
+
+.models .card:hover {
+    background-color: rgb(0, 159, 227, 0.2);
+}
+
+.card-header {
+    background-color: var(--keyta-primary-color);
+    color: white;
+    vertical-align: middle
+}
+
+.card-body .tab-content {
+    max-height: 72vh;
+    overflow-y: auto;
+    overscroll-behavior: none;
+}
+
+.card-body.table-responsive {
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.card-danger .card-header {
+    background-color: var(--danger);
+}
+
+.tox-promotion {
+    visibility: hidden;
+}

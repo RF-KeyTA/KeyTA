@@ -1,0 +1,212 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static admin_modify jazzmin %}
+{% get_jazzmin_settings request as jazzmin_settings %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'vendor/select2/css/select2.min.css' %}">
+{% endblock %}
+
+{% block extrahead %}
+    {{ block.super }}
+    <!-- BEGIN change_form.html -->
+    <script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
+    <!-- BEGIN Django media -->
+    {{ media }}
+    <!-- END Django media -->
+    <!-- END change_form.html -->
+{% endblock %}
+
+{% block coltype %}colM{% endblock %}
+
+{% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} change-form{% endblock %}
+
+{% if not is_popup %}
+    {% block breadcrumbs %}
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'admin:index' %}">{% trans 'Home' %}</a></li>
+            <li class="breadcrumb-item">
+                {% if has_view_permission %}
+                    <a href="{% url opts|admin_urlname:'changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>
+                {% else %}
+                    {{ opts.verbose_name_plural|capfirst }}
+                {% endif %}
+            </li>
+            <li class="breadcrumb-item active">
+                {% if add %}
+                    {% blocktrans with name=opts.verbose_name %}Add {{ name }}{% endblocktrans %}
+                {% else %}
+                    {{ original|truncatewords:"18" }}
+                {% endif %}
+            </li>
+        </ol>
+    {% endblock %}
+{% endif %}
+
+{% block content_title %} {{ opts.verbose_name_plural|capfirst }} {% endblock %}
+
+{% block page_actions %}{% endblock %}
+
+{% block content %}
+    <div id="content-main" class="col-12">
+        <form {% if has_file_field %}enctype="multipart/form-data" {% endif %}action="{{ form_url }}" method="post" id="{{ opts.model_name }}_form" novalidate>
+            {% csrf_token %}
+            {% block form_top %}{% endblock %}
+
+            {% if errors %}
+                <div class="alert alert-danger">
+                    {% if errors|length == 1 %}
+                        {% trans "Please correct the error below." %}
+                    {% else %}
+                        {% trans "Please correct the errors below." %}
+                    {% endif %}
+                </div>
+                {% for error in adminform.form.non_field_errors %}
+                    <div class="alert alert-danger alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        <i class="icon fa fa-ban"></i>{{ error|capfirst }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <div class="row">
+                {% if is_popup %}<input type="hidden" name="{{ is_popup_var }}" value="1">{% endif %}
+                {% if to_field %}<input type="hidden" name="{{ to_field_var }}" value="{{ to_field }}">{% endif %}
+
+                {% block field_sets %}
+                    <div class="col-12 col-lg-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 style="display: inline-flex; margin-bottom: 0px">
+                                    {% firstof original.name title %}
+                                </h4>
+                                <div id="jazzy-actions" class="{{ jazzmin_ui.actions_classes }} float-right" style="display: inline-flex">
+                                {% block submit_buttons_bottom %}
+                                    {% submit_row %}
+                                    {% block object-tools %}
+                                        {% if change %}
+                                            {% if not is_popup %}
+                                                <div class="object-tools">
+                                                    {% block object-tools-items %}
+                                                        {% change_form_object_tools %}
+                                                        {% block extra_actions %}{% endblock %}
+                                                    {% endblock %}
+                                                </div>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endblock %}
+                                {% endblock %}
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                {% get_changeform_template adminform as changeform_template %}
+                                {% include changeform_template %}
+                            </div>
+                        </div>
+                    </div>
+                {% endblock %}
+
+                {% block after_field_sets %}{% endblock %}
+
+                {% block inline_field_sets %}{% endblock %}
+
+                {% block after_related_objects %}{% endblock %}
+
+                {% block admin_change_form_document_ready %}
+                {% endblock %}
+
+                {% prepopulated_fields_js %}
+            </div>
+        </form>
+    </div>
+{% endblock %}
+
+{% block extrajs %}
+    {{ block.super }}
+    <!-- BEGIN change_form.html -->
+    <script type="text/javascript" src="{% static 'vendor/select2/js/select2.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'jazzmin/js/change_form.js' %}"></script>
+    <script type="text/javascript" src="{% static 'admin/js/bootstrap3-typeahead.min.js' %}"></script>
+    {% if jazzmin_settings.related_modal_active %}
+    <script type="text/javascript" src="{% static 'jazzmin/plugins/bootstrap-show-modal/bootstrap-show-modal.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'jazzmin/js/related-modal.js' %}"></script>
+    {% endif %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            {% if add %}
+                $('input:text, select').first().focus()
+            {% endif %}
+
+            {% if original.pk %}
+                var url = "{% url opts|admin_urlname:'change' original.pk %}";
+            {% else %}
+                var url = "{% url opts|admin_urlname:'add' %}";
+            {% endif %}
+
+            $('#id_name').typeahead({
+                    source: function (query, process) {
+                        if (query.length > 2) {
+                                return $.get(url + "?autocomplete", {
+                                app: "{{ opts.app_label }}",
+                                model: "{{ opts.model_name }}",
+                                name: query
+                            }, function (data) {
+                                return process(data);
+                            });
+                        }
+                    }
+                });
+
+            if (url.includes("/change")) {
+                const save_button = '.button-save'
+                $(save_button).hide()
+
+                /* Modal */
+                django.jQuery('body.popup select').on('change', function() {
+                    $.post(url, $('form').serialize() + "&_continue=")
+                });
+                
+                $(document).on('click', 'button.close', function() {
+                    $('body.popup .button-save').click()
+
+                    if ($('.modal-dialog').length == 1) {
+                        $(save_button).click()
+                    }
+                })
+
+                $('body.popup input[type="checkbox"]').on('change', function () {
+                    $('body.popup .button-save').click()
+                })
+                /* END */
+                
+                django.jQuery('select').not('body.popup select, .form-row select').on('change', function() {
+                    $(save_button).click()
+                });
+                
+                django.jQuery('.form-row').not('body.popup .form-row, .empty-form .form-row').each(function() {
+                    const row = $(this)
+                    django.jQuery(row).find('select').last().on('change', function() {
+                        $(save_button).click()
+                    })
+                })
+                
+                $('.form-row').on('dragend', function() {
+                    $(save_button).click()
+                })
+
+                $('input[name="name"]').on('blur', function () {
+                    $(save_button).click()
+                })
+                
+                $('input[type="checkbox"]').not('body.popup input').on('change', function () {
+                    $(save_button).click()
+                })
+
+                $('input').not('[name="name"], input[type="checkbox"]').on('blur', function () {
+                    $.post(url, $('form').serialize() + "&_continue=")
+                })
+            }
+        });
+    </script>
+    <!-- END change_form.html -->
+{% endblock %}

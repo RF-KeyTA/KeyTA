@@ -1,0 +1,27 @@
+{% load i18n admin_urls jazzmin %}
+{% get_jazzmin_ui_tweaks as jazzmin_ui %}
+
+{% block submit-row %}
+<div style="display: inline-flex">
+    {% if show_save or show_save_and_continue %}
+        <div class="form-group">
+            <button type="submit" name="_continue" class="button-save">
+                <span class="icon-wrapper">
+                    <i class="fa-regular fa-floppy-disk"></i>
+                </span>
+            </button>
+        </div>
+    {% endif %}
+    {% if show_delete_link and original %}
+    <div class="form-group">
+        {% url opts|admin_urlname:'delete' original.pk|admin_urlquote as delete_url %}
+        <a href="{% add_preserved_filters delete_url %}" role="button" class="button-delete" style="color:white">
+            <span class="icon-wrapper">
+                <i class="fa-regular fa-trash-can"></i>
+            </span> 
+        </a>
+    </div>
+    {% endif %}
+    {% block extra-actions %}{% endblock %}
+</div>
+{% endblock %}

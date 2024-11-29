@@ -1,0 +1,19 @@
+*** Settings ***
+{%- for lib_import in settings.library_imports %}
+Library    {{ lib_import.library }}    {{ library_args(lib_import.kwargs) }}
+{%- endfor %}
+{%- for resource_import in settings.resource_imports %}
+Resource   {{ resource_import.resource }}.resource
+{%- endfor %}
+{%- if settings.suite_setup %}
+Suite Setup    {{ call_keyword(settings.suite_setup) }}
+{%- endif -%}
+{%- if settings.suite_teardown %}
+Suite Teardown    {{ call_keyword(settings.suite_teardown) }}
+{%- endif -%}
+{%- if settings.test_setup %}
+Test Setup    {{ call_keyword(settings.test_setup) }}
+{%- endif %}
+{%- if settings.test_teardown %}
+Test Teardown    {{ call_keyword(settings.test_teardown) }}
+{%- endif %}
