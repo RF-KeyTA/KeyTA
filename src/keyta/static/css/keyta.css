@@ -151,3 +151,8 @@ iframe.related-iframe {
 .select2-selection--multiple .select2-selection__choice__remove:hover {
     background-color: transparent !important;
 }
+
+#librarykeyword_form p {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
