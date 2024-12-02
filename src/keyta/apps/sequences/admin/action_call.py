@@ -34,7 +34,12 @@ class ActionCallParametersInline(KeywordCallParametersInline):
 @admin.register(ActionCall)
 class ActionCallAdmin(KeywordCallAdmin):
     def get_inlines(self, request, obj):
-        return [ActionCallParametersInline]
+        action_call: ActionCall = obj
+
+        if action_call.parameters.exists():
+            return [ActionCallParametersInline]
+        else:
+            return []
 
     @admin.display(description='Aktion')
     def keyword_doc(self, obj: ActionCall):
