@@ -1,4 +1,9 @@
 # KeyTA
+![PyPI - Version](https://img.shields.io/pypi/v/robotframework-keyta)
+[![Downloads](https://static.pepy.tech/badge/robotframework-keyta)](https://pepy.tech/project/robotframework-keyta)
+[![Monthly Downloads](https://static.pepy.tech/badge/robotframework-keyta/month)](https://pepy.tech/project/robotframework-keyta)
+![Python - Versions](https://img.shields.io/pypi/pyversions/robotframework-keyta)
+![GitHub - Commit Activity](https://img.shields.io/github/commit-activity/m/imbus/robotframework-keyta)
 
 (English translation will be available presumably in Q1 2025)
 
