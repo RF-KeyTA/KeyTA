@@ -140,7 +140,7 @@ class KeywordCallParameterFormset(forms.BaseInlineFormSet):
                 ]
             else:
                 choices = (
-                        [(None, None)] +
+                        [(None, '')] +
                         [['Eingabe', [show_value(current_value)]]] +
                         self.get_choices(self.instance)
                 )
