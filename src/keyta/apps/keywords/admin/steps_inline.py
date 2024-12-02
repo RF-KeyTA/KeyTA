@@ -33,7 +33,7 @@ class StepsInline(SortableTabularInlineWithDelete):
     def args(self, obj):
         kw_call: KeywordCall = obj
 
-        if not kw_call.pk or not kw_call.parameters.exists():
+        if not kw_call.pk:
             return '-'
 
         if kw_call.has_empty_arg():
