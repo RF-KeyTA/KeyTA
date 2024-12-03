@@ -37,7 +37,7 @@ def import_library(library_name: str):
                 init_arg["kind"]
             )
 
-            LibraryParameter.objects.update_or_create(
+            LibraryParameter.objects.get_or_create(
                 library=lib,
                 name=name,
                 defaults={
