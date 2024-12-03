@@ -1,11 +1,10 @@
 import json
+import os
 import re
 import tempfile
 import urllib.parse
 import xml.dom.minidom
 from pathlib import Path
-
-from robot.libdoc import LibDoc # type: ignore
 
 from apps.common.widgets import open_link_in_modal
 from apps.keywords.models import Keyword, KeywordParameter, KeywordType
@@ -15,7 +14,7 @@ from apps.resources.models import Resource
 
 def get_libdoc_json(library_or_resource: str):
     libdoc_json = Path(tempfile.gettempdir()) / f"{library_or_resource}.json"
-    LibDoc().main([library_or_resource, str(libdoc_json)], quiet=True)
+    os.system(f'libdoc {library_or_resource} {libdoc_json}')
 
     with open(libdoc_json, encoding='utf-8') as file:
         return json.load(file)
