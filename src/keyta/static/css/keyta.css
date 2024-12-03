@@ -152,7 +152,7 @@ iframe.related-iframe {
     background-color: transparent !important;
 }
 
-#librarykeyword_form p {
+#librarykeyword_form p, #keyworddocumentation_form p {
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
 }
