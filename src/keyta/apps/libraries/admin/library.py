@@ -68,12 +68,16 @@ class LibraryAdmin(BaseAdmin):
     ordering = ['name']
     inlines = [Keywords]
     form = LibraryForm
+    errors = set()
 
     def get_changelist(self, request: HttpRequest, **kwargs):
         if 'update' in request.GET:
             library = Library.objects.get(id=int(request.GET['lib_id']))
             import_library(library.name)
             messages.info(request, f'Die Bibliothek "{library.name}" wurde erfolgreich aktualisiert')
+
+        for error in self.errors:
+            messages.warning(request, error)
 
         return super().get_changelist(request, **kwargs)
 
@@ -125,11 +129,15 @@ class LibraryAdmin(BaseAdmin):
     @admin.display(description='Aktualisierung')
     def update(self, obj):
         library: Library = obj
+        version = None
 
         if library.name in Library.ROBOT_LIBRARIES:
             version = import_module(f'robot.libraries.{library.name}').get_version()
         else:
-            version = getattr(import_module(library.name), '__version__', None)
+            try:
+                version = getattr(import_module(library.name), '__version__', None) 
+            except ModuleNotFoundError as err:
+                self.errors.add(f'Eine Bibliothek ist nicht vorhanden: {err}')
 
         if version and version != library.version:
             return link(
