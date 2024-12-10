@@ -14,7 +14,7 @@ class TestSteps(StepsInline):
         formset = super().get_formset(request, obj, **kwargs)
 
         systems_under_test = testcase.systems.all()
-        windows = Window.objects.filter(systems__in=systems_under_test)
+        windows = Window.objects.filter(systems__in=systems_under_test).distinct().order_by('name')
 
         formset.form.base_fields['window'].queryset = windows
         formset.form.base_fields['window'].widget.can_add_related = False
