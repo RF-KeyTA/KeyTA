@@ -1,14 +1,13 @@
 from django.contrib import admin
 from django.db.models.functions import Lower
+from django.http import HttpRequest, HttpResponse
 
 from adminsortable2.admin import SortableAdminBase
-from django.http import HttpRequest, HttpResponse
 
 from apps.common.admin import BaseAdmin
 from apps.common.widgets import BaseSelectMultiple
 from apps.executions.admin import ExecutionInline
-from apps.executions.models import Execution, ExecutionLibraryImport
-from apps.libraries.models import Library
+from apps.executions.models import Execution
 from apps.rf_export.rfgenerator import gen_testsuite
 
 from ..models import TestCase, TestCaseExecution
@@ -91,5 +90,4 @@ class TestCaseAdmin(SortableAdminBase, BaseAdmin):  # CloneModelAdminMixin
             form.save_m2m()
 
             testcase: TestCase = obj
-            libraries = testcase.systems.values_list('library', flat=True)
-            execution = Execution.objects.create(testcase=testcase)
+            Execution.objects.create(testcase=testcase)
