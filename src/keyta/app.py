@@ -35,6 +35,8 @@ class DjangoServer:
             print('Setting up the database...')
             exec_django_command('migrate')
             exec_django_command('import_library BuiltIn')
+        else:
+            exec_django_command('migrate')
 
         return subprocess.Popen(['cmd', f'/C pushd {DJANGO_DIR} && python manage.py runserver'])
 
