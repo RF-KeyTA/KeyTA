@@ -10,8 +10,6 @@ from django.utils.safestring import mark_safe
 
 from tinymce.widgets import AdminTinyMCE # type: ignore
 
-from apps.libraries.models import LibraryKeyword 
-
 
 def autocomplete_name(name: str, app_label: str, model_name: str):
         model_class = (
@@ -119,17 +117,13 @@ class BaseDocumentationAdmin(BaseReadOnlyAdmin):
         return mark_safe(obj.args_doc)
 
     def get_fields(self, request: HttpRequest, obj):
-        keyword: LibraryKeyword = obj
-
-        if keyword.args_doc:
+        if hasattr(obj, 'args_doc'):
             return ['args_table'] + self.fields
         
         return self.fields
     
     def get_readonly_fields(self, request: HttpRequest, obj):
-        keyword: LibraryKeyword = obj
-
-        if keyword.args_doc:
+        if hasattr(obj, 'args_doc'):
             return ['args_table'] + self.readonly_fields
         
         return self.readonly_fields
