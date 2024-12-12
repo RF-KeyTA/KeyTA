@@ -11,7 +11,7 @@ class RFKeywordCall(TypedDict):
 class RFKeyword(TypedDict):
     name: str
     doc: str
-    args: list[str]
+    args: dict[str, str]
     kwargs: dict[str, str]
     steps: list[RFKeywordCall]
     return_value: Optional[str]

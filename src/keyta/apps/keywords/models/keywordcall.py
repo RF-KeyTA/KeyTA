@@ -168,7 +168,7 @@ class KeywordCall(AbstractBaseModel):
 
         return {
             'keyword': self.to_keyword.unique_name,
-            'args': [arg.to_robot() for arg in args],
+            'args': {arg.name: arg.to_robot() for arg in args},
             'kwargs': {kwarg.name: kwarg.to_robot() for kwarg in kwargs},
             'return_value': (
                 '${' + str(return_value) + '}'
