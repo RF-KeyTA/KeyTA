@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib import admin
+from django.utils.translation import gettext as _
 
 from apps.common.admin import SortableTabularInlineWithDelete
 from apps.common.widgets import open_link_in_modal
@@ -29,7 +30,7 @@ class StepsInline(SortableTabularInlineWithDelete):
     readonly_fields = ['first_arg', 'args']
     extra = 1  # Must be > 0 in order for SequenceSteps to work
 
-    @admin.display(description='Werte')
+    @admin.display(description=_('Werte'))
     def args(self, obj):
         kw_call: KeywordCall = obj
 
@@ -47,6 +48,6 @@ class StepsInline(SortableTabularInlineWithDelete):
                 '<i class=" fa-solid fa-list" style="font-size: 36px"></i>'
             )
 
-    @admin.display(description='1. Parameter')
+    @admin.display(description=_('1. Parameter'))
     def first_arg(self, obj: KeywordCall):
         return obj.parameters.first().current_value or "-"

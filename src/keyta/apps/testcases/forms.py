@@ -1,4 +1,5 @@
 from django import forms
+from django.utils.translation import gettext as _
 
 from apps.common.widgets import ModelSelect2AdminWidget
 from apps.keywords.admin.steps_inline import StepsForm
@@ -16,7 +17,7 @@ TestStepsForm = forms.modelform_factory(
             model=Window,
             search_fields=['name__icontains'],
             attrs={
-                'data-placeholder': 'Maske auswählen',
+                'data-placeholder': _('Maske auswählen'),
                 'style': 'width: 95%'
             }
         ),
@@ -25,7 +26,7 @@ TestStepsForm = forms.modelform_factory(
             search_fields=['name__icontains'],
             dependent_fields={'window': 'windows'},
             attrs={
-                'data-placeholder': 'Sequenz auswählen',
+                'data-placeholder': _('Sequenz auswählen'),
                 'style': 'width: 95%',
             }
         )

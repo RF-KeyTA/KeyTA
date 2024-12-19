@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.translation import gettext as _
 
 from apps.keywords.models import KeywordCall, KeywordCallType
 
@@ -23,4 +24,4 @@ class KeywordExecutionCall(KeywordCall):
 
     class Meta:
         proxy = True
-        verbose_name = 'Aufrufparameter'
+        verbose_name = _('Aufrufparameter')

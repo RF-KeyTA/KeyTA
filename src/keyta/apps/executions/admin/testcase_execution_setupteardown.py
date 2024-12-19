@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.translation import gettext as _
 
 from apps.executions.admin import SetupTeardownAdmin
 from apps.executions.admin import SetupTeardownParametersInline
@@ -16,7 +17,7 @@ class TestCaseSetupTeardownParametersFormset(KeywordCallParameterFormset):
             system_ids = kw_call.execution.testcase.systems.values_list('id')
 
             return [[
-                'Referenzwerte',
+                _('Referenzwerte'),
                 [
                     (jsonify(None, source.pk), str(source))
                     for source in

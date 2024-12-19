@@ -2,6 +2,7 @@ from django import forms
 from django.contrib import admin
 from django.db.models import QuerySet
 from django.http import HttpRequest
+from django.utils.translation import gettext as _
 
 from apps.actions.models import Action
 from apps.common.widgets import (
@@ -32,7 +33,7 @@ class SetupTeardownInline(admin.TabularInline):
     max_num = 1
     template = 'admin/setup_teardown/tabular.html'
 
-    @admin.display(description='Parameter')
+    @admin.display(description=_('Parameter'))
     def args(self, obj):
         kw_call: SetupTeardown = obj
         to_keyword_has_params = kw_call.to_keyword.parameters.exists()
@@ -81,7 +82,7 @@ class SetupTeardownInline(admin.TabularInline):
         formset.form.base_fields['to_keyword'].queryset = queryset
         formset.form.base_fields['to_keyword'].label = 'Aktion'
         formset.form.base_fields['to_keyword'].widget = BaseSelect(
-            'Aktion auswählen'
+            _('Aktion auswählen')
         )
 
         return formset

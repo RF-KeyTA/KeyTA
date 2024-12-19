@@ -7,6 +7,7 @@ from django.db import models
 from django.forms import SelectMultiple, CheckboxSelectMultiple
 from django.http import HttpRequest, HttpResponseRedirect, HttpResponse
 from django.utils.safestring import mark_safe
+from django.utils.translation import gettext as _
 
 from tinymce.widgets import AdminTinyMCE # type: ignore
 
@@ -88,7 +89,7 @@ class BaseAdmin(admin.ModelAdmin):
 
 
 class BaseAdminWithDoc(BaseAdmin):
-    @admin.display(description='Dokumentation')
+    @admin.display(description=_('Dokumentation'))
     def read_documentation(self, obj):
         return mark_safe(obj.documentation)
 
@@ -112,7 +113,7 @@ class BaseDocumentationAdmin(BaseReadOnlyAdmin):
     def dokumentation(self, obj):
         return mark_safe(obj.documentation)
 
-    @admin.display(description='Parameter')
+    @admin.display(description=_('Parameter'))
     def args_table(self, obj):
         return mark_safe(obj.args_doc)
 

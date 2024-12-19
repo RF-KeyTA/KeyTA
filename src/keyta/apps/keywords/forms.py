@@ -5,6 +5,7 @@ from django import forms
 from django.conf import settings
 from django.contrib.admin.widgets import get_select2_language
 from django.core.exceptions import ValidationError
+from django.utils.translation import gettext as _
 
 from apps.keywords.models import (
     KeywordCall,
@@ -21,13 +22,13 @@ def show_value(json_str: str) -> tuple:
     if value:
         return json_str, value
     else:
-        return None, 'Kein Wert'
+        return None, _('Kein Wert')
 
 
 class DynamicChoiceField(forms.CharField):
     def to_python(self, value: str):
         if not value:
-            raise ValidationError('Das Feld darf nicht leer sein')
+            raise ValidationError(_('Das Feld darf nicht leer sein'))
 
         if value.startswith('{') and value.endswith('}'):
             return value
@@ -40,7 +41,7 @@ class KeywordCallParameterFormset(forms.BaseInlineFormSet):
         kw_call = self.instance
 
         return [[
-            'Vorherige Rückgabewerte',
+            _('Vorherige Rückgabewerte'),
             [
                 (jsonify(None, source.pk), str(source))
                 for source in
@@ -58,7 +59,7 @@ class KeywordCallParameterFormset(forms.BaseInlineFormSet):
             show: Callable[[KeywordCallParameterSource], str]
     ):
         window_variables = [[
-            'Referenzwerte',
+            _('Referenzwerte'),
             [
                 (jsonify(None, source.pk), show(source))
                 for source in
@@ -70,7 +71,7 @@ class KeywordCallParameterFormset(forms.BaseInlineFormSet):
         ]]
 
         window_indep_variables = [[
-            'Globale Referenzwerte',
+            _('Globale Referenzwerte'),
             [
                 (jsonify(None, source.pk), show(source))
                 for source in
@@ -85,7 +86,7 @@ class KeywordCallParameterFormset(forms.BaseInlineFormSet):
     def get_choices(self, obj: KeywordCall):
         calling_keyword = obj.from_keyword
         kw_params = [[
-            'Parameter',
+            _('Parameter'),
             [
                 (jsonify(None, source.pk), str(source))
                 for source in KeywordCallParameterSource.objects
@@ -141,7 +142,7 @@ class KeywordCallParameterFormset(forms.BaseInlineFormSet):
             else:
                 choices = (
                         [(None, '')] +
-                        [['Eingabe', [show_value(current_value)]]] +
+                        [[_('Eingabe'), [show_value(current_value)]]] +
                         self.get_choices(self.instance)
                 )
 
@@ -152,10 +153,10 @@ class KeywordCallParameterFormset(forms.BaseInlineFormSet):
                         # Allow manual input
                         'data-tags': 'true',
                         'data-width': '60%',
-                        'data-placeholder': 'Wert auswählen oder eintragen'
+                        'data-placeholder': _('Wert auswählen oder eintragen')
                     }
                 )
             )
 
             if kw_call_parameter.parameter.is_list:
-                form.fields['value'].help_text = 'Wert 1, Wert 2, ...'
+                form.fields['value'].help_text = _('Wert 1, Wert 2, ...')

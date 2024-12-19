@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.translation import gettext as _
 
 from apps.keywords.models import Keyword
 from apps.keywords.models.keyword import KeywordType
@@ -28,11 +29,11 @@ class ResourceKeyword(Keyword):
 
     class Meta:
         proxy = True
-        verbose_name = 'Ressource-Schlüsselwort'
-        verbose_name_plural = 'Ressource-Schlüsselwörter'
+        verbose_name = _('Ressource-Schlüsselwort')
+        verbose_name_plural = _('Ressource-Schlüsselwörter')
 
 
 class ResourceKeywordDocumentation(ResourceKeyword):
     class Meta:
         proxy = True
-        verbose_name = 'Dokumentation des Ressource-Schlüsselworts'
+        verbose_name = _('Dokumentation des Ressource-Schlüsselworts')

@@ -1,4 +1,5 @@
 from django.db.models import QuerySet, Q
+from django.utils.translation import gettext as _
 
 from apps.common.admin import TabularInlineWithDelete
 from ..models import KeywordReturnValue, Keyword
@@ -23,10 +24,10 @@ class ReturnValue(TabularInlineWithDelete):
 
         if return_values.exists():
             formset.form.base_fields['kw_call_return_value'].widget.attrs.update({
-                'data-placeholder': 'Rückgabewert auswählen'
+                'data-placeholder': _('Rückgabewert auswählen')
             })
         else:
             formset.form.base_fields['kw_call_return_value'].disabled = True
-            formset.form.base_fields['kw_call_return_value'].empty_label = 'Keine Rückgabewerte aus den Schritten'
+            formset.form.base_fields['kw_call_return_value'].empty_label = _('Keine Rückgabewerte aus den Schritten')
 
         return formset

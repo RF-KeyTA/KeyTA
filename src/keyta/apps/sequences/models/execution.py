@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.utils.translation import gettext as _
 
 from apps.executions.models import KeywordExecution
 from apps.keywords.models import KeywordCall
@@ -36,5 +37,5 @@ class SequenceExecution(KeywordExecution):
 
     class Meta:
         proxy = True
-        verbose_name = 'Ausführung'
-        verbose_name_plural = 'Ausführung'
+        verbose_name = _('Ausführung')
+        verbose_name_plural = _('Ausführung')

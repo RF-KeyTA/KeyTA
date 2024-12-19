@@ -1,3 +1,5 @@
+from django.utils.translation import gettext as _
+
 from apps.keywords.admin import StepsInline
 from apps.testcases.forms import TestStepsForm
 from apps.testcases.models import TestStep, TestCase
@@ -20,7 +22,7 @@ class TestSteps(StepsInline):
         formset.form.base_fields['window'].widget.can_add_related = False
         formset.form.base_fields['window'].widget.can_change_related = False
 
-        formset.form.base_fields['to_keyword'].label = 'Sequenz'
+        formset.form.base_fields['to_keyword'].label = _('Sequenz')
         sequences = formset.form.base_fields['to_keyword'].queryset.sequences()
         formset.form.base_fields['to_keyword'].queryset = sequences
 

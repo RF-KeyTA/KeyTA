@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.translation import gettext as _
 
 from apps.resources.models import ResourceImport, ResourceImportType
 
@@ -18,5 +19,5 @@ class ExecutionResourceImport(ResourceImport):
 
     class Meta:
         proxy = True
-        verbose_name = 'Ressource-Import'
-        verbose_name_plural = 'Ressourcen-Imports'
+        verbose_name = _('Ressource-Import')
+        verbose_name_plural = _('Ressourcen-Imports')

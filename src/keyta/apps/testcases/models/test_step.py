@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.translation import gettext as _
 
 from apps.keywords.models import KeywordCall
 from apps.keywords.models.keywordcall import KeywordCallType
@@ -25,5 +26,5 @@ class TestStep(KeywordCall):
 
     class Meta:
         proxy = True
-        verbose_name = 'Schritt'
-        verbose_name_plural = 'Schritte'
+        verbose_name = _('Schritt')
+        verbose_name_plural = _('Schritte')

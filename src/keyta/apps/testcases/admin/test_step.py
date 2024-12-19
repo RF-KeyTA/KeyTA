@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.translation import gettext as _
 
 from apps.common.widgets import open_link_in_modal
 from apps.keywords.admin import KeywordCallParametersInline, KeywordCallAdmin
@@ -30,7 +31,7 @@ class TestStepAdmin(KeywordCallAdmin):
     def get_inlines(self, request, obj):
         return [TestStepParameters]
 
-    @admin.display(description='Sequenz')
+    @admin.display(description=_('Sequenz'))
     def keyword_doc(self, obj: TestStep):
         return open_link_in_modal(
             Sequence(obj.to_keyword.pk).get_docadmin_url(),

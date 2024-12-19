@@ -1,5 +1,6 @@
 from typing import Optional
 from django.contrib.auth.models import User
+from django.utils.translation import gettext as _
 
 from apps.actions.models import Action
 from apps.keywords.models import (
@@ -88,7 +89,7 @@ class KeywordExecution(Execution):
             'keywords': list(keywords.values()),
             'testcases': [
                 {
-                    'name': 'Test',
+                    'name': _('Test'),
                     'doc': None,
                     'steps': [
                         self.execution_keyword_call.to_robot(user)
@@ -144,5 +145,5 @@ class KeywordExecution(Execution):
 
     class Meta:
         proxy = True
-        verbose_name = 'Ausführung'
-        verbose_name_plural = 'Ausführung'
+        verbose_name = _('Ausführung')
+        verbose_name_plural = _('Ausführung')

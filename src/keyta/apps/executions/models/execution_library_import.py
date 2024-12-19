@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.translation import gettext as _
 
 from apps.libraries.models import LibraryImport, LibraryImportType
 
@@ -18,5 +19,5 @@ class ExecutionLibraryImport(LibraryImport):
 
     class Meta:
         proxy = True
-        verbose_name = 'Bibliothek-Import'
-        verbose_name_plural = 'Bibliothek-Imports'
+        verbose_name = _('Bibliothek-Import')
+        verbose_name_plural = _('Bibliothek-Imports')

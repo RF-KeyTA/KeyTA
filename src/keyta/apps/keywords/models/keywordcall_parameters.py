@@ -5,6 +5,7 @@ from typing import Optional
 from django.db import models
 
 from django.contrib.auth.models import User
+from django.utils.translation import gettext as _
 
 from .keywordcall_parameter_source import (
     KeywordCallParameterSource,
@@ -33,7 +34,7 @@ class KeywordCallParameter(models.Model):
     )
     value = models.CharField(
         max_length=255,
-        verbose_name='Wert'
+        verbose_name=_('Wert')
     )
     value_ref = models.ForeignKey(
         KeywordCallParameterSource,
@@ -94,5 +95,5 @@ class KeywordCallParameter(models.Model):
         return self.current_value
 
     class Meta:
-        verbose_name = 'Aufrufparameter'
-        verbose_name_plural = 'Aufrufparameter'
+        verbose_name = _('Aufrufparameter')
+        verbose_name_plural = _('Aufrufparameter')

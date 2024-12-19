@@ -6,6 +6,8 @@ import urllib.parse
 import xml.dom.minidom
 from pathlib import Path
 
+from django.utils.translation import gettext as _
+
 from apps.common.widgets import open_link_in_modal
 from apps.keywords.models import Keyword, KeywordParameter, KeywordType
 from apps.libraries.models import Library
@@ -188,7 +190,7 @@ def get_init_doc(library_json):
     if library_json["inits"]:
         return library_json["inits"][0]["doc"]
     else:
-        return "Diese Bibliothek hat keine Einstellungen"
+        return _("Diese Bibliothek hat keine Einstellungen")
 
 
 def section_importing(lib_json: dict):

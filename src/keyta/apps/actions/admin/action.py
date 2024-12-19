@@ -1,5 +1,6 @@
 from django.contrib import admin, messages
 from django.http import HttpRequest
+from django.utils.translation import gettext as _
 
 from apps.common.admin import TabularInlineWithDelete
 from apps.common.forms.baseform import form_with_select
@@ -37,8 +38,8 @@ class Windows(TabularInlineWithDelete):
     fields = ['window']
     extra = 0
     min_num = 1
-    verbose_name = 'Maske'
-    verbose_name_plural = 'Masken'
+    verbose_name = _('Maske')
+    verbose_name_plural = _('Masken')
 
     form = form_with_select(
         ActionWindow,
@@ -67,10 +68,10 @@ class Libraries(TabularInlineWithDelete):
     form = form_with_select(
         ActionLibraryImport,
         'library',
-        'Bibliothek auswählen'
+        _('Bibliothek auswählen')
     )
-    verbose_name = 'Bibliothek'
-    verbose_name_plural = 'Bibliotheken'
+    verbose_name = _('Bibliothek')
+    verbose_name_plural = _('Bibliotheken')
 
     def has_change_permission(self, request: HttpRequest, obj) -> bool:
         return False
@@ -81,7 +82,7 @@ class ActionAdmin(WindowKeywordAdmin):
     form = form_with_select(
         Action,
         'systems',
-        'System auswählen',
+        _('System auswählen'),
         True
     )
     inlines = [
@@ -139,7 +140,7 @@ class ActionAdmin(WindowKeywordAdmin):
         if not change and not action.everywhere:
             messages.warning(
                 request,
-                'Die Aktion muss einer Maske zugeordnet werden'
+                _('Die Aktion muss einer Maske zugeordnet werden')
             )
 
         return action

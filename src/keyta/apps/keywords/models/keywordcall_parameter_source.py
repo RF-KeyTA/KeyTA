@@ -1,11 +1,12 @@
 from django.db import models
 from django.db.models import Q
+from django.utils.translation import gettext as _
 
 
 class KeywordCallParameterSourceType(models.TextChoices):
-    KEYWORD_PARAMETER = 'KEYWORD_PARAMETER', 'Schlüsselwort-Parameter'
-    KW_CALL_RETURN_VALUE = 'KW_CALL_RETURN_VALUE', 'Aufrufs-Rückgabewert'
-    VARIABLE_VALUE = 'VARIABLE_VALUE', 'Referenzwert'
+    KEYWORD_PARAMETER = 'KEYWORD_PARAMETER', _('Schlüsselwort-Parameter')
+    KW_CALL_RETURN_VALUE = 'KW_CALL_RETURN_VALUE', _('Aufrufs-Rückgabewert')
+    VARIABLE_VALUE = 'VARIABLE_VALUE', _('Referenzwert')
 
 
 class KeywordCallParameterSource(models.Model):
@@ -60,5 +61,5 @@ class KeywordCallParameterSource(models.Model):
                  Q(variable_value__isnull=False))
             )
         ]
-        verbose_name = 'Parameter-Referenz'
-        verbose_name_plural = 'Parameter-Referenzen'
+        verbose_name = _('Parameter-Referenz')
+        verbose_name_plural = _('Parameter-Referenzen')

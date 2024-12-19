@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib import admin
+from django.utils.translation import gettext as _
 
 from apps.actions.models import RobotKeywordCall, Action
 from apps.common.widgets import GroupedByLibrary, BaseSelect
@@ -17,7 +18,7 @@ class ActionSteps(StepsInline):
     model = RobotKeywordCall
     fk_name = 'from_keyword'
 
-    @admin.display(description='1. Parameter')
+    @admin.display(description=_('1. Parameter'))
     def first_arg(self, obj: KeywordCall):
         first_param: KeywordCallParameter = obj.parameters.first()
 
@@ -34,9 +35,9 @@ class ActionSteps(StepsInline):
     def formfield_for_dbfield(self, db_field, request, **kwargs):
         if db_field.name == 'to_keyword':
             choice_field = forms.ModelChoiceField(
-                label='Schlüsselwort',
+                label=_('Schlüsselwort'),
                 queryset=None,
-                widget=BaseSelect('Schlüsselwort auswählen')
+                widget=BaseSelect(_('Schlüsselwort auswählen'))
             )
             choice_field.iterator = GroupedByLibrary
             return choice_field

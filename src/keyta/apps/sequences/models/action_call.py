@@ -1,5 +1,6 @@
 from django.db import models
 from django.db.models import QuerySet
+from django.utils.translation import gettext as _
 
 from apps.keywords.models import KeywordCall, KeywordType
 
@@ -25,5 +26,5 @@ class ActionCall(KeywordCall):
 
     class Meta:
         proxy = True
-        verbose_name = 'Schritt'
-        verbose_name_plural = 'Schritte'
+        verbose_name = _('Schritt')
+        verbose_name_plural = _('Schritte')

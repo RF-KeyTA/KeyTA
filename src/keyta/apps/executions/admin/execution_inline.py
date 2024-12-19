@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.http import HttpRequest
 from django.urls import get_script_prefix
 from django.utils.safestring import mark_safe
+from django.utils.translation import gettext as _
 
 from apps.common.widgets import open_link_in_modal, link
 from apps.executions.models import Execution
@@ -14,7 +15,7 @@ class ExecutionInline(admin.TabularInline):
     can_delete = False
     template = 'admin/execution/tabular.html'
 
-    @admin.display(description='Einstellungen')
+    @admin.display(description=_('Einstellungen'))
     def settings(self, obj: Execution):
         return open_link_in_modal(
             obj.get_admin_url() + '?settings',
@@ -28,7 +29,7 @@ class ExecutionInline(admin.TabularInline):
         self.user = request.user
         return ['settings', 'start', 'result_icon', 'log_icon']
 
-    @admin.display(description='Protokoll')
+    @admin.display(description=_('Protokoll'))
     def log_icon(self, obj):
         exec: Execution = obj
         user_exec = exec.user_execs.get(user=self.user)
@@ -42,7 +43,7 @@ class ExecutionInline(admin.TabularInline):
 
         return '-'
 
-    @admin.display(description='Ergebnis')
+    @admin.display(description=_('Ergebnis'))
     def result_icon(self, obj):
         exec: Execution = obj
         user_exec = exec.user_execs.get(user=self.user)
@@ -56,7 +57,7 @@ class ExecutionInline(admin.TabularInline):
 
         return '-'
 
-    @admin.display(description='Ausf.')
+    @admin.display(description=_('Ausf.'))
     def start(self, obj):
         url = obj.get_admin_url() + '?start'
         title = '<i class=" fa-solid fa-circle-play" style="font-size: 36px"></i>'

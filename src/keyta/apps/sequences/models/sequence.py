@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.translation import gettext as _
 
 from apps.actions.models import Action
 from apps.keywords.models.keyword import KeywordType
@@ -36,11 +37,11 @@ class Sequence(WindowKeyword):
 
     class Meta:
         proxy = True
-        verbose_name = 'Sequenz'
-        verbose_name_plural = 'Sequenzen'
+        verbose_name = _('Sequenz')
+        verbose_name_plural = _('Sequenzen')
 
 
 class SequenceDocumentation(Sequence):
     class Meta:
         proxy = True
-        verbose_name = 'Sequenz Dokumentation'
+        verbose_name = _('Sequenz Dokumentation')
