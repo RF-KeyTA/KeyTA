@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.translation import gettext as _
 
 from apps.actions.models import Action
 from apps.common.widgets import open_link_in_modal
@@ -41,7 +42,7 @@ class ActionCallAdmin(KeywordCallAdmin):
         else:
             return []
 
-    @admin.display(description='Aktion')
+    @admin.display(description=_('Aktion'))
     def keyword_doc(self, obj: ActionCall):
         return open_link_in_modal(
             Action(obj.to_keyword.pk).get_docadmin_url(),

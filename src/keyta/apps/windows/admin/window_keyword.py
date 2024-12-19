@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.translation import gettext as _
 
 from apps.executions.models import (
     Execution,
@@ -14,7 +15,7 @@ class WindowKeywordAdmin(KeywordAdmin):
     list_display = ['system_list', 'name', 'short_doc']
     list_filter = ['systems']
 
-    @admin.display(description='Systeme')
+    @admin.display(description=_('Systeme'))
     def system_list(self, obj: Window):
         return list(obj.systems.values_list('name', flat=True))
 

@@ -1,5 +1,6 @@
 from django.contrib import admin, messages
 from django.http import HttpRequest
+from django.utils.translation import gettext as _
 
 from apps.common.admin import BaseAdmin
 from apps.common.forms import form_with_select
@@ -15,8 +16,8 @@ class Windows(admin.TabularInline):
     max_num = 0
     can_delete = False
     show_change_link = True
-    verbose_name = 'Maske'
-    verbose_name_plural = 'Masken'
+    verbose_name = _('Maske')
+    verbose_name_plural = _('Masken')
 
     def has_change_permission(self, request, obj=None):
         return False
@@ -31,7 +32,7 @@ class SystemAdmin(BaseAdmin):
     form = form_with_select(
         System,
         select_field='library',
-        placeholder='Bibliothek auswählen'
+        placeholder=_('Bibliothek auswählen')
     )
 
     def formfield_for_dbfield(self, db_field, request: HttpRequest, **kwargs):
@@ -39,7 +40,7 @@ class SystemAdmin(BaseAdmin):
 
         if system_id := request.resolver_match.kwargs.get('object_id', None):
             if db_field.name == 'attach_to_system':
-                field.widget = BaseSelect('Aktion auswählen')
+                field.widget = BaseSelect(_('Aktion auswählen'))
                 field.queryset = (
                     field.queryset.actions()
                     .filter(systems__in=[system_id])
@@ -78,5 +79,5 @@ class SystemAdmin(BaseAdmin):
         if not change:
             messages.warning(
                 request,
-                'Die Aktion zur Anbindung an das System muss gepflegt werden'
+                _('Die Aktion zur Anbindung an das System muss gepflegt werden')
             )

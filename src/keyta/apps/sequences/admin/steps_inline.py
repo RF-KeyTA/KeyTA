@@ -1,5 +1,7 @@
 from itertools import groupby
 
+from django.utils.translation import gettext as _
+
 from apps.actions.models import Action
 from apps.common.widgets import BaseSelect
 from apps.keywords.admin import StepsInline
@@ -30,7 +32,7 @@ class SequenceSteps(StepsInline):
         ]]
 
         global_actions = [[
-            'Globale Aktionen', [
+            _('Globale Aktionen'), [
                 (action.pk, action.name)
                 for action in Action.objects
                 .filter(everywhere=True)
@@ -58,7 +60,7 @@ class SequenceSteps(StepsInline):
                 global_actions +
                 resource_kws
         )
-        field.label = 'Aktion'
-        field.widget = BaseSelect('Aktion auswählen')
+        field.label = _('Aktion')
+        field.widget = BaseSelect(_('Aktion auswählen'))
 
         return formset

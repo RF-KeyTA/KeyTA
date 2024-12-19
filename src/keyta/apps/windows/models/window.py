@@ -1,6 +1,7 @@
 import re
 
 from django.db import models
+from django.utils.translation import gettext as _
 
 from apps.common.abc import AbstractBaseModel
 
@@ -9,15 +10,15 @@ class Window(AbstractBaseModel):
     systems = models.ManyToManyField(
         'systems.System',
         related_name='windows',
-        verbose_name='Systeme',
+        verbose_name=_('Systeme'),
     )
-    name = models.CharField(max_length=255, verbose_name='Name')
+    name = models.CharField(max_length=255, verbose_name=_('Name'))
     description = models.CharField(
         max_length=255,
         blank=True,
-        verbose_name='Beschreibung'
+        verbose_name=_('Beschreibung')
     )
-    documentation = models.TextField(verbose_name='Dokumentation')
+    documentation = models.TextField(verbose_name=_('Dokumentation'))
 
     def __str__(self):
         return self.name
@@ -42,8 +43,8 @@ class Window(AbstractBaseModel):
         return self.keywords.sequences()
 
     class Meta:
-        verbose_name = 'Maske'
-        verbose_name_plural = 'Masken'
+        verbose_name = _('Maske')
+        verbose_name_plural = _('Masken')
 
         # constraints = [
         #     models.UniqueConstraint(
@@ -56,5 +57,5 @@ class Window(AbstractBaseModel):
 class WindowDocumentation(Window):
     class Meta:
         proxy = True
-        verbose_name = 'Dokumentation der Maske'
-        verbose_name_plural = 'Dokumentation der Masken'
+        verbose_name = _('Dokumentation der Maske')
+        verbose_name_plural = _('Dokumentation der Masken')

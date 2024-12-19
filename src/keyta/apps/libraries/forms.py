@@ -2,6 +2,7 @@ from importlib import import_module
 
 from django import forms
 from django.core.exceptions import ValidationError
+from django.utils.translation import gettext as _
 
 from apps.libraries.models import Library
 
@@ -14,6 +15,6 @@ class LibraryForm(forms.ModelForm):
             try:
                 import_module(name)
             except ModuleNotFoundError as err:
-                raise ValidationError(f'Die Bibliothek "{name}" ist nicht vorhanden')
+                raise ValidationError(_('Die Bibliothek "{name}" ist nicht vorhanden').format(name=name))
 
         return name

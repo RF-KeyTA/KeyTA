@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.translation import gettext as _
 
 from apps.common.abc import AbstractBaseModel
 from .keyword import Keyword
@@ -13,7 +14,7 @@ class KeywordReturnValue(AbstractBaseModel):
     kw_call_return_value = models.ForeignKey(
         'keywords.KeywordCallReturnValue',
         on_delete=models.CASCADE,
-        verbose_name='Rückgabewert'
+        verbose_name=_('Rückgabewert')
     )
 
     def __str__(self):
@@ -23,5 +24,5 @@ class KeywordReturnValue(AbstractBaseModel):
         return ''
 
     class Meta:
-        verbose_name = 'Rückgabewert'
-        verbose_name_plural = 'Rückgabewert'
+        verbose_name = _('Rückgabewert')
+        verbose_name_plural = _('Rückgabewert')

@@ -1,5 +1,6 @@
 from typing import Optional
 from django.contrib.auth.models import User
+from django.utils.translation import gettext as _
 
 from apps.actions.models import Action
 from apps.executions.errors import ValidationError
@@ -113,5 +114,5 @@ class TestCaseExecution(Execution):
 
     class Meta:
         proxy = True
-        verbose_name = 'Ausführung'
-        verbose_name_plural = 'Ausführung'
+        verbose_name = _('Ausführung')
+        verbose_name_plural = _('Ausführung')

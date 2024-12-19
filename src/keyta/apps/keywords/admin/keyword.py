@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.db.models import QuerySet
 from django.db.models.functions import Lower
+from django.utils.translation import gettext as _
 
 from adminsortable2.admin import SortableAdminBase
 from django.http import HttpRequest
@@ -17,7 +18,7 @@ class KeywordAdmin(SortableAdminBase, BaseAdminWithDoc):  # CloneModelAdminMixin
     list_display_links = ['name']
     ordering = [Lower('name')]
     search_fields = ['name']
-    search_help_text = 'Name'
+    search_help_text = _('Name')
 
     fields = ['name', 'short_doc']
 

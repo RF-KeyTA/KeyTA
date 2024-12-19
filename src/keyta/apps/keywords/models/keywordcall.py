@@ -2,6 +2,7 @@ from typing import Optional
 from django.db import models
 from django.db.models import Q, QuerySet
 from django.contrib.auth.models import User
+from django.utils.translation import gettext as _
 
 from apps.common.abc import AbstractBaseModel
 from apps.rf_export.keywords import RFKeywordCall
@@ -15,19 +16,19 @@ from .keyword_return_value import KeywordReturnValue
 
 
 class TestSetupTeardown(models.TextChoices):
-    TEST_SETUP = 'TEST_SETUP', 'Testvorbereitung'
-    TEST_TEARDOWN = 'TEST_TEARDOWN', 'Testnachbereitung'
+    TEST_SETUP = 'TEST_SETUP', _('Testvorbereitung')
+    TEST_TEARDOWN = 'TEST_TEARDOWN', _('Testnachbereitung')
 
 
 class SuiteSetupTeardown(models.TextChoices):
-    SUITE_SETUP = 'SUITE_SETUP', 'Suitevorbereitung'
-    SUITE_TEARDOWN = 'SUITE_TEARDOWN', 'Suitenachbereitung'
+    SUITE_SETUP = 'SUITE_SETUP', _('Suitevorbereitung')
+    SUITE_TEARDOWN = 'SUITE_TEARDOWN', _('Suitenachbereitung')
 
 
 class KeywordCallType(models.TextChoices):
-    KEYWORD_CALL = 'KEYWORD_CALL', 'Schlüsselwort-Aufruf'
-    KEYWORD_EXECUTION = 'KEYWORD_EXECUTION', 'Schlüsselwort Ausführung'
-    TEST_STEP = 'TEST_STEP', 'Testschritt'
+    KEYWORD_CALL = 'KEYWORD_CALL', _('Schlüsselwort-Aufruf')
+    KEYWORD_EXECUTION = 'KEYWORD_EXECUTION', _('Schlüsselwort Ausführung')
+    TEST_STEP = 'TEST_STEP', _('Testschritt')
 
 
 class KeywordCall(AbstractBaseModel):
@@ -83,7 +84,7 @@ class KeywordCall(AbstractBaseModel):
         null=True,
         default=None,
         blank=True,
-        verbose_name='Maske'
+        verbose_name=_('Maske')
     )
 
     def __str__(self):
@@ -235,8 +236,8 @@ class KeywordCall(AbstractBaseModel):
 
     class Meta:
         ordering = ['index']
-        verbose_name = 'Schritt'
-        verbose_name_plural = 'Schritte'
+        verbose_name = _('Schritt')
+        verbose_name_plural = _('Schritte')
         constraints = [
             models.CheckConstraint(
                 name='keyword_call_sum_type',

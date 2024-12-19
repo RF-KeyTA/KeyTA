@@ -1,6 +1,7 @@
 from django.contrib import admin, messages
 from django.db.models.functions import Lower
 from django.http import HttpRequest
+from django.utils.translation import gettext as _
 
 from apps.common.admin import BaseAdmin, TabularInlineWithDelete
 from apps.common.forms import form_with_select
@@ -20,13 +21,13 @@ class Windows(admin.TabularInline):
     model = Variable.windows.through
     extra = 0
     min_num = 1
-    verbose_name = 'Maske'
-    verbose_name_plural = 'Masken'
+    verbose_name = _('Maske')
+    verbose_name_plural = _('Masken')
 
     form = form_with_select(
         Variable.windows.through,
         'window',
-        'Maske auswählen'
+        _('Maske auswählen')
     )
 
     def get_formset(self, request, obj=None, **kwargs):
@@ -45,15 +46,15 @@ class VariableAdmin(BaseAdmin):
     list_filter = ['systems']
     ordering = [Lower('name')]
     search_fields = ['name']
-    search_help_text = 'Name'
+    search_help_text = _('Name')
     ordering = [Lower('name')]
 
-    @admin.display(description='Systeme')
+    @admin.display(description=_('Systeme'))
     def system_list(self, obj):
         variable: Variable = obj
 
         if not variable.systems.exists():
-            return 'System unabhängig'
+            return _('System unabhängig')
 
         return list(variable.systems.values_list('name', flat=True))
 
@@ -61,7 +62,7 @@ class VariableAdmin(BaseAdmin):
     form = form_with_select(
         Variable,
         'systems',
-        'System hinzufügen',
+        _('System hinzufügen'),
         True
     )
     inlines = [Values]
@@ -105,7 +106,7 @@ class VariableAdmin(BaseAdmin):
         if not change and not variable.all_windows:
             messages.warning(
                 request,
-                'Der Referenzwert muss einer Maske zugeordnet werden'
+                _('Der Referenzwert muss einer Maske zugeordnet werden')
             )
 
         return variable

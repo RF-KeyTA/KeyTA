@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.translation import gettext as _
 
 from apps.keywords.models import Keyword
 from apps.keywords.models.keyword import KeywordType
@@ -28,11 +29,11 @@ class LibraryKeyword(Keyword):
 
     class Meta:
         proxy = True
-        verbose_name = 'Bibliothek-Schlüsselwort'
-        verbose_name_plural = 'Bibliothek-Schlüsselwörter'
+        verbose_name = _('Bibliothek-Schlüsselwort')
+        verbose_name_plural = _('Bibliothek-Schlüsselwörter')
 
 
 class LibraryKeywordDocumentation(LibraryKeyword):
     class Meta:
         proxy = True
-        verbose_name = 'Dokumentation des Bibliothek-Schlüsselworts'
+        verbose_name = _('Dokumentation des Bibliothek-Schlüsselworts')

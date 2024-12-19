@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.translation import gettext as _
 
 from apps.common.abc import AbstractBaseModel
 
@@ -12,8 +13,8 @@ class LibraryParameter(AbstractBaseModel):
         on_delete=models.CASCADE,
         related_name='kwargs'
     )
-    name = models.CharField(max_length=255, verbose_name='Name')
-    default_value = models.CharField(max_length=255, verbose_name='Standardwert')
+    name = models.CharField(max_length=255, verbose_name=_('Name'))
+    default_value = models.CharField(max_length=255, verbose_name=_('Standardwert'))
     orig_default_value = models.CharField(max_length=255)
 
     def __str__(self):
@@ -39,8 +40,8 @@ class LibraryParameter(AbstractBaseModel):
     objects = Manager()
 
     class Meta:
-        verbose_name = 'Einstellung'
-        verbose_name_plural = 'Einstellungen'
+        verbose_name = _('Einstellung')
+        verbose_name_plural = _('Einstellungen')
 
         constraints = [
             models.UniqueConstraint(

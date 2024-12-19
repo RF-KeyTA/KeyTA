@@ -1,3 +1,5 @@
+from django.utils.translation import gettext as _
+
 from apps.keywords.models import TestSetupTeardown
 
 from .setup_teardown import SetupTeardown
@@ -13,4 +15,4 @@ class KeywordExecutionSetup(SetupTeardown):
 
     class Meta:
         proxy = True
-        verbose_name = 'Schlüsselwort-Aufruf'
+        verbose_name = _('Schlüsselwort-Aufruf')

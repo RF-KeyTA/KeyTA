@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.translation import gettext as _
 
 from apps.common.widgets import open_link_in_modal
 from apps.keywords.admin import (
@@ -44,7 +45,7 @@ class RobotKeywordCallAdmin(KeywordCallAdmin):
             KeywordCallReturnValueInline
         ]
 
-    @admin.display(description='Schlüsselwort')
+    @admin.display(description=_('Schlüsselwort'))
     def keyword_doc(self, obj: RobotKeywordCall):
         return open_link_in_modal(
             Keyword(obj.to_keyword.pk).get_docadmin_url(),

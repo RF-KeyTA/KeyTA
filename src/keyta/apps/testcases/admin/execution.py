@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.http import HttpRequest
+from django.utils.translation import gettext as _
 
 from apps.executions.admin import (
     ExecutionAdmin,
@@ -22,14 +23,14 @@ class TestSetupTeardownInline(SetupTeardownInline):
     model = TestCaseExecutionSetupTeardown
     extra = 0
     max_num = 2
-    verbose_name = 'Vor- oder Nachbereitung'
-    verbose_name_plural = 'Vorbereitung und Nachbereitung'
+    verbose_name = _('Vor- oder Nachbereitung')
+    verbose_name_plural = _('Vorbereitung und Nachbereitung')
 
     def formfield_for_dbfield(self, db_field, request, **kwargs):
         field = super().formfield_for_dbfield(db_field, request, **kwargs)
 
         if db_field.name == 'type':
-            field.label = 'Vor/Nachbereitung'
+            field.label = _('Vor/Nachbereitung')
             field.widget.choices = TestSetupTeardown.choices
 
         return field

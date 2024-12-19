@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.http import HttpRequest
+from django.utils.translation import gettext as _
 
 from apps.common.widgets import open_link_in_modal
 from apps.keywords.models import Keyword
@@ -14,7 +15,7 @@ from .execution_inline import ExecutionInline
 class KeywordExecutionInline(ExecutionInline):
     model = KeywordExecution
 
-    @admin.display(description='Werte')
+    @admin.display(description=_('Werte'))
     def args(self, obj):
         execution: KeywordExecution = obj
         kw_call = KeywordExecutionCall(execution.execution_keyword_call.pk)

@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib import admin
 from django.http import HttpRequest
+from django.utils.translation import gettext as _
 
 
 from apps.common.admin import TabularInlineWithDelete
@@ -40,7 +41,7 @@ SequenceForm = forms.modelform_factory(
             model=Sequence.systems.through,
             search_fields=['name__icontains'],
             attrs={
-                'data-placeholder': 'System hinzufügen',
+                'data-placeholder': _('System hinzufügen'),
             }
         ),
         'windows': Select2MultipleWidget(
@@ -48,7 +49,7 @@ SequenceForm = forms.modelform_factory(
             search_fields=['name__icontains'],
             dependent_fields={'systems': 'systems'},
             attrs={
-                'data-placeholder': 'Maske auswählen',
+                'data-placeholder': _('Maske auswählen'),
             }
         )
     }
@@ -63,10 +64,10 @@ class Resources(TabularInlineWithDelete):
     form = form_with_select(
         SequenceResourceImport,
         'resource',
-        'Ressource auswählen'
+        _('Ressource auswählen')
     )
-    verbose_name = 'Ressource'
-    verbose_name_plural = 'Ressourcen'
+    verbose_name = _('Ressource')
+    verbose_name_plural = _('Ressourcen')
 
     def has_change_permission(self, request: HttpRequest, obj) -> bool:
         return False
@@ -86,7 +87,7 @@ class SequenceAdmin(WindowKeywordAdmin):
 
         if db_field.name == 'systems':
             field.help_text = ''
-            field.label = 'Systeme'
+            field.label = _('Systeme')
             field.widget.can_add_related = False
 
         if db_field.name == 'windows':
