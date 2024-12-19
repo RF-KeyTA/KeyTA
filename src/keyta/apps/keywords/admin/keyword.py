@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.db.models.functions import Lower
+from django.utils.translation import gettext as _
 from django.http import HttpRequest, HttpResponseRedirect
 from django.utils.translation import gettext as _
 
