@@ -33,7 +33,7 @@ class Actions(admin.TabularInline):
         forms.ModelForm,
         ['keyword'],
         labels={
-            'keyword': 'Aktion'
+            'keyword': _('Aktion')
         }
     )
 
@@ -61,7 +61,7 @@ class Sequences(admin.TabularInline):
         forms.ModelForm,
         ['keyword'],
         labels={
-            'keyword': 'Sequenz'
+            'keyword': _('Sequenz')
         }
     )
 
@@ -89,7 +89,7 @@ class Variables(admin.TabularInline):
         forms.ModelForm,
         ['variable'],
         labels={
-            'variable': 'Referenzwert'
+            'variable': _('Referenzwert')
         }
     )
 
