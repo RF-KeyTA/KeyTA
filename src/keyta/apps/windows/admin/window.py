@@ -1,5 +1,6 @@
 import logging
 
+from django import forms
 from django.contrib import admin
 from django.db.models import QuerySet
 from django.http import HttpRequest, HttpResponseRedirect
@@ -26,6 +27,15 @@ class Actions(admin.TabularInline):
     verbose_name = 'Aktion'
     verbose_name_plural = 'Aktionen'
 
+    form = forms.modelform_factory(
+        Action.windows.through,
+        forms.ModelForm,
+        ['keyword'],
+        labels={
+            'keyword': 'Aktion'
+        }
+    )
+
     def get_queryset(self, request):
         queryset: QuerySet = super().get_queryset(request)
         return (
@@ -45,6 +55,15 @@ class Sequences(admin.TabularInline):
     verbose_name = 'Sequenz'
     verbose_name_plural = 'Sequenzen'
 
+    form = forms.modelform_factory(
+        Sequence.windows.through,
+        forms.ModelForm,
+        ['keyword'],
+        labels={
+            'keyword': 'Sequenz'
+        }
+    )
+
     def has_change_permission(self, request: HttpRequest, obj=None) -> bool:
         return False
 
@@ -63,6 +82,15 @@ class Variables(admin.TabularInline):
     max_num = 0
     verbose_name = 'Referenzwert'
     verbose_name_plural = 'Referenzwerte'
+
+    form = forms.modelform_factory(
+        Variable.windows.through,
+        forms.ModelForm,
+        ['variable'],
+        labels={
+            'variable': 'Referenzwert'
+        }
+    )
 
     def has_change_permission(self, request: HttpRequest, obj=None) -> bool:
         return False
