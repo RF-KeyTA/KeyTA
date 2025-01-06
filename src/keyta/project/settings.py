@@ -214,6 +214,7 @@ JAZZMIN_SETTINGS = {
         'executions.setupteardown',
         'executions.keywordexecutionsetup',
         'executions.testcaseexecutionsetupteardown',
+        'keywords.keyword',
         'keywords.keywordcall',
         'keywords.keyworddocumentation',
         'libraries.librarykeyword',
