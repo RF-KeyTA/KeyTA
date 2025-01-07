@@ -5,7 +5,7 @@ from django.utils.translation import gettext as _
 
 from apps.common.admin import BaseAdmin
 from apps.common.forms import form_with_select
-from apps.common.widgets import BaseSelect
+from apps.common.widgets import ModelSelect2AdminWidget
 from apps.windows.models import Window
 
 from .models import System
@@ -50,7 +50,12 @@ class SystemAdmin(BaseAdmin):
 
         if system_id := request.resolver_match.kwargs.get('object_id', None):
             if db_field.name == 'attach_to_system':
-                field.widget = BaseSelect(_('Aktion auswählen'))
+                field.widget = ModelSelect2AdminWidget(
+                    search_fields=['name__icontains'],
+                    attrs={
+                    'data-placeholder': _('Aktion auswählen'),
+                    'style': 'width: 95%'
+                })
                 field.queryset = (
                     field.queryset.actions()
                     .filter(systems__in=[system_id])
