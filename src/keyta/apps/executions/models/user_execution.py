@@ -2,14 +2,15 @@ from pathlib import Path
 
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.translation import gettext as _
 
 from apps.common.abc import AbstractBaseModel
 
 
 class UserExecution(AbstractBaseModel):
     class Result(models.TextChoices):
-        PASS = 'PASS', 'Erfolgreich'
-        FAIL = 'FAIL', 'Fehlgeschlagen'
+        PASS = 'PASS', _('Erfolgreich')
+        FAIL = 'FAIL', _('Fehlgeschlagen')
 
     execution = models.ForeignKey(
         'executions.Execution',
@@ -19,7 +20,7 @@ class UserExecution(AbstractBaseModel):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        verbose_name='Benutzer'
+        verbose_name=_('Benutzer')
     )
     result = models.CharField(
         max_length=255,
@@ -27,14 +28,14 @@ class UserExecution(AbstractBaseModel):
         null=True,
         default=None,
         blank=True,
-        verbose_name='Ergebnis'
+        verbose_name=_('Ergebnis')
     )
     log = models.CharField(
         max_length=255,
         null=True,
         default=None,
         blank=True,
-        verbose_name='Protokoll'
+        verbose_name=_('Protokoll')
     )
     running = models.BooleanField(default=False)
 
@@ -54,5 +55,5 @@ class UserExecution(AbstractBaseModel):
         self.save()
 
     class Meta:
-        verbose_name = 'Benutzer-bezogene Ausführung'
-        verbose_name_plural = 'Benutzer-bezogene Ausführungen'
+        verbose_name = _('Benutzer-bezogene Ausführung')
+        verbose_name_plural = _('Benutzer-bezogene Ausführungen')

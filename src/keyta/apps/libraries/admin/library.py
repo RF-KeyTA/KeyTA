@@ -4,6 +4,7 @@ from django.db.models import QuerySet
 from django.http import HttpRequest
 from django.urls import reverse
 from django.utils.safestring import mark_safe
+from django.utils.translation import gettext as _
 
 from apps.common.admin import BaseAdmin
 from apps.common.forms import OptionalArgumentFormSet
@@ -25,7 +26,7 @@ class Keywords(admin.TabularInline):
     extra = 0
     can_delete = False
     show_change_link = True
-    verbose_name_plural = 'Schlüsselwörter'
+    verbose_name_plural = _('Schlüsselwörter')
 
     def has_add_permission(self, request, obj=None):
         return False
@@ -54,7 +55,7 @@ class InitArguments(admin.TabularInline):
     def has_add_permission(self, request, obj=None):
         return False
 
-    @admin.display(description='zurücksetzen')
+    @admin.display(description=_('zurücksetzen'))
     def reset(self, obj: LibraryParameter):
         ref = '&ref=' + obj.library.get_admin_url() + obj.get_tab_url()
         url = obj.get_admin_url() + '?reset' + ref
@@ -74,14 +75,14 @@ class LibraryAdmin(BaseAdmin):
         if 'update' in request.GET:
             library = Library.objects.get(id=int(request.GET['lib_id']))
             import_library(library.name)
-            messages.info(request, f'Die Bibliothek "{library.name}" wurde erfolgreich aktualisiert')
+            messages.info(request, _('Die Bibliothek "{library_name}" wurde erfolgreich aktualisiert').format(library_name=library.name))
 
         for error in self.errors:
             messages.warning(request, error)
 
         return super().get_changelist(request, **kwargs)
 
-
+    @admin.display(description=_('Dokumentation'))
     def dokumentation(self, obj):
         return mark_safe(obj.documentation)
 
@@ -126,7 +127,7 @@ class LibraryAdmin(BaseAdmin):
         else:
             return super().save_form(request, form, change)
 
-    @admin.display(description='Aktualisierung')
+    @admin.display(description=_('Aktualisierung'))
     def update(self, obj):
         library: Library = obj
         version = None
@@ -137,7 +138,7 @@ class LibraryAdmin(BaseAdmin):
             try:
                 version = getattr(import_module(library.name), '__version__', None) 
             except ModuleNotFoundError as err:
-                self.errors.add(f'Eine Bibliothek ist nicht vorhanden: {err}')
+                self.errors.add(_('Eine Bibliothek ist nicht vorhanden: {err}').format(err=err))
 
         if version and version != library.version:
             return link(

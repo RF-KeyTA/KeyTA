@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.translation import gettext as _
 
 from apps.executions.models import (
     Execution,
@@ -15,7 +16,7 @@ class WindowKeywordAdmin(KeywordAdmin):
     def change_view(self, request, object_id, form_url="", extra_context=None):
         return super().changeform_view(request, object_id, form_url, extra_context)
 
-    @admin.display(description='Systeme')
+    @admin.display(description=_('Systeme'))
     def system_list(self, obj: Window):
         return list(obj.systems.values_list('name', flat=True))
 

@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.db.models.functions import Lower
 from django.http import HttpRequest, HttpResponse
+from django.utils.translation import gettext as _
 
 from adminsortable2.admin import SortableAdminBase
 
@@ -26,11 +27,11 @@ class TestCaseAdmin(SortableAdminBase, BaseAdmin):  # CloneModelAdminMixin
     list_display_links = ['name']
     list_filter = ['systems']
     search_fields = ['name']
-    search_help_text = 'Name'
+    search_help_text = _('Name')
     ordering = [Lower('name')]
 
 
-    @admin.display(description='Systeme')
+    @admin.display(description=_('Systeme'))
     def system_list(self, obj: TestCase):
         return list(obj.systems.values_list('name', flat=True))
 
@@ -68,7 +69,7 @@ class TestCaseAdmin(SortableAdminBase, BaseAdmin):  # CloneModelAdminMixin
         field = super().formfield_for_dbfield(db_field, request, **kwargs)
 
         if db_field.name == 'systems':
-            field.widget = BaseSelectMultiple('Systeme hinzufügen')
+            field.widget = BaseSelectMultiple(_('Systeme hinzufügen'))
 
         return field
 

@@ -1,6 +1,7 @@
 from typing import Any
 
 from django.core.management.base import BaseCommand
+from django.utils.translation import gettext as _
 
 from apps.rf_import.import_library import import_library
 
@@ -16,4 +17,4 @@ class Command(BaseCommand):
     def handle(self, *args: Any, **options: Any) -> None:
         library = options["library"][0]
         import_library(library)
-        print(f'The library {library} was successfully imported.')
+        print(_('Die Bibliothek "{library}" wurde erfolgreich importiert.').format(library=library))

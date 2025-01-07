@@ -3,18 +3,19 @@ from xml.etree import ElementTree
 
 from django.db import models
 from django.db.models import Q
+from django.utils.translation import gettext as _
 
 from apps.common.abc import AbstractBaseModel
 from apps.rf_export.keywords import RFKeyword
 
 
 class KeywordType(models.TextChoices):
-    LIBRARY = 'LIBRARY', 'Schlüsselwort aus Bibliothek'
-    RESOURCE = 'RESOURCE', 'Schlüsselwort aus Ressource'
+    LIBRARY = 'LIBRARY', _('Schlüsselwort aus Bibliothek')
+    RESOURCE = 'RESOURCE', _('Schlüsselwort aus Ressource')
 
     # Customization #
-    ACTION = 'ACTION', 'Aktion'
-    SEQUENCE = 'SEQUENCE', 'Sequenz'
+    ACTION = 'ACTION', _('Aktion')
+    SEQUENCE = 'SEQUENCE', _('Sequenz')
 
 
 class Keyword(AbstractBaseModel):
@@ -23,40 +24,40 @@ class Keyword(AbstractBaseModel):
         null=True,
         on_delete=models.CASCADE,
         related_name='keywords',
-        verbose_name='Bibliothek'
+        verbose_name=_('Bibliothek')
     )
     resource = models.ForeignKey(
         'resources.Resource',
         null=True,
         on_delete=models.CASCADE,
         related_name='keywords',
-        verbose_name='Ressource'
+        verbose_name=_('Ressource')
     )
-    name = models.CharField(max_length=255, verbose_name='Name')
+    name = models.CharField(max_length=255, verbose_name=_('Name'))
     short_doc = models.CharField(max_length=255, blank=True,
-                                 verbose_name='Beschreibung')
-    args_doc = models.TextField(blank=True, verbose_name='Parameter')
-    documentation = models.TextField(blank=True, verbose_name='Dokumentation')
+                                 verbose_name=_('Beschreibung'))
+    args_doc = models.TextField(blank=True, verbose_name=_('Parameters'))
+    documentation = models.TextField(blank=True, verbose_name=_('Dokumentation'))
     type = models.CharField(max_length=255, choices=KeywordType.choices)
 
     # ---Customization--
     everywhere = models.BooleanField(
         default=False,
-        verbose_name='In allen Masken'
+        verbose_name=_('In allen Masken')
     )
     setup_teardown = models.BooleanField(
         default=False,
-        verbose_name='Vor-/Nachbereitung'
+        verbose_name=_('Vor-/Nachbereitung')
     )
     windows = models.ManyToManyField(
         'windows.Window',
         related_name='keywords',
-        verbose_name='Maske'
+        verbose_name=_('Maske')
     )
     systems = models.ManyToManyField(
         'systems.System',
         related_name='keywords',
-        verbose_name='Systeme'
+        verbose_name=_('Systeme')
     )
 
     def __str__(self):

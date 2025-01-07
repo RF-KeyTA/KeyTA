@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.translation import gettext as _
 
 from apps.common.abc import AbstractBaseModel
 from apps.keywords.models.keyword import KeywordType
@@ -31,14 +32,14 @@ class Action(WindowKeyword):
 
     class Meta:
         proxy = True
-        verbose_name = 'Aktion'
-        verbose_name_plural = 'Aktionen'
+        verbose_name = _('Aktion')
+        verbose_name_plural = _('Aktionen')
 
 
 class ActionDocumentation(Action):
     class Meta:
         proxy = True
-        verbose_name = 'Aktion Dokumentation'
+        verbose_name = _('Aktion Dokumentation')
 
 
 class ActionWindow(AbstractBaseModel, Action.windows.through):
@@ -48,5 +49,5 @@ class ActionWindow(AbstractBaseModel, Action.windows.through):
     class Meta:
         auto_created = True
         proxy = True
-        verbose_name = 'Aktion Maske'
-        verbose_name_plural = 'Aktion Masken'
+        verbose_name = _('Aktion Maske')
+        verbose_name_plural = _('Aktion Masken')

@@ -2,6 +2,7 @@ from typing import Optional
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Q
+from django.utils.translation import gettext as _
 
 from apps.common.abc import AbstractBaseModel
 from apps.keywords.models import (
@@ -21,8 +22,8 @@ from ..errors import ValidationError
 
 
 class ExecutionType(models.TextChoices):
-    KEYWORD = 'KEYWORD_EXECUTION', 'Schlüsselwort Ausführung'
-    TESTCASE = 'TESTCASE_EXECUTION', 'Testfall Ausführung'
+    KEYWORD = 'KEYWORD_EXECUTION', _('Schlüsselwort Ausführung')
+    TESTCASE = 'TESTCASE_EXECUTION', _('Testfall Ausführung')
 
 
 class Execution(AbstractBaseModel):
@@ -140,5 +141,5 @@ class Execution(AbstractBaseModel):
                  Q(testcase__isnull=False))
             )
         ]
-        verbose_name = 'Ausführung'
-        verbose_name_plural = 'Ausführung'
+        verbose_name = _('Ausführung')
+        verbose_name_plural = _('Ausführung')

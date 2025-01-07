@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.translation import gettext as _
 
 from .library_parameter import LibraryParameter
 
@@ -33,5 +34,5 @@ class LibraryImportParameter(models.Model):
         return self.library_parameter.name
 
     class Meta:
-        verbose_name = 'Parameter'
-        verbose_name_plural = 'Parameter'
+        verbose_name = _('Parameter')
+        verbose_name_plural = _('Parameters')

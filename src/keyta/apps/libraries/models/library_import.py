@@ -2,6 +2,7 @@ from typing import Optional
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Q
+from django.utils.translation import gettext as _
 
 from apps.common.abc import AbstractBaseModel
 from apps.rf_export.settings import RFLibraryImport
@@ -14,8 +15,8 @@ __all__ = ['LibraryImport', 'LibraryImportType']
 
 
 class LibraryImportType(models.TextChoices):
-    FROM_EXECUTION = 'FROM_EXECUTION', 'Aus einer Ausführung'
-    FROM_ACTION = 'FROM_ACTION', 'Aus einer Aktion'
+    FROM_EXECUTION = 'FROM_EXECUTION', _('Aus einer Ausführung')
+    FROM_ACTION = 'FROM_ACTION', _('Aus einer Aktion')
 
 
 class LibraryImport(AbstractBaseModel):
@@ -38,7 +39,7 @@ class LibraryImport(AbstractBaseModel):
     library = models.ForeignKey(
         Library,
         on_delete=models.CASCADE,
-        verbose_name='Bibliothek'
+        verbose_name=_('Bibliothek')
     )
     type = models.CharField(max_length=255, choices=LibraryImportType.choices)
 
@@ -88,8 +89,8 @@ class LibraryImport(AbstractBaseModel):
     objects = QuerySet.as_manager()
 
     class Meta:
-        verbose_name = 'Bibliothek-Import'
-        verbose_name_plural = 'Bibliothek-Imports'
+        verbose_name = _('Bibliothek-Import')
+        verbose_name_plural = _('Bibliothek-Imports')
         constraints = [
             models.CheckConstraint(
                 name='library_import_sum_type',

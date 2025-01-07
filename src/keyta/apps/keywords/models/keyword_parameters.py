@@ -2,6 +2,7 @@ import re
 
 from django.db import models
 from django.db.models import Q
+from django.utils.translation import gettext as _
 
 from apps.common.abc import AbstractBaseModel
 from .keyword import Keyword
@@ -12,8 +13,8 @@ from .keywordcall_parameter_source import (
 
 
 class KeywordParameterType(models.TextChoices):
-    ARG = 'ARG', 'Positional Argument'
-    KWARG = 'KWARG', 'Optional Argument'
+    ARG = 'ARG', _('Positional Argument')
+    KWARG = 'KWARG', _('Optional Argument')
 
 
 class KeywordParameter(AbstractBaseModel):
@@ -22,14 +23,14 @@ class KeywordParameter(AbstractBaseModel):
         on_delete=models.CASCADE,
         related_name='parameters'
     )
-    name = models.CharField(max_length=255, verbose_name='Name')
+    name = models.CharField(max_length=255, verbose_name=_('Name'))
     position = models.PositiveIntegerField(null=True, default=None)
     default_value = models.CharField(
         max_length=255,
         blank=True,
         null=True,
         default=None,
-        verbose_name='Standardwert'
+        verbose_name=_('Standardwert')
     )
     is_list = models.BooleanField(default=False)
     type = models.CharField(max_length=255, choices=KeywordParameterType.choices)
@@ -116,5 +117,5 @@ class KeywordParameter(AbstractBaseModel):
                  Q(default_value__isnull=False))
             )
         ]
-        verbose_name = 'Parameter'
-        verbose_name_plural = 'Parameter'
+        verbose_name = _('Parameter')
+        verbose_name_plural = _('Parameters')

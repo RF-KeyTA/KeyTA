@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.db.models import Min
 from django.db.models.functions import Lower
+from django.utils.translation import gettext as _
 
 from apps.common.admin import BaseDocumentationAdmin
 from apps.actions.models import RobotKeywordCall
@@ -13,7 +14,7 @@ class Uses(admin.TabularInline):
     fields = ['from_keyword']
     readonly_fields = ['from_keyword']
     extra = 0
-    verbose_name_plural = 'Verwendungen'
+    verbose_name_plural = _('Verwendungen')
     can_delete = False
     show_change_link = True
 
@@ -60,7 +61,7 @@ class LibraryKeywordAdmin(BaseDocumentationAdmin):
     list_filter = ['library']
     list_display_links = ['name']
     search_fields = ['name']
-    search_help_text = 'Name'
+    search_help_text = _('Name')
     ordering = ['library__name', 'name']
 
     inlines = [

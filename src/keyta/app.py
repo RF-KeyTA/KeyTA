@@ -1,3 +1,4 @@
+import os
 import subprocess
 from os.path import realpath
 from pathlib import Path
@@ -41,18 +42,6 @@ class DjangoServer:
         return subprocess.Popen(['cmd', f'/C pushd {DJANGO_DIR} && python manage.py runserver'])
 
 
-def exit_app(icon: Icon, query): # type: ignore
-    """
-    Callback for exiting KeyTA
-
-    :param icon: The object of the tray icon
-    :param query: The text that is displayed on the pressed menu item
-    """
-
-    icon.stop()
-    django_server.terminate()
-
-
 def exec_command(command: str, working_dir: Path=CWD):
     return subprocess.run(command, shell=True, cwd=working_dir, stdout=subprocess.PIPE)
 
@@ -69,37 +58,59 @@ def open_url(url):
     exec_command(f'start {url}')
 
 
-def run():
-    rf_server_thread.start()
-    icon_thread.start()
+class App:
+    def __init__(self, texts: dict[str, str]):
+        self.django_server = DjangoServer().run()
+        robot_server = RobotRemoteServer(ROBOT_REMOTE_HOST, ROBOT_REMOTE_PORT)
+        # The RF logger only works if the current thread is called MainThread
+        self.rf_server_thread = DaemonThread(robot_server, name='MainThread')
 
-    try:
-        django_server.wait()
-    except KeyboardInterrupt:
-        django_server.terminate()
-
-
-django_server = DjangoServer().run()
-robot_server = RobotRemoteServer(ROBOT_REMOTE_HOST, ROBOT_REMOTE_PORT)
-# The RF logger only works if the current thread is called MainThread
-rf_server_thread = DaemonThread(robot_server, name='MainThread')
-
-img = Image.open(CWD / 'icon.png')
-img_cropped = img.crop(img.getbbox())
-tray_icon = Icon(
-    name='KeyTA',
-    title='KeyTA',
-    icon=img_cropped,
-    menu=Menu(
-        MenuItem(
-            'KeyTA öffnen',
-            open_keyta,
-            default=True
-        ),
-        MenuItem(
-            'KeyTA beenden',
-            exit_app
+        img = Image.open(CWD / 'icon.png')
+        img_cropped = img.crop(img.getbbox())
+        tray_icon = Icon(
+            name='KeyTA',
+            title='KeyTA',
+            icon=img_cropped,
+            menu=Menu(
+                MenuItem(
+                    texts['open_keyta'],
+                    open_keyta,
+                    default=True
+                ),
+                MenuItem(
+                    texts['terminate_keyta'],
+                    lambda icon, query: self.terminate(icon)
+                )
+            )
         )
-    )
-)
-icon_thread = DaemonThread(tray_icon)
+        self.icon_thread = DaemonThread(tray_icon)
+
+    def run(self):
+        self.rf_server_thread.start()
+        self.icon_thread.start()
+
+        try:
+            self.django_server.wait()
+        except KeyboardInterrupt:
+            self.django_server.terminate()
+
+    def terminate(self, icon: Icon): # type: ignore
+        icon.stop()
+        self.django_server.terminate()
+
+
+def keyta():
+    texts = {
+        'open_keyta': 'Open KeyTA',
+        'terminate_keyta': 'Terminate KeyTA'
+    }
+    App(texts).run()
+
+
+def keyta_de():
+    os.environ['KEYTA_LANG'] = 'de'
+    texts = {
+        'open_keyta': 'KeyTA starten',
+        'terminate_keyta': 'KeyTA beenden'
+    }
+    App(texts).run()

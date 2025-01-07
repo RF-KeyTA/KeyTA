@@ -2,6 +2,7 @@ from typing import Optional
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Q
+from django.utils.translation import gettext as _
 
 from apps.common.abc import AbstractBaseModel
 from apps.rf_export.settings import RFResourceImport
@@ -13,8 +14,8 @@ __all__ = ['ResourceImport', 'ResourceImportType']
 
 
 class ResourceImportType(models.TextChoices):
-    FROM_EXECUTION = 'FROM_EXECUTION', 'Aus einer Ausführung'
-    FROM_SEQUENCE = 'FROM_SEQUENCE', 'Aus einer Sequenz'
+    FROM_EXECUTION = 'FROM_EXECUTION', _('Aus einer Ausführung')
+    FROM_SEQUENCE = 'FROM_SEQUENCE', _('Aus einer Sequenz')
 
 
 class ResourceImport(AbstractBaseModel):
@@ -37,7 +38,7 @@ class ResourceImport(AbstractBaseModel):
     resource = models.ForeignKey(
         Resource,
         on_delete=models.CASCADE,
-        verbose_name='Ressource'
+        verbose_name=_('Ressource')
     )
     type = models.CharField(max_length=255, choices=ResourceImportType.choices)
 
@@ -70,8 +71,8 @@ class ResourceImport(AbstractBaseModel):
     objects = QuerySet.as_manager()
 
     class Meta:
-        verbose_name = 'Ressource-Import'
-        verbose_name_plural = 'Ressource-Imports'
+        verbose_name = _('Ressource-Import')
+        verbose_name_plural = _('Ressource-Imports')
         constraints = [
             models.CheckConstraint(
                 name='resource_import_sum_type',

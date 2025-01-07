@@ -1,3 +1,5 @@
+from django.utils.translation import gettext as _
+
 from apps.keywords.models import KeywordParameter, KeywordParameterType
 
 
@@ -10,5 +12,5 @@ class WindowKeywordParameter(KeywordParameter):
 
     class Meta:
         proxy = True
-        verbose_name = 'Parameter'
-        verbose_name_plural = 'Parameter'
+        verbose_name = _('Parameter')
+        verbose_name_plural = _('Parameters')

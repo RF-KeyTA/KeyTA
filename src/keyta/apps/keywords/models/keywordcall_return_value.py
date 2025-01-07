@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.translation import gettext as _
 
 from .keywordcall_parameter_source import (
     KeywordCallParameterSource,
@@ -33,7 +34,7 @@ class KeywordCallReturnValue(models.Model):
         if self.return_value:
             return str(self.return_value)
 
-        return 'Kein Rückgabewert'
+        return _('Kein Rückgabewert')
 
     @property
     def is_set(self):
@@ -54,4 +55,4 @@ class KeywordCallReturnValue(models.Model):
 
     class Meta:
         constraints = []
-        verbose_name = 'Rückgabewert'
+        verbose_name = _('Rückgabewert')

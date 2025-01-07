@@ -4,6 +4,7 @@ from django import forms
 from django.contrib import admin
 from django.db.models import QuerySet
 from django.http import HttpRequest, HttpResponseRedirect
+from django.utils.translation import gettext as _
 
 from apps.actions.models import Action
 from apps.common.admin.base_admin import (
@@ -24,15 +25,15 @@ class Actions(admin.TabularInline):
     model = Action.windows.through
     extra = 0
     max_num = 0
-    verbose_name = 'Aktion'
-    verbose_name_plural = 'Aktionen'
+    verbose_name = _('Aktion')
+    verbose_name_plural = _('Aktionen')
 
     form = forms.modelform_factory(
         Action.windows.through,
         forms.ModelForm,
         ['keyword'],
         labels={
-            'keyword': 'Aktion'
+            'keyword': _('Aktion')
         }
     )
 
@@ -52,15 +53,15 @@ class Sequences(admin.TabularInline):
     model = Sequence.windows.through
     extra = 0
     max_num = 0
-    verbose_name = 'Sequenz'
-    verbose_name_plural = 'Sequenzen'
+    verbose_name = _('Sequenz')
+    verbose_name_plural = _('Sequenzen')
 
     form = forms.modelform_factory(
         Sequence.windows.through,
         forms.ModelForm,
         ['keyword'],
         labels={
-            'keyword': 'Sequenz'
+            'keyword': _('Sequenz')
         }
     )
 
@@ -80,15 +81,15 @@ class Variables(admin.TabularInline):
     model = Variable.windows.through
     extra = 0
     max_num = 0
-    verbose_name = 'Referenzwert'
-    verbose_name_plural = 'Referenzwerte'
+    verbose_name = _('Referenzwert')
+    verbose_name_plural = _('Referenzwerte')
 
     form = forms.modelform_factory(
         Variable.windows.through,
         forms.ModelForm,
         ['variable'],
         labels={
-            'variable': 'Referenzwert'
+            'variable': _('Referenzwert')
         }
     )
 
@@ -103,9 +104,9 @@ class WindowAdmin(BaseAdminWithDoc):
     list_filter = ['systems']
     ordering = ['name']
     search_fields = ['name']
-    search_help_text = 'Name'
+    search_help_text = _('Name')
 
-    @admin.display(description='Systeme')
+    @admin.display(description=_('Systeme'))
     def system_list(self, obj: Window):
         return list(obj.systems.values_list('name', flat=True))
 
@@ -113,7 +114,7 @@ class WindowAdmin(BaseAdminWithDoc):
     form = form_with_select(
         Window,
         'systems',
-        'System hinzufügen',
+        _('System hinzufügen'),
         True
     )
     inlines = [

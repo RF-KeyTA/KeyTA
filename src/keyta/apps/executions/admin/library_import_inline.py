@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.db.models import QuerySet
+from django.utils.translation import gettext as _
 
 from apps.common.forms import OptionalArgumentFormSet
 from apps.common.widgets import open_link_in_modal
@@ -14,9 +15,9 @@ class LibraryImportsInline(admin.TabularInline):
     extra = 1
     max_num = 1
     can_delete = False
-    verbose_name_plural = 'Bibliotheken'
+    verbose_name_plural = _('Bibliotheken')
 
-    @admin.display(description='Einstellungen')
+    @admin.display(description=_('Einstellungen'))
     def args(self, obj: ExecutionLibraryImport):
         if obj.kwargs.exists():
             return open_link_in_modal(
@@ -34,7 +35,7 @@ class LibraryImportParameters(admin.TabularInline):
     readonly_fields = ['name']
     extra = 0
     max_num = 0
-    verbose_name_plural = 'Einstellungen'
+    verbose_name_plural = _('Einstellungen')
     can_delete = False
 
     def get_queryset(self, request):
@@ -51,9 +52,9 @@ class ExecutionLibraryImportAdmin(admin.ModelAdmin):
     readonly_fields = ['library_init_doc']
     inlines = [LibraryImportParameters]
 
-    @admin.display(description='Dokumentation')
+    @admin.display(description=_('Dokumentation'))
     def library_init_doc(self, obj: ExecutionLibraryImport):
         return open_link_in_modal(
             obj.library.get_admin_url('libraryinitdocumentation'),
-            obj.library.name + ' Einstellungen'
+            obj.library.name + _(' Einstellungen')
         )

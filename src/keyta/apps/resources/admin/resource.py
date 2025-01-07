@@ -5,6 +5,7 @@ from django import forms
 from django.contrib import admin
 from django.http import HttpRequest
 from django.utils.safestring import mark_safe
+from django.utils.translation import gettext as _
 
 from apps.common.admin import BaseAdmin
 from apps.resources.models import Resource, ResourceKeyword
@@ -18,7 +19,7 @@ class Keywords(admin.TabularInline):
     extra = 0
     can_delete = False
     show_change_link = True
-    verbose_name_plural = 'Schlüsselwörter'
+    verbose_name_plural = _('Schlüsselwörter')
 
     def has_add_permission(self, request, obj=None):
         return False
@@ -33,6 +34,7 @@ class ResourceAdmin(BaseAdmin):
     ordering = ['name']
     inlines = [Keywords]
 
+    @admin.display(description=_('Dokumentation'))
     def dokumentation(self, obj):
         return mark_safe(obj.documentation)
 

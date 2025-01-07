@@ -2,6 +2,7 @@ import re
 from xml.etree import ElementTree
 
 from django.db import models
+from django.utils.translation import gettext as _
 
 from apps.common.abc import AbstractBaseModel
 from apps.rf_export.testcases import RFTestCase
@@ -9,19 +10,19 @@ from apps.systems.models import System
 
 
 class TestCase(AbstractBaseModel):
-    name = models.CharField(max_length=255, unique=True, verbose_name='Name')
-    documentation = models.TextField(blank=True, verbose_name='Dokumentation')
+    name = models.CharField(max_length=255, unique=True, verbose_name=_('Name'))
+    documentation = models.TextField(blank=True, verbose_name=_('Dokumentation'))
 
     # Customization #
     description = models.CharField(
         max_length=255,
         blank=True,
-        verbose_name='Beschreibung'
+        verbose_name=_('Beschreibung')
     )
     systems = models.ManyToManyField(
         System,
         related_name='testcases',
-        verbose_name='Systeme'
+        verbose_name=_('Systeme')
     )
 
 
@@ -68,5 +69,5 @@ class TestCase(AbstractBaseModel):
         }
 
     class Meta:
-        verbose_name = 'Testfall'
-        verbose_name_plural = 'Testfälle'
+        verbose_name = _('Testfall')
+        verbose_name_plural = _('Testfälle')
