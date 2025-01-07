@@ -6,7 +6,7 @@ from django.utils.translation import gettext as _
 
 from apps.common.admin import TabularInlineWithDelete
 from apps.common.forms import form_with_select
-from apps.common.widgets import ModelSelect2MultipleAdminWidget, ModelSelect2AdminWidget
+from apps.common.widgets import ModelSelect2MultipleAdminWidget
 from apps.executions.admin import KeywordExecutionInline
 from apps.keywords.admin import KeywordDocumentationAdmin
 from apps.windows.admin import (
@@ -28,6 +28,10 @@ class Execution(KeywordExecutionInline):
     model = SequenceExecution
 
 
+class Select2MultipleWidget(ModelSelect2MultipleAdminWidget):
+    allow_multiple_selected = False
+
+
 SequenceForm = forms.modelform_factory(
     Sequence,
     forms.ModelForm,
@@ -40,7 +44,7 @@ SequenceForm = forms.modelform_factory(
                 'data-placeholder': _('System hinzufügen'),
             }
         ),
-        'windows': ModelSelect2AdminWidget(
+        'windows': Select2MultipleWidget(
             model=Sequence.windows.through,
             search_fields=['name__icontains'],
             dependent_fields={'systems': 'systems'},
