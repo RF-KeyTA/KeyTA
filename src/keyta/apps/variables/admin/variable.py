@@ -27,7 +27,10 @@ class Windows(admin.TabularInline):
     form = form_with_select(
         Variable.windows.through,
         'window',
-        _('Maske auswählen')
+        _('Maske auswählen'),
+        labels={
+            'window': _('Maske')
+        }
     )
 
     def get_formset(self, request, obj=None, **kwargs):
@@ -63,7 +66,7 @@ class VariableAdmin(BaseAdmin):
         Variable,
         'systems',
         _('System hinzufügen'),
-        True
+        select_many=True
     )
     inlines = [Values]
 

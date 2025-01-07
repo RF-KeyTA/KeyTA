@@ -115,7 +115,7 @@ class WindowAdmin(BaseAdminWithDoc):
         Window,
         'systems',
         _('System hinzufügen'),
-        True
+        select_many=True
     )
     inlines = [
         Actions,

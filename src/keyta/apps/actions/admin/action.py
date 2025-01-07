@@ -44,7 +44,10 @@ class Windows(TabularInlineWithDelete):
     form = form_with_select(
         ActionWindow,
         'window',
-        'Maske auswählen'
+        'Maske auswählen',
+        labels={
+            'window': _('Maske')
+        }
     )
 
     def get_formset(self, request, obj=None, **kwargs):
@@ -83,7 +86,7 @@ class ActionAdmin(WindowKeywordAdmin):
         Action,
         'systems',
         _('System auswählen'),
-        True
+        select_many=True
     )
     inlines = [
         Libraries,

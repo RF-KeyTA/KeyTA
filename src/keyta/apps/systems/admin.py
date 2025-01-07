@@ -1,3 +1,4 @@
+from django import forms
 from django.contrib import admin, messages
 from django.http import HttpRequest
 from django.utils.translation import gettext as _
@@ -18,6 +19,15 @@ class Windows(admin.TabularInline):
     show_change_link = True
     verbose_name = _('Maske')
     verbose_name_plural = _('Masken')
+
+    form = forms.modelform_factory(
+        Window.systems.through,
+        forms.ModelForm,
+        ['window'],
+        labels={
+            'window': _('Maske')
+        }
+    )
 
     def has_change_permission(self, request, obj=None):
         return False

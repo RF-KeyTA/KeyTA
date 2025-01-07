@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-07 17:03+0100\n"
+"POT-Creation-Date: 2025-01-07 17:50+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,39 +18,41 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: .\apps\actions\admin\action.py:41 .\apps\keywords\models\keyword.py:55
-#: .\apps\keywords\models\keywordcall.py:87 .\apps\systems\admin.py:19
-#: .\apps\variables\admin\variable.py:24 .\apps\windows\models\window.py:46
+#: .\apps\actions\admin\action.py:41 .\apps\actions\admin\action.py:49
+#: .\apps\keywords\models\keyword.py:55
+#: .\apps\keywords\models\keywordcall.py:87 .\apps\systems\admin.py:20
+#: .\apps\systems\admin.py:28 .\apps\variables\admin\variable.py:24
+#: .\apps\variables\admin\variable.py:32 .\apps\windows\models\window.py:46
 msgid "Maske"
 msgstr "Window"
 
-#: .\apps\actions\admin\action.py:42 .\apps\systems\admin.py:20
+#: .\apps\actions\admin\action.py:42 .\apps\systems\admin.py:21
 #: .\apps\variables\admin\variable.py:25 .\apps\variables\models\variable.py:37
 #: .\apps\windows\apps.py:8 .\apps\windows\models\window.py:47
 msgid "Masken"
 msgstr "Windows"
 
-#: .\apps\actions\admin\action.py:71 .\apps\systems\admin.py:35
+#: .\apps\actions\admin\action.py:74 .\apps\systems\admin.py:45
 msgid "Bibliothek auswählen"
 msgstr "Select a Library"
 
-#: .\apps\actions\admin\action.py:73 .\apps\keywords\models\keyword.py:27
+#: .\apps\actions\admin\action.py:76 .\apps\keywords\models\keyword.py:27
 #: .\apps\libraries\models\library.py:39
 #: .\apps\libraries\models\library_import.py:42
 msgid "Bibliothek"
 msgstr "Library"
 
-#: .\apps\actions\admin\action.py:74
+#: .\apps\actions\admin\action.py:77
 #: .\apps\executions\admin\library_import_inline.py:18
 #: .\apps\libraries\apps.py:8 .\apps\libraries\models\library.py:40
 msgid "Bibliotheken"
 msgstr "Libraries"
 
-#: .\apps\actions\admin\action.py:85
+#: .\apps\actions\admin\action.py:88
 msgid "System auswählen"
 msgstr "Select a System"
 
-#: .\apps\actions\admin\action.py:143
+#: .\apps\actions\admin\action.py:146
 msgid "Die Aktion muss einer Maske zugeordnet werden"
 msgstr "The action must be assigned to a window"
 
@@ -195,7 +197,7 @@ msgid "Ressourcen"
 msgstr "Resources"
 
 #: .\apps\executions\admin\setup_teardown_inline.py:85
-#: .\apps\sequences\admin\steps_inline.py:64 .\apps\systems\admin.py:43
+#: .\apps\sequences\admin\steps_inline.py:64 .\apps\systems\admin.py:53
 msgid "Aktion auswählen"
 msgstr "Select an Action"
 
@@ -297,7 +299,7 @@ msgstr "User-related executions"
 #: .\apps\resources\admin\resource_keyword.py:13
 #: .\apps\resources\models\resource.py:6 .\apps\systems\models.py:21
 #: .\apps\testcases\admin\testcase.py:30 .\apps\testcases\models\testcase.py:13
-#: .\apps\variables\admin\variable.py:49 .\apps\variables\models\variable.py:12
+#: .\apps\variables\admin\variable.py:52 .\apps\variables\models\variable.py:12
 #: .\apps\variables\models\variable.py:57 .\apps\windows\admin\window.py:107
 #: .\apps\windows\models\window.py:15
 msgid "Name"
@@ -395,7 +397,7 @@ msgstr "In all Windows"
 #: .\apps\keywords\models\keyword.py:60 .\apps\sequences\admin\sequence.py:90
 #: .\apps\systems\apps.py:8 .\apps\systems\models.py:35
 #: .\apps\testcases\admin\testcase.py:34 .\apps\testcases\models\testcase.py:25
-#: .\apps\variables\admin\variable.py:52 .\apps\variables\models\variable.py:32
+#: .\apps\variables\admin\variable.py:55 .\apps\variables\models\variable.py:32
 #: .\apps\windows\admin\window.py:109 .\apps\windows\admin\window_keyword.py:19
 #: .\apps\windows\models\window.py:13
 msgid "Systeme"
@@ -457,6 +459,7 @@ msgid "Parameter-Referenzen"
 msgstr "Parameter references"
 
 #: .\apps\keywords\models\keywordcall_parameters.py:37
+#: .\apps\libraries\models\library_import_parameter.py:22
 #: .\apps\variables\models\variable.py:58
 #: .\apps\variables\models\variable.py:85
 msgid "Wert"
@@ -553,7 +556,7 @@ msgstr "Documentation of the resource keyword"
 msgid "Diese Bibliothek hat keine Einstellungen"
 msgstr "This library has no settings"
 
-#: .\apps\sequences\admin\sequence.py:44 .\apps\variables\admin\variable.py:65
+#: .\apps\sequences\admin\sequence.py:44 .\apps\variables\admin\variable.py:68
 #: .\apps\windows\admin\window.py:117
 msgid "System hinzufügen"
 msgstr "Add a System"
@@ -580,7 +583,7 @@ msgstr "Sequences"
 msgid "Sequenz Dokumentation"
 msgstr "Sequence Documentation"
 
-#: .\apps\systems\admin.py:82
+#: .\apps\systems\admin.py:92
 msgid "Die Aktion zur Anbindung an das System muss gepflegt werden"
 msgstr "The action for connecting to the system must be maintained"
 
@@ -628,11 +631,11 @@ msgstr "Select a Sequence"
 msgid "Testfall"
 msgstr "Test Case"
 
-#: .\apps\variables\admin\variable.py:57
+#: .\apps\variables\admin\variable.py:60
 msgid "System unabhängig"
 msgstr "System-independent"
 
-#: .\apps\variables\admin\variable.py:109
+#: .\apps\variables\admin\variable.py:112
 msgid "Der Referenzwert muss einer Maske zugeordnet werden"
 msgstr "The reference value must be assigned to a window"
 
@@ -778,11 +781,17 @@ msgid ""
 "Die Ausführung ist nur möglich, wenn das KeyTA-Symbol in der Taskleiste "
 "angezeigt wird."
 msgstr ""
-"The execution can only happen when the KeyTA icon is shown in the taskbar."
+"The execution can only start when the KeyTA icon is shown in the taskbar."
 
 #: .\templates\admin\execution\tabular.html:108
 msgid "Robot Framework konnte nicht ausgeführt werden."
 msgstr "Robot Framework could not be executed."
+
+#: .\templates\admin\execution\tabular.html:151
+#, fuzzy
+#| msgid "Robot Framework konnte nicht ausgeführt werden."
+msgid "Robot Framework wird ausgeführt"
+msgstr "Robot Framework is running."
 
 #: .\templates\admin\search_form.html:34
 #, python-format

@@ -19,7 +19,7 @@ class LibraryImportParameter(models.Model):
         LibraryParameter,
         on_delete=models.CASCADE
     )
-    value = models.CharField(max_length=255)
+    value = models.CharField(max_length=255, verbose_name=_('Wert'))
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
