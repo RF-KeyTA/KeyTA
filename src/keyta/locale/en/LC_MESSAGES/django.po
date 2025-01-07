@@ -218,11 +218,11 @@ msgstr "The parameters of the connection to the running system are incomplete"
 
 #: .\apps\executions\errors.py:27
 msgid "Die Parameter der Testvorbereitung sind unvollständig"
-msgstr "The test preparation parameters are incomplete"
+msgstr "The test setup parameters are incomplete"
 
 #: .\apps\executions\errors.py:31
 msgid "Die Parameter der Testnachbereitung sind unvollständig"
-msgstr "The test post-processing parameters are incomplete"
+msgstr "The test teardown parameters are incomplete"
 
 #: .\apps\executions\errors.py:35
 msgid "Die Anbindung ans laufende System muss gepflegt werden"
@@ -266,7 +266,7 @@ msgstr "Keyword call"
 #: .\apps\executions\models\setup_teardown.py:28
 #: .\apps\keywords\models\keyword.py:50 .\apps\variables\models\variable.py:22
 msgid "Vor-/Nachbereitung"
-msgstr "Preparation/post-processing"
+msgstr "Setup/Teardown"
 
 #: .\apps\executions\models\user_execution.py:12
 msgid "Erfolgreich"
@@ -406,19 +406,19 @@ msgstr "Default value"
 
 #: .\apps\keywords\models\keywordcall.py:19
 msgid "Testvorbereitung"
-msgstr "Test preparation"
+msgstr "Test setup"
 
 #: .\apps\keywords\models\keywordcall.py:20
 msgid "Testnachbereitung"
-msgstr "Test post-processing"
+msgstr "Test teardown"
 
 #: .\apps\keywords\models\keywordcall.py:24
 msgid "Suitevorbereitung"
-msgstr "Suite preparation"
+msgstr "Suite setup"
 
 #: .\apps\keywords\models\keywordcall.py:25
 msgid "Suitenachbereitung"
-msgstr "Suite post-processing"
+msgstr "Suite teardown"
 
 #: .\apps\keywords\models\keywordcall.py:31
 msgid "Testschritt"
@@ -591,15 +591,15 @@ msgstr "System"
 
 #: .\apps\testcases\admin\execution.py:26
 msgid "Vor- oder Nachbereitung"
-msgstr "Preparation or post-processing"
+msgstr "Setup or teardown"
 
 #: .\apps\testcases\admin\execution.py:27
 msgid "Vorbereitung und Nachbereitung"
-msgstr "Preparation and post-processing"
+msgstr "Setup and teardown"
 
 #: .\apps\testcases\admin\execution.py:33
 msgid "Vor/Nachbereitung"
-msgstr "Preparation/post-processing"
+msgstr "Setup/Teardown"
 
 #: .\apps\testcases\admin\testcase.py:72
 msgid "Systeme hinzufügen"
