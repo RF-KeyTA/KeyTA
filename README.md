@@ -5,22 +5,24 @@
 ![Python - Versions](https://img.shields.io/pypi/pyversions/robotframework-keyta)
 ![GitHub - Commit Activity](https://img.shields.io/github/commit-activity/m/RF-KeyTA/KeyTA)
 
-(English translation will be available presumably in Q1 2025)
+KeyTA is a web app designed for domain experts who want to leverage Robot Framework while avoiding the accidental complexity of code editors.
 
-KeyTA ist eine Web-UI für Robot Framework, die für Fachexperten gedacht ist.
-
-## Einrichtung
-
-Das Python-Paket lässt sich wie gewohnt mit pip installieren:
+Install the Python package as usual:
 
 ```powershell
 pip install robotframework-keyta
 ```
 
-Nach der Ausführung des Befehls `keyta` (bzw. `python -m keyta`) erscheint das KeyTA-Logo in der Taskleiste. Mit einem Klick auf das Symbol wird KeyTA im Webbrowser geöffnet.
+## English
+
+Execute the command `keyta` (or `python -m keyta`). The KeyTA icon will appear in the taskbar. Click on the icon in order to open KeyTA in the default browser.
+
+A tutorial for using the app will be [presented](https://robocon.io/program#online-keyta-a-simple-web-ui-for-robot-framework) at the online RoboCon 2025 on March 6th. Stay tuned!
+
+## Deutsch
+
+Nach der Ausführung des Befehls `keyta-de` (bzw. `python -m keyta.de`) erscheint das KeyTA-Logo in der Taskleiste. Mit einem Klick auf das Symbol wird KeyTA im Webbrowser geöffnet.
 
 Die Verwendung der Webanwendung wird im [Tutorial](https://github.com/RF-KeyTA/KeyTA/blob/main/Tutorial.md) erklärt.
-
-## Weiterentwicklung
 
 KeyTA wurde von imbus für einen Kunden entwickelt. Neue Features können bei imbus via E-Mail (testautomatisierung at imbus de) bestellt werden.
