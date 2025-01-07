@@ -44,7 +44,7 @@ class Windows(TabularInlineWithDelete):
     form = form_with_select(
         ActionWindow,
         'window',
-        'Maske auswählen',
+        _('Maske auswählen'),
         labels={
             'window': _('Maske')
         }

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-07 17:50+0100\n"
+"POT-Creation-Date: 2025-01-07 18:47+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,6 +31,11 @@ msgstr "Window"
 #: .\apps\windows\apps.py:8 .\apps\windows\models\window.py:47
 msgid "Masken"
 msgstr "Windows"
+
+#: .\apps\actions\admin\action.py:47 .\apps\sequences\admin\sequence.py:52
+#: .\apps\testcases\forms.py:20 .\apps\variables\admin\variable.py:30
+msgid "Maske auswählen"
+msgstr "Select a Window"
 
 #: .\apps\actions\admin\action.py:74 .\apps\systems\admin.py:45
 msgid "Bibliothek auswählen"
@@ -197,7 +202,7 @@ msgid "Ressourcen"
 msgstr "Resources"
 
 #: .\apps\executions\admin\setup_teardown_inline.py:85
-#: .\apps\sequences\admin\steps_inline.py:64 .\apps\systems\admin.py:53
+#: .\apps\sequences\admin\steps_inline.py:64 .\apps\systems\admin.py:56
 msgid "Aktion auswählen"
 msgstr "Select an Action"
 
@@ -561,11 +566,6 @@ msgstr "This library has no settings"
 msgid "System hinzufügen"
 msgstr "Add a System"
 
-#: .\apps\sequences\admin\sequence.py:52 .\apps\testcases\forms.py:20
-#: .\apps\variables\admin\variable.py:30
-msgid "Maske auswählen"
-msgstr "Select a Window"
-
 #: .\apps\sequences\admin\sequence.py:67
 msgid "Ressource auswählen"
 msgstr "Select a Resource"
@@ -583,9 +583,9 @@ msgstr "Sequences"
 msgid "Sequenz Dokumentation"
 msgstr "Sequence Documentation"
 
-#: .\apps\systems\admin.py:92
+#: .\apps\systems\admin.py:97
 msgid "Die Aktion zur Anbindung an das System muss gepflegt werden"
-msgstr "The action for connecting to the system must be maintained"
+msgstr "The action used for attaching to a running system must be created"
 
 #: .\apps\systems\models.py:14
 msgid "Anbindung an laufendes System"
@@ -788,8 +788,6 @@ msgid "Robot Framework konnte nicht ausgeführt werden."
 msgstr "Robot Framework could not be executed."
 
 #: .\templates\admin\execution\tabular.html:151
-#, fuzzy
-#| msgid "Robot Framework konnte nicht ausgeführt werden."
 msgid "Robot Framework wird ausgeführt"
 msgstr "Robot Framework is running."
 
