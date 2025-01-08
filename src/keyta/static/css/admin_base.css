@@ -47,7 +47,7 @@
       to top right,
       var(--keyta-primary-color),
       var(--keyta-tertiary-color),
-      var(--keyta-secondary-color)
+      rgba(0, 159, 227, 0.09)
   );
 }
 
