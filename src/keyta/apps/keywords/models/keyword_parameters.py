@@ -24,7 +24,7 @@ class KeywordParameter(AbstractBaseModel):
         related_name='parameters'
     )
     name = models.CharField(max_length=255, verbose_name=_('Name'))
-    position = models.PositiveIntegerField(null=True, default=None)
+    position = models.PositiveIntegerField(null=True, default=0)
     default_value = models.CharField(
         max_length=255,
         blank=True,
@@ -70,6 +70,7 @@ class KeywordParameter(AbstractBaseModel):
             name=name,
             defaults={
                 'default_value': default_value,
+                'position': None,
                 'type': KeywordParameterType.KWARG
             }
         )
@@ -99,12 +100,8 @@ class KeywordParameter(AbstractBaseModel):
         ordering = ['position']
         constraints = [
             models.UniqueConstraint(
-                fields=['keyword', 'position'],
-                name='unique_keyword_arg'
-            ),
-            models.UniqueConstraint(
                 fields=['keyword', 'name'],
-                name='unique_keyword_kwarg'
+                name='unique_keyword_parameter'
             ),
             models.CheckConstraint(
                 name='keyword_parameter_sum_type',
