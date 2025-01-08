@@ -53,8 +53,8 @@ a.btn-success {
 }
 
 .btn-success {
-    background-color: var(--keyta-primary-color);
-    border-color: var(--keyta-primary-color);
+    background-color: var(--keyta-primary-color) !important;
+    border-color: var(--keyta-primary-color) !important;
 }
 
 a.btn-danger {
