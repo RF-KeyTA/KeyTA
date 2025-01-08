@@ -1,11 +1,12 @@
 from django import forms
 from django.contrib import admin, messages
 from django.http import HttpRequest
+from django.utils.safestring import mark_safe
 from django.utils.translation import gettext as _
 
 from apps.common.admin import BaseAdmin
 from apps.common.forms import form_with_select
-from apps.common.widgets import ModelSelect2AdminWidget
+from apps.common.widgets import ModelSelect2AdminWidget, link
 from apps.windows.models import Window
 
 from .models import System
@@ -90,9 +91,18 @@ class SystemAdmin(BaseAdmin):
 
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
+        system: System = obj
+
+        add_attach_to_running_system = link(
+                '/actions/action/add/', 
+                _('add'),
+                new_page=True,
+                query_parameters={
+                    'everywhere': True,
+                    'setup_teardown': True,
+                    'systems': system.pk
+                }
+            )
 
         if not change:
-            messages.warning(
-                request,
-                _('Die Aktion zur Anbindung an das System muss gepflegt werden')
-            )
+            messages.warning(request, mark_safe(add_attach_to_running_system + _(' die Aktion zur Anbindung an das System')))
