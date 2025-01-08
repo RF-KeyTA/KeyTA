@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-07 18:47+0100\n"
+"POT-Creation-Date: 2025-01-08 15:49+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,13 +20,13 @@ msgstr ""
 
 #: .\apps\actions\admin\action.py:41 .\apps\actions\admin\action.py:49
 #: .\apps\keywords\models\keyword.py:55
-#: .\apps\keywords\models\keywordcall.py:87 .\apps\systems\admin.py:20
-#: .\apps\systems\admin.py:28 .\apps\variables\admin\variable.py:24
+#: .\apps\keywords\models\keywordcall.py:87 .\apps\systems\admin.py:21
+#: .\apps\systems\admin.py:29 .\apps\variables\admin\variable.py:24
 #: .\apps\variables\admin\variable.py:32 .\apps\windows\models\window.py:46
 msgid "Maske"
 msgstr "Window"
 
-#: .\apps\actions\admin\action.py:42 .\apps\systems\admin.py:21
+#: .\apps\actions\admin\action.py:42 .\apps\systems\admin.py:22
 #: .\apps\variables\admin\variable.py:25 .\apps\variables\models\variable.py:37
 #: .\apps\windows\apps.py:8 .\apps\windows\models\window.py:47
 msgid "Masken"
@@ -37,7 +37,7 @@ msgstr "Windows"
 msgid "Maske auswählen"
 msgstr "Select a Window"
 
-#: .\apps\actions\admin\action.py:74 .\apps\systems\admin.py:45
+#: .\apps\actions\admin\action.py:74 .\apps\systems\admin.py:46
 msgid "Bibliothek auswählen"
 msgstr "Select a Library"
 
@@ -153,7 +153,7 @@ msgstr "Documentation"
 #: .\apps\executions\admin\setup_teardown_inline.py:36
 #: .\apps\keywords\admin\keyword_parameters_inline.py:13
 #: .\apps\keywords\forms.py:89 .\apps\keywords\models\keyword.py:39
-#: .\apps\keywords\models\keyword_parameters.py:121
+#: .\apps\keywords\models\keyword_parameters.py:118
 #: .\apps\libraries\models\library_import_parameter.py:38
 #: .\apps\windows\models\window_keyword_parameter.py:16
 #, fuzzy
@@ -202,7 +202,7 @@ msgid "Ressourcen"
 msgstr "Resources"
 
 #: .\apps\executions\admin\setup_teardown_inline.py:85
-#: .\apps\sequences\admin\steps_inline.py:64 .\apps\systems\admin.py:56
+#: .\apps\sequences\admin\steps_inline.py:64 .\apps\systems\admin.py:57
 msgid "Aktion auswählen"
 msgstr "Select an Action"
 
@@ -326,7 +326,7 @@ msgid "Kein Rückgabewert"
 msgstr "No return value"
 
 #: .\apps\keywords\admin\keyword_parameters_inline.py:12
-#: .\apps\keywords\models\keyword_parameters.py:120
+#: .\apps\keywords\models\keyword_parameters.py:117
 #: .\apps\libraries\models\library_import_parameter.py:37
 #: .\apps\windows\models\window_keyword_parameter.py:15
 msgid "Parameter"
@@ -583,9 +583,13 @@ msgstr "Sequences"
 msgid "Sequenz Dokumentation"
 msgstr "Sequence Documentation"
 
-#: .\apps\systems\admin.py:97
-msgid "Die Aktion zur Anbindung an das System muss gepflegt werden"
-msgstr "The action used for attaching to a running system must be created"
+#: .\apps\systems\admin.py:98
+msgid "add"
+msgstr "Create"
+
+#: .\apps\systems\admin.py:108
+msgid " die Aktion zur Anbindung an das System"
+msgstr " the action used for attaching to a running system"
 
 #: .\apps\systems\models.py:14
 msgid "Anbindung an laufendes System"
@@ -721,16 +725,16 @@ msgstr ""
 msgid "Home"
 msgstr ""
 
-#: .\templates\admin\change_form.html:37
+#: .\templates\admin\change_form.html:37 .\templates\admin\change_form.html:53
 #, python-format
 msgid "Add %(name)s"
 msgstr ""
 
-#: .\templates\admin\change_form.html:59 .\templates\admin\change_list.html:63
+#: .\templates\admin\change_form.html:68 .\templates\admin\change_list.html:63
 msgid "Please correct the error below."
 msgstr ""
 
-#: .\templates\admin\change_form.html:61 .\templates\admin\change_list.html:65
+#: .\templates\admin\change_form.html:70 .\templates\admin\change_list.html:65
 msgid "Please correct the errors below."
 msgstr ""
 
