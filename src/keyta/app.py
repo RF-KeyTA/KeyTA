@@ -1,4 +1,5 @@
 import os
+import signal
 import subprocess
 from os.path import realpath
 from pathlib import Path
@@ -30,16 +31,15 @@ class DaemonThread(Thread):
         return super().join(timeout)
 
 
-class DjangoServer:
-    def run(self):
-        if not SQLITE_DB.exists():
-            print('Setting up the database...')
-            exec_django_command('migrate')
-            exec_django_command('import_library BuiltIn')
-        else:
-            exec_django_command('migrate')
+def django_runserver():
+    if not SQLITE_DB.exists():
+        print('Setting up the database...')
+        exec_django_command('migrate')
+        exec_django_command('import_library BuiltIn')
+    else:
+        exec_django_command('migrate')
 
-        return subprocess.Popen(['cmd', f'/C pushd {DJANGO_DIR} && python manage.py runserver'])
+    return subprocess.Popen(['cmd', f'/C pushd {DJANGO_DIR} && python manage.py runserver'])
 
 
 def exec_command(command: str, working_dir: Path=CWD):
@@ -60,7 +60,6 @@ def open_url(url):
 
 class App:
     def __init__(self, texts: dict[str, str]):
-        self.django_server = DjangoServer().run()
         robot_server = RobotRemoteServer(ROBOT_REMOTE_HOST, ROBOT_REMOTE_PORT)
         # The RF logger only works if the current thread is called MainThread
         self.rf_server_thread = DaemonThread(robot_server, name='MainThread')
@@ -79,24 +78,24 @@ class App:
                 ),
                 MenuItem(
                     texts['terminate_keyta'],
-                    lambda icon, query: self.terminate(icon)
+                    lambda icon, query: self.terminate()
                 )
             )
         )
         self.icon_thread = DaemonThread(tray_icon)
 
     def run(self):
+        self.django_server = django_runserver()
         self.rf_server_thread.start()
         self.icon_thread.start()
 
         try:
             self.django_server.wait()
         except KeyboardInterrupt:
-            self.django_server.terminate()
+            return
 
-    def terminate(self, icon: Icon): # type: ignore
-        icon.stop()
-        self.django_server.terminate()
+    def terminate(self): # type: ignore
+        self.django_server.send_signal(signal.CTRL_C_EVENT)
 
 
 def keyta():
