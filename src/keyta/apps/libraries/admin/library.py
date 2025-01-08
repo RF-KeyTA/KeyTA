@@ -1,4 +1,5 @@
 from importlib import import_module
+import json
 from django.contrib import admin, messages
 from django.db.models import QuerySet
 from django.http import HttpRequest
@@ -70,6 +71,14 @@ class LibraryAdmin(BaseAdmin):
     inlines = [Keywords]
     form = LibraryForm
     errors = set()
+
+    def autocomplete_name(self, name: str):
+        return json.dumps([
+            name
+            for name in
+            self.model.objects.values_list('name', flat=True)
+            .filter(name__icontains=name)
+        ])
 
     def get_changelist(self, request: HttpRequest, **kwargs):
         if 'update' in request.GET:

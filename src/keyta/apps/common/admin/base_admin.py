@@ -2,7 +2,6 @@ import json
 
 from django.contrib import admin, messages
 from django.contrib.admin.widgets import AutocompleteSelectMultiple
-from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.forms import SelectMultiple, CheckboxSelectMultiple
 from django.http import HttpRequest, HttpResponseRedirect, HttpResponse
@@ -10,19 +9,6 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import gettext as _
 
 from tinymce.widgets import AdminTinyMCE # type: ignore
-
-
-def autocomplete_name(name: str, app_label: str, model_name: str):
-        model_class = (
-            ContentType.objects.get(app_label=app_label, model=model_name)
-            .model_class()
-        )
-        return json.dumps([
-            name
-            for name in
-            model_class.objects.values_list('name', flat=True)
-            .filter(name__icontains=name)
-        ])
 
 
 class BaseAdmin(admin.ModelAdmin):
@@ -38,21 +24,27 @@ class BaseAdmin(admin.ModelAdmin):
 
     def add_view(self, request, form_url="", extra_context=None):
         if 'autocomplete' in request.GET:
-            app = request.GET['app']
-            model = request.GET['model']
             name = request.GET['name']
-            data = autocomplete_name(name, app, model)
+            data = self.autocomplete_name(name)
 
             return HttpResponse(data, content_type='application/json')
 
         return super().add_view(request, form_url, extra_context)
+
+    def autocomplete_name(self, name: str):
+        return json.dumps([
+            '%s (%s)' % (name, systems)
+            for name, systems in
+            self.model.objects.values_list('name', 'systems__name')
+            .filter(name__icontains=name)
+        ])
 
     def change_view(self, request, object_id, form_url="", extra_context=None):
         if 'autocomplete' in request.GET:
             app = request.GET['app']
             model = request.GET['model']
             name = request.GET['name']
-            data = autocomplete_name(name, app, model)
+            data = self.autocomplete_name(name, app, model)
 
             return HttpResponse(data, content_type='application/json')
 

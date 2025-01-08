@@ -1,3 +1,4 @@
+import json
 from django import forms
 from django.contrib import admin, messages
 from django.http import HttpRequest
@@ -45,6 +46,14 @@ class SystemAdmin(BaseAdmin):
         select_field='library',
         placeholder=_('Bibliothek auswählen')
     )
+
+    def autocomplete_name(self, name: str):
+        return json.dumps([
+            name
+            for name in
+            self.model.objects.values_list('name', flat=True)
+            .filter(name__icontains=name)
+        ])
 
     def formfield_for_dbfield(self, db_field, request: HttpRequest, **kwargs):
         field = super().formfield_for_dbfield(db_field, request, **kwargs)

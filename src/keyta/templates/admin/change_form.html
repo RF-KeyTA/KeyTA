@@ -155,13 +155,11 @@
             $('#id_name').typeahead({
                     source: function (query, process) {
                         if (query.length > 2) {
-                                return $.get(url + "?autocomplete", {
-                                app: "{{ opts.app_label }}",
-                                model: "{{ opts.model_name }}",
-                                name: query
-                            }, function (data) {
-                                return process(data);
-                            });
+                            return $.get(
+                                url + "?autocomplete", 
+                                {name: query}, 
+                                (data) => process(data)
+                            );
                         }
                     }
                 });
