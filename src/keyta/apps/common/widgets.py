@@ -23,7 +23,14 @@ def configure_select(widget: forms.Select, placeholder: str, choices: list,
     widget.can_change_related = can_change_related # type: ignore
 
 
-def link(url: str, title: str, new_page: bool = False):
+def link(url: str, title: str, new_page: bool = False, query_parameters: dict[str, str]={}):
+    if query_parameters:
+        url = url + '?' + '&'.join(
+                f'{key}={value}' 
+                for key, value 
+                in query_parameters.items()
+            )
+
     if new_page:
         return mark_safe(
             '<a href="%s" target="_blank">%s</a>'
