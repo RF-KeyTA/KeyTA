@@ -250,12 +250,12 @@ JAZZMIN_SETTINGS = {
     "order_with_respect_to": [
         'libraries',
         'resources',
-        'systems',
-        'windows',
-        'variables',
         'actions',
         'sequences',
-        'testcases'
+        'variables',
+        'testcases',
+        'systems',
+        'windows',
     ],
     "related_modal_active": True,
     "site_logo": "img/keyta.png",
