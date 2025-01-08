@@ -45,7 +45,16 @@
 
 {% block content_title %} {{ opts.verbose_name_plural|capfirst }} {% endblock %}
 
-{% block page_actions %}{% endblock %}
+{% block page_actions %}
+<div class="col-12 col-md-auto d-flex align-items-center justify-content-end page-actions">
+    {% if has_add_permission %}
+        {% url opts|admin_urlname:'add' as add_url %}
+        <a href="{% add_preserved_filters add_url is_popup to_field %}" class="btn {{ jazzmin_ui.button_classes.success }} float-right">
+            <i class="fa fa-plus-circle"></i> &nbsp; {% blocktrans with opts.verbose_name as name %}Add {{ name }}{% endblocktrans %}
+        </a>
+    {% endif %}
+</div>
+{% endblock %}
 
 {% block content %}
     <div id="content-main" class="col-12">
