@@ -84,3 +84,13 @@ class VariableValue(AbstractBaseModel):
         ]
         verbose_name = _('Wert')
         verbose_name_plural = _('Werte')
+
+
+class WindowVariable(Variable):
+    def __str__(self):
+        return str(self.name)
+
+    class Meta:
+        proxy = True
+        verbose_name = _('Referenzwert')
+        verbose_name_plural = _('Referenzwerte')

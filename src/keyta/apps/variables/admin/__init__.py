@@ -1,1 +1,1 @@
-from .variable import VariableAdmin
+from .variable import VariableAdmin, WindowVariableAdmin

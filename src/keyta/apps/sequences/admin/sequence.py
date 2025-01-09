@@ -5,8 +5,9 @@ from django.utils.translation import gettext as _
 
 
 from apps.common.admin import TabularInlineWithDelete
+from apps.common.admin.base_admin import BaseAdmin
 from apps.common.forms import form_with_select
-from apps.common.widgets import ModelSelect2MultipleAdminWidget
+from apps.common.widgets import BaseSelect, BaseSelectMultiple, ModelSelect2MultipleAdminWidget
 from apps.executions.admin import KeywordExecutionInline
 from apps.keywords.admin import KeywordDocumentationAdmin
 from apps.windows.admin import (
@@ -20,7 +21,8 @@ from ..models import (
     SequenceExecution,
     Sequence,
     SequenceDocumentation,
-    SequenceResourceImport
+    SequenceResourceImport,
+    WindowSequence
 )
 
 
@@ -116,3 +118,14 @@ class SequenceAdmin(WindowKeywordAdmin):
 @admin.register(SequenceDocumentation)
 class SequenceDocumentationAdmin(KeywordDocumentationAdmin):
     pass
+
+
+@admin.register(WindowSequence)
+class WindowSequenceAdmin(BaseAdmin):
+    fields = ['systems', 'windows', 'name']
+
+    def get_form(self, request, obj, change, **kwargs):
+        form = super().get_form(request, obj, change, **kwargs)
+        form.base_fields['windows'].widget = BaseSelect('')
+        form.base_fields['systems'].widget = BaseSelectMultiple('')
+        return form

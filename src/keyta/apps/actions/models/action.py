@@ -51,3 +51,13 @@ class ActionWindow(AbstractBaseModel, Action.windows.through):
         proxy = True
         verbose_name = _('Aktion Maske')
         verbose_name_plural = _('Aktion Masken')
+
+
+class WindowAction(Action):
+    def __str__(self):
+        return str(self.name)
+
+    class Meta:
+        proxy = True
+        verbose_name = _('Aktion')
+        verbose_name_plural = _('Aktionen')

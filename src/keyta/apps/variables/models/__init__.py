@@ -1,1 +1,1 @@
-from .variable import Variable, VariableValue
+from .variable import Variable, VariableValue, WindowVariable

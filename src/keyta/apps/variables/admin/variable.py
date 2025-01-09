@@ -5,9 +5,10 @@ from django.utils.translation import gettext as _
 
 from apps.common.admin import BaseAdmin, TabularInlineWithDelete
 from apps.common.forms import form_with_select
+from apps.common.widgets import BaseSelect, BaseSelectMultiple
 from apps.windows.models import Window
 
-from ..models.variable import Variable, VariableValue
+from ..models import Variable, VariableValue, WindowVariable
 
 
 class Values(TabularInlineWithDelete):
@@ -118,3 +119,14 @@ class VariableAdmin(BaseAdmin):
 @admin.register(VariableValue)
 class VariableValueAdmin(BaseAdmin):
     pass
+
+
+@admin.register(WindowVariable)
+class WindowVariableAdmin(BaseAdmin):
+    fields = ['systems', 'windows', 'name']
+
+    def get_form(self, request, obj, change, **kwargs):
+        form = super().get_form(request, obj, change, **kwargs)
+        form.base_fields['windows'].widget = BaseSelect('')
+        form.base_fields['systems'].widget = BaseSelectMultiple('')
+        return form
