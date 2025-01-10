@@ -68,7 +68,7 @@ class AddInline(admin.TabularInline):
             field.widget.can_change_related = False
             field.widget.can_view_related = False
             field.widget.attrs.update({
-                'data-placeholder': 'Click the plus icon',
+                'data-placeholder': _('Klicke auf das Plus-Symbol'),
                 'disabled': True
             })
 
