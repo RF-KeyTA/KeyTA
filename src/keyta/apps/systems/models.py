@@ -3,7 +3,7 @@ from django.utils.translation import gettext as _
 
 from apps.common.abc import AbstractBaseModel
 from apps.keywords.models import Keyword
-from apps.libraries.models import Library, LibraryKeyword
+from apps.libraries.models import Library
 
 
 class System(AbstractBaseModel):
@@ -20,12 +20,6 @@ class System(AbstractBaseModel):
     )
     name = models.CharField(max_length=255, unique=True, verbose_name=_('Name'))
     description = models.CharField(max_length=255, verbose_name=_('Beschreibung'))
-    client = models.CharField(
-        max_length=255,
-        null=True,
-        blank=True,
-        verbose_name=_('Mandant')
-    )
 
     def __str__(self):
         return self.name

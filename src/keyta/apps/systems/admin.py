@@ -40,7 +40,7 @@ class SystemAdmin(BaseAdmin):
     list_display = ['name', 'description']
     ordering = ['name']
     inlines = [Windows]
-    fields = ['name', 'description', 'client', 'library']
+    fields = ['name', 'description', 'library']
     form = form_with_select(
         System,
         select_field='library',
