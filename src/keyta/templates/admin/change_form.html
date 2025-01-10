@@ -144,7 +144,7 @@
         $(document).ready(function () {
             {% if add %}
                 $('input:text, select').first().focus()
-                setTimeout(function() { $('body.popup input:text, select').first().focus() }, 400);
+                setTimeout(function() { $('body.popup input:text, body.popup select').first().focus() }, 400);
             {% endif %}
 
             {% if original.pk %}
