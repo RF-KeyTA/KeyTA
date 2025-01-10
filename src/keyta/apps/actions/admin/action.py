@@ -82,6 +82,14 @@ class Libraries(TabularInlineWithDelete):
     verbose_name = _('Bibliothek')
     verbose_name_plural = _('Bibliotheken')
 
+    def get_max_num(self, request, obj=None, **kwargs):
+        return Library.objects.count()
+
+    def get_field_queryset(self, db, db_field, request: HttpRequest):
+        queryset = super().get_field_queryset(db, db_field, request)
+        imported_libraries = self.get_queryset(request).values_list('library_id', flat=True)
+        return queryset.exclude(id__in=imported_libraries)
+
     def has_change_permission(self, request: HttpRequest, obj) -> bool:
         return False
 

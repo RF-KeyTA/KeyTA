@@ -9,6 +9,7 @@ from apps.common.forms import form_with_select
 from apps.common.widgets import ModelSelect2MultipleAdminWidget, Select2MultipleWidget
 from apps.executions.admin import KeywordExecutionInline
 from apps.keywords.admin import KeywordDocumentationAdmin
+from apps.resources.models import Resource
 from apps.windows.admin import (
     WindowKeywordParameters,
     WindowKeywordAdmin,
@@ -65,6 +66,14 @@ class Resources(TabularInlineWithDelete):
     )
     verbose_name = _('Ressource')
     verbose_name_plural = _('Ressourcen')
+
+    def get_max_num(self, request, obj=None, **kwargs):
+        return Resource.objects.count()
+
+    def get_field_queryset(self, db, db_field, request: HttpRequest):
+        queryset = super().get_field_queryset(db, db_field, request)
+        imported_resources = self.get_queryset(request).values_list('resource_id', flat=True)
+        return queryset.exclude(id__in=imported_resources)
 
     def has_change_permission(self, request: HttpRequest, obj) -> bool:
         return False
