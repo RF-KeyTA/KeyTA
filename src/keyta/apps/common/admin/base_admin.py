@@ -3,12 +3,15 @@ import json
 from django.contrib import admin, messages
 from django.contrib.admin.widgets import AutocompleteSelectMultiple
 from django.db import models
+from django import forms
 from django.forms import SelectMultiple, CheckboxSelectMultiple
 from django.http import HttpRequest, HttpResponseRedirect, HttpResponse
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext as _
 
-from tinymce.widgets import AdminTinyMCE # type: ignore
+from tinymce.widgets import AdminTinyMCE
+
+from apps.common.widgets import ModelSelect2MultipleAdminWidget, Select2MultipleWidget # type: ignore
 
 
 class BaseAdmin(admin.ModelAdmin):
@@ -121,3 +124,29 @@ class BaseDocumentationAdmin(BaseReadOnlyAdmin):
             return ['args_table'] + self.readonly_fields
         
         return self.readonly_fields
+
+
+class BaseAddAdmin(BaseAdmin):
+    def get_form(self, request, obj=None, change=False, **kwargs):
+        return forms.modelform_factory(
+            self.model,
+            forms.ModelForm,
+            ['systems', 'windows', 'name'],
+            widgets={
+                'systems': ModelSelect2MultipleAdminWidget(
+                    model=self.model.systems.through,
+                    search_fields=['name__icontains'],
+                    attrs={
+                        'data-placeholder': _('System hinzufügen'),
+                    }
+                ),
+                'windows': Select2MultipleWidget(
+                    model=self.model.windows.through,
+                    search_fields=['name__icontains'],
+                    dependent_fields={'systems': 'systems'},
+                    attrs={
+                        'data-placeholder': _('Maske auswählen'),
+                    }
+                )
+            }
+        )

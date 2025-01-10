@@ -2,10 +2,8 @@ from django.contrib import admin, messages
 from django.http import HttpRequest
 from django.utils.translation import gettext as _
 
-from apps.common.admin import TabularInlineWithDelete
-from apps.common.admin.base_admin import BaseAdmin
+from apps.common.admin import BaseAddAdmin, TabularInlineWithDelete
 from apps.common.forms.baseform import form_with_select
-from apps.common.widgets import BaseSelect, BaseSelectMultiple
 from apps.executions.admin import KeywordExecutionInline
 from apps.keywords.admin import KeywordDocumentationAdmin
 from apps.libraries.models import Library
@@ -37,14 +35,8 @@ class ActionWindowAdmin(admin.ModelAdmin):
 
 
 @admin.register(WindowAction)
-class WindowActionAdmin(BaseAdmin):
-    fields = ['systems', 'windows', 'name']
-
-    def get_form(self, request, obj, change, **kwargs):
-        form = super().get_form(request, obj, change, **kwargs)
-        form.base_fields['windows'].widget = BaseSelect('')
-        form.base_fields['systems'].widget = BaseSelectMultiple('')
-        return form
+class WindowActionAdmin(BaseAddAdmin):
+    pass
 
 
 class Windows(TabularInlineWithDelete):

@@ -3,9 +3,8 @@ from django.db.models.functions import Lower
 from django.http import HttpRequest
 from django.utils.translation import gettext as _
 
-from apps.common.admin import BaseAdmin, TabularInlineWithDelete
+from apps.common.admin import BaseAdmin, BaseAddAdmin, TabularInlineWithDelete
 from apps.common.forms import form_with_select
-from apps.common.widgets import BaseSelect, BaseSelectMultiple
 from apps.windows.models import Window
 
 from ..models import Variable, VariableValue, WindowVariable
@@ -122,11 +121,5 @@ class VariableValueAdmin(BaseAdmin):
 
 
 @admin.register(WindowVariable)
-class WindowVariableAdmin(BaseAdmin):
-    fields = ['systems', 'windows', 'name']
-
-    def get_form(self, request, obj, change, **kwargs):
-        form = super().get_form(request, obj, change, **kwargs)
-        form.base_fields['windows'].widget = BaseSelect('')
-        form.base_fields['systems'].widget = BaseSelectMultiple('')
-        return form
+class WindowVariableAdmin(BaseAddAdmin):
+    inlines = [Values]

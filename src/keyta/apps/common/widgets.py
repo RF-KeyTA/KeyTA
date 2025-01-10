@@ -153,6 +153,10 @@ class ModelSelect2MultipleAdminWidget(ModelSelect2AdminWidget):
         return False
 
 
+class Select2MultipleWidget(ModelSelect2MultipleAdminWidget):
+    allow_multiple_selected = False
+
+
 class GroupedChoiceIterator(ModelChoiceIterator):
     group_by = 'library'
 

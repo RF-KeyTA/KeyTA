@@ -4,10 +4,9 @@ from django.http import HttpRequest
 from django.utils.translation import gettext as _
 
 
-from apps.common.admin import TabularInlineWithDelete
-from apps.common.admin.base_admin import BaseAdmin
+from apps.common.admin import BaseAddAdmin, TabularInlineWithDelete
 from apps.common.forms import form_with_select
-from apps.common.widgets import BaseSelect, BaseSelectMultiple, ModelSelect2MultipleAdminWidget
+from apps.common.widgets import ModelSelect2MultipleAdminWidget, Select2MultipleWidget
 from apps.executions.admin import KeywordExecutionInline
 from apps.keywords.admin import KeywordDocumentationAdmin
 from apps.windows.admin import (
@@ -28,10 +27,6 @@ from ..models import (
 
 class Execution(KeywordExecutionInline):
     model = SequenceExecution
-
-
-class Select2MultipleWidget(ModelSelect2MultipleAdminWidget):
-    allow_multiple_selected = False
 
 
 SequenceForm = forms.modelform_factory(
@@ -121,11 +116,5 @@ class SequenceDocumentationAdmin(KeywordDocumentationAdmin):
 
 
 @admin.register(WindowSequence)
-class WindowSequenceAdmin(BaseAdmin):
-    fields = ['systems', 'windows', 'name']
-
-    def get_form(self, request, obj, change, **kwargs):
-        form = super().get_form(request, obj, change, **kwargs)
-        form.base_fields['windows'].widget = BaseSelect('')
-        form.base_fields['systems'].widget = BaseSelectMultiple('')
-        return form
+class WindowSequenceAdmin(BaseAddAdmin):
+    pass
