@@ -17,17 +17,8 @@ class Variable(AbstractBaseModel):
         blank=True,
         verbose_name=_('Beschreibung')
     )
-    setup_teardown = models.BooleanField(
-        default=False,
-        verbose_name=_('Vor-/Nachbereitung')
-    )
-    all_windows = models.BooleanField(
-        default=False,
-        verbose_name=_('In allen Masken')
-    )
     systems = models.ManyToManyField(
         'systems.System',
-        blank=True,
         related_name='variables',
         verbose_name=_('Systeme')
     )

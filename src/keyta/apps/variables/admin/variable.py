@@ -1,4 +1,4 @@
-from django.contrib import admin, messages
+from django.contrib import admin
 from django.db.models.functions import Lower
 from django.http import HttpRequest
 from django.utils.translation import gettext as _
@@ -20,7 +20,6 @@ class Values(TabularInlineWithDelete):
 class Windows(admin.TabularInline):
     model = Variable.windows.through
     extra = 0
-    min_num = 1
     verbose_name = _('Maske')
     verbose_name_plural = _('Masken')
 
@@ -61,7 +60,7 @@ class VariableAdmin(BaseAdmin):
 
         return list(variable.systems.values_list('name', flat=True))
 
-    fields = ['name', 'description', 'setup_teardown']
+    fields = ['systems', 'name', 'description']
     form = form_with_select(
         Variable,
         'systems',
@@ -70,19 +69,10 @@ class VariableAdmin(BaseAdmin):
     )
     inlines = [Values]
 
-    def get_fields(self, request, obj=None):
-        variable: Variable = obj
-
-        if not variable or variable.all_windows:
-            return ['all_windows', 'systems'] + self.fields
-
-        if not variable.all_windows:
-            return ['systems'] + self.fields
-
     def get_inlines(self, request, obj):
         variable: Variable = obj
 
-        if not variable or variable.all_windows or not variable.systems.exists():
+        if not variable or not variable.systems.exists():
             return self.inlines
 
         return [Windows] + self.inlines
@@ -93,26 +83,12 @@ class VariableAdmin(BaseAdmin):
         if not variable:
             return []
 
-        if variable.all_windows:
-            readonly_fields = ['all_windows']
-        else:
-            readonly_fields = []
+        readonly_fields = []
 
         if request.user.is_superuser:
             return readonly_fields
         else:
             return readonly_fields + super().get_readonly_fields(request, obj)
-
-    def save_form(self, request, form, change):
-        variable: Variable = super().save_form(request, form, change)
-
-        if not change and not variable.all_windows:
-            messages.warning(
-                request,
-                _('Der Referenzwert muss einer Maske zugeordnet werden')
-            )
-
-        return variable
 
 
 @admin.register(VariableValue)
