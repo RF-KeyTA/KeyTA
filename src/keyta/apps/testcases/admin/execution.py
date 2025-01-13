@@ -34,6 +34,13 @@ class TestSetupTeardownInline(SetupTeardownInline):
             field.widget.choices = TestSetupTeardown.choices
 
         return field
+    
+    def get_queryset(self, request: HttpRequest):
+        execution_id = request.resolver_match.kwargs['object_id']
+
+        return super().get_queryset(request).filter(
+            execution_id=execution_id
+        )
 
 
 @admin.register(TestCaseExecution)
