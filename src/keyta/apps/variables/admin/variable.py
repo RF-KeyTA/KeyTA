@@ -1,3 +1,4 @@
+import json
 from django.contrib import admin
 from django.db.models.functions import Lower
 from django.http import HttpRequest
@@ -68,6 +69,14 @@ class VariableAdmin(BaseAdmin):
         select_many=True
     )
     inlines = [Values]
+
+    def autocomplete_name(self, name: str):
+        return json.dumps([
+            '%s (%s -> %s)' % (name, systems, windows or _('Systemweit'))
+            for name, systems, windows in
+            self.model.objects.values_list('name', 'systems__name', 'windows__name')
+            .filter(name__icontains=name)
+        ])
 
     def get_inlines(self, request, obj):
         variable: Variable = obj
