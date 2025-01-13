@@ -106,6 +106,7 @@ class Actions(AddInline):
             queryset
             .prefetch_related('keyword')
             .filter(keyword__type=KeywordType.ACTION)
+            .order_by('keyword__name')
         )
 
     def has_change_permission(self, request, obj=None) -> bool:
@@ -139,6 +140,7 @@ class Sequences(AddInline):
             queryset
             .prefetch_related('keyword')
             .filter(keyword__type=KeywordType.SEQUENCE)
+            .order_by('keyword__name')
         )
 
 
@@ -159,6 +161,13 @@ class Variables(AddInline):
 
     related_model = WindowVariable
     related_field_name = 'variable'
+
+    def get_queryset(self, request):
+        queryset: QuerySet = super().get_queryset(request)
+        return (
+            queryset
+            .order_by('variable__name')
+        )
 
     def has_change_permission(self, request: HttpRequest, obj=None) -> bool:
         return False
