@@ -75,9 +75,9 @@ class KeywordCallParameterFormset(forms.BaseInlineFormSet):
             [
                 (jsonify(None, source.pk), show(source))
                 for source in
-                KeywordCallParameterSource.objects.filter(
-                    variable_value__variable__all_windows=True
-                )
+                KeywordCallParameterSource.objects
+                .filter(variable_value__variable__systems__in=system_ids)
+                .filter(variable_value__variable__windows__isnull=True)
             ]
         ]]
 

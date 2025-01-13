@@ -22,8 +22,8 @@ class TestCaseSetupTeardownParametersFormset(KeywordCallParameterFormset):
                     (jsonify(None, source.pk), str(source))
                     for source in
                     KeywordCallParameterSource.objects
-                    .filter(variable_value__variable__setup_teardown=True)
                     .filter(variable_value__variable__systems__in=system_ids)
+                    .filter(variable_value__variable__windows__isnull=True)
                 ]
             ]]
 
