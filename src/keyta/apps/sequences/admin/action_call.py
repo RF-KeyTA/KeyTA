@@ -24,7 +24,7 @@ class ActionCallParameterFormset(KeywordCallParameterFormset):
         return super().get_choices(obj) + super().get_variables(
                 window_ids,
                 system_ids,
-                lambda value_ref: value_ref.variable_value.name
+                lambda value_ref: str(value_ref)
             )
 
 
