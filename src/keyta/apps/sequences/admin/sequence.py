@@ -13,6 +13,7 @@ from apps.resources.models import Resource
 from apps.windows.admin import (
     WindowKeywordParameters,
     WindowKeywordAdmin,
+    WindowKeywordAdminMixin,
     WindowKeywordReturnValues
 )
 from .steps_inline import SequenceSteps
@@ -125,5 +126,5 @@ class SequenceDocumentationAdmin(KeywordDocumentationAdmin):
 
 
 @admin.register(WindowSequence)
-class WindowSequenceAdmin(BaseAddAdmin):
+class WindowSequenceAdmin(WindowKeywordAdminMixin, BaseAddAdmin):
     pass
