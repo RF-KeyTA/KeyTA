@@ -1,3 +1,4 @@
+import json
 import logging
 
 from django import forms
@@ -188,6 +189,14 @@ class WindowAdmin(BaseAdminWithDoc):
         Sequences,
         Variables
     ]
+
+    def autocomplete_name(self, name: str):
+        return json.dumps([
+            '%s (%s)' % (name, systems)
+            for name, systems in
+            self.model.objects.values_list('name', 'systems__name')
+            .filter(name__icontains=name)
+        ])
 
     def change_view(self, request: HttpRequest, object_id, form_url="",
                     extra_context=None):
