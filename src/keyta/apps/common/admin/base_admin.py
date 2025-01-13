@@ -35,12 +35,7 @@ class BaseAdmin(admin.ModelAdmin):
         return super().add_view(request, form_url, extra_context)
 
     def autocomplete_name(self, name: str):
-        return json.dumps([
-            '%s (%s)' % (name, systems)
-            for name, systems in
-            self.model.objects.values_list('name', 'systems__name')
-            .filter(name__icontains=name)
-        ])
+        return json.dumps([])
 
     def change_view(self, request, object_id, form_url="", extra_context=None):
         if 'autocomplete' in request.GET:
