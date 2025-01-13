@@ -25,8 +25,8 @@ class SequenceSteps(StepsInline):
         window_actions = [[
             window.name, [
                 (action.pk, action.name)
-                for action in Action.objects
-                .filter(windows=window)
+                for action in 
+                Action.objects.filter(windows=window)
                 .order_by('name')
             ]
         ]]
@@ -35,8 +35,9 @@ class SequenceSteps(StepsInline):
             _('Globale Aktionen'), [
                 (action.pk, action.name)
                 for action in Action.objects
-                .filter(everywhere=True)
                 .filter(systems__in=sequence.systems.all())
+                .filter(windows__isnull=True)
+                .filter(setup_teardown=False)
                 .distinct()
                 .order_by('name')
             ]

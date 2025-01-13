@@ -107,7 +107,6 @@ class SystemAdmin(BaseAdmin):
                 _('add'),
                 new_page=True,
                 query_parameters={
-                    'everywhere': True,
                     'setup_teardown': True,
                     'systems': system.pk
                 }

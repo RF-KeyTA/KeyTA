@@ -41,10 +41,6 @@ class Keyword(AbstractBaseModel):
     type = models.CharField(max_length=255, choices=KeywordType.choices)
 
     # ---Customization--
-    everywhere = models.BooleanField(
-        default=False,
-        verbose_name=_('In allen Masken')
-    )
     setup_teardown = models.BooleanField(
         default=False,
         verbose_name=_('Vor-/Nachbereitung')
