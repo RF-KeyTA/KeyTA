@@ -24,8 +24,8 @@ class AbstractBaseModel(models.Model, metaclass=AbstractModelMeta):
     def get_model_url(self):
         return '/' + self._meta.app_label + '/' + self._meta.model_name
 
-    def get_tab_url(self):
-        return '#' + slugify(self._meta.verbose_name_plural) + '-tab'
+    def get_tab_url(self, tab_name=None):
+        return '#' + slugify(tab_name or self._meta.verbose_name_plural) + '-tab'
 
     class Meta:
         abstract = True
