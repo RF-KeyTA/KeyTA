@@ -49,8 +49,8 @@ class ActionWindow(AbstractBaseModel, Action.windows.through):
     class Meta:
         auto_created = True
         proxy = True
-        verbose_name = _('Aktion Maske')
-        verbose_name_plural = _('Aktion Masken')
+        verbose_name = _('Beziehung zu Maske')
+        verbose_name_plural = _('Beziehungen zu Masken')
 
 
 class WindowAction(Action):
