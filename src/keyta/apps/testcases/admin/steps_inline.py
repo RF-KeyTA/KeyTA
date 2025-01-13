@@ -15,8 +15,8 @@ class TestSteps(StepsInline):
         testcase: TestCase = obj
         formset = super().get_formset(request, obj, **kwargs)
 
-        systems_under_test = testcase.systems.all()
-        windows = Window.objects.filter(systems__in=systems_under_test).distinct().order_by('name')
+        system_ids = testcase.systems.all()
+        windows = Window.objects.filter(systems__in=system_ids).distinct().order_by('name')
 
         formset.form.base_fields['window'].queryset = windows
         formset.form.base_fields['window'].widget.can_add_related = False
@@ -26,7 +26,7 @@ class TestSteps(StepsInline):
         formset.form.base_fields['to_keyword'].widget.can_change_related = False
         formset.form.base_fields['to_keyword'].widget.can_view_related = False
         formset.form.base_fields['to_keyword'].label = _('Sequenz')
-        sequences = formset.form.base_fields['to_keyword'].queryset.sequences()
+        sequences = formset.form.base_fields['to_keyword'].queryset.sequences().filter(systems__in=system_ids)
         formset.form.base_fields['to_keyword'].queryset = sequences
 
         return formset
