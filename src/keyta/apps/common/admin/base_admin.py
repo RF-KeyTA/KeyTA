@@ -44,10 +44,8 @@ class BaseAdmin(admin.ModelAdmin):
 
     def change_view(self, request, object_id, form_url="", extra_context=None):
         if 'autocomplete' in request.GET:
-            app = request.GET['app']
-            model = request.GET['model']
             name = request.GET['name']
-            data = self.autocomplete_name(name, app, model)
+            data = self.autocomplete_name(name)
 
             return HttpResponse(data, content_type='application/json')
 
