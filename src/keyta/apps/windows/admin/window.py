@@ -52,6 +52,14 @@ def related_field_widget_factory(related_url, system_id, window_id, base_widget)
 
 
 class AddInline(admin.TabularInline):
+    def get_readonly_fields(self, request, obj=None):
+        readonly_fields = super().get_readonly_fields(request, obj)
+        return readonly_fields + ('system',)
+
+    @admin.display(description=_('System'))
+    def system(self, obj):
+        return ', '.join(obj.keyword.systems.values_list('name', flat=True))
+
     def formfield_for_dbfield(self, db_field, request: HttpRequest, **kwargs):
         field = super().formfield_for_dbfield(db_field, request, **kwargs)
 
@@ -171,6 +179,10 @@ class Variables(AddInline):
 
     def has_change_permission(self, request: HttpRequest, obj=None) -> bool:
         return False
+    
+    @admin.display(description=_('System'))
+    def system(self, obj):
+        return ', '.join(obj.variable.systems.values_list('name', flat=True))
 
 
 @admin.register(Window)
