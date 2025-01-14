@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-13 15:11+0100\n"
+"POT-Creation-Date: 2025-01-14 11:13+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -32,7 +32,7 @@ msgstr ""
 msgid "Masken"
 msgstr ""
 
-#: .\apps\actions\admin\action.py:60 .\apps\common\admin\base_admin.py:140
+#: .\apps\actions\admin\action.py:60 .\apps\common\admin\base_admin.py:141
 #: .\apps\sequences\admin\sequence.py:51 .\apps\testcases\forms.py:20
 #: .\apps\variables\admin\variable.py:30
 msgid "Maske auswählen"
@@ -73,7 +73,7 @@ msgid "Schlüsselwort auswählen"
 msgstr ""
 
 #: .\apps\actions\apps.py:8 .\apps\actions\models\action.py:36
-#: .\apps\actions\models\action.py:63 .\apps\windows\admin\window.py:89
+#: .\apps\actions\models\action.py:63 .\apps\windows\admin\window.py:97
 msgid "Aktionen"
 msgstr ""
 
@@ -81,8 +81,8 @@ msgstr ""
 #: .\apps\executions\admin\setup_teardown_inline.py:83
 #: .\apps\keywords\models\keyword.py:17
 #: .\apps\sequences\admin\action_call.py:45
-#: .\apps\sequences\admin\steps_inline.py:64 .\apps\windows\admin\window.py:88
-#: .\apps\windows\admin\window.py:96
+#: .\apps\sequences\admin\steps_inline.py:64 .\apps\windows\admin\window.py:96
+#: .\apps\windows\admin\window.py:104
 msgid "Aktion"
 msgstr ""
 
@@ -136,7 +136,7 @@ msgstr ""
 msgid "Schritte"
 msgstr ""
 
-#: .\apps\common\admin\base_admin.py:79 .\apps\common\admin\base_admin.py:100
+#: .\apps\common\admin\base_admin.py:80 .\apps\common\admin\base_admin.py:101
 #: .\apps\executions\admin\library_import_inline.py:55
 #: .\apps\keywords\admin\keyword_call.py:43
 #: .\apps\keywords\models\keyword.py:40 .\apps\libraries\admin\library.py:94
@@ -146,18 +146,19 @@ msgstr ""
 msgid "Dokumentation"
 msgstr ""
 
-#: .\apps\common\admin\base_admin.py:104
+#: .\apps\common\admin\base_admin.py:105
 #: .\apps\executions\admin\setup_teardown_inline.py:36
 #: .\apps\keywords\admin\keyword_parameters_inline.py:13
 #: .\apps\keywords\forms.py:89 .\apps\keywords\models\keyword.py:39
 #: .\apps\keywords\models\keyword_parameters.py:118
+#: .\apps\keywords\models\keywordcall_parameters.py:99
 #: .\apps\libraries\models\library_import_parameter.py:38
 #: .\apps\windows\models\window_keyword_parameter.py:16
 msgid "Parameters"
 msgstr "Parameter"
 
-#: .\apps\common\admin\base_admin.py:132 .\apps\sequences\admin\sequence.py:43
-#: .\apps\variables\admin\variable.py:68 .\apps\windows\admin\window.py:193
+#: .\apps\common\admin\base_admin.py:133 .\apps\sequences\admin\sequence.py:43
+#: .\apps\variables\admin\variable.py:68 .\apps\windows\admin\window.py:205
 msgid "System hinzufügen"
 msgstr ""
 
@@ -209,7 +210,7 @@ msgstr ""
 #: .\apps\executions\admin\testcase_execution_setupteardown.py:20
 #: .\apps\keywords\forms.py:62 .\apps\variables\apps.py:7
 #: .\apps\variables\models\variable.py:36
-#: .\apps\variables\models\variable.py:87 .\apps\windows\admin\window.py:151
+#: .\apps\variables\models\variable.py:87 .\apps\windows\admin\window.py:159
 msgid "Referenzwerte"
 msgstr ""
 
@@ -261,8 +262,6 @@ msgid "Test"
 msgstr ""
 
 #: .\apps\executions\models\keyword_execution_call.py:27
-#: .\apps\keywords\models\keywordcall_parameters.py:98
-#: .\apps\keywords\models\keywordcall_parameters.py:99
 msgid "Aufrufparameter"
 msgstr ""
 
@@ -306,7 +305,7 @@ msgstr ""
 #: .\apps\resources\models\resource.py:6 .\apps\systems\models.py:21
 #: .\apps\testcases\admin\testcase.py:30 .\apps\testcases\models\testcase.py:13
 #: .\apps\variables\admin\variable.py:52 .\apps\variables\models\variable.py:12
-#: .\apps\variables\models\variable.py:48 .\apps\windows\admin\window.py:183
+#: .\apps\variables\models\variable.py:48 .\apps\windows\admin\window.py:195
 #: .\apps\windows\models\window.py:15
 msgid "Name"
 msgstr ""
@@ -328,6 +327,7 @@ msgstr ""
 
 #: .\apps\keywords\admin\keyword_parameters_inline.py:12
 #: .\apps\keywords\models\keyword_parameters.py:117
+#: .\apps\keywords\models\keywordcall_parameters.py:98
 #: .\apps\libraries\models\library_import_parameter.py:37
 #: .\apps\windows\models\window_keyword_parameter.py:15
 msgid "Parameter"
@@ -380,8 +380,8 @@ msgstr ""
 #: .\apps\keywords\models\keyword.py:18 .\apps\sequences\models\sequence.py:40
 #: .\apps\sequences\models\sequence.py:56
 #: .\apps\testcases\admin\steps_inline.py:28
-#: .\apps\testcases\admin\test_step.py:34 .\apps\windows\admin\window.py:119
-#: .\apps\windows\admin\window.py:127
+#: .\apps\testcases\admin\test_step.py:34 .\apps\windows\admin\window.py:127
+#: .\apps\windows\admin\window.py:135
 msgid "Sequenz"
 msgstr ""
 
@@ -401,7 +401,7 @@ msgstr ""
 #: .\apps\systems\apps.py:8 .\apps\systems\models.py:29
 #: .\apps\testcases\admin\testcase.py:34 .\apps\testcases\models\testcase.py:25
 #: .\apps\variables\admin\variable.py:55 .\apps\variables\models\variable.py:23
-#: .\apps\windows\admin\window.py:185 .\apps\windows\admin\window_keyword.py:32
+#: .\apps\windows\admin\window.py:197 .\apps\windows\admin\window_keyword.py:40
 #: .\apps\windows\models\window.py:13
 msgid "Systeme"
 msgstr ""
@@ -449,8 +449,8 @@ msgstr ""
 
 #: .\apps\keywords\models\keywordcall_parameter_source.py:9
 #: .\apps\variables\models\variable.py:35
-#: .\apps\variables\models\variable.py:86 .\apps\windows\admin\window.py:150
-#: .\apps\windows\admin\window.py:158
+#: .\apps\variables\models\variable.py:86 .\apps\windows\admin\window.py:158
+#: .\apps\windows\admin\window.py:166
 msgid "Referenzwert"
 msgstr ""
 
@@ -568,7 +568,7 @@ msgid "Globale Aktionen"
 msgstr ""
 
 #: .\apps\sequences\apps.py:8 .\apps\sequences\models\sequence.py:41
-#: .\apps\sequences\models\sequence.py:57 .\apps\windows\admin\window.py:120
+#: .\apps\sequences\models\sequence.py:57 .\apps\windows\admin\window.py:128
 msgid "Sequenzen"
 msgstr ""
 
@@ -592,7 +592,8 @@ msgstr ""
 msgid "Automatisierung"
 msgstr ""
 
-#: .\apps\systems\models.py:28
+#: .\apps\systems\models.py:28 .\apps\windows\admin\window.py:59
+#: .\apps\windows\admin\window.py:183
 msgid "System"
 msgstr ""
 
@@ -629,11 +630,11 @@ msgid "System unabhängig"
 msgstr ""
 
 #: .\apps\variables\admin\variable.py:75
-#: .\apps\windows\admin\window_keyword.py:38
+#: .\apps\windows\admin\window_keyword.py:16
 msgid "Systemweit"
 msgstr ""
 
-#: .\apps\windows\admin\window.py:72
+#: .\apps\windows\admin\window.py:80
 msgid "Klicke auf das Plus-Symbol"
 msgstr ""
 

@@ -95,5 +95,5 @@ class KeywordCallParameter(models.Model):
         return self.current_value
 
     class Meta:
-        verbose_name = _('Aufrufparameter')
-        verbose_name_plural = _('Aufrufparameter')
+        verbose_name = _('Parameter')
+        verbose_name_plural = _('Parameters')
