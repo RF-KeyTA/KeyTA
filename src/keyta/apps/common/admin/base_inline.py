@@ -14,7 +14,7 @@ class TabularInlineWithDelete(admin.TabularInline):
             return ''
 
         return link(
-            obj.get_delete_url() + "?ref=" + self.url + obj.get_tab_url(self.tab_name),
+            obj.get_delete_url() + "?ref=" + self.url + obj.get_tab_url(getattr(self, 'tab_name', None)),
             '<i class="fa-solid fa-trash" '
             'style="font-size: 30px; margin-top: 3px"></i>'
         )
