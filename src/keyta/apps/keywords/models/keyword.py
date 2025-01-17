@@ -1,5 +1,5 @@
 import re
-from xml.etree import ElementTree
+from html.parser import HTMLParser
 
 from django.db import models
 from django.db.models import Q
@@ -7,6 +7,18 @@ from django.utils.translation import gettext as _
 
 from apps.common.abc import AbstractBaseModel
 from apps.rf_export.keywords import RFKeyword
+
+
+class HTML2Text(HTMLParser):
+    def __init__(self, *, convert_charrefs = True):
+        self.texts = []
+        super().__init__(convert_charrefs=convert_charrefs)
+
+    def handle_data(self, data):
+        self.texts.append(data)
+
+    def get_text(self):
+        return '\n'.join(self.texts)
 
 
 class KeywordType(models.TextChoices):
@@ -79,9 +91,12 @@ class Keyword(AbstractBaseModel):
         kwargs = self.parameters.kwargs()
         return_value = self.return_value.first()
 
+        html_parser = HTML2Text()
+        html_parser.feed(self.documentation)
+
         return {
             'name': self.id_name,
-            'doc': ''.join(ElementTree.XML('<doc>' + self.documentation + '</doc>').itertext()),
+            'doc': html_parser.get_text(),
             'args': [arg.name for arg in args],
             'kwargs': {kwarg.name: kwarg.default_value for kwarg in kwargs},
             'steps': [
