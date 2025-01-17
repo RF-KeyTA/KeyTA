@@ -41,6 +41,9 @@ class Windows(admin.TabularInline):
         formset.form.base_fields['window'].queryset = windows
         return formset
 
+    def has_change_permission(self, request, obj=None) -> bool:
+        return False
+
 
 @admin.register(Variable)
 class VariableAdmin(BaseAdmin):
