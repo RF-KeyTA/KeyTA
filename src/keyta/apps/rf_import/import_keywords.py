@@ -16,7 +16,7 @@ from apps.resources.models import Resource
 
 def get_libdoc_json(library_or_resource: str):
     libdoc_json = Path(tempfile.gettempdir()) / f"{library_or_resource}.json"
-    os.system(f'libdoc {library_or_resource} {libdoc_json}')
+    os.system(f'libdoc "{library_or_resource}" "{libdoc_json}"')
 
     with open(libdoc_json, encoding='utf-8') as file:
         return json.load(file)
