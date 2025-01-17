@@ -100,7 +100,7 @@ class LibraryAdmin(BaseAdmin):
         inlines = [Keywords]
 
         if library and library.has_parameters:
-            return [InitArguments] + inlines
+            return inlines + [InitArguments]
 
         if library:
             return inlines
