@@ -6,17 +6,17 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import gettext as _
 
 from apps.common.admin import BaseAdmin
+from apps.common.admin.base_inline import AddInline
 from apps.common.forms import form_with_select
 from apps.common.widgets import ModelSelect2AdminWidget, link
-from apps.windows.models import Window
+from apps.windows.models import Window, SystemWindow
 
 from .models import System
 
 
-class Windows(admin.TabularInline):
+class Windows(AddInline):
     model = Window.systems.through
     extra = 0
-    max_num = 0
     can_delete = False
     show_change_link = True
     verbose_name = _('Maske')
@@ -31,11 +31,21 @@ class Windows(admin.TabularInline):
         }
     )
 
+    related_field_name = 'window'
+    related_field_model = SystemWindow
+
     def get_queryset(self, request):
         return super().get_queryset(request).order_by('window__name')
 
     def has_change_permission(self, request, obj=None):
         return False
+    
+    def related_field_widget_url_params(self, request):
+        system_id = request.resolver_match.kwargs['object_id']
+
+        return {
+            'systems': system_id 
+        }
 
 
 @admin.register(System)
@@ -88,7 +98,7 @@ class SystemAdmin(BaseAdmin):
     def get_inlines(self, request, obj):
         system: System = obj
 
-        if system and system.windows.first():
+        if system:
             return self.inlines
 
         return []

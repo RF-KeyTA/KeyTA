@@ -3,6 +3,7 @@ from itertools import groupby
 import django
 from django import forms
 from django.conf import settings
+from django.contrib.admin.widgets import RelatedFieldWidgetWrapper
 from django.forms.models import ModelChoiceIterator
 from django.utils.safestring import mark_safe
 
@@ -186,3 +187,31 @@ class GroupedByLibrary(GroupedChoiceIterator):
 
 class GroupedByResource(GroupedChoiceIterator):
     group_by = 'resource'
+
+
+class CustomRelatedFieldWidgetWrapper(RelatedFieldWidgetWrapper):
+    def __init__(self, related_url, url_params, *args, **kwargs) -> None:
+            self.related_url = related_url
+            self.url_params = '&'.join([
+                f'{name}={value}'
+                for name, value in url_params.items()
+            ])
+            super().__init__(*args, **kwargs)
+
+    def get_context(self, name, value, attrs):
+            context = super().get_context(name, value, attrs)
+            context['url_params'] += '&' + self.url_params
+            return context
+    
+    def get_related_url(self, info, action, *args):
+        return self.related_url
+
+
+def related_field_widget_factory(related_url, url_params, base_widget):
+    return CustomRelatedFieldWidgetWrapper(
+        related_url,
+        url_params,
+        base_widget.widget,
+        base_widget.rel,
+        base_widget.admin_site
+    )

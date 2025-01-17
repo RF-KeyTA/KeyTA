@@ -59,3 +59,13 @@ class WindowDocumentation(Window):
         proxy = True
         verbose_name = _('Dokumentation der Maske')
         verbose_name_plural = _('Dokumentation der Masken')
+
+
+class SystemWindow(Window):
+    def __str__(self):
+        return str(self.name)
+
+    class Meta:
+        proxy = True
+        verbose_name = _('Maske')
+        verbose_name_plural = _('Masken')
