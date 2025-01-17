@@ -10,6 +10,24 @@ from robot.run import run # type: ignore
 from .IProcess import IProcess
 
 
+def valid_dirname(dirname: str):
+    subs = {
+        ":": " -",
+        "\"": "",
+        "/": "",
+        "\\": "",
+        "?": "",
+        "*": "",
+        "|": "",
+        "<": "",
+        ">": ""
+    }
+
+    return ''.join([
+        subs.get(c,c ) for c in dirname
+    ])
+
+
 def read_file_from_disk(path):
     with open(path, 'r', encoding='utf-8') as file_handle:
         return file_handle.read()
@@ -25,7 +43,7 @@ def robot_run(
         testsuite: str,
         robot_args: dict[str, str]
 ):
-    tmp_dir = Path(tempfile.gettempdir()) / 'KeyTA' / testsuite_name
+    tmp_dir = Path(tempfile.gettempdir()) / 'KeyTA' / valid_dirname(testsuite_name)
     tmp_dir.mkdir(parents=True, exist_ok=True)
     output_dir = tmp_dir / 'output'
     robot_file = tmp_dir / 'Testsuite.robot'
