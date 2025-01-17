@@ -31,6 +31,9 @@ class Windows(admin.TabularInline):
         }
     )
 
+    def get_queryset(self, request):
+        return super().get_queryset(request).order_by('window__name')
+
     def has_change_permission(self, request, obj=None):
         return False
 
