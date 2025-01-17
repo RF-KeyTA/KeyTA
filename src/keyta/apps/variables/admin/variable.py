@@ -72,7 +72,7 @@ class VariableAdmin(BaseAdmin):
 
     def autocomplete_name(self, name: str):
         return json.dumps([
-            '%s (%s -> %s)' % (name, systems, windows or _('Systemweit'))
+            '%s (%s :: %s)' % (name, systems, windows or _('Systemweit'))
             for name, systems, windows in
             self.model.objects.values_list('name', 'systems__name', 'windows__name')
             .filter(name__icontains=name)
