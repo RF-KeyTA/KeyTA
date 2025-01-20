@@ -1,26 +1,12 @@
-from django import forms
 from django.contrib import admin
 from django.utils.translation import gettext as _
 
 from apps.common.admin import SortableTabularInlineWithDelete
+
 from apps.common.widgets import open_link_in_modal
-from ..models import KeywordCall, Keyword
 
-
-class StepsForm(forms.ModelForm):
-    def save(self, commit=True):
-        kw_call: KeywordCall = super().save(commit)
-
-        if kw_call.pk and 'to_keyword' in self.changed_data:
-            to_keyword: Keyword = self.cleaned_data['to_keyword']
-
-            for param in kw_call.parameters.all():
-                param.delete()
-
-            for param in to_keyword.parameters.all():
-                kw_call.add_parameter(param)
-
-        return kw_call
+from ..forms import StepsForm
+from ..models import KeywordCall
 
 
 class StepsInline(SortableTabularInlineWithDelete):
