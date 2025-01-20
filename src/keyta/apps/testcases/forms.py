@@ -32,3 +32,6 @@ TestStepsForm = forms.modelform_factory(
         )
     }
 )
+
+TestStepsForm.fields_can_view_related = ['window']
+TestStepsForm.fields_can_change_related = ['to_keyword']
