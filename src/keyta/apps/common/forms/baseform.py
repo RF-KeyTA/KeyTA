@@ -5,15 +5,16 @@ from apps.common.widgets import BaseSelect, BaseSelectMultiple
 
 class BaseForm(forms.ModelForm):
     fields_can_view_related = []
+    fields_can_change_related = []
 
     def __init__(self, *args, **kwargs):
-        super(BaseForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         for field_name, field in self.fields.items():
             field.widget.can_add_related = False
-            field.widget.can_change_related = False
+            field.widget.can_change_related = field_name in self.fields_can_change_related and self.initial
             field.widget.can_delete_related = False
-            field.widget.can_view_related = field_name in self.fields_can_view_related
+            field.widget.can_view_related = field_name in self.fields_can_view_related and self.initial
 
 
 def form_with_select(
@@ -22,7 +23,8 @@ def form_with_select(
         placeholder: str,
         labels=None,
         select_many=False,
-        can_view_related=False
+        can_view_related=False,
+        can_change_related=False
 ):
 
     if select_many:
@@ -42,5 +44,8 @@ def form_with_select(
 
     if can_view_related:
         form.fields_can_view_related = [select_field]
+
+    if can_change_related:
+        form.fields_can_change_related = [select_field]
 
     return form
