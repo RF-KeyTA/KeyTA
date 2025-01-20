@@ -1,7 +1,6 @@
 from django.contrib import admin
 from django.utils.translation import gettext as _
 
-from apps.actions.models import Action
 from apps.common.widgets import open_link_in_modal
 from apps.keywords.admin import KeywordCallAdmin, KeywordCallParametersInline
 from apps.keywords.forms import KeywordCallParameterFormset
@@ -45,6 +44,6 @@ class ActionCallAdmin(KeywordCallAdmin):
     @admin.display(description=_('Aktion'))
     def keyword_doc(self, obj: ActionCall):
         return open_link_in_modal(
-            Action(obj.to_keyword.pk).get_docadmin_url(),
+            obj.to_keyword.get_docadmin_url(),
             obj.to_keyword.name
         )
