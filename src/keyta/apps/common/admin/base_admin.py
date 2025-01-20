@@ -102,22 +102,6 @@ class BaseDocumentationAdmin(BaseReadOnlyAdmin):
     def dokumentation(self, obj):
         return mark_safe(obj.documentation)
 
-    @admin.display(description=_('Parameters'))
-    def args_table(self, obj):
-        return mark_safe(obj.args_doc)
-
-    def get_fields(self, request: HttpRequest, obj):
-        if hasattr(obj, 'args_doc'):
-            return ['args_table'] + self.fields
-        
-        return self.fields
-    
-    def get_readonly_fields(self, request: HttpRequest, obj):
-        if hasattr(obj, 'args_doc'):
-            return ['args_table'] + self.readonly_fields
-        
-        return self.readonly_fields
-
 
 class BaseAddAdmin(BaseAdmin):
     def get_form(self, request, obj=None, change=False, **kwargs):

@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.db.models.functions import Lower
+from django.utils.safestring import mark_safe
 from django.utils.translation import gettext as _
 from django.http import HttpRequest, HttpResponseRedirect
 
@@ -52,4 +53,20 @@ class KeywordAdmin(SortableAdminBase, BaseAdminWithDoc):  # CloneModelAdminMixin
 
 @admin.register(KeywordDocumentation)
 class KeywordDocumentationAdmin(BaseDocumentationAdmin):
-    pass
+    @admin.display(description=_('Parameters'))
+    def args_table(self, obj):
+        return mark_safe(obj.args_doc)
+
+    def get_fields(self, request: HttpRequest, obj):
+        keyword: Keyword = obj
+        if keyword.args_doc:
+            return ['args_table'] + self.fields
+        
+        return self.fields
+    
+    def get_readonly_fields(self, request: HttpRequest, obj):
+        keyword: Keyword = obj
+        if keyword.args_doc:
+            return ['args_table'] + self.readonly_fields
+        
+        return self.readonly_fields
