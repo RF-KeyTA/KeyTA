@@ -3,7 +3,7 @@ from itertools import groupby
 from django.utils.translation import gettext as _
 
 from apps.actions.models import Action
-from apps.common.widgets import BaseSelect
+from apps.common.forms import form_with_select
 from apps.keywords.admin import StepsInline
 from apps.keywords.models import Keyword
 from apps.windows.models import Window
@@ -15,6 +15,16 @@ class SequenceSteps(StepsInline):
     model = ActionCall
     fk_name = 'from_keyword'
 
+    form = form_with_select(
+        ActionCall,
+        'to_keyword',
+        _('Aktion auswählen'),
+        {
+            'to_keyword': _('Aktion')
+        },
+        can_change_related=True
+    )
+
     def get_formset(self, request, obj=None, **kwargs):
         formset = super().get_formset(request, obj, **kwargs)
         sequence: Sequence = obj
@@ -25,8 +35,8 @@ class SequenceSteps(StepsInline):
         window_actions = [[
             window.name, [
                 (action.pk, action.name)
-                for action in 
-                Action.objects.filter(windows=window)
+                for action in Action.objects
+                .filter(windows=window)
                 .order_by('name')
             ]
         ]]
@@ -61,7 +71,5 @@ class SequenceSteps(StepsInline):
                 global_actions +
                 resource_kws
         )
-        field.label = _('Aktion')
-        field.widget = BaseSelect(_('Aktion auswählen'))
 
         return formset
