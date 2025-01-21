@@ -1,5 +1,5 @@
 {% load i18n static %}
-<div class="related-widget-wrapper mr-4" {% if not model_has_limit_choices_to %}data-model-ref="{{ model }}"{% endif %}>
+<div class="related-widget-wrapper {% if can_change_related or can_view_related %} mr-4 {% endif %}" {% if not model_has_limit_choices_to %}data-model-ref="{{ model }}"{% endif %}>
     {{ rendered_widget }}
     {% block links %}
         {% spaceless %}
