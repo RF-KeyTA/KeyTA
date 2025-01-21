@@ -156,3 +156,12 @@ iframe.related-iframe {
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
 }
+
+.table td {
+    vertical-align: middle !important;
+}
+
+.inline-deletelink {
+    float: none !important;
+    margin: 0 !important;
+}
