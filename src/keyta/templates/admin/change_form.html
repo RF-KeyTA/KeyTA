@@ -173,6 +173,10 @@
                 django.jQuery('body.popup select').on('change', function() {
                     $.post(url, $('form').serialize() + "&_continue=")
                 });
+
+                django.jQuery('body.popup input[type="text"]').on('blur', function() {
+                    $.post(url, $('form').serialize() + "&_continue=")
+                });
                 
                 $(document).on('click', 'button.close', function() {
                     $('body.popup .button-save').click()
@@ -196,7 +200,9 @@
                     const selects = django.jQuery(row).find('select')
                     const first_select = selects.first()
                     const last_select = selects.last()
-                    
+                    const inputs = row.find('input[type="text"]')
+                    const last_input = inputs.last()
+
                     if(selects.length == 2 && !row.hasClass('has_original')) {
                         last_select.prop('disabled', true)
                         first_select.on('change', function() {
@@ -207,22 +213,24 @@
                     last_select.on('change', function() {
                         $(save_button).click()
                     })
+
+                    if(inputs.length <= 2 && !row.hasClass('has_original')) {
+                        last_input.on('blur', function () {
+                            $(save_button).click()
+                        })
+                    }
                 })
-                
+
                 $('.form-row').on('dragend', function() {
                     $(save_button).click()
                 })
 
-                $('input[name="name"]').on('blur', function () {
-                    $(save_button).click()
-                })
-                
                 $('input[type="checkbox"]').not('body.popup input').on('change', function () {
                     $(save_button).click()
                 })
 
-                $('input').not('[name="name"], input[type="checkbox"]').on('blur', function () {
-                    $.post(url, $('form').serialize() + "&_continue=")
+                $('input').not('.form-row input, input[type="hidden"], input[type="checkbox"]').on('blur', function () {
+                    $(save_button).click()
                 })
             }
         });
