@@ -21,9 +21,9 @@
                         </th>
                         {% endif %}
                         {% endfor %}
-                    {% if inline_admin_formset.formset.can_delete and inline_admin_formset.has_delete_permission %}
+                        {% if inline_admin_formset.formset.can_delete and inline_admin_formset.has_delete_permission %}
                         <th class="delete pb-1" style="font-size: 20px; padding-left: 1.2pc"></th>
-                    {% endif %}
+                        {% endif %}
                     </tr>
                 </thead>
                 <tbody id="{{ inline_admin_formset.formset.prefix }}-sortable">
@@ -55,6 +55,9 @@
                                     {% endfor %}
                                 {% endfor %}
                             {% endfor %}
+                            {% if inline_admin_formset.formset.can_delete and inline_admin_formset.has_delete_permission %}
+                            <td class="delete"></td>
+                            {% endif %}
                         </tr>
                     {% endfor %}
                 </tbody>

@@ -104,7 +104,7 @@
             if (row.is("tr")) {
                 // If the forms are laid out in table rows, insert
                 // the remove button into the last table cell:
-                row.children(":last").append('<p><a class="' + options.deleteCssClass + '" href="#">' + options.deleteText + "</a></p>");
+                row.children(".delete").append('<p class="mt-2"><a class="' + options.deleteCssClass + '" href="#">' + options.deleteText + "</a></p>");
             } else if (row.is("ul") || row.is("ol")) {
                 // If they're laid out as an ordered/unordered list,
                 // insert an <li> after the last list item:
