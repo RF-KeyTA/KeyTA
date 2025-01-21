@@ -193,7 +193,18 @@
                 
                 django.jQuery('.form-row').not('body.popup .form-row, .empty-form .form-row').each(function() {
                     const row = $(this)
-                    django.jQuery(row).find('select').last().on('change', function() {
+                    const selects = django.jQuery(row).find('select')
+                    const first_select = selects.first()
+                    const last_select = selects.last()
+                    
+                    if(selects.length == 2 && !row.hasClass('has_original')) {
+                        last_select.prop('disabled', true)
+                        first_select.on('change', function() {
+                            last_select.prop('disabled', false)
+                        })
+                    }
+
+                    last_select.on('change', function() {
                         $(save_button).click()
                     })
                 })
