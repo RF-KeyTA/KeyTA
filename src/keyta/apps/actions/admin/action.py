@@ -50,7 +50,7 @@ class Windows(TabularInlineWithDelete):
     model = ActionWindow
     fields = ['window']
     extra = 0
-    tab_name = 'windows'
+    tab_name = _('Masken').lower()
     verbose_name = _('Maske')
     verbose_name_plural = _('Masken')
 
@@ -86,7 +86,7 @@ class Libraries(TabularInlineWithDelete):
         'library',
         _('Bibliothek auswählen')
     )
-    tab_name = 'Libraries'
+    tab_name = _('Bibliotheken').lower()
     verbose_name = _('Bibliothek')
     verbose_name_plural = _('Bibliotheken')
 
