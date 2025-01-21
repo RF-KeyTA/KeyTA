@@ -8,7 +8,7 @@ from ..models import KeywordParameter
 class Parameters(SortableTabularInlineWithDelete):
     model = KeywordParameter
     fields = ['name']
-    extra = 0
+    extra = 1
     verbose_name = _('Parameter')
     verbose_name_plural = _('Parameters')
 
