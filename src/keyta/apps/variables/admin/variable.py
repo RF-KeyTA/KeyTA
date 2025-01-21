@@ -14,7 +14,7 @@ from ..models import Variable, VariableValue, VariableWindow, WindowVariable
 class Values(TabularInlineWithDelete):
     model = VariableValue
     fields = ['name', 'value']
-    extra = 0
+    extra = 1
     min_num = 1
 
 
