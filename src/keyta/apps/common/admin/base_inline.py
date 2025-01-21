@@ -53,6 +53,14 @@ class SortableTabularInlineWithDelete(
 ):
     template = 'sortable_tabular.html'
 
+    # 1. TabularInlineWithDelete appends the Delete field
+    # 2. admin/js/inlines.js inserts the Remove button in the last cell of a row
+    # 3. SortableInlineAdminMixin appends the hidden default_order_field
+    # This is incompatible with 1. and 2. Therefore, we prepend the default_order_field
+    def get_fields(self, *args, **kwargs):
+        *fields, default_order_field = list(super().get_fields(*args, **kwargs))
+        return [self.default_order_field] + fields
+
 
 class AddInline(admin.TabularInline):
     def formfield_for_dbfield(self, db_field, request: HttpRequest, **kwargs):

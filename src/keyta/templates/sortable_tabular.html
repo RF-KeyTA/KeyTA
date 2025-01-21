@@ -55,9 +55,6 @@
                                     {% endfor %}
                                 {% endfor %}
                             {% endfor %}
-                            {% if inline_admin_formset.formset.can_delete and inline_admin_formset.has_delete_permission %}
-                                <td class="delete"></td>
-                            {% endif %}
                         </tr>
                     {% endfor %}
                 </tbody>
