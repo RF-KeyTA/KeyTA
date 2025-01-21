@@ -8,7 +8,7 @@ from apps.common.admin import BaseAdmin, BaseAddAdmin, TabularInlineWithDelete
 from apps.common.forms import form_with_select
 from apps.windows.models import Window
 
-from ..models import Variable, VariableValue, WindowVariable
+from ..models import Variable, VariableValue, VariableWindow, WindowVariable
 
 
 class Values(TabularInlineWithDelete):
@@ -18,14 +18,16 @@ class Values(TabularInlineWithDelete):
     min_num = 1
 
 
-class Windows(admin.TabularInline):
-    model = Variable.windows.through
+class Windows(TabularInlineWithDelete):
+    model = VariableWindow
     extra = 0
+    fields = ['window']
+    tab_name = _('Masken').lower()
     verbose_name = _('Maske')
     verbose_name_plural = _('Masken')
 
     form = form_with_select(
-        Variable.windows.through,
+        VariableWindow,
         'window',
         _('Maske auswählen'),
         labels={
@@ -105,6 +107,11 @@ class VariableAdmin(BaseAdmin):
 
 @admin.register(VariableValue)
 class VariableValueAdmin(BaseAdmin):
+    pass
+
+
+@admin.register(VariableWindow)
+class VariableWindowAdmin(BaseAdmin):
     pass
 
 

@@ -233,6 +233,7 @@ JAZZMIN_SETTINGS = {
         'testcases.teststep',
         'testcases.testcaseexecution',
         'variables.variablevalue',
+        'variables.variablewindow',
         'variables.windowvariable',
         'windows.systemwindow',
         'windows.windowdocumentation',

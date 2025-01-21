@@ -77,6 +77,17 @@ class VariableValue(AbstractBaseModel):
         verbose_name_plural = _('Werte')
 
 
+class VariableWindow(AbstractBaseModel, Variable.windows.through):
+    def __str__(self):
+        return str(self.window)
+
+    class Meta:
+        auto_created = True
+        proxy = True
+        verbose_name = _('Beziehung zu Maske')
+        verbose_name_plural = _('Beziehungen zu Masken')
+
+
 class WindowVariable(Variable):
     def __str__(self):
         return str(self.name)
