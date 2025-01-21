@@ -154,16 +154,16 @@
             {% endif %}
 
             $('#id_name').typeahead({
-                    source: function (query, process) {
-                        if (query.length > 2) {
-                            return $.get(
-                                url + "?autocomplete", 
-                                {name: query}, 
-                                (data) => process(data)
-                            );
-                        }
+                source: function (query, process) {
+                    if (query.length > 2) {
+                        return $.get(
+                            url + "?autocomplete", 
+                            {name: query}, 
+                            (data) => process(data)
+                        );
                     }
-                });
+                }
+            });
 
             if (url.includes("/change")) {
                 const save_button = '.button-save'
