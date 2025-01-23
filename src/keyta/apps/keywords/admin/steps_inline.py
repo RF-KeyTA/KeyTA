@@ -11,9 +11,9 @@ from ..models import KeywordCall
 
 class StepsInline(SortableTabularInlineWithDelete):
     model = KeywordCall
-    fields = ['to_keyword', 'first_arg', 'args']
+    fields = ['to_keyword', 'args']
     form = StepsForm
-    readonly_fields = ['first_arg', 'args']
+    readonly_fields = ['args']
     extra = 1  # Must be > 0 in order for SequenceSteps to work
 
     @admin.display(description=_('Werte'))
@@ -33,7 +33,3 @@ class StepsInline(SortableTabularInlineWithDelete):
                 kw_call.get_admin_url(),
                 '<i class=" fa-solid fa-list" style="font-size: 36px"></i>'
             )
-
-    @admin.display(description=_('1. Parameter'))
-    def first_arg(self, obj: KeywordCall):
-        return obj.parameters.first().current_value or "-"
