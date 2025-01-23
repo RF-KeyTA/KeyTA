@@ -15,3 +15,7 @@ class KeywordCallParametersInline(admin.TabularInline):
 
     def name(self, obj: KeywordCallParameter):
         return obj.name.replace('_', ' ')
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).order_by('parameter__position')
+    
