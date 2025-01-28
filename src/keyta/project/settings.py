@@ -231,7 +231,7 @@ JAZZMIN_SETTINGS = {
         'sequences.sequenceexecution',
         'sequences.sequenceresourceimport',
         'sequences.windowsequence',
-        'testcases.teststep',
+        'teststeps.teststep',
         'testcases.testcaseexecution',
         'variables.variablevalue',
         'variables.variablewindow',
