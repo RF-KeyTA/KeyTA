@@ -3,7 +3,7 @@ from typing import Any
 from django.core.management.base import BaseCommand
 from django.utils.translation import gettext as _
 
-from apps.rf_import.import_library import import_library
+from keyta.rf_import.import_library import import_library
 
 
 class Command(BaseCommand):

@@ -1,4 +1,5 @@
 from apps.resources.models import Resource
+
 from .import_keywords import get_libdoc_json, import_keywords
 
 

@@ -1,5 +1,6 @@
-from importlib import import_module
 import json
+from importlib import import_module
+
 from django.contrib import admin, messages
 from django.db.models import QuerySet
 from django.http import HttpRequest
@@ -10,7 +11,8 @@ from django.utils.translation import gettext as _
 from keyta.admin.base_admin import BaseAdmin
 from keyta.forms import OptionalArgumentFormSet
 from keyta.widgets import link
-from apps.rf_import.import_library import import_library
+from keyta.rf_import.import_library import import_library
+
 from ..forms import LibraryForm
 from ..models import (
     Library,
