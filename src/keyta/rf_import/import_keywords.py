@@ -26,14 +26,17 @@ def import_keywords(libdoc_json, library_or_resource):
     keyword_names = set()
     deprecated_keywords = set()
 
-    for keyword in libdoc_json["keywords"]:
-        name = keyword["name"]
+    lib_keyword: dict
+    for lib_keyword in libdoc_json["keywords"]:
+        name = lib_keyword["name"]
 
-        if keyword.get('deprecated', False):
+        if lib_keyword.get('deprecated', False):
             deprecated_keywords.add(name)
             continue
 
         keyword_names.add(name)
+
+        kw = None
 
         if isinstance(library_or_resource, Library):
             kw, created = Keyword.objects.update_or_create(
@@ -41,9 +44,9 @@ def import_keywords(libdoc_json, library_or_resource):
                 type=KeywordType.LIBRARY,
                 name=name,
                 defaults={
-                    'args_doc': args_table(keyword["args"]),
-                    'documentation': keyword["doc"],
-                    'short_doc': keyword['shortdoc']
+                    'args_doc': args_table(lib_keyword["args"]),
+                    'documentation': lib_keyword["doc"],
+                    'short_doc': lib_keyword['shortdoc']
                 }
             )
 
@@ -53,14 +56,14 @@ def import_keywords(libdoc_json, library_or_resource):
                 type=KeywordType.RESOURCE,
                 name=name,
                 defaults={
-                    'args_doc': args_table(keyword["args"]),
-                    'documentation': keyword["doc"],
-                    'short_doc': keyword['shortdoc']
+                    'args_doc': args_table(lib_keyword["args"]),
+                    'documentation': lib_keyword["doc"],
+                    'short_doc': lib_keyword['shortdoc']
                 }
             )
 
         kwarg_names = set()
-        for idx, arg, in enumerate(keyword["args"]):
+        for idx, arg, in enumerate(lib_keyword["args"]):
             name = arg["name"]
             if not name:
                 continue
@@ -105,9 +108,9 @@ def import_keywords(libdoc_json, library_or_resource):
     library_or_resource.documentation = replace_links(library_or_resource.documentation, library_or_resource, heading_links=False)
     library_or_resource.save()
 
-    for lib_keyword in library_or_resource.keywords.all():
-        lib_keyword.documentation = replace_links(lib_keyword.documentation, library_or_resource)
-        lib_keyword.save()
+    for keyword in library_or_resource.keywords.all():
+        keyword.documentation = replace_links(keyword.documentation, library_or_resource)
+        keyword.save()
 
 
 def format_arg(arg: dict):
