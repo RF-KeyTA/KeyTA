@@ -4,6 +4,8 @@ from django.utils.translation import gettext as _
 
 from keyta.admin.base_admin import BaseAdmin, BaseAddAdmin
 from keyta.admin.base_inline import TabularInlineWithDelete
+from keyta.forms.baseform import form_with_select
+
 from apps.executions.admin import KeywordExecutionInline
 from apps.keywords.admin import KeywordDocumentationAdmin
 from apps.libraries.models import Library
@@ -72,7 +74,7 @@ class Windows(TabularInlineWithDelete):
         formset.form.base_fields['window'].queryset = windows
         return formset
 
-    def has_change_permission(self, request: HttpRequest, obj) -> bool:
+    def has_change_permission(self, request: HttpRequest, obj=None) -> bool:
         return False
 
 
@@ -104,7 +106,7 @@ class Libraries(TabularInlineWithDelete):
 
         return field_queryset.exclude(id__in=imported_libraries)
 
-    def has_change_permission(self, request: HttpRequest, obj) -> bool:
+    def has_change_permission(self, request: HttpRequest, obj=None) -> bool:
         return False
 
 

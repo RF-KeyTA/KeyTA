@@ -1,4 +1,5 @@
 import json
+
 from django import forms
 from django.contrib import admin, messages
 from django.http import HttpRequest
@@ -7,7 +8,9 @@ from django.utils.translation import gettext as _
 
 from keyta.admin.base_admin import BaseAdmin
 from keyta.admin.base_inline import AddInline
+from keyta.forms import form_with_select
 from keyta.widgets import ModelSelect2AdminWidget, link
+
 from apps.windows.models import Window, SystemWindow
 
 from .models import System

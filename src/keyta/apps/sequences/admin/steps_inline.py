@@ -2,8 +2,9 @@ from itertools import groupby
 
 from django.utils.translation import gettext as _
 
+from keyta.forms import form_with_select
+
 from apps.actions.models import Action
-from apps.common.forms import form_with_select
 from apps.keywords.admin import StepsInline
 from apps.keywords.models import Keyword
 from apps.windows.models import Window

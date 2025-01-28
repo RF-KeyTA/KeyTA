@@ -1,4 +1,5 @@
-from apps.common.forms import BaseForm
+from keyta.forms import BaseForm
+
 from apps.keywords.models import Keyword, KeywordCall
 
 

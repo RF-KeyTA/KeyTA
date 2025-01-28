@@ -5,7 +5,9 @@ from django.utils.translation import gettext as _
 
 from keyta.admin.base_admin import BaseAddAdmin
 from keyta.admin.base_inline import TabularInlineWithDelete
+from keyta.forms import form_with_select
 from keyta.widgets import ModelSelect2MultipleAdminWidget, Select2MultipleWidget
+
 from apps.executions.admin import KeywordExecutionInline
 from apps.keywords.admin import KeywordDocumentationAdmin
 from apps.resources.models import Resource
@@ -15,7 +17,6 @@ from apps.windows.admin import (
     WindowKeywordAdminMixin,
     WindowKeywordReturnValues
 )
-from .steps_inline import SequenceSteps
 
 from ..models import (
     SequenceExecution,
@@ -24,6 +25,7 @@ from ..models import (
     SequenceResourceImport,
     WindowSequence
 )
+from .steps_inline import SequenceSteps
 
 
 class Execution(KeywordExecutionInline):
@@ -75,7 +77,7 @@ class Resources(TabularInlineWithDelete):
         imported_resources = self.get_queryset(request).values_list('resource_id', flat=True)
         return queryset.exclude(id__in=imported_resources)
 
-    def has_change_permission(self, request: HttpRequest, obj) -> bool:
+    def has_change_permission(self, request: HttpRequest, obj=None) -> bool:
         return False
 
 

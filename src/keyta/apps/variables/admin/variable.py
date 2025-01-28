@@ -1,4 +1,5 @@
 import json
+
 from django.contrib import admin
 from django.db.models.functions import Lower
 from django.http import HttpRequest
@@ -6,6 +7,8 @@ from django.utils.translation import gettext as _
 
 from keyta.admin.base_admin import BaseAdmin, BaseAddAdmin
 from keyta.admin.base_inline import TabularInlineWithDelete
+from keyta.forms import form_with_select
+
 from apps.windows.models import Window
 
 from ..models import Variable, VariableValue, VariableWindow, WindowVariable
