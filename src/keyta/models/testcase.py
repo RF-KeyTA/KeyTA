@@ -31,13 +31,13 @@ class AbstractTestCase(AbstractBaseModel):
         return self.name
 
     def create_execution(self):
-        libraries = self.systems.values_list('library', flat=True).distinct()
+        library_ids = self.systems.values_list('library', flat=True).distinct()
         execution = Execution.objects.create(testcase=self)
 
-        for library_id in libraries:
+        for library in Library.objects.filter(id__in=library_ids):
             ExecutionLibraryImport.objects.create(
                 execution=execution,
-                library=Library.objects.get(id=library_id)
+                library=library
             )
 
     @property
