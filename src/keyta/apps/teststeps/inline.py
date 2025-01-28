@@ -1,9 +1,11 @@
 from django.utils.translation import gettext as _
 
 from apps.keywords.admin import StepsInline
-from apps.testcases.forms import TestStepsForm
-from apps.testcases.models import TestStep, TestCase
+from apps.testcases.models import TestCase
 from apps.windows.models import Window
+
+from .models import TestStep
+from .forms import TestStepsForm
 
 
 class TestSteps(StepsInline):

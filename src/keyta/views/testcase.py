@@ -8,19 +8,18 @@ from adminsortable2.admin import SortableAdminBase
 from apps.common.admin import BaseAdmin
 from apps.common.widgets import BaseSelectMultiple
 from apps.executions.admin import ExecutionInline
-from apps.executions.models import Execution
+from apps.executions.models import TestCaseExecution
 from apps.rf_export.rfgenerator import gen_testsuite
+from apps.teststeps.inline import TestSteps
 
-from ..models import TestCase, TestCaseExecution
-from .steps_inline import TestSteps
+from keyta.models.testcase import AbstractTestCase
 
 
 class LocalExecution(ExecutionInline):
     model = TestCaseExecution
 
 
-@admin.register(TestCase)
-class TestCaseAdmin(SortableAdminBase, BaseAdmin):  # CloneModelAdminMixin
+class BaseTestCaseAdmin(SortableAdminBase, BaseAdmin):  # CloneModelAdminMixin
     list_display = [
         'system_list', 'name', 'description'
     ]
@@ -32,7 +31,7 @@ class TestCaseAdmin(SortableAdminBase, BaseAdmin):  # CloneModelAdminMixin
 
 
     @admin.display(description=_('Systeme'))
-    def system_list(self, obj: TestCase):
+    def system_list(self, obj: AbstractTestCase):
         return list(obj.systems.values_list('name', flat=True))
 
     change_form_template = 'admin/testcase/change_form.html'
@@ -74,7 +73,7 @@ class TestCaseAdmin(SortableAdminBase, BaseAdmin):  # CloneModelAdminMixin
         return field
 
     def get_inlines(self, request, obj):
-        testcase: TestCase = obj
+        testcase: AbstractTestCase = obj
 
         if not testcase:
             return []
@@ -90,5 +89,5 @@ class TestCaseAdmin(SortableAdminBase, BaseAdmin):  # CloneModelAdminMixin
         if not change:
             form.save_m2m()
 
-            testcase: TestCase = obj
-            Execution.objects.create(testcase=testcase)
+            testcase: AbstractTestCase = obj
+            TestCaseExecution.objects.create(testcase=testcase)

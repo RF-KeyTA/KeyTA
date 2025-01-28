@@ -15,4 +15,5 @@ from .resource_imports_inline import (
 )
 from .setup_teardown import SetupTeardownAdmin
 from .setup_teardown_parameters_inline import SetupTeardownParametersInline
+from .testcase_execution import TestCaseExecutionAdmin
 from .testcase_execution_setupteardown import TestCaseExecutionSetupTeardownAdmin

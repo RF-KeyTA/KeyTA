@@ -6,7 +6,7 @@ from apps.keywords.admin import KeywordCallParametersInline, KeywordCallAdmin
 from apps.keywords.forms import KeywordCallParameterFormset
 from apps.sequences.models import Sequence
 
-from ..models.test_step import TestStep
+from .models import TestStep
 
 
 class TestStepParameterFormset(KeywordCallParameterFormset):

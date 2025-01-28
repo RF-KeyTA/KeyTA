@@ -9,10 +9,8 @@ from apps.executions.admin import (
     ExecutionInline,
     SetupTeardownInline
 )
-from apps.executions.models import TestCaseExecutionSetupTeardown
+from apps.executions.models import TestCaseExecution, TestCaseExecutionSetupTeardown
 from apps.keywords.models import TestSetupTeardown
-
-from ..models import TestCaseExecution
 
 
 class TestCaseExecutionInline(ExecutionInline):

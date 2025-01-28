@@ -3,13 +3,14 @@ from django.contrib.auth.models import User
 from django.utils.translation import gettext as _
 
 from apps.actions.models import Action
-from apps.executions.errors import ValidationError
-from apps.executions.models import Execution
 from apps.keywords.models import KeywordCall, KeywordType
 from apps.libraries.models import LibraryImport
 from apps.rf_export.keywords import RFKeyword
 from apps.rf_export.testsuite import RFTestSuite
 from apps.sequences.models import Sequence
+
+from ..errors import ValidationError
+from .execution import Execution
 
 
 class TestCaseExecution(Execution):
