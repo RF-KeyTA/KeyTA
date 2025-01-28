@@ -55,7 +55,6 @@ class VariableAdmin(BaseAdmin):
     ordering = [Lower('name')]
     search_fields = ['name']
     search_help_text = _('Name')
-    ordering = [Lower('name')]
 
     @admin.display(description=_('Systeme'))
     def system_list(self, obj):

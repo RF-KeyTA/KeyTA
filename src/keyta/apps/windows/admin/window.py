@@ -171,9 +171,6 @@ class Variables(AddInline):
         readonly_fields = super().get_readonly_fields(request, obj)
         return readonly_fields + ('system',)
 
-    def has_change_permission(self, request: HttpRequest, obj=None) -> bool:
-        return False
-
 
 @admin.register(Window)
 class WindowAdmin(BaseAdminWithDoc):
