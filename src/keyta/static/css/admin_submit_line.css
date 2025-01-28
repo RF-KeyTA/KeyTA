@@ -21,3 +21,10 @@
 	font-size: 30px;
     color: var(--keyta-secondary-color);
 }
+
+.clone-link .fa-copy {
+	font-size: 30px;
+    --fa-primary-color: white;
+    --fa-secondary-color: var(--keyta-secondary-color);
+    --fa-secondary-opacity: 1;
+}
