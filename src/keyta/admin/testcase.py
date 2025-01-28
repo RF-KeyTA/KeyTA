@@ -7,22 +7,20 @@ from adminsortable2.admin import SortableAdminBase
 from model_clone import CloneModelAdminMixin
 
 from keyta.admin.base_admin import BaseAdmin
+from keyta.apps.teststeps.inline import TestSteps
+from keyta.models.testcase import AbstractTestCase
 from keyta.widgets import BaseSelectMultiple
 from keyta.rf_export.rfgenerator import gen_testsuite
 
 from apps.executions.admin import ExecutionInline
 from apps.executions.models import TestCaseExecution
-from apps.rf_export.rfgenerator import gen_testsuite
-from keyta.apps.teststeps.inline import TestSteps
-
-from keyta.models.testcase import AbstractTestCase
 
 
 class LocalExecution(ExecutionInline):
     model = TestCaseExecution
 
 
-class BaseTestCaseAdmin(CloneModelAdminMixin, SortableAdminBase, BaseAdmin):  # CloneModelAdminMixin
+class BaseTestCaseAdmin(CloneModelAdminMixin, SortableAdminBase, BaseAdmin):
     list_display = [
         'system_list', 'name', 'description'
     ]

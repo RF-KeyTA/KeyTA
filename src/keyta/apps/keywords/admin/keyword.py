@@ -10,7 +10,10 @@ from keyta.admin.base_admin import (
     BaseDocumentationAdmin,
     BaseAdminWithDoc
 )
+
+from apps.actions.models.action import Action
 from apps.sequences.models.sequence import Sequence
+
 from ..models import KeywordDocumentation, Keyword, KeywordType
 
 
@@ -56,14 +59,14 @@ class KeywordDocumentationAdmin(BaseDocumentationAdmin):
     def args_table(self, obj):
         return mark_safe(obj.args_doc)
 
-    def get_fields(self, request: HttpRequest, obj):
+    def get_fields(self, request: HttpRequest, obj=None):
         keyword: Keyword = obj
         if keyword.args_doc:
             return ['args_table'] + self.fields
         
         return self.fields
     
-    def get_readonly_fields(self, request: HttpRequest, obj):
+    def get_readonly_fields(self, request: HttpRequest, obj=None):
         keyword: Keyword = obj
         if keyword.args_doc:
             return ['args_table'] + self.readonly_fields
