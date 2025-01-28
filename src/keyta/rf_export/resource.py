@@ -1,7 +1,7 @@
 from typing import TypedDict
 
-from apps.rf_export.keywords import RFKeyword
-from apps.rf_export.settings import RFSettings
+from keyta.rf_export.keywords import RFKeyword
+from keyta.rf_export.settings import RFSettings
 
 
 class RFResource(TypedDict):

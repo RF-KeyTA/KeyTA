@@ -8,9 +8,10 @@ from django.utils.translation import gettext as _
 from model_clone import CloneMixin
 
 from keyta.models.base_model import AbstractBaseModel
+from keyta.rf_export.testcases import RFTestCase
+
 from apps.executions.models import Execution, ExecutionLibraryImport
 from apps.libraries.models import Library
-from apps.rf_export.testcases import RFTestCase
 
 
 class AbstractTestCase(CloneMixin, AbstractBaseModel):

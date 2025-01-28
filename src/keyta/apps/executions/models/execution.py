@@ -1,10 +1,14 @@
 from typing import Optional
+
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Q
 from django.utils.translation import gettext as _
 
 from keyta.models.base_model import AbstractBaseModel
+from keyta.rf_export.keywords import RFKeyword
+from keyta.rf_export.testsuite import RFTestSuite
+
 from apps.keywords.models import (
     KeywordCall,
     TestSetupTeardown,
@@ -12,8 +16,6 @@ from apps.keywords.models import (
 )
 from apps.libraries.models import Library
 from apps.resources.models import Resource
-from apps.rf_export.keywords import RFKeyword
-from apps.rf_export.testsuite import RFTestSuite
 
 from .user_execution import UserExecution
 from .execution_resource_import import ExecutionResourceImport

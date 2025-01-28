@@ -1,12 +1,11 @@
 import json
 
 from django.contrib import admin
+from django.contrib.auth.models import User
 from django.http import HttpRequest, JsonResponse, HttpResponse
 from django.middleware.csrf import get_token
 
-from apps.rf_export.rfgenerator import gen_testsuite
-from django.contrib.auth.models import User
-
+from keyta.rf_export.rfgenerator import gen_testsuite
 
 from .library_import_inline import LibraryImportsInline
 from .resource_imports_inline import ResourceImportsInline

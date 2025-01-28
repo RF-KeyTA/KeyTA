@@ -1,6 +1,6 @@
 from typing import Optional, TypedDict
 
-from apps.rf_export.keywords import RFKeywordCall
+from keyta.rf_export.keywords import RFKeywordCall
 
 
 class RFLibraryImport(TypedDict):

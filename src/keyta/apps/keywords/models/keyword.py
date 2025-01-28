@@ -6,6 +6,7 @@ from django.db.models import Q
 from django.utils.translation import gettext as _
 
 from keyta.models.base_model import AbstractBaseModel
+from keyta.rf_export.keywords import RFKeyword
 
 
 class HTML2Text(HTMLParser):

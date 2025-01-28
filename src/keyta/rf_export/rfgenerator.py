@@ -3,9 +3,9 @@ import re
 
 from jinja2 import Environment, PackageLoader
 
-from apps.rf_export.keywords import RFKeywordCall
-from apps.rf_export.resource import RFResource
-from apps.rf_export.testsuite import RFTestSuite
+from keyta.rf_export.keywords import RFKeywordCall
+from keyta.rf_export.resource import RFResource
+from keyta.rf_export.testsuite import RFTestSuite
 
 _logger = logging.getLogger('django')
 

@@ -8,6 +8,8 @@ from model_clone import CloneModelAdminMixin
 
 from keyta.admin.base_admin import BaseAdmin
 from keyta.widgets import BaseSelectMultiple
+from keyta.rf_export.rfgenerator import gen_testsuite
+
 from apps.executions.admin import ExecutionInline
 from apps.executions.models import TestCaseExecution
 from apps.rf_export.rfgenerator import gen_testsuite

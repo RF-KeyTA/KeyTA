@@ -1,6 +1,10 @@
 from typing import Optional
+
 from django.contrib.auth.models import User
 from django.utils.translation import gettext as _
+
+from keyta.rf_export.keywords import RFKeyword
+from keyta.rf_export.testsuite import RFTestSuite
 
 from apps.actions.models import Action
 from apps.keywords.models import (
@@ -9,8 +13,6 @@ from apps.keywords.models import (
     KeywordType,
     TestSetupTeardown
 )
-from apps.rf_export.keywords import RFKeyword
-from apps.rf_export.testsuite import RFTestSuite
 
 from .execution import Execution
 from ..errors import ValidationError

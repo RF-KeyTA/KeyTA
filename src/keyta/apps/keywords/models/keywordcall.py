@@ -1,10 +1,12 @@
 from typing import Optional
+
 from django.db import models
 from django.db.models import Q, QuerySet
 from django.contrib.auth.models import User
 from django.utils.translation import gettext as _
 
 from keyta.models.base_model import AbstractBaseModel
+from keyta.rf_export.keywords import RFKeywordCall
 
 from .keywordcall_return_value import KeywordCallReturnValue
 from .keywordcall_parameters import KeywordCallParameter, jsonify
