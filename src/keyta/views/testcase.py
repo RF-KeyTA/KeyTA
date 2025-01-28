@@ -10,7 +10,7 @@ from apps.common.widgets import BaseSelectMultiple
 from apps.executions.admin import ExecutionInline
 from apps.executions.models import TestCaseExecution
 from apps.rf_export.rfgenerator import gen_testsuite
-from apps.teststeps.inline import TestSteps
+from keyta.apps.teststeps.inline import TestSteps
 
 from keyta.models.testcase import AbstractTestCase
 

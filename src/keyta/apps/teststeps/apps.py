@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class TeststepConfig(AppConfig):
+class TestStepsConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'apps.teststeps'
+    name = 'keyta.apps.teststeps'
