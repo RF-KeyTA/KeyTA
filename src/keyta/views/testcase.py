@@ -88,6 +88,5 @@ class BaseTestCaseAdmin(SortableAdminBase, BaseAdmin):  # CloneModelAdminMixin
 
         if not change:
             form.save_m2m()
-
             testcase: AbstractTestCase = obj
-            TestCaseExecution.objects.create(testcase=testcase)
+            testcase.create_execution()

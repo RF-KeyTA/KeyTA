@@ -6,6 +6,8 @@ from django.db import models
 from django.utils.translation import gettext as _
 
 from apps.common.abc import AbstractBaseModel
+from apps.executions.models import Execution, ExecutionLibraryImport
+from apps.libraries.models import Library
 from apps.rf_export.testcases import RFTestCase
 
 
@@ -27,6 +29,16 @@ class AbstractTestCase(AbstractBaseModel):
 
     def __str__(self):
         return self.name
+
+    def create_execution(self):
+        libraries = self.systems.values_list('library', flat=True).distinct()
+        execution = Execution.objects.create(testcase=self)
+
+        for library_id in libraries:
+            ExecutionLibraryImport.objects.create(
+                execution=execution,
+                library=Library.objects.get(id=library_id)
+            )
 
     @property
     def has_empty_sequence(self):
