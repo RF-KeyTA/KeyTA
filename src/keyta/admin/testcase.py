@@ -6,7 +6,7 @@ from django.utils.translation import gettext as _
 from adminsortable2.admin import SortableAdminBase
 from model_clone import CloneModelAdminMixin
 
-from apps.common.admin import BaseAdmin
+from keyta.admin.base_admin import BaseAdmin
 from keyta.widgets import BaseSelectMultiple
 from apps.executions.admin import ExecutionInline
 from apps.executions.models import TestCaseExecution

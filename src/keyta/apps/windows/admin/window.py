@@ -9,14 +9,12 @@ from django.utils.translation import gettext as _
 
 from tinymce.widgets import AdminTinyMCE
 
-from apps.actions.models import Action, WindowAction
-from apps.common.admin.base_admin import (
+from keyta.admin.base_admin import (
     BaseAdmin,
     BaseDocumentationAdmin,
     BaseAdminWithDoc
 )
-from apps.common.admin.base_inline import AddInline
-from apps.common.forms.baseform import form_with_select
+from keyta.admin.base_inline import AddInline
 from keyta.widgets import ModelSelect2MultipleAdminWidget
 from apps.keywords.models import KeywordType
 from apps.sequences.models import Sequence, WindowSequence

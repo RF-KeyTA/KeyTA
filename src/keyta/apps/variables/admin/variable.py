@@ -4,8 +4,8 @@ from django.db.models.functions import Lower
 from django.http import HttpRequest
 from django.utils.translation import gettext as _
 
-from apps.common.admin import BaseAdmin, BaseAddAdmin, TabularInlineWithDelete
-from apps.common.forms import form_with_select
+from keyta.admin.base_admin import BaseAdmin, BaseAddAdmin
+from keyta.admin.base_inline import TabularInlineWithDelete
 from apps.windows.models import Window
 
 from ..models import Variable, VariableValue, VariableWindow, WindowVariable

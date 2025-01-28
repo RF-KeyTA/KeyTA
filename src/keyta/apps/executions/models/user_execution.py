@@ -4,7 +4,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import gettext as _
 
-from apps.common.abc import AbstractBaseModel
+from keyta.models.base_model import AbstractBaseModel
 
 
 class UserExecution(AbstractBaseModel):

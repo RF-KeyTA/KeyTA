@@ -5,9 +5,8 @@ from django.http import HttpRequest
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext as _
 
-from apps.common.admin import BaseAdmin
-from apps.common.admin.base_inline import AddInline
-from apps.common.forms import form_with_select
+from keyta.admin.base_admin import BaseAdmin
+from keyta.admin.base_inline import AddInline
 from keyta.widgets import ModelSelect2AdminWidget, link
 from apps.windows.models import Window, SystemWindow
 

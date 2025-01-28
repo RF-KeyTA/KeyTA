@@ -7,7 +7,7 @@ from django.utils.translation import gettext as _
 
 from model_clone import CloneMixin
 
-from apps.common.abc import AbstractBaseModel
+from keyta.models.base_model import AbstractBaseModel
 from apps.executions.models import Execution, ExecutionLibraryImport
 from apps.libraries.models import Library
 from apps.rf_export.testcases import RFTestCase

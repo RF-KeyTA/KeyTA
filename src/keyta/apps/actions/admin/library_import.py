@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from apps.common.admin.base_admin import BaseAdmin
+from keyta.admin.base_admin import BaseAdmin
 
 from ..models.library_import import ActionLibraryImport
 

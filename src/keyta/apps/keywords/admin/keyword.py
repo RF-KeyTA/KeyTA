@@ -6,8 +6,7 @@ from django.http import HttpRequest, HttpResponseRedirect
 
 from adminsortable2.admin import SortableAdminBase
 
-from apps.actions.models.action import Action
-from apps.common.admin.base_admin import (
+from keyta.admin.base_admin import (
     BaseDocumentationAdmin,
     BaseAdminWithDoc
 )

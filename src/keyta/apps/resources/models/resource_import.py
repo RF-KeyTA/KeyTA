@@ -4,8 +4,7 @@ from django.db import models
 from django.db.models import Q
 from django.utils.translation import gettext as _
 
-from apps.common.abc import AbstractBaseModel
-from apps.rf_export.settings import RFResourceImport
+from keyta.models.base_model import AbstractBaseModel
 
 from .resource import Resource
 

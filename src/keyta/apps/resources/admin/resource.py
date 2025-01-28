@@ -7,7 +7,7 @@ from django.http import HttpRequest
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext as _
 
-from apps.common.admin import BaseAdmin
+from keyta.admin.base_admin import BaseAdmin
 from apps.resources.models import Resource, ResourceKeyword
 from apps.rf_import.import_resource import import_resource
 

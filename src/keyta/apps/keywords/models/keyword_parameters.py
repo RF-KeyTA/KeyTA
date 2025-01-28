@@ -4,7 +4,8 @@ from django.db import models
 from django.db.models import Q
 from django.utils.translation import gettext as _
 
-from apps.common.abc import AbstractBaseModel
+from keyta.models.base_model import AbstractBaseModel
+
 from .keyword import Keyword
 from .keywordcall_parameter_source import (
     KeywordCallParameterSource,

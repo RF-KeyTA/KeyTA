@@ -3,9 +3,8 @@ from django.contrib import admin
 from django.http import HttpRequest
 from django.utils.translation import gettext as _
 
-
-from apps.common.admin import BaseAddAdmin, TabularInlineWithDelete
-from apps.common.forms import form_with_select
+from keyta.admin.base_admin import BaseAddAdmin
+from keyta.admin.base_inline import TabularInlineWithDelete
 from keyta.widgets import ModelSelect2MultipleAdminWidget, Select2MultipleWidget
 from apps.executions.admin import KeywordExecutionInline
 from apps.keywords.admin import KeywordDocumentationAdmin

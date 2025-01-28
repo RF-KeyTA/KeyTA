@@ -1,7 +1,8 @@
 from django.contrib import admin
 from django.utils.translation import gettext as _
 
-from apps.common.admin.base_admin import BaseDocumentationAdmin
+from keyta.admin.base_admin import BaseDocumentationAdmin
+
 from apps.resources.models import ResourceKeyword, ResourceKeywordDocumentation
 
 

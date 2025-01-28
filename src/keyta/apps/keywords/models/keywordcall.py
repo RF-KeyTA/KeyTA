@@ -4,9 +4,7 @@ from django.db.models import Q, QuerySet
 from django.contrib.auth.models import User
 from django.utils.translation import gettext as _
 
-from apps.common.abc import AbstractBaseModel
-from apps.rf_export.keywords import RFKeywordCall
-
+from keyta.models.base_model import AbstractBaseModel
 
 from .keywordcall_return_value import KeywordCallReturnValue
 from .keywordcall_parameters import KeywordCallParameter, jsonify

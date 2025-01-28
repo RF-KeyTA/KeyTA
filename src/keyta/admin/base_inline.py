@@ -5,7 +5,7 @@ from django.utils.translation import gettext as _
 
 from adminsortable2.admin import SortableInlineAdminMixin
 
-from apps.common.abc import AbstractBaseModel
+from keyta.models.base_model import AbstractBaseModel
 from keyta.widgets import link, related_field_widget_factory
 
 

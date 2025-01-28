@@ -5,8 +5,7 @@ from django.db import models
 from django.db.models import Q
 from django.utils.translation import gettext as _
 
-from apps.common.abc import AbstractBaseModel
-from apps.rf_export.keywords import RFKeyword
+from keyta.models.base_model import AbstractBaseModel
 
 
 class HTML2Text(HTMLParser):
