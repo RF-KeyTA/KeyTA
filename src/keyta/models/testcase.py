@@ -1,4 +1,5 @@
 import re
+from abc import abstractmethod
 from xml.etree import ElementTree
 
 from django.db import models
@@ -45,6 +46,14 @@ class AbstractTestCase(AbstractBaseModel):
 
         return set(system_libraries + window_libraries)
 
+    def plaintext_documentation(self):
+        doc = self.documentation.replace('&nbsp;', ' ')
+        return''.join(ElementTree.XML('<doc>' + doc + '</doc>').itertext())
+
+    @abstractmethod
+    def robot_documentation(self):
+        pass
+
     def save(
         self, force_insert=False, force_update=False, using=None,
             update_fields=None
@@ -53,11 +62,9 @@ class AbstractTestCase(AbstractBaseModel):
         super().save(force_insert, force_update, using, update_fields)
 
     def to_robot(self) -> RFTestCase:
-        doc = self.documentation.replace('&nbsp;', ' ')
-
         return {
             'name': self.name,
-            'doc': ''.join(ElementTree.XML('<doc>' + doc + '</doc>').itertext()),
+            'doc': self.robot_documentation(),
             'steps': [
                 test_step.to_robot()
                 for test_step in self.steps.all()
