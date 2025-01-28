@@ -3,7 +3,7 @@ from django.utils.translation import gettext as _
 
 from apps.common.admin import SortableTabularInlineWithDelete
 
-from apps.common.widgets import open_link_in_modal
+from keyta.widgets import open_link_in_modal
 
 from ..forms import StepsForm
 from ..models import KeywordCall

@@ -8,7 +8,7 @@ from django.utils.translation import gettext as _
 from apps.common.admin import BaseAdmin
 from apps.common.admin.base_inline import AddInline
 from apps.common.forms import form_with_select
-from apps.common.widgets import ModelSelect2AdminWidget, link
+from keyta.widgets import ModelSelect2AdminWidget, link
 from apps.windows.models import Window, SystemWindow
 
 from .models import System

@@ -7,7 +7,7 @@ from adminsortable2.admin import SortableAdminBase
 from model_clone import CloneModelAdminMixin
 
 from apps.common.admin import BaseAdmin
-from apps.common.widgets import BaseSelectMultiple
+from keyta.widgets import BaseSelectMultiple
 from apps.executions.admin import ExecutionInline
 from apps.executions.models import TestCaseExecution
 from apps.rf_export.rfgenerator import gen_testsuite

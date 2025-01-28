@@ -1,6 +1,6 @@
 from django import forms
 
-from apps.common.widgets import BaseSelect
+from keyta.widgets import BaseSelect
 
 
 class OptionalArgumentFormSet(forms.BaseInlineFormSet):

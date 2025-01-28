@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.utils.translation import gettext as _
 
 from apps.actions.models import RobotKeywordCall, Action
-from apps.common.widgets import GroupedByLibrary, BaseSelect
+from keyta.widgets import GroupedByLibrary, BaseSelect
 from apps.keywords.admin import StepsInline
 from apps.keywords.models import (
     Keyword,

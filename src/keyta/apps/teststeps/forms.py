@@ -1,7 +1,7 @@
 from django import forms
 from django.utils.translation import gettext as _
 
-from apps.common.widgets import ModelSelect2AdminWidget
+from keyta.widgets import ModelSelect2AdminWidget
 from apps.keywords.admin.steps_inline import StepsForm
 from apps.keywords.models import KeywordCall
 from apps.sequences.models import Sequence

@@ -4,7 +4,7 @@ import xml.dom.minidom
 
 from django.test import TestCase as DjangoTest
 
-from apps.common.widgets import open_link_in_modal
+from keyta.widgets import open_link_in_modal
 from ..management.commands.import_library import replace_links
 from ..models import Library, LibraryKeyword
 

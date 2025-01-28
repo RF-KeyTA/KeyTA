@@ -6,7 +6,7 @@ from django.utils.translation import gettext as _
 from adminsortable2.admin import SortableInlineAdminMixin
 
 from apps.common.abc import AbstractBaseModel
-from apps.common.widgets import link, related_field_widget_factory
+from keyta.widgets import link, related_field_widget_factory
 
 
 class TabularInlineWithDelete(admin.TabularInline):

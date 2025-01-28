@@ -4,7 +4,7 @@ from django.urls import get_script_prefix
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext as _
 
-from apps.common.widgets import open_link_in_modal, link
+from keyta.widgets import open_link_in_modal, link
 from apps.executions.models import Execution
 
 

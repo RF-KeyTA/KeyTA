@@ -11,7 +11,7 @@ from django.utils.translation import gettext as _
 
 from tinymce.widgets import AdminTinyMCE
 
-from apps.common.widgets import ModelSelect2MultipleAdminWidget, Select2MultipleWidget # type: ignore
+from keyta.widgets import ModelSelect2MultipleAdminWidget, Select2MultipleWidget # type: ignore
 
 
 class BaseAdmin(admin.ModelAdmin):

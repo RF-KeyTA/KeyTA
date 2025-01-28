@@ -5,7 +5,7 @@ from django.http import HttpRequest
 from django.utils.translation import gettext as _
 
 from apps.actions.models import Action
-from apps.common.widgets import (
+from keyta.widgets import (
     open_link_in_modal,
     BaseSelect
 )

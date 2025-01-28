@@ -1,6 +1,6 @@
 from django import forms
 
-from apps.common.widgets import BaseSelect, BaseSelectMultiple
+from keyta.widgets import BaseSelect, BaseSelectMultiple
 
 
 class BaseForm(forms.ModelForm):

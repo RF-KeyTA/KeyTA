@@ -8,7 +8,7 @@ from pathlib import Path
 
 from django.utils.translation import gettext as _
 
-from apps.common.widgets import open_link_in_modal
+from keyta.widgets import open_link_in_modal
 from apps.keywords.models import Keyword, KeywordParameter, KeywordType
 from apps.libraries.models import Library
 from apps.resources.models import Resource

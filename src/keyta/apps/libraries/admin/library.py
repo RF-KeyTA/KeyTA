@@ -9,7 +9,7 @@ from django.utils.translation import gettext as _
 
 from apps.common.admin import BaseAdmin
 from apps.common.forms import OptionalArgumentFormSet
-from apps.common.widgets import link
+from keyta.widgets import link
 from apps.rf_import.import_library import import_library
 from ..forms import LibraryForm
 from ..models import (
