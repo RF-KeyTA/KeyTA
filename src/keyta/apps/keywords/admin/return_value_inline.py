@@ -1,7 +1,8 @@
 from django.db.models import QuerySet, Q
 from django.utils.translation import gettext as _
 
-from apps.common.admin import TabularInlineWithDelete
+from keyta.admin.base_inline import TabularInlineWithDelete
+
 from ..models import KeywordReturnValue, Keyword
 
 

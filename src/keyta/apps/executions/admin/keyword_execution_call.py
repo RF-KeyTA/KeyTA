@@ -1,7 +1,8 @@
 from django.contrib import admin
 from django.db.models import QuerySet
 
-from apps.common.admin import BaseAdmin
+from keyta.admin.base_admin import BaseAdmin
+
 from apps.keywords.admin import KeywordCallParametersInline
 from apps.keywords.forms import KeywordCallParameterFormset
 from apps.keywords.models import KeywordCall

@@ -66,7 +66,7 @@ def splitlines(string: str) -> list[str]:
     ]
 
 
-env = Environment(loader=PackageLoader('apps.rf_export'))
+env = Environment(loader=PackageLoader('keyta.rf_export'))
 env.globals['call_keyword'] = call_keyword
 env.globals['keyword_arguments'] = keyword_arguments
 env.globals['library_args'] = library_args

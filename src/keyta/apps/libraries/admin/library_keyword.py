@@ -3,8 +3,10 @@ from django.db.models import Min
 from django.db.models.functions import Lower
 from django.utils.translation import gettext as _
 
-from apps.common.admin import BaseDocumentationAdmin
+from keyta.admin.base_admin import BaseDocumentationAdmin
+
 from apps.actions.models import RobotKeywordCall
+
 from ..models import LibraryKeywordDocumentation, LibraryKeyword
 
 

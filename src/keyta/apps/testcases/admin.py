@@ -1,7 +1,8 @@
 from django.contrib import admin
 
+from keyta.admin.testcase import BaseTestCaseAdmin
+
 from apps.testcases.models import TestCase
-from keyta.views.testcase import BaseTestCaseAdmin
 
 
 @admin.register(TestCase)

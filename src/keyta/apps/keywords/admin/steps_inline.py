@@ -1,8 +1,7 @@
 from django.contrib import admin
 from django.utils.translation import gettext as _
 
-from apps.common.admin import SortableTabularInlineWithDelete
-
+from keyta.admin.base_inline import SortableTabularInlineWithDelete
 from keyta.widgets import open_link_in_modal
 
 from ..forms import StepsForm

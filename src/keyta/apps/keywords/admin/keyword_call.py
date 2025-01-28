@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.translation import gettext as _
 
-from apps.common.admin import BaseAdmin
+from keyta.admin.base_admin import BaseAdmin
 from keyta.widgets import open_link_in_modal
 
 from ..models import (
