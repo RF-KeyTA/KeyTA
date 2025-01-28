@@ -11,6 +11,7 @@ version = "1.2.2"
 dependencies = [
     "django~=4.2",
     "django-admin-sortable2==2.2.3",
+    "django-clone~=5.3",
     "django-jazzmin~=3.0",
     "django-select2~=8.2",
     "django-tinymce~=4.1",

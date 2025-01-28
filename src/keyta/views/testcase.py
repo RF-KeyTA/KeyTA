@@ -4,6 +4,7 @@ from django.http import HttpRequest, HttpResponse
 from django.utils.translation import gettext as _
 
 from adminsortable2.admin import SortableAdminBase
+from model_clone import CloneModelAdminMixin
 
 from apps.common.admin import BaseAdmin
 from apps.common.widgets import BaseSelectMultiple
@@ -19,7 +20,7 @@ class LocalExecution(ExecutionInline):
     model = TestCaseExecution
 
 
-class BaseTestCaseAdmin(SortableAdminBase, BaseAdmin):  # CloneModelAdminMixin
+class BaseTestCaseAdmin(CloneModelAdminMixin, SortableAdminBase, BaseAdmin):  # CloneModelAdminMixin
     list_display = [
         'system_list', 'name', 'description'
     ]
