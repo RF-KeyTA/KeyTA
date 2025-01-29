@@ -11,14 +11,14 @@ _logger = logging.getLogger('django')
 
 
 def call_keyword(keyword_call: RFKeywordCall):
-    kw_call_args = {
-        arg_name: arg or '${EMPTY}'
-        for arg_name, arg in keyword_call['args'].items()
-    }
+    kw_call_args = [
+        arg or '${EMPTY}'
+        for arg in keyword_call['args']
+    ]
 
     kw_call = (
             [keyword_call['keyword']] +
-            dict_as_kwargs(kw_call_args) +
+            kw_call_args +
             dict_as_kwargs(keyword_call['kwargs'])
     )
 

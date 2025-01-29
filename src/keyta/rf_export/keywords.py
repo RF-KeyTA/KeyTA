@@ -3,7 +3,7 @@ from typing import Optional, TypedDict
 
 class RFKeywordCall(TypedDict):
     keyword: str
-    args: dict[str, str]
+    args: list[str]
     kwargs: dict[str, str]
     return_value: Optional[str]
 
