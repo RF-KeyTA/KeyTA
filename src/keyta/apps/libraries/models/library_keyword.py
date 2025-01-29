@@ -4,6 +4,7 @@ from django.utils.translation import gettext as _
 from apps.keywords.models import Keyword
 from apps.keywords.models.keyword import KeywordType
 
+
 __all__ = ['LibraryKeyword', 'LibraryKeywordDocumentation']
 
 
@@ -28,6 +29,7 @@ class LibraryKeyword(Keyword):
         return super().save(force_insert, force_update, using, update_fields)
 
     class Meta:
+        app_label = 'libraries'
         proxy = True
         verbose_name = _('Bibliothek-Schlüsselwort')
         verbose_name_plural = _('Bibliothek-Schlüsselwörter')

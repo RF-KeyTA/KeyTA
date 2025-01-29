@@ -13,9 +13,17 @@ class LibraryParameter(AbstractBaseModel):
         on_delete=models.CASCADE,
         related_name='kwargs'
     )
-    name = models.CharField(max_length=255, verbose_name=_('Name'))
-    default_value = models.CharField(max_length=255, verbose_name=_('Standardwert'))
-    orig_default_value = models.CharField(max_length=255)
+    name = models.CharField(
+        max_length=255,
+        verbose_name=_('Name')
+    )
+    default_value = models.CharField(
+        max_length=255,
+        verbose_name=_('Standardwert')
+    )
+    orig_default_value = models.CharField(
+        max_length=255
+    )
 
     def __str__(self):
         return self.name

@@ -1,4 +1,4 @@
-from apps.libraries.models import Library, LibraryParameter
+from keyta.apps.libraries.models import Library, LibraryParameter
 
 from .import_keywords import (
     get_default_value,

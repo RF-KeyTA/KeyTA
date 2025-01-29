@@ -10,8 +10,8 @@ from django.utils.translation import gettext as _
 
 from keyta.admin.base_admin import BaseAdmin
 from keyta.forms import OptionalArgumentFormSet
-from keyta.widgets import link
 from keyta.rf_import.import_library import import_library
+from keyta.widgets import link
 
 from ..forms import LibraryForm
 from ..models import (
@@ -86,7 +86,10 @@ class LibraryAdmin(BaseAdmin):
         if 'update' in request.GET:
             library = Library.objects.get(id=int(request.GET['lib_id']))
             import_library(library.name)
-            messages.info(request, _('Die Bibliothek "{library_name}" wurde erfolgreich aktualisiert').format(library_name=library.name))
+            messages.info(
+                request,
+                _('Die Bibliothek "{library_name}" wurde erfolgreich aktualisiert').format(library_name=library.name)
+            )
 
         for error in self.errors:
             messages.warning(request, error)
@@ -156,6 +159,7 @@ class LibraryAdmin(BaseAdmin):
                 reverse('admin:libraries_library_changelist') + f'?update&lib_id={library.id}',
                 '🔄'
             )
+
 
 @admin.register(LibraryInitDocumentation)
 class LibraryInitDocumentationAdmin(BaseAdmin):

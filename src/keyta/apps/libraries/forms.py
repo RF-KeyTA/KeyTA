@@ -4,7 +4,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 
-from apps.libraries.models import Library
+from .models import Library
 
 
 class LibraryForm(forms.ModelForm):

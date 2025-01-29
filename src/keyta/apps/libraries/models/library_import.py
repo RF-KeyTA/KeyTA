@@ -8,9 +8,6 @@ from django.utils.translation import gettext as _
 from keyta.models.base_model import AbstractBaseModel
 from keyta.rf_export.settings import RFLibraryImport
 
-from .library import Library
-from .library_import_parameter import LibraryImportParameter
-
 
 __all__ = ['LibraryImport', 'LibraryImportType']
 
@@ -38,7 +35,7 @@ class LibraryImport(AbstractBaseModel):
         related_name='library_imports'
     )
     library = models.ForeignKey(
-        Library,
+        'libraries.Library',
         on_delete=models.CASCADE,
         verbose_name=_('Bibliothek')
     )
@@ -49,7 +46,7 @@ class LibraryImport(AbstractBaseModel):
 
     def add_parameters(self, user: Optional[User]=None):
         for kwarg in self.library.kwargs.all():
-            LibraryImportParameter.objects.get_or_create(
+            self.kwargs.get_or_create(
                 library_import=self,
                 user=user,
                 library_parameter=kwarg,
