@@ -1,5 +1,6 @@
 from typing import Optional
 
+from django.conf import settings
 from django.db import models
 from django.db.models import Q, QuerySet
 from django.contrib.auth.models import User
@@ -7,10 +8,10 @@ from django.utils.translation import gettext as _
 
 from keyta.models.base_model import AbstractBaseModel
 from keyta.rf_export.keywords import RFKeywordCall
+from keyta.select_value import SelectValue
 
 from .keywordcall_return_value import KeywordCallReturnValue
-from .keywordcall_parameters import KeywordCallParameter, jsonify
-from .keyword import Keyword
+from .keywordcall_parameters import KeywordCallParameter
 from .keyword_parameters import KeywordParameter
 from .keyword_return_value import KeywordReturnValue
 
@@ -33,7 +34,7 @@ class KeywordCallType(models.TextChoices):
 
 class KeywordCall(AbstractBaseModel):
     from_keyword = models.ForeignKey(
-        Keyword,
+        'keywords.Keyword',
         on_delete=models.CASCADE,
         null=True,
         default=None,
@@ -57,12 +58,18 @@ class KeywordCall(AbstractBaseModel):
         related_name='keyword_calls'
     )
     to_keyword = models.ForeignKey(
-        Keyword,
+        'keywords.Keyword',
         on_delete=models.CASCADE,
         related_name='uses'
     )
-    enabled = models.BooleanField(default=True, verbose_name='')
-    index = models.PositiveSmallIntegerField(default=0, db_index=True)
+    enabled = models.BooleanField(
+        default=True,
+        verbose_name=''
+    )
+    index = models.PositiveSmallIntegerField(
+        default=0,
+        db_index=True
+    )
     type = models.CharField(
         max_length=255,
         choices=KeywordCallType.choices +
@@ -71,7 +78,7 @@ class KeywordCall(AbstractBaseModel):
     )
     # Test/Suite Setup/Teardown are user-dependent
     user = models.ForeignKey(
-        User,
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         null=True
     )
@@ -100,7 +107,12 @@ class KeywordCall(AbstractBaseModel):
             parameter=param,
             user=user,
             defaults={
-                'value': jsonify(param.default_value, None),
+                'value': SelectValue(
+                    arg_name=None,
+                    kw_call_index=None,
+                    pk=None,
+                    user_input=param.default_value
+                ).jsonify()
             }
         )
 
@@ -163,13 +175,14 @@ class KeywordCall(AbstractBaseModel):
             return super().save(force_insert, force_update, using, update_fields)
 
     def to_robot(self, user: Optional[User]=None) -> RFKeywordCall:
-        args = self.parameters.filter(user=user).args()
-        kwargs = self.parameters.filter(user=user).kwargs()
+        parameters = self.parameters.filter(user=user)
+        args = parameters.args()
+        kwargs = parameters.kwargs()
         return_value: KeywordCallReturnValue = self.return_value.first()
 
         return {
             'keyword': self.to_keyword.unique_name,
-            'args': {arg.name: arg.to_robot() for arg in args},
+            'args': [arg.to_robot() for arg in args],
             'kwargs': {kwarg.name: kwarg.to_robot() for kwarg in kwargs},
             'return_value': (
                 '${' + str(return_value) + '}'

@@ -6,7 +6,7 @@ from keyta.admin.base_inline import TabularInlineWithDelete
 from ..models import KeywordReturnValue, Keyword
 
 
-class ReturnValue(TabularInlineWithDelete):
+class ReturnValueInline(TabularInlineWithDelete):
     model = KeywordReturnValue
     fields = ['kw_call_return_value']
     extra = 1

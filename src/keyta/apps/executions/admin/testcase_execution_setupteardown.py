@@ -4,9 +4,8 @@ from django.utils.translation import gettext as _
 from apps.executions.admin import SetupTeardownAdmin
 from apps.executions.admin import SetupTeardownParametersInline
 from apps.executions.models import TestCaseExecutionSetupTeardown
-from apps.keywords.forms import KeywordCallParameterFormset
-from apps.keywords.models import KeywordCall, KeywordCallParameterSource
-from apps.keywords.models.keywordcall_parameters import jsonify
+from keyta.apps.keywords.forms import KeywordCallParameterFormset
+from keyta.apps.keywords.models import KeywordCall, KeywordCallParameterSource
 
 
 class TestCaseSetupTeardownParametersFormset(KeywordCallParameterFormset):
@@ -19,7 +18,7 @@ class TestCaseSetupTeardownParametersFormset(KeywordCallParameterFormset):
             return [[
                 _('Referenzwerte'),
                 [
-                    (jsonify(None, source.pk), str(source))
+                    (source.jsonify(), str(source))
                     for source in
                     KeywordCallParameterSource.objects
                     .filter(variable_value__variable__systems__in=system_ids)

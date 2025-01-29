@@ -4,8 +4,8 @@ from django.utils.translation import gettext as _
 
 from apps.actions.models import RobotKeywordCall, Action
 from keyta.widgets import GroupedByLibrary, BaseSelect
-from apps.keywords.admin import StepsInline
-from apps.keywords.models import (
+from keyta.apps.keywords.admin import StepsInline
+from keyta.apps.keywords.models import (
     Keyword,
     KeywordCall,
     KeywordCallParameterSource,

@@ -45,12 +45,27 @@ class Keyword(AbstractBaseModel):
         related_name='keywords',
         verbose_name=_('Ressource')
     )
-    name = models.CharField(max_length=255, verbose_name=_('Name'))
-    short_doc = models.CharField(max_length=255, blank=True,
-                                 verbose_name=_('Beschreibung'))
-    args_doc = models.TextField(blank=True, verbose_name=_('Parameters'))
-    documentation = models.TextField(blank=True, verbose_name=_('Dokumentation'))
-    type = models.CharField(max_length=255, choices=KeywordType.choices)
+    name = models.CharField(
+        max_length=255,
+        verbose_name=_('Name')
+    )
+    short_doc = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name=_('Beschreibung')
+    )
+    args_doc = models.TextField(
+        blank=True,
+        verbose_name=_('Parameters')
+    )
+    documentation = models.TextField(
+        blank=True,
+        verbose_name=_('Dokumentation')
+    )
+    type = models.CharField(
+        max_length=255,
+        choices=KeywordType.choices
+    )
 
     # ---Customization--
     setup_teardown = models.BooleanField(
@@ -86,17 +101,19 @@ class Keyword(AbstractBaseModel):
         self.name = re.sub(r"\s{2,}", " ", self.name)
         super().save(force_insert, force_update, using, update_fields)
 
+    def robot_documentation(self):
+        html_parser = HTML2Text()
+        html_parser.feed(self.documentation)
+        return html_parser.get_text()
+
     def to_robot(self) -> RFKeyword:
         args = self.parameters.args()
         kwargs = self.parameters.kwargs()
         return_value = self.return_value.first()
 
-        html_parser = HTML2Text()
-        html_parser.feed(self.documentation)
-
         return {
             'name': self.id_name,
-            'doc': html_parser.get_text(),
+            'doc': self.robot_documentation(),
             'args': [arg.name for arg in args],
             'kwargs': {kwarg.name: kwarg.default_value for kwarg in kwargs},
             'steps': [

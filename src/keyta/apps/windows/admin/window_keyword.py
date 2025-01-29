@@ -6,7 +6,7 @@ from apps.executions.models import (
     Execution,
     KeywordExecutionCall
 )
-from apps.keywords.admin import KeywordAdmin
+from keyta.apps.keywords.admin import KeywordAdmin
 from apps.windows.models import WindowKeyword, Window
 
 

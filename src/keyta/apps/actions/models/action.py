@@ -3,7 +3,7 @@ from django.utils.translation import gettext as _
 
 from keyta.models.base_model import AbstractBaseModel
 
-from apps.keywords.models.keyword import KeywordType
+from keyta.apps.keywords.models.keyword import KeywordType
 from apps.windows.models import WindowKeyword
 
 

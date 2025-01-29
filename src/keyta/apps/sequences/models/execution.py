@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.utils.translation import gettext as _
 
 from apps.executions.models import KeywordExecution
-from apps.keywords.models import KeywordCall
+from keyta.apps.keywords.models import KeywordCall
 from apps.libraries.models import LibraryImport
 
 from .sequence import Sequence

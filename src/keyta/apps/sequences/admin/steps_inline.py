@@ -5,8 +5,8 @@ from django.utils.translation import gettext as _
 from keyta.forms import form_with_select
 
 from apps.actions.models import Action
-from apps.keywords.admin import StepsInline
-from apps.keywords.models import Keyword
+from keyta.apps.keywords.admin import StepsInline
+from keyta.apps.keywords.models import Keyword
 from apps.windows.models import Window
 
 from ..models import ActionCall, Sequence

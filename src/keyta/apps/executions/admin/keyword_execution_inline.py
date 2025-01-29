@@ -3,7 +3,7 @@ from django.http import HttpRequest
 from django.utils.translation import gettext as _
 
 from keyta.widgets import open_link_in_modal
-from apps.keywords.models import Keyword
+from keyta.apps.keywords.models import Keyword
 
 from ..models import (
     KeywordExecution,

@@ -9,7 +9,7 @@ from keyta.forms import form_with_select
 from keyta.widgets import ModelSelect2MultipleAdminWidget, Select2MultipleWidget
 
 from apps.executions.admin import KeywordExecutionInline
-from apps.keywords.admin import KeywordDocumentationAdmin
+from keyta.apps.keywords.admin import KeywordDocumentationAdmin
 from apps.resources.models import Resource
 from apps.windows.admin import (
     WindowKeywordParameters,

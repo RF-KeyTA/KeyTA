@@ -2,13 +2,13 @@ from django.contrib import admin
 from django.utils.translation import gettext as _
 
 from keyta.widgets import open_link_in_modal
-from apps.keywords.admin import (
+from keyta.apps.keywords.admin import (
     KeywordCallAdmin,
     KeywordCallParametersInline,
     KeywordCallReturnValueInline
 )
-from apps.keywords.forms import KeywordCallParameterFormset
-from apps.keywords.models import Keyword, KeywordCall
+from keyta.apps.keywords.forms import KeywordCallParameterFormset
+from keyta.apps.keywords.models import Keyword, KeywordCall
 
 from ..models.robot_keywordcall import RobotKeywordCall
 

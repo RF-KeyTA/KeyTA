@@ -1,6 +1,6 @@
 from django.utils.translation import gettext as _
 
-from apps.keywords.models import TestSetupTeardown
+from keyta.apps.keywords.models import TestSetupTeardown
 
 from .setup_teardown import SetupTeardown
 

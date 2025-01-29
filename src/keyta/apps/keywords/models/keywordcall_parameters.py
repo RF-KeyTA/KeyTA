@@ -1,24 +1,16 @@
-import json
 import re
 from typing import Optional
 
+from django.conf import settings
 from django.db import models
-
-from django.contrib.auth.models import User
 from django.utils.translation import gettext as _
 
+from keyta.select_value import SelectValue
 from .keywordcall_parameter_source import (
     KeywordCallParameterSource,
     KeywordCallParameterSourceType
 )
 from .keyword_parameters import KeywordParameterType
-
-
-def jsonify(value: Optional[str], pk: Optional[int]):
-    return json.dumps({
-        "value": value,
-        "pk": pk
-    })
 
 
 class KeywordCallParameter(models.Model):
@@ -37,13 +29,13 @@ class KeywordCallParameter(models.Model):
         verbose_name=_('Wert')
     )
     value_ref = models.ForeignKey(
-        KeywordCallParameterSource,
+        'keywords.KeywordCallParameterSource',
         on_delete=models.SET_NULL,
         null=True,
         default=None
     )
     user = models.ForeignKey(
-        User,
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         null=True
     )
@@ -65,8 +57,8 @@ class KeywordCallParameter(models.Model):
         if value_ref := self.value_ref:
             return str(value_ref)
 
-        value_pk = json.loads(self.value)
-        return value_pk['value']
+        select_value = SelectValue.from_json(self.value)
+        return select_value.user_input
 
     @property
     def name(self):
@@ -76,8 +68,9 @@ class KeywordCallParameter(models.Model):
         self, force_insert=False, force_update=False, using=None,
         update_fields=None
     ):
-        value_pk = json.loads(self.value)
-        if pk := value_pk['pk']:
+        select_value = SelectValue.from_json(self.value)
+
+        if pk := select_value.pk:
             self.value_ref = KeywordCallParameterSource.objects.get(id=pk)
         else:
             self.value_ref = None
@@ -90,7 +83,7 @@ class KeywordCallParameter(models.Model):
             if value_ref.type == KeywordCallParameterSourceType.VARIABLE_VALUE:
                 return value_ref.variable_value.value
             else:
-                return '${' + self.current_value + '}'
+                return '${' + str(self.value_ref) + '}'
 
         return self.current_value
 

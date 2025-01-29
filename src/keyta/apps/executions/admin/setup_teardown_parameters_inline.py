@@ -1,5 +1,5 @@
-from apps.keywords.admin import KeywordCallParametersInline
-from apps.keywords.forms import KeywordCallParameterFormset
+from keyta.apps.keywords.admin import KeywordCallParametersInline
+from keyta.apps.keywords.forms import KeywordCallParameterFormset
 
 
 class SetupTeardownParameterFormset(KeywordCallParameterFormset):

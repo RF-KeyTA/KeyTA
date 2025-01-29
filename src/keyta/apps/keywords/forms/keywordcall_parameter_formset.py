@@ -1,4 +1,4 @@
-import json
+import re
 from typing import Callable
 
 from django import forms
@@ -7,22 +7,30 @@ from django.contrib.admin.widgets import get_select2_language
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 
-from apps.keywords.models import (
+from keyta.apps.keywords.models import (
     KeywordCall,
     KeywordCallParameterSource,
     KeywordCallParameter
 )
-from apps.keywords.models.keywordcall_parameters import jsonify
+from keyta.select_value import SelectValue
+
+
+def jsonify_value(value):
+    return SelectValue(
+        arg_name=None,
+        kw_call_index=None,
+        pk=None,
+        user_input=re.sub(r"\s{2,}", " ", value)
+    ).jsonify()
 
 
 def show_value(json_str: str) -> tuple:
-    value_pk = json.loads(json_str)
-    value = value_pk['value']
+    select_value = SelectValue.from_json(json_str)
 
-    if value:
-        return json_str, value
+    if select_value.user_input:
+        return json_str, select_value.user_input
     else:
-        return None, _('Kein Wert')
+        return None, 'Kein Wert'
 
 
 class DynamicChoiceField(forms.CharField):
@@ -33,17 +41,30 @@ class DynamicChoiceField(forms.CharField):
         if value.startswith('{') and value.endswith('}'):
             return value
 
-        return jsonify(value, None)
+        return jsonify_value(value)
 
 
 class KeywordCallParameterFormset(forms.BaseInlineFormSet):
+    def __init__(
+        self,
+        data=None,
+        files=None,
+        instance=None,
+        save_as_new=False,
+        prefix=None,
+        queryset=None,
+        **kwargs,
+    ):
+        super().__init__(data, files, instance, save_as_new, prefix, queryset, **kwargs)
+        self.choices = self.get_choices(instance)
+
     def prev_return_values(self):
         kw_call = self.instance
 
         return [[
             _('Vorherige Rückgabewerte'),
             [
-                (jsonify(None, source.pk), str(source))
+                (source.jsonify(), str(source))
                 for source in
                 KeywordCallParameterSource.objects
                 .filter(
@@ -61,7 +82,7 @@ class KeywordCallParameterFormset(forms.BaseInlineFormSet):
         window_variables = [[
             _('Referenzwerte'),
             [
-                (jsonify(None, source.pk), show(source))
+                (source.jsonify(), show(source))
                 for source in
                 KeywordCallParameterSource.objects
                 .filter(variable_value__variable__windows__in=window_ids)
@@ -73,7 +94,7 @@ class KeywordCallParameterFormset(forms.BaseInlineFormSet):
         window_indep_variables = [[
             _('Globale Referenzwerte'),
             [
-                (jsonify(None, source.pk), show(source))
+                (source.jsonify(), show(source))
                 for source in
                 KeywordCallParameterSource.objects
                 .filter(variable_value__variable__systems__in=system_ids)
@@ -88,7 +109,7 @@ class KeywordCallParameterFormset(forms.BaseInlineFormSet):
         kw_params = [[
             _('Parameters'),
             [
-                (jsonify(None, source.pk), str(source))
+                (source.jsonify(), str(source))
                 for source in KeywordCallParameterSource.objects
                 .filter(kw_param__keyword=calling_keyword)
             ]
@@ -136,14 +157,14 @@ class KeywordCallParameterFormset(forms.BaseInlineFormSet):
 
             if value and displayed_value in {'True', 'False'}:
                 choices = [
-                    (jsonify('True', None), 'True'), 
-                    (jsonify('False', None), 'False'), 
+                    (jsonify_value('True'), 'True'),
+                    (jsonify_value('False'), 'False'),
                 ]
             else:
                 choices = (
                         [(None, '')] +
                         [[_('Eingabe'), [show_value(current_value)]]] +
-                        self.get_choices(self.instance)
+                        self.choices
                 )
 
             form.fields['value'] = DynamicChoiceField(

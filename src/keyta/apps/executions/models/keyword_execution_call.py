@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext as _
 
-from apps.keywords.models import KeywordCall, KeywordCallType
+from keyta.apps.keywords.models import KeywordCall, KeywordCallType
 
 
 class KeywordExecutionCall(KeywordCall):

@@ -1,6 +1,6 @@
-from apps.keywords.admin import ReturnValue
+from keyta.apps.keywords.admin import ReturnValueInline
 from apps.windows.models import WindowKeywordReturnValue
 
 
-class WindowKeywordReturnValues(ReturnValue):
+class WindowKeywordReturnValues(ReturnValueInline):
     model = WindowKeywordReturnValue

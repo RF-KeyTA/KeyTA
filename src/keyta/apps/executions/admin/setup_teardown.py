@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from apps.keywords.admin import KeywordCallAdmin
+from keyta.apps.keywords.admin import KeywordCallAdmin
 
 from ..models import SetupTeardown
 from .setup_teardown_parameters_inline import  SetupTeardownParametersInline

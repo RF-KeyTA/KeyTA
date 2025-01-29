@@ -7,7 +7,7 @@ from keyta.admin.base_inline import TabularInlineWithDelete
 from keyta.forms.baseform import form_with_select
 
 from apps.executions.admin import KeywordExecutionInline
-from apps.keywords.admin import KeywordDocumentationAdmin
+from keyta.apps.keywords.admin import KeywordDocumentationAdmin
 from apps.libraries.models import Library
 from apps.windows.admin import (
     WindowKeywordParameters,

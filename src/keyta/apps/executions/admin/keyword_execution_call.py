@@ -3,9 +3,9 @@ from django.db.models import QuerySet
 
 from keyta.admin.base_admin import BaseAdmin
 
-from apps.keywords.admin import KeywordCallParametersInline
-from apps.keywords.forms import KeywordCallParameterFormset
-from apps.keywords.models import KeywordCall
+from keyta.apps.keywords.admin import KeywordCallParametersInline
+from keyta.apps.keywords.forms import KeywordCallParameterFormset
+from keyta.apps.keywords.models import KeywordCall
 
 from ..models.keyword_execution_call import KeywordExecutionCall
 

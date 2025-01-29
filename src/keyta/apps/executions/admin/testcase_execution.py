@@ -10,7 +10,7 @@ from apps.executions.admin import (
     SetupTeardownInline
 )
 from apps.executions.models import TestCaseExecution, TestCaseExecutionSetupTeardown
-from apps.keywords.models import TestSetupTeardown
+from keyta.apps.keywords.models import TestSetupTeardown
 
 
 class TestCaseExecutionInline(ExecutionInline):

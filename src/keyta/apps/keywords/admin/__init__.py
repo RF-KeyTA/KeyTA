@@ -4,5 +4,6 @@ from .keyword_call import (
     KeywordCallReturnValueInline
 )
 from .keywordcall_parameters_inline import KeywordCallParametersInline
-from .return_value_inline import ReturnValue
+from .keyword_parameters_inline import ParametersInline
+from .return_value_inline import ReturnValueInline
 from .steps_inline import StepsInline

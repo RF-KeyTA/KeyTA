@@ -3,12 +3,10 @@ from django.utils.translation import gettext as _
 
 from keyta.models.base_model import AbstractBaseModel
 
-from .keyword import Keyword
-
 
 class KeywordReturnValue(AbstractBaseModel):
     keyword = models.ForeignKey(
-        Keyword,
+        'keywords.Keyword',
         on_delete=models.CASCADE,
         related_name='return_value'
     )

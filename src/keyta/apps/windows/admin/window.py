@@ -19,7 +19,7 @@ from keyta.forms.baseform import form_with_select
 from keyta.widgets import ModelSelect2MultipleAdminWidget
 
 from apps.actions.models import Action, WindowAction
-from apps.keywords.models import KeywordType
+from keyta.apps.keywords.models import KeywordType
 from apps.sequences.models import Sequence, WindowSequence
 from apps.variables.models import Variable, WindowVariable
 

@@ -5,7 +5,7 @@ from keyta.admin.base_inline import SortableTabularInlineWithDelete
 from ..models import KeywordParameter
 
 
-class Parameters(SortableTabularInlineWithDelete):
+class ParametersInline(SortableTabularInlineWithDelete):
     model = KeywordParameter
     fields = ['name']
     extra = 1

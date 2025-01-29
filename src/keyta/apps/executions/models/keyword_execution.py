@@ -7,7 +7,7 @@ from keyta.rf_export.keywords import RFKeyword
 from keyta.rf_export.testsuite import RFTestSuite
 
 from apps.actions.models import Action
-from apps.keywords.models import (
+from keyta.apps.keywords.models import (
     KeywordCallType,
     KeywordCall,
     KeywordType,

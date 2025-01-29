@@ -2,6 +2,8 @@ from django.db import models
 from django.db.models import Q
 from django.utils.translation import gettext as _
 
+from keyta.select_value import SelectValue
+
 
 class KeywordCallParameterSourceType(models.TextChoices):
     KEYWORD_PARAMETER = 'KEYWORD_PARAMETER', _('Schlüsselwort-Parameter')
@@ -39,6 +41,30 @@ class KeywordCallParameterSource(models.Model):
             self.kw_call_ret_val or
             self.variable_value
         )
+
+    def jsonify(self):
+        if self.kw_param:
+            return SelectValue(
+                arg_name=self.kw_param.name,
+                kw_call_index=None,
+                pk=self.pk,
+                user_input=None
+            ).jsonify()
+
+        if self.kw_call_ret_val:
+            return SelectValue(
+                arg_name=None,
+                kw_call_index=self.kw_call_ret_val.keyword_call.index,
+                pk=self.pk,
+                user_input=None
+            ).jsonify()
+
+        return SelectValue(
+            arg_name=None,
+            kw_call_index=None,
+            pk=self.pk,
+            user_input=None
+        ).jsonify()
 
     class Meta:
         constraints = [

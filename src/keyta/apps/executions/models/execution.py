@@ -9,7 +9,7 @@ from keyta.models.base_model import AbstractBaseModel
 from keyta.rf_export.keywords import RFKeyword
 from keyta.rf_export.testsuite import RFTestSuite
 
-from apps.keywords.models import (
+from keyta.apps.keywords.models import (
     KeywordCall,
     TestSetupTeardown,
     SuiteSetupTeardown

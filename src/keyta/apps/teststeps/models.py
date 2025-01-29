@@ -1,8 +1,8 @@
 from django.db import models
 from django.utils.translation import gettext as _
 
-from apps.keywords.models import KeywordCall
-from apps.keywords.models.keywordcall import KeywordCallType
+from keyta.apps.keywords.models import KeywordCall
+from keyta.apps.keywords.models.keywordcall import KeywordCallType
 
 
 class TestStep(KeywordCall):

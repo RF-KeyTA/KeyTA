@@ -1,4 +1,4 @@
-from apps.keywords.models import KeywordReturnValue
+from keyta.apps.keywords.models import KeywordReturnValue
 
 
 class WindowKeywordReturnValue(KeywordReturnValue):

@@ -1,6 +1,6 @@
-from apps.keywords.admin.keyword_parameters_inline import Parameters
+from keyta.apps.keywords.admin import ParametersInline
 from apps.windows.models import WindowKeywordParameter
 
 
-class WindowKeywordParameters(Parameters):
+class WindowKeywordParameters(ParametersInline):
     model = WindowKeywordParameter

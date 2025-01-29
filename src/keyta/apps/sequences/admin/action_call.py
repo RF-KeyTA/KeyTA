@@ -2,9 +2,9 @@ from django.contrib import admin
 from django.utils.translation import gettext as _
 
 from keyta.widgets import open_link_in_modal
-from apps.keywords.admin import KeywordCallAdmin, KeywordCallParametersInline
-from apps.keywords.forms import KeywordCallParameterFormset
-from apps.keywords.models import KeywordCall
+from keyta.apps.keywords.admin import KeywordCallAdmin, KeywordCallParametersInline
+from keyta.apps.keywords.forms import KeywordCallParameterFormset
+from keyta.apps.keywords.models import KeywordCall
 
 
 from ..models import ActionCall

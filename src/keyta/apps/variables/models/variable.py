@@ -3,10 +3,11 @@ from django.utils.translation import gettext as _
 
 from keyta.models.base_model import AbstractBaseModel
 
-from apps.keywords.models import (
+from keyta.apps.keywords.models import (
     KeywordCallParameterSource,
     KeywordCallParameterSourceType
 )
+from select_value import SelectValue
 
 
 class Variable(AbstractBaseModel):
@@ -51,6 +52,14 @@ class VariableValue(AbstractBaseModel):
 
     def __str__(self):
         return f'{self.variable.name}: {self.name}'
+
+    def jsonify(self):
+        return SelectValue(
+            arg_name=None,
+            kw_call_index=None,
+            pk=self.pk,
+            user_input=None
+        ).jsonify()
 
     def save(
         self, force_insert=False, force_update=False, using=None,

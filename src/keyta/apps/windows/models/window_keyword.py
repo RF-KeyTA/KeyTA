@@ -1,4 +1,4 @@
-from apps.keywords.models import Keyword
+from keyta.apps.keywords.models import Keyword
 
 
 class WindowKeyword(Keyword):

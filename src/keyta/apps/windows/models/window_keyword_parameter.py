@@ -1,6 +1,6 @@
 from django.utils.translation import gettext as _
 
-from apps.keywords.models import KeywordParameter, KeywordParameterType
+from keyta.apps.keywords.models import KeywordParameter, KeywordParameterType
 
 
 class WindowKeywordParameter(KeywordParameter):

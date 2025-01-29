@@ -5,6 +5,7 @@ from django.db.models import Q
 from django.utils.translation import gettext as _
 
 from keyta.models.base_model import AbstractBaseModel
+from keyta.select_value import SelectValue
 
 from .keyword import Keyword
 from .keywordcall_parameter_source import (
@@ -20,12 +21,18 @@ class KeywordParameterType(models.TextChoices):
 
 class KeywordParameter(AbstractBaseModel):
     keyword = models.ForeignKey(
-        Keyword,
+        'keywords.Keyword',
         on_delete=models.CASCADE,
         related_name='parameters'
     )
-    name = models.CharField(max_length=255, verbose_name=_('Name'))
-    position = models.PositiveIntegerField(null=True, default=0)
+    name = models.CharField(
+        max_length=255,
+        verbose_name=_('Name')
+    )
+    position = models.PositiveIntegerField(
+        null=True,
+        default=0
+    )
     default_value = models.CharField(
         max_length=255,
         blank=True,
@@ -33,8 +40,13 @@ class KeywordParameter(AbstractBaseModel):
         default=None,
         verbose_name=_('Standardwert')
     )
-    is_list = models.BooleanField(default=False)
-    type = models.CharField(max_length=255, choices=KeywordParameterType.choices)
+    is_list = models.BooleanField(
+        default=False
+    )
+    type = models.CharField(
+        max_length=255,
+        choices=KeywordParameterType.choices
+    )
 
     class Manager(models.Manager):
         def get_queryset(self):
@@ -75,6 +87,14 @@ class KeywordParameter(AbstractBaseModel):
                 'type': KeywordParameterType.KWARG
             }
         )
+
+    def jsonify(self):
+        return SelectValue(
+            arg_name=self.name,
+            kw_call_index=None,
+            pk=self.pk,
+            user_input=None
+        ).jsonify()
 
     def save(
         self, force_insert=False, force_update=False, using=None,

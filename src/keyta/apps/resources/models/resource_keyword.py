@@ -1,8 +1,8 @@
 from django.db import models
 from django.utils.translation import gettext as _
 
-from apps.keywords.models import Keyword
-from apps.keywords.models.keyword import KeywordType
+from keyta.apps.keywords.models import Keyword
+from keyta.apps.keywords.models.keyword import KeywordType
 
 __all__ = ['ResourceKeyword', 'ResourceKeywordDocumentation']
 

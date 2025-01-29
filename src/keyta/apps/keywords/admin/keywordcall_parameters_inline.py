@@ -1,7 +1,7 @@
 from django.contrib import admin
 
-from apps.keywords.forms import KeywordCallParameterFormset
-from apps.keywords.models import KeywordCallParameter
+from keyta.apps.keywords.forms import KeywordCallParameterFormset
+from keyta.apps.keywords.models import KeywordCallParameter
 
 
 class KeywordCallParametersInline(admin.TabularInline):
