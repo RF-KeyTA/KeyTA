@@ -3,34 +3,29 @@ from django.contrib import admin
 from django.http import HttpRequest
 from django.utils.translation import gettext as _
 
+from model_clone import CloneModelAdminMixin
+
 from keyta.admin.base_admin import BaseAddAdmin
 from keyta.admin.base_inline import TabularInlineWithDelete
-from keyta.forms import form_with_select
-from keyta.widgets import ModelSelect2MultipleAdminWidget, Select2MultipleWidget
-
-from apps.executions.admin import KeywordExecutionInline
-from keyta.apps.keywords.admin import KeywordDocumentationAdmin
-from apps.resources.models import Resource
-from apps.windows.admin import (
+from keyta.apps.executions.admin import KeywordExecutionInline
+from keyta.apps.keywords.admin import (
+    KeywordDocumentationAdmin,
     WindowKeywordParameters,
     WindowKeywordAdmin,
     WindowKeywordAdminMixin,
     WindowKeywordReturnValues
 )
+from keyta.apps.resources.models import Resource
+from keyta.forms import form_with_select
+from keyta.widgets import ModelSelect2MultipleAdminWidget, Select2MultipleWidget
 
 from ..models import (
-    SequenceExecution,
     Sequence,
     SequenceDocumentation,
     SequenceResourceImport,
     WindowSequence
 )
 from .steps_inline import SequenceSteps
-
-
-class Execution(KeywordExecutionInline):
-    model = SequenceExecution
-
 
 SequenceForm = forms.modelform_factory(
     Sequence,
@@ -82,7 +77,7 @@ class Resources(TabularInlineWithDelete):
 
 
 @admin.register(Sequence)
-class SequenceAdmin(WindowKeywordAdmin):
+class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
     inlines = [
         Resources,
         WindowKeywordParameters,
@@ -116,7 +111,7 @@ class SequenceAdmin(WindowKeywordAdmin):
             return [WindowKeywordParameters]
 
         if not sequence.has_empty_sequence:
-            return self.inlines + [WindowKeywordReturnValues, Execution]
+            return self.inlines + [WindowKeywordReturnValues, KeywordExecutionInline]
 
         return self.inlines
 

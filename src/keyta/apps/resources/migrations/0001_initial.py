@@ -40,20 +40,6 @@ class Migration(migrations.Migration):
             bases=('keywords.keyword',),
         ),
         migrations.CreateModel(
-            name='ResourceImport',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('type', models.CharField(choices=[('FROM_EXECUTION', 'From an Execution'), ('FROM_SEQUENCE', 'From a Sequence')], max_length=255)),
-                ('execution', models.ForeignKey(blank=True, default=None, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='resource_imports', to='executions.execution')),
-                ('keyword', models.ForeignKey(blank=True, default=None, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='resource_imports', to='keywords.keyword')),
-                ('resource', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='resources.resource', verbose_name='Resource')),
-            ],
-            options={
-                'verbose_name': 'Resource Import',
-                'verbose_name_plural': 'Resource Imports',
-            },
-        ),
-        migrations.CreateModel(
             name='ResourceKeywordDocumentation',
             fields=[
             ],
@@ -64,17 +50,5 @@ class Migration(migrations.Migration):
                 'constraints': [],
             },
             bases=('resources.resourcekeyword',),
-        ),
-        migrations.AddConstraint(
-            model_name='resourceimport',
-            constraint=models.CheckConstraint(check=models.Q(models.Q(('type', 'FROM_EXECUTION'), ('execution__isnull', False), ('keyword__isnull', True)), models.Q(('type', 'FROM_SEQUENCE'), ('execution__isnull', True), ('keyword__isnull', False)), _connector='OR'), name='resource_import_sum_type'),
-        ),
-        migrations.AddConstraint(
-            model_name='resourceimport',
-            constraint=models.UniqueConstraint(condition=models.Q(('execution__isnull', False)), fields=('execution', 'resource'), name='unique_execution_resource_import'),
-        ),
-        migrations.AddConstraint(
-            model_name='resourceimport',
-            constraint=models.UniqueConstraint(condition=models.Q(('keyword__isnull', False)), fields=('keyword', 'resource'), name='unique_keyword_resource_import'),
-        ),
+        )
     ]

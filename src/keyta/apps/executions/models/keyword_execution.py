@@ -1,25 +1,32 @@
 from typing import Optional
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
+from django.db.models import QuerySet
 from django.utils.translation import gettext as _
 
-from keyta.rf_export.keywords import RFKeyword
-from keyta.rf_export.testsuite import RFTestSuite
-
-from apps.actions.models import Action
 from keyta.apps.keywords.models import (
+    Keyword,
     KeywordCallType,
     KeywordCall,
-    KeywordType,
     TestSetupTeardown
 )
+from keyta.apps.libraries.models import LibraryImport
+from keyta.apps.resources.models import ResourceImport
+from keyta.rf_export.testsuite import RFTestSuite
 
-from .execution import Execution
 from ..errors import ValidationError
+from .execution import Execution, ExecutionType
 
 
 class KeywordExecution(Execution):
-    def add_attach_to_system(self, user: User):
+    @property
+    def action_ids(self) -> list[int]:
+        if self.keyword.is_sequence:
+            return list(self.keyword.calls.values_list('to_keyword', flat=True))
+
+        return []
+
+    def add_attach_to_system(self, user: AbstractUser):
         attach_to_system_id = (
             self.keyword.systems
             .values_list('attach_to_system', flat=True)
@@ -28,10 +35,10 @@ class KeywordExecution(Execution):
         )
 
         if attach_to_system_id:
-            attach_to_system = Action.objects.get(
+            attach_to_system = Keyword.objects.get(
                 id=attach_to_system_id
             )
-            kw_call = KeywordCall.objects.create(
+            kw_call, created = KeywordCall.objects.get_or_create(
                 execution=self,
                 type=TestSetupTeardown.TEST_SETUP,
                 user=user,
@@ -49,7 +56,52 @@ class KeywordExecution(Execution):
             .first()
         )
 
-    def test_setup(self, user: User) -> Optional[KeywordCall]:
+    def get_library_dependencies(self) -> QuerySet:
+        keyword = self.keyword
+
+        if keyword.is_action:
+            return LibraryImport.objects.filter(keyword=keyword).library_ids()
+
+        if keyword.is_sequence:
+            return LibraryImport.objects.filter(keyword__id__in=self.action_ids).library_ids()
+
+    def get_resource_dependencies(self) -> QuerySet:
+        return ResourceImport.objects.filter(keyword=self.keyword).resource_ids()
+
+    def get_rf_testsuite(self, user: AbstractUser) -> RFTestSuite:
+        keyword = self.keyword
+        keywords = {keyword.pk: keyword.to_robot()} # to_keyword.get_admin_url()
+
+        if keyword.is_sequence:
+            for keyword in Keyword.objects.filter(pk__in=self.action_ids):
+                keywords[keyword.pk] = keyword.to_robot() # to_keyword.get_admin_url()
+
+        if (test_setup := self.test_setup(user)) and test_setup.enabled:
+            if to_keyword := test_setup.to_keyword:
+                action = Keyword.objects.get(id=to_keyword.id)
+                keywords[action.id] = action.to_robot() # to_keyword.get_admin_url()
+
+        return {
+            'name': self.keyword.name,
+            'settings': self.get_rf_settings(user),
+            'keywords': list(keywords.values()),
+            'testcases': [{
+                'name': _('Test'),
+                'doc': None,
+                'steps': [
+                    self.execution_keyword_call.to_robot(user)
+                ]
+            }]
+        }
+
+    def save(
+        self, force_insert=False, force_update=False, using=None,
+            update_fields=None
+    ):
+        self.type = ExecutionType.KEYWORD
+        super().save(force_insert, force_update, using, update_fields)
+
+    def test_setup(self, user: AbstractUser) -> Optional[KeywordCall]:
         test_setup = super().test_setup(user)
 
         if not test_setup:
@@ -58,64 +110,13 @@ class KeywordExecution(Execution):
 
         return test_setup
 
-    def to_robot(self, keywords: dict[int, RFKeyword], user: User) -> RFTestSuite:
-        def maybe_to_robot(keyword_call: KeywordCall, user: User):
-            if keyword_call and keyword_call.enabled:
-                return keyword_call.to_robot(user)
-
-        if (test_setup := self.test_setup(user)) and test_setup.enabled:
-            to_keyword = test_setup.to_keyword
-
-            if to_keyword.type == KeywordType.ACTION:
-                action = Action.objects.get(id=to_keyword.id)
-                keywords[action.id] = action.to_robot()
-
-        return {
-            'name': self.keyword.name,
-            'settings': {
-                'library_imports': [
-                    lib_import.to_robot(user)
-                    for lib_import
-                    in self.library_imports.all()
-                ],
-                'resource_imports': [
-                    resource_import.to_robot(user)
-                    for resource_import
-                    in self.resource_imports.all()
-                ],
-                'suite_setup': None,
-                'suite_teardown': None,
-                'test_setup': maybe_to_robot(test_setup, user),
-                'test_teardown': None
-            },
-            'keywords': list(keywords.values()),
-            'testcases': [
-                {
-                    'name': _('Test'),
-                    'doc': None,
-                    'steps': [
-                        self.execution_keyword_call.to_robot(user)
-                    ]
-                }
-            ]
-        }
-
-    def update_library_imports(self, library_ids: set[int], user: User):
-        test_setup = self.test_setup(user)
-
-        if test_setup and test_setup.to_keyword.type == KeywordType.ACTION:
-            action = Action.objects.get(pk=test_setup.to_keyword.pk)
-            library_ids.update(action.library_ids)
-
-        super().update_library_imports(library_ids, user)
-
-    def validate(self, user: User) -> Optional[ValidationError]:
+    def validate(self, user: AbstractUser) -> Optional[dict]:
         return (self.validate_keyword_call(user) or
                 self.validate_test_setup(user) or
                 self.validate_steps()
                 )
 
-    def validate_keyword_call(self, user: User) -> Optional[ValidationError]:
+    def validate_keyword_call(self, user: AbstractUser) -> Optional[dict]:
         keyword_parameters = self.keyword.parameters
         keyword_call = self.execution_keyword_call
         keyword_call_parameters = keyword_call.parameters.filter(user=user)
@@ -127,14 +128,13 @@ class KeywordExecution(Execution):
 
         return None
 
-    def validate_steps(self) -> Optional[ValidationError]:
-        for call in self.keyword.calls.all():
-            if call.has_empty_arg():
-                return ValidationError.INCOMPLETE_STEP_PARAMS
+    def validate_steps(self) -> Optional[dict]:
+        if any(call.has_empty_arg() for call in self.keyword.calls.all()):
+            return ValidationError.INCOMPLETE_STEP_PARAMS
 
         return None
 
-    def validate_test_setup(self, user: User) -> Optional[ValidationError]:
+    def validate_test_setup(self, user: AbstractUser) -> Optional[dict]:
         test_setup = self.test_setup(user)
 
         if not test_setup:

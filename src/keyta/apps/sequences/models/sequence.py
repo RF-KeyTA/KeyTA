@@ -2,8 +2,8 @@ from django.db import models
 from django.utils.translation import gettext as _
 
 from apps.actions.models import Action
+from keyta.apps.keywords.models import WindowKeyword
 from keyta.apps.keywords.models.keyword import KeywordType
-from apps.windows.models import WindowKeyword
 
 
 class Sequence(WindowKeyword):

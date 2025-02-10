@@ -1,7 +1,7 @@
 from pathlib import Path
 
+from django.conf import settings
 from django.db import models
-from django.contrib.auth.models import User
 from django.utils.translation import gettext as _
 
 from keyta.models.base_model import AbstractBaseModel
@@ -17,10 +17,12 @@ class UserExecution(AbstractBaseModel):
         on_delete=models.CASCADE,
         related_name='user_execs'
     )
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        verbose_name=_('Benutzer')
+    log = models.CharField(
+        max_length=255,
+        null=True,
+        default=None,
+        blank=True,
+        verbose_name=_('Protokoll')
     )
     result = models.CharField(
         max_length=255,
@@ -30,20 +32,18 @@ class UserExecution(AbstractBaseModel):
         blank=True,
         verbose_name=_('Ergebnis')
     )
-    log = models.CharField(
-        max_length=255,
-        null=True,
-        default=None,
-        blank=True,
-        verbose_name=_('Protokoll')
-    )
     running = models.BooleanField(default=False)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        verbose_name=_('Benutzer')
+    )
 
     def __str__(self):
         return str(self.execution)
 
     def save_execution_result(self, robot_result: dict):
-        directory = Path('static') / 'execution_logs' / str(self.id)
+        directory = Path('static') / 'user_executions' / str(self.id)
         directory.mkdir(parents=True, exist_ok=True)
         log_html = directory / 'log.html'
 

@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
         ('libraries', '0001_initial'),
         ('executions', '0002_initial'),
         ('windows', '0001_initial'),
-        ('keywords', '0001_initial'),
+        ('keywords', '0002_initial'),
     ]
 
     operations = [
@@ -26,7 +26,7 @@ class Migration(migrations.Migration):
                 'indexes': [],
                 'constraints': [],
             },
-            bases=('windows.windowkeyword',),
+            bases=('keywords.windowkeyword',),
         ),
         migrations.CreateModel(
             name='ActionExecution',

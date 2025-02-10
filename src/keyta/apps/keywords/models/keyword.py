@@ -94,6 +94,14 @@ class Keyword(AbstractBaseModel):
     def id_name(self):
         return f'{self.type[0]}{self.id}::{self.name}'
 
+    @property
+    def is_action(self):
+        return self.type == KeywordType.ACTION
+
+    @property
+    def is_sequence(self):
+        return self.type == KeywordType.SEQUENCE
+
     def save(
         self, force_insert=False, force_update=False, using=None,
         update_fields=None

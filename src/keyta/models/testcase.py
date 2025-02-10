@@ -7,11 +7,10 @@ from django.utils.translation import gettext as _
 
 from model_clone import CloneMixin
 
-from keyta.apps.libraries.models import Library
+from keyta.apps.executions.models import Execution
+from keyta.apps.libraries.models import Library, LibraryImport
 from keyta.models.base_model import AbstractBaseModel
 from keyta.rf_export.testcases import RFTestCase
-
-from apps.executions.models import Execution, ExecutionLibraryImport
 
 
 class AbstractTestCase(CloneMixin, AbstractBaseModel):
@@ -42,7 +41,7 @@ class AbstractTestCase(CloneMixin, AbstractBaseModel):
         execution = Execution.objects.create(testcase=self)
 
         for library in Library.objects.filter(id__in=library_ids):
-            ExecutionLibraryImport.objects.create(
+            LibraryImport.objects.create(
                 execution=execution,
                 library=library
             )

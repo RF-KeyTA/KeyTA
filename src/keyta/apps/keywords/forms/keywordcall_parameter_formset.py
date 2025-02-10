@@ -2,8 +2,6 @@ import re
 from typing import Callable
 
 from django import forms
-from django.conf import settings
-from django.contrib.admin.widgets import get_select2_language
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 
@@ -13,6 +11,7 @@ from keyta.apps.keywords.models import (
     KeywordCallParameter
 )
 from keyta.select_value import SelectValue
+from keyta.widgets import KeywordCallSelect
 
 
 def jsonify_value(value):
@@ -58,97 +57,8 @@ class KeywordCallParameterFormset(forms.BaseInlineFormSet):
         super().__init__(data, files, instance, save_as_new, prefix, queryset, **kwargs)
         self.choices = self.get_choices(instance)
 
-    def prev_return_values(self):
-        kw_call = self.instance
-
-        return [[
-            _('Vorherige Rückgabewerte'),
-            [
-                (source.jsonify(), str(source))
-                for source in
-                KeywordCallParameterSource.objects
-                .filter(
-                    kw_call_ret_val__in=kw_call.get_previous_return_values()
-                )
-            ]
-        ]]
-
-    def get_variables(
-            self,
-            window_ids: list[int],
-            system_ids: list[int],
-            show: Callable[[KeywordCallParameterSource], str]
-    ):
-        window_variables = [[
-            _('Referenzwerte'),
-            [
-                (source.jsonify(), show(source))
-                for source in
-                KeywordCallParameterSource.objects
-                .filter(variable_value__variable__windows__in=window_ids)
-                .filter(variable_value__variable__systems__in=system_ids)
-                .distinct()
-            ]
-        ]]
-
-        window_indep_variables = [[
-            _('Globale Referenzwerte'),
-            [
-                (source.jsonify(), show(source))
-                for source in
-                KeywordCallParameterSource.objects
-                .filter(variable_value__variable__systems__in=system_ids)
-                .filter(variable_value__variable__windows__isnull=True)
-            ]
-        ]]
-
-        return window_variables + window_indep_variables
-
-    def get_choices(self, obj: KeywordCall):
-        calling_keyword = obj.from_keyword
-        kw_params = [[
-            _('Parameters'),
-            [
-                (source.jsonify(), str(source))
-                for source in KeywordCallParameterSource.objects
-                .filter(kw_param__keyword=calling_keyword)
-            ]
-        ]]
-
-        return kw_params + self.prev_return_values()
-
     def add_fields(self, form, index):
         super().add_fields(form, index)
-
-        class CustomSelect(forms.Select):
-            template_name = 'admin/keywordcall/select.html'
-
-            @property
-            def media(self):
-                self.i18n_name = get_select2_language()
-                extra = "" if settings.DEBUG else ".min"
-                i18n_file = (
-                    ("admin/js/vendor/select2/i18n/%s.js" % self.i18n_name,)
-                    if self.i18n_name
-                    else ()
-                )
-                return forms.Media(
-                    js=(
-                           "admin/js/vendor/jquery/jquery%s.js" % extra,
-                           "admin/js/vendor/select2/select2.full%s.js" % extra,
-                       )
-                       + i18n_file
-                       + (
-                           "admin/js/jquery.init.js",
-                           "admin/js/autocomplete.js",
-                       ),
-                    css={
-                        "screen": (
-                            "admin/css/vendor/select2/select2%s.css" % extra,
-                            "admin/css/autocomplete.css",
-                        ),
-                    },
-                )
 
         if index is not None:
             kw_call_parameter: KeywordCallParameter = form.instance
@@ -168,7 +78,7 @@ class KeywordCallParameterFormset(forms.BaseInlineFormSet):
                 )
 
             form.fields['value'] = DynamicChoiceField(
-                widget=CustomSelect(
+                widget=KeywordCallSelect(
                     choices=choices,
                     attrs={
                         # Allow manual input
@@ -181,3 +91,65 @@ class KeywordCallParameterFormset(forms.BaseInlineFormSet):
 
             if kw_call_parameter.parameter.is_list:
                 form.fields['value'].help_text = _('Wert 1, Wert 2, ...')
+
+    def get_choices(self, kw_call: KeywordCall):
+        return self.get_keyword_parameters(kw_call) + self.get_prev_return_values()
+
+    def get_keyword_parameters(self, kw_call: KeywordCall):
+        return [[
+            _('Parameters'),
+            [
+                (source.jsonify(), str(source))
+                for source in KeywordCallParameterSource.objects
+                .filter(kw_param__keyword=kw_call.from_keyword)
+            ]
+        ]]
+
+    def get_global_variables(
+        self,
+        system_ids: list[int]
+    ):
+
+        return [[
+            _('Globale Referenzwerte'),
+            [
+                (source.jsonify(), str(source))
+                for source in
+                KeywordCallParameterSource.objects
+                .filter(variable_value__variable__systems__in=system_ids)
+                .filter(variable_value__variable__windows__isnull=True)
+            ]
+        ]]
+
+    def get_prev_return_values(self):
+        kw_call: KeywordCall = self.instance
+
+        return [[
+            _('Vorherige Rückgabewerte'),
+            [
+                (source.jsonify(), str(source))
+                for source in
+                KeywordCallParameterSource.objects
+                .filter(
+                    kw_call_ret_val__in=kw_call.get_previous_return_values()
+                )
+            ]
+        ]]
+
+    def get_window_variables(
+        self,
+        window_ids: list[int],
+        system_ids: list[int],
+        show: Callable[[KeywordCallParameterSource], str]
+    ):
+        return [[
+            _('Referenzwerte'),
+            [
+                (source.jsonify(), show(source))
+                for source in
+                KeywordCallParameterSource.objects
+                .filter(variable_value__variable__windows__in=window_ids)
+                .filter(variable_value__variable__systems__in=system_ids)
+                .distinct()
+            ]
+        ]]

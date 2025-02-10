@@ -18,7 +18,7 @@ from ..models import KeywordDocumentation, Keyword, KeywordType
 
 
 @admin.register(Keyword)
-class KeywordAdmin(SortableAdminBase, BaseAdminWithDoc):  # CloneModelAdminMixin
+class KeywordAdmin(SortableAdminBase, BaseAdminWithDoc):
     list_display = ['name', 'short_doc']
     list_display_links = ['name']
     ordering = [Lower('name')]

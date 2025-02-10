@@ -2,6 +2,8 @@ from django.db import models
 from django.db.models import Q
 from django.utils.translation import gettext as _
 
+from model_clone import CloneMixin
+
 from keyta.select_value import SelectValue
 
 
@@ -11,7 +13,7 @@ class KeywordCallParameterSourceType(models.TextChoices):
     VARIABLE_VALUE = 'VARIABLE_VALUE', _('Referenzwert')
 
 
-class KeywordCallParameterSource(models.Model):
+class KeywordCallParameterSource(CloneMixin, models.Model):
     kw_param = models.OneToOneField(
         'keywords.KeywordParameter',
         on_delete=models.CASCADE,
@@ -34,6 +36,8 @@ class KeywordCallParameterSource(models.Model):
         max_length=255,
         choices=KeywordCallParameterSourceType.choices
     )
+
+    _clone_o2o_fields = ['kw_param', 'kw_call_ret_val', 'variable_value']
 
     def __str__(self):
         return str(

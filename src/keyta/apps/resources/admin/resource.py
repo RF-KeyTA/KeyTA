@@ -10,7 +10,7 @@ from django.utils.translation import gettext as _
 from keyta.admin.base_admin import BaseAdmin
 from keyta.rf_import.import_resource import import_resource
 
-from apps.resources.models import Resource, ResourceKeyword
+from ..models import Resource, ResourceKeyword
 
 
 class Keywords(admin.TabularInline):

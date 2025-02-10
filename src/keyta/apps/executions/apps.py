@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class ExecutionConfig(AppConfig):
+class ExecutionsConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'apps.executions'
+    name = 'keyta.apps.executions'

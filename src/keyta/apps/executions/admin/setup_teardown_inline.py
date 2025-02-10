@@ -4,38 +4,29 @@ from django.db.models import QuerySet
 from django.http import HttpRequest
 from django.utils.translation import gettext as _
 
-from apps.actions.models import Action
 from keyta.widgets import (
     open_link_in_modal,
     BaseSelect
 )
 
-from ..models import Execution, SetupTeardown
+from apps.actions.models import Action
+
+from ..forms import SetupTeardownForm
+from ..models import Execution, Setup, Teardown
 
 
-class SetupTeardownForm(forms.ModelForm):
-    def save(self, commit=True):
-        setup_teardown: SetupTeardown = super().save(commit)
-
-        if setup_teardown.pk and 'to_keyword' in self.changed_data:
-            for param in setup_teardown.parameters.all():
-                param.delete()
-
-        return setup_teardown
-
-
-class SetupTeardownInline(admin.TabularInline):
-    model = SetupTeardown
-    fields = ['type', 'user', 'to_keyword', 'args']
+class SetupInline(admin.TabularInline):
+    model = Setup
+    fields = ['user', 'to_keyword', 'args']
     form = SetupTeardownForm
     readonly_fields = ['args']
-    extra = 1
+    extra = 0
     max_num = 1
     template = 'admin/setup_teardown/tabular.html'
 
     @admin.display(description=_('Parameters'))
     def args(self, obj):
-        kw_call: SetupTeardown = obj
+        kw_call: Setup = obj
         to_keyword_has_params = kw_call.to_keyword.parameters.exists()
 
         if not kw_call.pk or not to_keyword_has_params:
@@ -94,3 +85,8 @@ class SetupTeardownInline(admin.TabularInline):
     def get_readonly_fields(self, request: HttpRequest, obj=None):
         self.user = request.user
         return self.readonly_fields
+
+
+class TeardownInline(SetupInline):
+    model = Teardown
+    verbose_name = _('Nachbereitung')

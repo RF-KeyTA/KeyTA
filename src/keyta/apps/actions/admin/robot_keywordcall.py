@@ -23,7 +23,7 @@ class RobotKeywordCallParameterFormset(KeywordCallParameterFormset):
             kw_call.from_keyword.windows.values_list('pk', flat=True)
         )
 
-        return super().get_choices(obj) + super().get_variables(
+        return super().get_choices(obj) + super().get_window_variables(
                 window_ids,
                 system_ids,
                 lambda value_ref: str(value_ref)

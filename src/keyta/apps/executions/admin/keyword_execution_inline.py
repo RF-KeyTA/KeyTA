@@ -2,13 +2,10 @@ from django.contrib import admin
 from django.http import HttpRequest
 from django.utils.translation import gettext as _
 
+from keyta.apps.keywords.models import Keyword, ExecutionKeywordCall
 from keyta.widgets import open_link_in_modal
-from keyta.apps.keywords.models import Keyword
 
-from ..models import (
-    KeywordExecution,
-    KeywordExecutionCall
-)
+from ..models import KeywordExecution
 from .execution_inline import ExecutionInline
 
 
@@ -18,7 +15,7 @@ class KeywordExecutionInline(ExecutionInline):
     @admin.display(description=_('Werte'))
     def args(self, obj):
         execution: KeywordExecution = obj
-        kw_call = KeywordExecutionCall(execution.execution_keyword_call.pk)
+        kw_call = ExecutionKeywordCall(execution.execution_keyword_call.pk)
 
         if (
             execution.keyword.parameters.exists() and

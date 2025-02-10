@@ -3,7 +3,7 @@ from itertools import groupby
 import django
 from django import forms
 from django.conf import settings
-from django.contrib.admin.widgets import RelatedFieldWidgetWrapper
+from django.contrib.admin.widgets import RelatedFieldWidgetWrapper, get_select2_language
 from django.forms.models import ModelChoiceIterator
 from django.utils.safestring import mark_safe
 
@@ -112,6 +112,37 @@ class BaseSelectMultiple(BaseSelect):
         # An unselected <select multiple> doesn't appear in POST data, so it's
         # never known if the value is actually omitted.
         return False
+
+
+class KeywordCallSelect(forms.Select):
+    template_name = 'admin/keywordcall/select.html'
+
+    @property
+    def media(self):
+        self.i18n_name = get_select2_language()
+        extra = "" if settings.DEBUG else ".min"
+        i18n_file = (
+            ("admin/js/vendor/select2/i18n/%s.js" % self.i18n_name,)
+            if self.i18n_name
+            else ()
+        )
+        return forms.Media(
+            js=(
+                   "admin/js/vendor/jquery/jquery%s.js" % extra,
+                   "admin/js/vendor/select2/select2.full%s.js" % extra,
+               )
+               + i18n_file
+               + (
+                   "admin/js/jquery.init.js",
+                   "admin/js/autocomplete.js",
+               ),
+            css={
+                "screen": (
+                    "admin/css/vendor/select2/select2%s.css" % extra,
+                    "admin/css/autocomplete.css",
+                ),
+            },
+        )
 
 
 class ModelSelect2AdminWidget(ModelSelect2Widget):

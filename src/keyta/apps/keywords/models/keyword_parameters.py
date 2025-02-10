@@ -4,6 +4,8 @@ from django.db import models
 from django.db.models import Q
 from django.utils.translation import gettext as _
 
+from model_clone import CloneMixin
+
 from keyta.models.base_model import AbstractBaseModel
 from keyta.select_value import SelectValue
 
@@ -19,7 +21,7 @@ class KeywordParameterType(models.TextChoices):
     KWARG = 'KWARG', _('Optional Argument')
 
 
-class KeywordParameter(AbstractBaseModel):
+class KeywordParameter(CloneMixin, AbstractBaseModel):
     keyword = models.ForeignKey(
         'keywords.Keyword',
         on_delete=models.CASCADE,
@@ -47,6 +49,8 @@ class KeywordParameter(AbstractBaseModel):
         max_length=255,
         choices=KeywordParameterType.choices
     )
+
+    USE_UNIQUE_DUPLICATE_SUFFIX = False
 
     class Manager(models.Manager):
         def get_queryset(self):

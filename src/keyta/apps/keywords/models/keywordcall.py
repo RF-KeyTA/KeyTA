@@ -3,8 +3,10 @@ from typing import Optional
 from django.conf import settings
 from django.db import models
 from django.db.models import Q, QuerySet
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext as _
+
+from model_clone import CloneMixin
 
 from keyta.models.base_model import AbstractBaseModel
 from keyta.rf_export.keywords import RFKeywordCall
@@ -32,7 +34,7 @@ class KeywordCallType(models.TextChoices):
     TEST_STEP = 'TEST_STEP', _('Testschritt')
 
 
-class KeywordCall(AbstractBaseModel):
+class KeywordCall(CloneMixin, AbstractBaseModel):
     from_keyword = models.ForeignKey(
         'keywords.Keyword',
         on_delete=models.CASCADE,
@@ -94,13 +96,15 @@ class KeywordCall(AbstractBaseModel):
         verbose_name=_('Maske')
     )
 
+    _clone_m2o_or_o2m_fields = ['parameters', 'return_value']
+
     def __str__(self):
         return str(self.caller) + ' → ' + str(self.to_keyword)
 
     def add_parameter(
         self,
         param: KeywordParameter,
-        user: Optional[User]=None
+        user: Optional[AbstractUser]=None
     ):
         KeywordCallParameter.objects.get_or_create(
             keyword_call=self,
@@ -143,7 +147,7 @@ class KeywordCall(AbstractBaseModel):
             )
         )
 
-    def has_empty_arg(self, user: Optional[User]=None) -> bool:
+    def has_empty_arg(self, user: Optional[AbstractUser]=None) -> bool:
         args: QuerySet = self.parameters.filter(user=user).args()
         return any(arg.current_value is None for arg in args)
 
@@ -154,27 +158,9 @@ class KeywordCall(AbstractBaseModel):
         if not self.type:
             self.type = KeywordCallType.KEYWORD_CALL
 
-        if not self.pk:
-            super().save(force_insert, force_update, using, update_fields)
+        return super().save(force_insert, force_update, using, update_fields)
 
-            if self.type in [
-                KeywordCallType.KEYWORD_CALL, KeywordCallType.TEST_STEP
-            ]:
-                for param in self.to_keyword.parameters.all():
-                    self.add_parameter(param)
-
-                return_value: KeywordReturnValue
-                return_value = self.to_keyword.return_value.first()
-
-                if return_value:
-                    KeywordCallReturnValue.objects.create(
-                        keyword_call=self,
-                        return_value=return_value.kw_call_return_value
-                    )
-        else:
-            return super().save(force_insert, force_update, using, update_fields)
-
-    def to_robot(self, user: Optional[User]=None) -> RFKeywordCall:
+    def to_robot(self, user: Optional[AbstractUser]=None) -> RFKeywordCall:
         parameters = self.parameters.filter(user=user)
         args = parameters.args()
         kwargs = parameters.kwargs()
@@ -190,6 +176,10 @@ class KeywordCall(AbstractBaseModel):
                 else None
             )
         }
+
+    def update_parameters(self, user: AbstractUser):
+        for param in self.to_keyword.parameters.all():
+            self.add_parameter(param, user)
 
     class Manager(models.Manager):
         def get_queryset(self):

@@ -1,25 +1,24 @@
 from django.contrib import admin
 
-from keyta.apps.keywords.admin import KeywordCallAdmin
+from keyta.apps.keywords.admin import KeywordCallAdmin, KeywordCallParametersInline
+from keyta.apps.keywords.models import KeywordCall
 
-from ..models import SetupTeardown
-from .setup_teardown_parameters_inline import  SetupTeardownParametersInline
+from ..forms import SetupTeardownParametersFormset
+from ..models import Setup, Teardown
 
 
-@admin.register(SetupTeardown)
+class SetupTeardownParametersInline(KeywordCallParametersInline):
+    formset = SetupTeardownParametersFormset
+
+
+@admin.register(Setup)
+@admin.register(Teardown)
 class SetupTeardownAdmin(KeywordCallAdmin):
     fields = ['keyword_doc']
     readonly_fields = ['keyword_doc']
+    inlines = [SetupTeardownParametersInline]
 
     def change_view(self, request, object_id, form_url="", extra_context=None):
-        setup_teardown = SetupTeardown.objects.get(id=object_id)
-
-        for param in setup_teardown.to_keyword.parameters.all():
-            setup_teardown.add_parameter(param, user=request.user)
-
+        kw_call = KeywordCall.objects.get(id=object_id)
+        kw_call.update_parameters(request.user)
         return super().change_view(request, object_id, form_url, extra_context)
-
-    def get_inlines(self, request, obj):
-        return [
-            SetupTeardownParametersInline
-        ]

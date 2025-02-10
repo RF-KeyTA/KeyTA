@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils.translation import gettext as _
 
+from model_clone import CloneMixin
+
 from keyta.select_value import SelectValue
 from .keywordcall_parameter_source import (
     KeywordCallParameterSource,
@@ -8,7 +10,7 @@ from .keywordcall_parameter_source import (
 )
 
 
-class KeywordCallReturnValue(models.Model):
+class KeywordCallReturnValue(CloneMixin, models.Model):
     keyword_call = models.ForeignKey(
         'keywords.KeywordCall',
         on_delete=models.CASCADE,
@@ -63,5 +65,4 @@ class KeywordCallReturnValue(models.Model):
             super().save(force_insert, force_update, using, update_fields)
 
     class Meta:
-        constraints = []
         verbose_name = _('Rückgabewert')

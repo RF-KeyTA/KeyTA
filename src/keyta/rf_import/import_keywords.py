@@ -9,10 +9,9 @@ from pathlib import Path
 from django.utils.translation import gettext as _
 
 from keyta.widgets import open_link_in_modal
-from keyta.apps.libraries.models import Library
-
 from keyta.apps.keywords.models import Keyword, KeywordParameter, KeywordType
-from apps.resources.models import Resource
+from keyta.apps.libraries.models import Library
+from keyta.apps.resources.models import Resource
 
 
 def get_libdoc_json(library_or_resource: str):

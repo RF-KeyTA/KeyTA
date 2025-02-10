@@ -3,7 +3,7 @@ from django.utils.translation import gettext as _
 
 from keyta.admin.base_admin import BaseDocumentationAdmin
 
-from apps.resources.models import ResourceKeyword, ResourceKeywordDocumentation
+from ..models import ResourceKeyword, ResourceKeywordDocumentation
 
 
 @admin.register(ResourceKeyword)

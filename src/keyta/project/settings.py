@@ -54,6 +54,7 @@ ADMIN_APP = [
 ]
 
 DEFAULT_APPS = [
+    'model_clone',  # model_clone must be placed before django.contrib.admin
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -184,17 +185,18 @@ X_FRAME_OPTIONS = 'SAMEORIGIN'
 JAZZMIN_SETTINGS = {
     "changeform_format_overrides": {
         'actions.actionexecution': 'single',
-        'actions.librarykeywordcall': 'single',
+        'actions.robotkeywordcall': 'single',
         'executions.keywordexecution': 'single',
-        'executions.keywordexecutioncall': 'single',
         'executions.keywordexecutionsetup': 'single',
-        'executions.executionlibraryimport': 'single',
-        'executions.setupteardown': 'single',
+        'executions.setup': 'single',
+        'executions.teardown': 'single',
         'executions.testcaseexecution': 'single',
+        'keywords.executionkeywordcall': 'single',
+        'libraries.libraryimport': 'single',
         'sequences.actioncall': 'single',
         'sequences.sequenceexecution': 'single',
         'testcases.sequencecall': 'single',
-        'testcases.teststep': 'single',
+        'teststeps.teststep': 'single',
     },
     "copyright": 'imbus',
     "custom_css": "css/keyta.css",
@@ -209,16 +211,18 @@ JAZZMIN_SETTINGS = {
         'actions.windowaction',
         'executions.execution',
         'executions.keywordexecution',
-        'executions.keywordexecutioncall',
         'executions.testcaseexecution',
         'executions.executionlibraryimport',
-        'executions.testsetup',
-        'executions.setupteardown',
+        'executions.setup',
+        'executions.teardown',
         'executions.keywordexecutionsetup',
         'executions.testcaseexecutionsetupteardown',
+        'keywords.executionkeywordcall',
         'keywords.keyword',
         'keywords.keywordcall',
         'keywords.keyworddocumentation',
+        'keywords.windowkeywordparameter',
+        'keywords.windowkeywordreturnvalue',
         'libraries.librarykeyword',
         'libraries.librarykeyworddocumentation',
         'libraries.libraryimport',
@@ -238,8 +242,6 @@ JAZZMIN_SETTINGS = {
         'variables.windowvariable',
         'windows.systemwindow',
         'windows.windowdocumentation',
-        'windows.windowkeywordparameter',
-        'windows.windowkeywordreturnvalue',
         'windows.windowlibrary'
     ],
     "icons": {

@@ -1,14 +1,12 @@
 from typing import Optional
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models import Q
 from django.utils.translation import gettext as _
 
 from keyta.models.base_model import AbstractBaseModel
 from keyta.rf_export.settings import RFResourceImport
-
-from .resource import Resource
 
 
 __all__ = ['ResourceImport', 'ResourceImportType']
@@ -37,7 +35,7 @@ class ResourceImport(AbstractBaseModel):
         related_name='resource_imports'
     )
     resource = models.ForeignKey(
-        Resource,
+        'resources.Resource',
         on_delete=models.CASCADE,
         verbose_name=_('Ressource')
     )
@@ -60,14 +58,14 @@ class ResourceImport(AbstractBaseModel):
         else:
             super().save(force_insert, force_update, using, update_fields)
 
-    def to_robot(self, user: Optional[User]=None) -> RFResourceImport:
+    def to_robot(self, user: Optional[AbstractUser]=None) -> RFResourceImport:
         return {
             'resource': str(self.resource),
         }
 
     class QuerySet(models.QuerySet):
         def resource_ids(self):
-            return self.values_list('resource', flat=True)
+            return self.values_list('resource', flat=True).distinct()
 
     objects = QuerySet.as_manager()
 

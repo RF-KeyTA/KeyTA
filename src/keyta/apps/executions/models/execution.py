@@ -1,26 +1,17 @@
 from typing import Optional
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.db.models import Q
+from django.db.models import Q, QuerySet
 from django.utils.translation import gettext as _
 
+from keyta.apps.libraries.models import Library, LibraryImport
+from keyta.apps.resources.models import Resource, ResourceImport
 from keyta.models.base_model import AbstractBaseModel
-from keyta.rf_export.keywords import RFKeyword
 from keyta.rf_export.testsuite import RFTestSuite
-
-from keyta.apps.keywords.models import (
-    KeywordCall,
-    TestSetupTeardown,
-    SuiteSetupTeardown
-)
-from apps.libraries.models import Library
-from apps.resources.models import Resource
+from keyta.rf_export.settings import RFSettings
 
 from .user_execution import UserExecution
-from .execution_resource_import import ExecutionResourceImport
-from .execution_library_import import ExecutionLibraryImport
-from ..errors import ValidationError
 
 
 class ExecutionType(models.TextChoices):
@@ -45,17 +36,47 @@ class Execution(AbstractBaseModel):
         default=None,
         related_name='execution'
     )
-    type = models.CharField(max_length=255, choices=ExecutionType.choices)
+    type = models.CharField(max_length=255)
 
     def __str__(self):
         return str(self.keyword or self.testcase)
 
-    def get_testsuite(self, user: User):
+    def get_library_dependencies(self) -> QuerySet:
+        pass
+
+    def get_resource_dependencies(self) -> QuerySet:
+        pass
+
+    def get_rf_settings(self, user: AbstractUser) -> RFSettings:
+        def maybe_to_robot(keyword_call, user: AbstractUser):
+            if keyword_call and keyword_call.enabled:
+                return keyword_call.to_robot(user)
+
+        test_setup = self.test_setup(user)
+        test_teardown = self.test_teardown(user)
+
+        return {
+            'library_imports': [
+                lib_import.to_robot(user)
+                for lib_import
+                in self.library_imports.all()
+            ],
+            'resource_imports': [
+                resource_import.to_robot(user)
+                for resource_import
+                in self.resource_imports.all()
+            ],
+            'suite_setup': None,
+            'suite_teardown': None,
+            'test_setup': maybe_to_robot(test_setup, user),
+            'test_teardown': maybe_to_robot(test_teardown, user)
+        }
+
+    def get_rf_testsuite(self, user: AbstractUser) -> RFTestSuite:
         pass
 
     def save(
-        self, force_insert=False, force_update=False, using=None,
-            update_fields=None
+        self, force_insert=False, force_update=False, using=None, update_fields=None
     ):
         if not self.pk:
             if self.testcase:
@@ -65,49 +86,54 @@ class Execution(AbstractBaseModel):
 
         super().save(force_insert, force_update, using, update_fields)
 
-    def save_execution_result(self, user: User, robot_result: dict):
+    def save_execution_result(self, user: AbstractUser, robot_result: dict):
         user_exec, _ = UserExecution.objects.get_or_create(
             execution=self,
             user=user
         )
         user_exec.save_execution_result(robot_result)
 
-    def suite_setup(self) -> Optional[KeywordCall]:
+    def suite_setup(self):
         return (
             self.keyword_calls
-            .filter(type=SuiteSetupTeardown.SUITE_SETUP)
+            .suite_setup()
             .first()
         )
 
-    def suite_teardown(self) -> Optional[KeywordCall]:
+    def suite_teardown(self):
         return (
             self.keyword_calls
-            .filter(type=SuiteSetupTeardown.SUITE_TEARDOWN)
+            .suite_teardown()
             .first()
         )
 
-    def test_setup(self, user: User) -> Optional[KeywordCall]:
+    def test_setup(self, user: AbstractUser):
         return (
             self.keyword_calls
-            .filter(type=TestSetupTeardown.TEST_SETUP)
+            .test_setup()
             .filter(user=user)
             .first()
         )
 
-    def test_teardown(self, user: User) -> Optional[KeywordCall]:
+    def test_teardown(self, user: AbstractUser):
         return (
             self.keyword_calls
-            .filter(type=TestSetupTeardown.TEST_TEARDOWN)
+            .test_teardown()
             .filter(user=user)
             .first()
         )
 
-    def to_robot(self, keywords: dict[int, RFKeyword], user: User) -> RFTestSuite:
-        pass
+    def update_library_imports(self, user: AbstractUser):
+        library_ids = self.get_library_dependencies()
 
-    def update_library_imports(self, library_ids: set[int], user: User):
+        if test_setup := self.test_setup(user):
+            library_ids |= LibraryImport.objects.filter(keyword=test_setup.to_keyword).library_ids()
+
+        if test_teardown := self.test_teardown(user):
+            library_ids |= LibraryImport.objects.filter(keyword=test_teardown.to_keyword).library_ids()
+
         for library in Library.objects.filter(id__in=library_ids):
-            lib_import, created = ExecutionLibraryImport.objects.get_or_create(
+            lib_import, created = LibraryImport.objects.get_or_create(
                 execution=self,
                 library=library
             )
@@ -116,9 +142,11 @@ class Execution(AbstractBaseModel):
         for lib_import in self.library_imports.exclude(library_id__in=library_ids):
             lib_import.delete()
 
-    def update_resource_imports(self, resource_ids: set[int], user: User):
+    def update_resource_imports(self):
+        resource_ids = self.get_resource_dependencies()
+
         for resource in Resource.objects.filter(id__in=resource_ids):
-            resource_import, created = ExecutionResourceImport.objects.get_or_create(
+            ResourceImport.objects.get_or_create(
                 execution=self,
                 resource=resource
             )
@@ -126,7 +154,7 @@ class Execution(AbstractBaseModel):
         for resource_import in self.resource_imports.exclude(resource_id__in=resource_ids):
             resource_import.delete()
 
-    def validate(self, user: User) -> Optional[ValidationError]:
+    def validate(self, user: AbstractUser) -> Optional[dict]:
         pass
 
     class Meta:

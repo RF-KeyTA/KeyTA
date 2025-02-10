@@ -12,8 +12,8 @@ from keyta.models.testcase import AbstractTestCase
 from keyta.widgets import BaseSelectMultiple
 from keyta.rf_export.rfgenerator import gen_testsuite
 
-from apps.executions.admin import ExecutionInline
-from apps.executions.models import TestCaseExecution
+from keyta.apps.executions.admin import ExecutionInline
+from keyta.apps.executions.models import TestCaseExecution
 
 
 class LocalExecution(ExecutionInline):

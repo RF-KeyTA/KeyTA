@@ -22,6 +22,7 @@ class Migration(migrations.Migration):
                 ('documentation', models.TextField(blank=True, verbose_name='Documentation')),
                 ('type', models.CharField(choices=[('LIBRARY', 'Keyword from Library'), ('RESOURCE', 'Keyword from Resource'), ('ACTION', 'Action'), ('SEQUENCE', 'Sequence')], max_length=255)),
                 ('setup_teardown', models.BooleanField(default=False, verbose_name='Setup/Teardown')),
+                ('everywhere', models.BooleanField(default=False, verbose_name='In allen Masken')),
             ],
         ),
         migrations.CreateModel(

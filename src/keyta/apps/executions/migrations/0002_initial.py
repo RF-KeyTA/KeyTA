@@ -33,19 +33,6 @@ class Migration(migrations.Migration):
             bases=('libraries.libraryimport',),
         ),
         migrations.CreateModel(
-            name='ExecutionResourceImport',
-            fields=[
-            ],
-            options={
-                'verbose_name': 'Resource Import',
-                'verbose_name_plural': 'Resource Imports',
-                'proxy': True,
-                'indexes': [],
-                'constraints': [],
-            },
-            bases=('resources.resourceimport',),
-        ),
-        migrations.CreateModel(
             name='KeywordExecutionCall',
             fields=[
             ],

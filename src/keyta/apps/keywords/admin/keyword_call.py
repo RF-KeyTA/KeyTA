@@ -6,7 +6,9 @@ from keyta.widgets import open_link_in_modal
 
 from ..models import (
     KeywordCall,
-    KeywordCallReturnValue
+    KeywordCallReturnValue,
+    KeywordCallType,
+    KeywordReturnValue
 )
 from .keywordcall_parameters_inline import KeywordCallParametersInline
 
@@ -31,12 +33,36 @@ class KeywordCallAdmin(BaseAdmin):
         'keyword_doc',
         'return_value'
     ]
+    inlines = [KeywordCallParametersInline]
+
+    def change_view(self, request, object_id, form_url="", extra_context=None):
+        kw_call = KeywordCall.objects.get(pk=object_id)
+
+        if kw_call.type in [
+            KeywordCallType.KEYWORD_CALL, KeywordCallType.TEST_STEP
+        ]:
+            if not kw_call.parameters.exists():
+                for param in kw_call.to_keyword.parameters.all():
+                    kw_call.add_parameter(param)
+
+            if not kw_call.return_value.exists():
+                return_value: KeywordReturnValue
+                return_value = kw_call.to_keyword.return_value.first()
+
+                if return_value:
+                    KeywordCallReturnValue.objects.create(
+                        keyword_call=kw_call,
+                        return_value=return_value.kw_call_return_value
+                    )
+
+        return super().change_view(request, object_id, form_url, extra_context)
+
 
     def get_inlines(self, request, obj):
         kw_call: KeywordCall = obj
 
         if kw_call.parameters.exists():
-            return [KeywordCallParametersInline]
+            return self.inlines
         else:
             return []
 

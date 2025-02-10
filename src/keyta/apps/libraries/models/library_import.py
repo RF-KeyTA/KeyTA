@@ -1,6 +1,6 @@
 from typing import Optional
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models import Q
 from django.utils.translation import gettext as _
@@ -44,7 +44,7 @@ class LibraryImport(AbstractBaseModel):
     def __str__(self):
         return f'{self.execution or self.keyword} -> {self.library}'
 
-    def add_parameters(self, user: Optional[User]=None):
+    def add_parameters(self, user: Optional[AbstractUser]=None):
         for kwarg in self.library.kwargs.all():
             self.kwargs.get_or_create(
                 library_import=self,
@@ -72,7 +72,7 @@ class LibraryImport(AbstractBaseModel):
         else:
             super().save(force_insert, force_update, using, update_fields)
 
-    def to_robot(self, user: Optional[User]=None) -> RFLibraryImport:
+    def to_robot(self, user: Optional[AbstractUser]=None) -> RFLibraryImport:
         kwargs = self.kwargs.filter(user=user).all()
 
         return {
@@ -82,7 +82,7 @@ class LibraryImport(AbstractBaseModel):
 
     class QuerySet(models.QuerySet):
         def library_ids(self):
-            return self.values_list('library', flat=True)
+            return self.values_list('library', flat=True).distinct()
 
     objects = QuerySet.as_manager()
 

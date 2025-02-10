@@ -15,7 +15,7 @@ class TestStepParameterFormset(KeywordCallParameterFormset):
             obj.testcase.systems.values_list('pk', flat=True)
         )
 
-        return super().prev_return_values() + super().get_variables(
+        return super().get_prev_return_values() + super().get_window_variables(
                 [obj.window.id],
                 system_ids,
                 lambda value_ref: str(value_ref)

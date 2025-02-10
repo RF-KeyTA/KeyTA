@@ -1,106 +1,79 @@
 from typing import Optional
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
+from django.db.models import QuerySet
 from django.utils.translation import gettext as _
 
-from keyta.rf_export.keywords import RFKeyword
+from keyta.apps.keywords.models import Keyword, KeywordCall
+from keyta.apps.libraries.models import LibraryImport
+from keyta.apps.resources.models import ResourceImport
 from keyta.rf_export.testsuite import RFTestSuite
 
-from apps.actions.models import Action
-from keyta.apps.keywords.models import KeywordCall, KeywordType
-from apps.libraries.models import LibraryImport
-from apps.sequences.models import Sequence
-
 from ..errors import ValidationError
-from .execution import Execution
+from .execution import Execution, ExecutionType
 
 
 class TestCaseExecution(Execution):
-    def get_testsuite(self, user: User) -> RFTestSuite:
-        keywords = {}
+    @property
+    def action_ids(self):
+        return (
+            KeywordCall.objects
+            .filter(from_keyword__in=self.sequence_ids)
+            .values_list('to_keyword', flat=True)
+        )
 
-        test_step: KeywordCall
-        for test_step in self.testcase.steps.all():
-            sequence = Sequence.objects.get(id=test_step.to_keyword.pk)
-            keywords[sequence.id] = sequence.to_robot()
+    @property
+    def sequence_ids(self):
+        return (
+            KeywordCall.objects
+            .filter(testcase_id=self.testcase.pk)
+            .values_list('to_keyword', flat=True)
+        )
 
-            for action in sequence.actions:
-                keywords[action.id] = action.to_robot()
+    def get_library_dependencies(self) -> QuerySet:
+        return (
+            LibraryImport.objects
+            .filter(keyword__id__in=[self.action_ids])
+            .library_ids()
+        )
 
-        return self.to_robot(keywords, user)
+    def get_resource_dependencies(self) -> QuerySet:
+        return (
+            ResourceImport.objects
+            .filter(keyword__id__in=[self.sequence_ids])
+            .resource_ids()
+        )
 
-    def to_robot(self, keywords: dict[int, RFKeyword], user: User) -> RFTestSuite:
-        def maybe_to_robot(keyword_call: KeywordCall, user: User):
-            if keyword_call and keyword_call.enabled:
-                return keyword_call.to_robot(user)
+    def get_rf_testsuite(self, user: AbstractUser) -> RFTestSuite:
+        keywords = {
+            keyword.pk: keyword.to_robot() # keyword.get_admin_url()
+            for keyword in
+            Keyword.objects.filter(pk__in=self.sequence_ids|self.action_ids)
+        }
 
         if (test_setup := self.test_setup(user)) and test_setup.enabled:
-            to_keyword = test_setup.to_keyword
-
-            if to_keyword.type == KeywordType.ACTION:
-                action = Action.objects.get(id=to_keyword.id)
-                keywords[action.id] = action.to_robot()
+            if to_keyword := test_setup.to_keyword:
+                keywords[to_keyword.id] = to_keyword.to_robot() # to_keyword.get_admin_url()
 
         if (test_teardown := self.test_teardown(user)) and test_teardown.enabled:
-            to_keyword = test_teardown.to_keyword
-
-            if to_keyword.type == KeywordType.ACTION:
-                action = Action.objects.get(id=to_keyword.id)
-                keywords[action.id] = action.to_robot()
+            if to_keyword := test_setup.to_keyword:
+                keywords[to_keyword.id] = to_keyword.to_robot()  # to_keyword.get_admin_url()
 
         return {
             'name': self.testcase.name,
-            'settings': {
-                'library_imports': [
-                    lib_import.to_robot(user)
-                    for lib_import
-                    in self.library_imports.all()
-                ],
-                'resource_imports': [
-                    resource_import.to_robot(user)
-                    for resource_import
-                    in self.resource_imports.all()
-                ],
-                'suite_setup': None,
-                'suite_teardown': None,
-                'test_setup': maybe_to_robot(test_setup, user),
-                'test_teardown': maybe_to_robot(test_teardown, user),
-            },
+            'settings': self.get_rf_settings(user),
             'keywords': list(keywords.values()),
-            'testcases': [
-                self.testcase.to_robot()
-            ]
+            'testcases': [self.testcase.to_robot()]
         }
 
-    def update_library_imports(self, library_ids: set[int], user: User):
-        sequence_ids = KeywordCall.objects.filter(testcase_id=self.testcase.pk).values_list('to_keyword_id')
-        action_ids = KeywordCall.objects.filter(from_keyword_id__in=sequence_ids).values_list('to_keyword_id')
+    def save(
+        self, force_insert=False, force_update=False, using=None,
+            update_fields=None
+    ):
+        self.type = ExecutionType.TESTCASE
+        super().save(force_insert, force_update, using, update_fields)
 
-        for lib_id in LibraryImport.objects.filter(keyword_id__in=action_ids).values_list('library_id').distinct():
-            library_ids.update(lib_id)
-
-        test_setup = self.test_setup(user)
-        test_teardown = self.test_teardown(user)
-
-        if test_setup and test_setup.to_keyword.type == KeywordType.ACTION:
-            action = Action.objects.get(pk=test_setup.to_keyword.pk)
-            library_ids.update(action.library_ids)
-
-        if test_teardown and test_teardown.to_keyword.type == KeywordType.ACTION:
-            action = Action.objects.get(pk=test_teardown.to_keyword.pk)
-            library_ids.update(action.library_ids)
-
-        super().update_library_imports(library_ids, user)
-
-    def update_resource_imports(self, resource_ids: set[int], user: User):
-        sequences = Sequence.objects.filter(id__in=self.testcase.steps.values_list('to_keyword_id'))
-
-        for sequence in sequences:
-            resource_ids.update(sequence.resource_ids)
-
-        super().update_resource_imports(resource_ids, user)
-
-    def validate(self, user: User) -> Optional[ValidationError]:
+    def validate(self, user: AbstractUser) -> Optional[ValidationError]:
         if any(step.has_empty_arg() for step in self.testcase.steps.all()):
             return ValidationError.INCOMPLETE_STEP_PARAMS
 

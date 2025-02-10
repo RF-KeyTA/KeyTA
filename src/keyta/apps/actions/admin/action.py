@@ -1,15 +1,15 @@
 from django.contrib import admin
 from django.http import HttpRequest
 from django.utils.translation import gettext as _
+from model_clone import CloneModelAdminMixin
 
 from keyta.admin.base_admin import BaseAdmin, BaseAddAdmin
 from keyta.admin.base_inline import TabularInlineWithDelete
 from keyta.forms.baseform import form_with_select
 
-from apps.executions.admin import KeywordExecutionInline
 from keyta.apps.keywords.admin import KeywordDocumentationAdmin
 from apps.libraries.models import Library
-from apps.windows.admin import (
+from keyta.apps.keywords.admin import (
     WindowKeywordParameters,
     WindowKeywordAdmin,
     WindowKeywordAdminMixin,
@@ -20,12 +20,12 @@ from apps.windows.models import Window
 from ..models import (
     Action,
     ActionDocumentation,
-    ActionExecution,
     ActionLibraryImport,
     ActionWindow,
     WindowAction
 )
 from .steps_inline import ActionSteps
+from keyta.apps.executions.admin import KeywordExecutionInline
 
 
 class ActionAdminMixin(WindowKeywordAdminMixin):
@@ -42,10 +42,6 @@ class ActionAdminMixin(WindowKeywordAdminMixin):
                     keyword=action,
                     library=Library.objects.get(id=library_id),
                 )
-
-
-class Execution(KeywordExecutionInline):
-    model = ActionExecution
 
 
 class Windows(TabularInlineWithDelete):
@@ -111,7 +107,7 @@ class Libraries(TabularInlineWithDelete):
 
 
 @admin.register(Action)
-class ActionAdmin(ActionAdminMixin, WindowKeywordAdmin):
+class ActionAdmin(ActionAdminMixin, CloneModelAdminMixin, WindowKeywordAdmin):
     form = form_with_select(
         Action,
         'systems',
@@ -126,8 +122,7 @@ class ActionAdmin(ActionAdminMixin, WindowKeywordAdmin):
 
     def get_fields(self, request, obj=None):
         action: Action = obj
-
-        fields =  super().get_fields(request, obj)
+        fields =  super().get_fields(request, action)
 
         return ['setup_teardown', 'systems'] + fields
 
@@ -140,7 +135,7 @@ class ActionAdmin(ActionAdminMixin, WindowKeywordAdmin):
         inlines = [Windows] + self.inlines
 
         if not action.has_empty_sequence:
-            return inlines + [WindowKeywordReturnValues, Execution]
+            return inlines + [WindowKeywordReturnValues, KeywordExecutionInline]
 
         return inlines
 

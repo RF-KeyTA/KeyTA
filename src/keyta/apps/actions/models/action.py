@@ -1,13 +1,14 @@
 from django.db import models
 from django.utils.translation import gettext as _
 
-from keyta.models.base_model import AbstractBaseModel
-
+from keyta.apps.keywords.models import WindowKeyword
 from keyta.apps.keywords.models.keyword import KeywordType
-from apps.windows.models import WindowKeyword
+from keyta.models.base_model import AbstractBaseModel
 
 
 class Action(WindowKeyword):
+    _clone_m2o_or_o2m_fields = WindowKeyword._clone_m2o_or_o2m_fields + ['library_imports']
+
     @property
     def library_ids(self) -> set[int]:
         return set(self.library_imports.values_list('library_id', flat=True))

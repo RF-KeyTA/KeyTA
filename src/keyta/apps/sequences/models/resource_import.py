@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext as _
 
-from apps.resources.models import ResourceImport
+from keyta.apps.resources.models import ResourceImport
 
 
 class SequenceResourceImport(ResourceImport):
