@@ -35,7 +35,6 @@ class BaseTestCaseAdmin(CloneModelAdminMixin, SortableAdminBase, BaseAdmin):
     def system_list(self, obj: AbstractTestCase):
         return list(obj.systems.values_list('name', flat=True))
 
-    change_form_template = 'admin/testcase/change_form.html'
     fields = [
         'systems',
         'name',
