@@ -5,19 +5,19 @@ from django.db.models.functions import Lower
 from django.http import HttpRequest
 from django.utils.translation import gettext as _
 
-from keyta.admin.base_admin import BaseAdmin, BaseAddAdmin
+from keyta.admin.base_admin import BaseAdmin
 from keyta.admin.base_inline import TabularInlineWithDelete
 from keyta.forms import form_with_select
+from keyta.models.variable import AbstractVariable
 
+from apps.variables.models import VariableValue, VariableWindow, Variable
 from apps.windows.models import Window
-
-from ..models import Variable, VariableValue, VariableWindow, WindowVariable
 
 
 class Values(TabularInlineWithDelete):
     model = VariableValue
     fields = ['name', 'value']
-    extra = 1
+    extra = 0
     min_num = 1
 
 
@@ -40,7 +40,7 @@ class Windows(TabularInlineWithDelete):
 
     def get_formset(self, request, obj=None, **kwargs):
         formset = super().get_formset(request, obj, **kwargs)
-        variable: Variable = obj
+        variable: AbstractVariable = obj
         variable_systems = variable.systems.all()
         windows = Window.objects.filter(systems__in=variable_systems).distinct()
         formset.form.base_fields['window'].queryset = windows
@@ -50,8 +50,7 @@ class Windows(TabularInlineWithDelete):
         return False
 
 
-@admin.register(Variable)
-class VariableAdmin(BaseAdmin):
+class BaseVariableAdmin(BaseAdmin):
     list_display = ['system_list', 'name', 'description']
     list_display_links = ['name']
     list_filter = ['systems']
@@ -61,7 +60,7 @@ class VariableAdmin(BaseAdmin):
 
     @admin.display(description=_('Systeme'))
     def system_list(self, obj):
-        variable: Variable = obj
+        variable: AbstractVariable = obj
 
         if not variable.systems.exists():
             return _('System unabhängig')
@@ -86,7 +85,7 @@ class VariableAdmin(BaseAdmin):
         ])
 
     def get_inlines(self, request, obj):
-        variable: Variable = obj
+        variable: AbstractVariable = obj
 
         if not variable or not variable.systems.exists():
             return self.inlines
@@ -94,7 +93,7 @@ class VariableAdmin(BaseAdmin):
         return [Windows] + self.inlines
 
     def get_readonly_fields(self, request: HttpRequest, obj=None):
-        variable: Variable = obj
+        variable: AbstractVariable = obj
 
         if not variable:
             return []
@@ -105,18 +104,3 @@ class VariableAdmin(BaseAdmin):
             return readonly_fields
         else:
             return readonly_fields + super().get_readonly_fields(request, obj)
-
-
-@admin.register(VariableValue)
-class VariableValueAdmin(BaseAdmin):
-    pass
-
-
-@admin.register(VariableWindow)
-class VariableWindowAdmin(BaseAdmin):
-    pass
-
-
-@admin.register(WindowVariable)
-class WindowVariableAdmin(BaseAddAdmin):
-    inlines = [Values]
