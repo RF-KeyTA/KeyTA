@@ -1,5 +1,5 @@
-from dataclasses import dataclass, asdict
 import json
+from dataclasses import dataclass, asdict
 
 
 @dataclass
