@@ -166,7 +166,7 @@
     
     const save_result = (csrf_token, data) => fetch(exec_url, 
         {
-            method: "POST", 
+            method: "PUT", 
             body: JSON.stringify(data), 
             headers: {'X-CSRFToken': csrf_token, 'Content-Type': 'application/json'}
         })
