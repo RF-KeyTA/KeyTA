@@ -4,12 +4,11 @@ from django.db.models import QuerySet
 from django.http import HttpRequest
 from django.utils.translation import gettext as _
 
+from keyta.apps.actions.models import Action
 from keyta.widgets import (
     open_link_in_modal,
     BaseSelect
 )
-
-from apps.actions.models import Action
 
 from ..forms import SetupTeardownForm
 from ..models import Execution, Setup, Teardown

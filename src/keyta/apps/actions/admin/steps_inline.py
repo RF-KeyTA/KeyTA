@@ -1,36 +1,15 @@
 from django import forms
-from django.contrib import admin
 from django.utils.translation import gettext as _
 
-from apps.actions.models import RobotKeywordCall, Action
-from keyta.widgets import GroupedByLibrary, BaseSelect
+from keyta.apps.actions.models import RobotKeywordCall, Action
 from keyta.apps.keywords.admin import StepsInline
-from keyta.apps.keywords.models import (
-    Keyword,
-    KeywordCall,
-    KeywordCallParameterSource,
-    KeywordCallParameter
-)
-
+from keyta.apps.keywords.models import Keyword
+from keyta.widgets import GroupedByLibrary, BaseSelect
 
 
 class ActionSteps(StepsInline):
     model = RobotKeywordCall
     fk_name = 'from_keyword'
-
-    @admin.display(description=_('1. Parameter'))
-    def first_arg(self, obj: KeywordCall):
-        first_param: KeywordCallParameter = obj.parameters.first()
-
-        if not first_param:
-            return '-'
-
-        value_ref: KeywordCallParameterSource = first_param.value_ref
-
-        if value_ref and (variable_value := value_ref.variable_value):
-            return variable_value.name
-
-        return first_param.current_value
 
     def formfield_for_dbfield(self, db_field, request, **kwargs):
         if db_field.name == 'to_keyword':

@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext as _
 
-from apps.libraries.models import LibraryImport, LibraryImportType
+from keyta.apps.libraries.models import LibraryImport, LibraryImportType
 
 
 class ActionLibraryImport(LibraryImport):
@@ -10,7 +10,7 @@ class ActionLibraryImport(LibraryImport):
             return (
                 super().
                 get_queryset()
-                .only('execution', 'library')
+                .only('library')
                 .filter(type=LibraryImportType.FROM_ACTION)
                 .order_by('library__name')
             )

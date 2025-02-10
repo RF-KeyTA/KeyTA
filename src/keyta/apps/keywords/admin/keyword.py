@@ -10,9 +10,8 @@ from keyta.admin.base_admin import (
     BaseDocumentationAdmin,
     BaseAdminWithDoc
 )
-
-from apps.actions.models.action import Action
-from apps.sequences.models.sequence import Sequence
+from keyta.apps.actions.models.action import Action
+from keyta.apps.sequences.models.sequence import Sequence
 
 from ..models import KeywordDocumentation, Keyword, KeywordType
 

@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext as _
 
-from apps.actions.models import Action
+from keyta.apps.actions.models import Action
 from keyta.apps.keywords.models import WindowKeyword
 from keyta.apps.keywords.models.keyword import KeywordType
 

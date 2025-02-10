@@ -1,10 +1,11 @@
 from django import forms
 from django.utils.translation import gettext as _
 
-from keyta.widgets import ModelSelect2AdminWidget
 from keyta.apps.keywords.admin.steps_inline import StepsForm
 from keyta.apps.keywords.models import KeywordCall
-from apps.sequences.models import Sequence
+from keyta.apps.sequences.models import Sequence
+from keyta.widgets import ModelSelect2AdminWidget
+
 from apps.windows.models import Window
 
 

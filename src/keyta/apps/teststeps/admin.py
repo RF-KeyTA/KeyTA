@@ -1,10 +1,10 @@
 from django.contrib import admin
 from django.utils.translation import gettext as _
 
-from keyta.widgets import open_link_in_modal
 from keyta.apps.keywords.admin import KeywordCallParametersInline, KeywordCallAdmin
 from keyta.apps.keywords.forms import KeywordCallParameterFormset
-from apps.sequences.models import Sequence
+from keyta.apps.sequences.models import Sequence
+from keyta.widgets import open_link_in_modal
 
 from .models import TestStep
 

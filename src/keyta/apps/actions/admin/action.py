@@ -1,20 +1,22 @@
 from django.contrib import admin
 from django.http import HttpRequest
 from django.utils.translation import gettext as _
+
 from model_clone import CloneModelAdminMixin
 
 from keyta.admin.base_admin import BaseAdmin, BaseAddAdmin
 from keyta.admin.base_inline import TabularInlineWithDelete
-from keyta.forms.baseform import form_with_select
-
-from keyta.apps.keywords.admin import KeywordDocumentationAdmin
-from apps.libraries.models import Library
+from keyta.apps.executions.admin import KeywordExecutionInline
 from keyta.apps.keywords.admin import (
+    KeywordDocumentationAdmin,
     WindowKeywordParameters,
     WindowKeywordAdmin,
     WindowKeywordAdminMixin,
     WindowKeywordReturnValues
 )
+from keyta.apps.libraries.models import Library
+from keyta.forms.baseform import form_with_select
+
 from apps.windows.models import Window
 
 from ..models import (
@@ -25,7 +27,6 @@ from ..models import (
     WindowAction
 )
 from .steps_inline import ActionSteps
-from keyta.apps.executions.admin import KeywordExecutionInline
 
 
 class ActionAdminMixin(WindowKeywordAdminMixin):

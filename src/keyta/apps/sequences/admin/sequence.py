@@ -1,4 +1,5 @@
 from django import forms
+from django.apps import apps
 from django.contrib import admin
 from django.http import HttpRequest
 from django.utils.translation import gettext as _
@@ -26,6 +27,7 @@ from ..models import (
     WindowSequence
 )
 from .steps_inline import SequenceSteps
+
 
 SequenceForm = forms.modelform_factory(
     Sequence,
@@ -79,7 +81,6 @@ class Resources(TabularInlineWithDelete):
 @admin.register(Sequence)
 class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
     inlines = [
-        Resources,
         WindowKeywordParameters,
         SequenceSteps
     ]
@@ -106,14 +107,18 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
 
     def get_inlines(self, request, obj):
         sequence: Sequence = obj
+        inlines = self.inlines
+
+        if apps.is_installed('keyta.apps.resources'):
+            inlines = [Resources] + self.inlines
 
         if not sequence:
             return [WindowKeywordParameters]
 
         if not sequence.has_empty_sequence:
-            return self.inlines + [WindowKeywordReturnValues, KeywordExecutionInline]
+            return inlines + [WindowKeywordReturnValues, KeywordExecutionInline]
 
-        return self.inlines
+        return inlines
 
 
 @admin.register(SequenceDocumentation)

@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext as _
 
-from keyta.apps.resources.models import ResourceImport
+from keyta.apps.resources.models import ResourceImportType, ResourceImport
 
 
 class SequenceResourceImport(ResourceImport):
@@ -11,6 +11,7 @@ class SequenceResourceImport(ResourceImport):
                 super().
                 get_queryset()
                 .only('resource')
+                .filter(type=ResourceImportType.FROM_SEQUENCE)
                 .order_by('resource__name')
             )
 
