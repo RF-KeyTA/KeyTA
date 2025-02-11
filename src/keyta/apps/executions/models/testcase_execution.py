@@ -56,7 +56,7 @@ class TestCaseExecution(Execution):
                 keywords[to_keyword.id] = to_keyword.to_robot() # to_keyword.get_admin_url()
 
         if (test_teardown := self.test_teardown(user)) and test_teardown.enabled:
-            if to_keyword := test_setup.to_keyword:
+            if to_keyword := test_teardown.to_keyword:
                 keywords[to_keyword.id] = to_keyword.to_robot()  # to_keyword.get_admin_url()
 
         return {
