@@ -55,19 +55,6 @@ class Migration(migrations.Migration):
             bases=('executions.keywordexecution',),
         ),
         migrations.CreateModel(
-            name='SequenceResourceImport',
-            fields=[
-            ],
-            options={
-                'verbose_name': 'Resource Import',
-                'verbose_name_plural': 'Resource Imports',
-                'proxy': True,
-                'indexes': [],
-                'constraints': [],
-            },
-            bases=('resources.resourceimport',),
-        ),
-        migrations.CreateModel(
             name='SequenceDocumentation',
             fields=[
             ],
