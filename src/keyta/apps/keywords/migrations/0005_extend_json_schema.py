@@ -29,7 +29,7 @@ def extend_json_schema(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('keywords', '0003_remove_keyword_everywhere'),
+        ('keywords', '0004_add_keywordreturnvalue_kw_call_index'),
     ]
 
     operations = [

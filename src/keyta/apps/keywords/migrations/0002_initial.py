@@ -184,11 +184,5 @@ class Migration(migrations.Migration):
                 'constraints': [],
             },
             bases=('keywords.keywordreturnvalue',),
-        ),
-        migrations.AddField(
-            model_name='keywordreturnvalue',
-            name='kw_call_index',
-            field=models.PositiveSmallIntegerField(default=0),
-            preserve_default=False,
         )
     ]
