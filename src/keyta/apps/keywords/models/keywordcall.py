@@ -157,7 +157,13 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
         if not self.type:
             self.type = KeywordCallType.KEYWORD_CALL
 
-        return super().save(force_insert, force_update, using, update_fields)
+        if not self.pk:
+            kw_call = super().save(force_insert, force_update, using, update_fields)
+            self.update_parameters()
+            return kw_call
+        else:
+            return super().save(force_insert, force_update, using, update_fields)
+
 
     def to_robot(self, user: Optional[AbstractUser]=None) -> RFKeywordCall:
         parameters = self.parameters.filter(user=user)
@@ -176,7 +182,7 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
             )
         }
 
-    def update_parameters(self, user: AbstractUser):
+    def update_parameters(self, user: Optional[AbstractUser]=None):
         for param in self.to_keyword.parameters.all():
             self.add_parameter(param, user)
 
