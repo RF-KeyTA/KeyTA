@@ -80,7 +80,6 @@ KEYTA_APPS = [
     'apps.sequences',
     'apps.systems',
     'apps.testcases',
-    'apps.teststeps',
     'apps.variables',
     'apps.windows'
 ]
@@ -196,7 +195,7 @@ JAZZMIN_SETTINGS = {
         'sequences.actioncall': 'single',
         'sequences.sequenceexecution': 'single',
         'testcases.sequencecall': 'single',
-        'teststeps.teststep': 'single',
+        'keywords.teststep': 'single',
     },
     "copyright": 'imbus',
     "custom_css": "css/keyta.css",
@@ -235,7 +234,7 @@ JAZZMIN_SETTINGS = {
         'sequences.sequenceexecution',
         'sequences.sequenceresourceimport',
         'sequences.windowsequence',
-        'teststeps.teststep',
+        'keywords.teststep',
         'testcases.testcaseexecution',
         'variables.variablevalue',
         'variables.variablewindow',

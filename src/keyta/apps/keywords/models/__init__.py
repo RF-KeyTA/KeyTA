@@ -17,3 +17,4 @@ from keyta.apps.keywords.models.keywordcall_return_value import KeywordCallRetur
 from keyta.apps.keywords.models.window_keyword import WindowKeyword
 from keyta.apps.keywords.models.window_keyword_parameter import WindowKeywordParameter
 from keyta.apps.keywords.models.window_keyword_return_value import WindowKeywordReturnValue
+from keyta.apps.keywords.models.test_step import TestStep

@@ -7,13 +7,12 @@ from adminsortable2.admin import SortableAdminBase
 from model_clone import CloneModelAdminMixin
 
 from keyta.admin.base_admin import BaseAdmin
-from keyta.apps.teststeps.inline import TestSteps
+from keyta.apps.keywords.admin import TestStepsInline
+from keyta.apps.executions.admin import ExecutionInline
+from keyta.apps.executions.models import TestCaseExecution
 from keyta.models.testcase import AbstractTestCase
 from keyta.widgets import BaseSelectMultiple
 from keyta.rf_export.rfgenerator import gen_testsuite
-
-from keyta.apps.executions.admin import ExecutionInline
-from keyta.apps.executions.models import TestCaseExecution
 
 
 class LocalExecution(ExecutionInline):
@@ -42,7 +41,7 @@ class BaseTestCaseAdmin(CloneModelAdminMixin, SortableAdminBase, BaseAdmin):
         'documentation'
     ]
     inlines = [
-        TestSteps,
+        TestStepsInline,
         LocalExecution
     ]
 
@@ -79,7 +78,7 @@ class BaseTestCaseAdmin(CloneModelAdminMixin, SortableAdminBase, BaseAdmin):
             return []
 
         if testcase.has_empty_sequence:
-            return [TestSteps]
+            return [TestStepsInline]
 
         return self.inlines
 
