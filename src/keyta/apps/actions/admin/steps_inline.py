@@ -1,10 +1,11 @@
 from django import forms
 from django.utils.translation import gettext as _
 
-from keyta.apps.actions.models import RobotKeywordCall, Action
 from keyta.apps.keywords.admin import StepsInline
 from keyta.apps.keywords.models import Keyword
 from keyta.widgets import GroupedByLibrary, BaseSelect
+
+from ..models import RobotKeywordCall, Action
 
 
 class ActionSteps(StepsInline):
