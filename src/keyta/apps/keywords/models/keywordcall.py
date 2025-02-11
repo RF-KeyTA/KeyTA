@@ -15,7 +15,6 @@ from keyta.select_value import SelectValue
 from .keywordcall_return_value import KeywordCallReturnValue
 from .keywordcall_parameters import KeywordCallParameter
 from .keyword_parameters import KeywordParameter
-from .keyword_return_value import KeywordReturnValue
 
 
 class TestSetupTeardown(models.TextChoices):
