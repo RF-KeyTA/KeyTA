@@ -49,9 +49,9 @@ class BaseTestCaseAdmin(CloneModelAdminMixin, SortableAdminBase, BaseAdmin):
     def change_view(self, request: HttpRequest, object_id, form_url="", extra_context=None):
         if 'export' in request.GET:
             testcase_exec = TestCaseExecution.objects.get(testcase_id=object_id)
-            testcase_exec.update_library_imports(set(), request.user)
-            testcase_exec.update_resource_imports(set(), request.user)
-            testsuite = testcase_exec.get_testsuite(request.user)
+            testcase_exec.update_library_imports(request.user)
+            testcase_exec.update_resource_imports()
+            testsuite = testcase_exec.get_rf_testsuite(request.user)
             robot_file = testsuite['name'] + '.robot'
 
             return HttpResponse(
