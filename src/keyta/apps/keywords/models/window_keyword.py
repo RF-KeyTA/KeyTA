@@ -32,7 +32,7 @@ class WindowKeyword(CloneMixin, Keyword):
                 library=library
             )
 
-    def make_clone(self, attrs=None, sub_clone=False, using=None, parent=None):
+    def make_clone(self, attrs=None, sub_clone=False, using=None, parent=None) -> Keyword:
         attrs = attrs or {'name': self.name + _(' Kopie')}
         clone: WindowKeyword = super().make_clone(attrs=attrs, sub_clone=sub_clone, using=using, parent=parent)
         clone.create_execution()
