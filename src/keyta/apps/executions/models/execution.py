@@ -1,12 +1,12 @@
 from typing import Optional
 
+from django.apps import apps
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models import Q, QuerySet
 from django.utils.translation import gettext as _
 
 from keyta.apps.libraries.models import Library, LibraryImport
-from keyta.apps.resources.models import Resource, ResourceImport
 from keyta.models.base_model import AbstractBaseModel
 from keyta.rf_export.testsuite import RFTestSuite
 from keyta.rf_export.settings import RFSettings
@@ -143,16 +143,19 @@ class Execution(AbstractBaseModel):
             lib_import.delete()
 
     def update_resource_imports(self):
-        resource_ids = self.get_resource_dependencies()
+        if apps.is_installed('keyta.apps.resources'):
+            from keyta.apps.resources.models import Resource, ResourceImport
 
-        for resource in Resource.objects.filter(id__in=resource_ids):
-            ResourceImport.objects.get_or_create(
-                execution=self,
-                resource=resource
-            )
+            resource_ids = self.get_resource_dependencies()
 
-        for resource_import in self.resource_imports.exclude(resource_id__in=resource_ids):
-            resource_import.delete()
+            for resource in Resource.objects.filter(id__in=resource_ids):
+                ResourceImport.objects.get_or_create(
+                    execution=self,
+                    resource=resource
+                )
+
+            for resource_import in self.resource_imports.exclude(resource_id__in=resource_ids):
+                resource_import.delete()
 
     def validate(self, user: AbstractUser) -> Optional[dict]:
         pass
