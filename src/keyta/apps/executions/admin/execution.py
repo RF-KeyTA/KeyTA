@@ -1,12 +1,11 @@
 import json
 
+from django.apps import apps
 from django.contrib import admin
 from django.contrib.auth.models import AbstractUser
 from django.http import HttpRequest, JsonResponse, HttpResponse
-from django.middleware.csrf import get_token
 
 from keyta.apps.libraries.admin import LibraryImportInline
-from keyta.apps.resources.admin import ResourceImportsInline
 from keyta.rf_export.rfgenerator import gen_testsuite
 
 from ..models import Execution
@@ -16,8 +15,6 @@ from .setup_teardown_inline import SetupInline, TeardownInline
 @admin.register(Execution)
 class ExecutionAdmin(admin.ModelAdmin):
     inlines = [
-        LibraryImportInline,
-        ResourceImportsInline,
         SetupInline,
         TeardownInline
     ]
@@ -44,6 +41,16 @@ class ExecutionAdmin(admin.ModelAdmin):
             return HttpResponse()
 
         return super().change_view(request, object_id, form_url, extra_context)
+
+    def get_inlines(self, request, obj):
+        inlines = [LibraryImportInline]
+
+        if apps.is_installed('keyta.apps.resources'):
+            from keyta.apps.resources.admin import ResourceImportsInline
+
+            inlines += [ResourceImportsInline]
+
+        return inlines + self.inlines
 
     def to_robot(self, execution: Execution, user: AbstractUser) -> dict:
         err = execution.validate(user)
