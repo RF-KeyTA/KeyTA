@@ -1,13 +1,11 @@
 from django import forms
 from django.apps import apps
 from django.contrib import admin
-from django.http import HttpRequest
 from django.utils.translation import gettext as _
 
 from model_clone import CloneModelAdminMixin
 
 from keyta.admin.base_admin import BaseAddAdmin
-from keyta.admin.base_inline import TabularInlineWithDelete
 from keyta.apps.executions.admin import KeywordExecutionInline
 from keyta.apps.keywords.admin import (
     KeywordDocumentationAdmin,
@@ -16,14 +14,11 @@ from keyta.apps.keywords.admin import (
     WindowKeywordAdminMixin,
     WindowKeywordReturnValues
 )
-from keyta.apps.resources.models import Resource
-from keyta.forms import form_with_select
 from keyta.widgets import ModelSelect2MultipleAdminWidget, Select2MultipleWidget
 
 from ..models import (
     Sequence,
     SequenceDocumentation,
-    SequenceResourceImport,
     WindowSequence
 )
 from .steps_inline import SequenceSteps
@@ -51,31 +46,6 @@ SequenceForm = forms.modelform_factory(
         )
     }
 )
-
-
-class Resources(TabularInlineWithDelete):
-    fk_name = 'keyword'
-    model = SequenceResourceImport
-    fields = ['resource']
-    extra = 0
-    form = form_with_select(
-        SequenceResourceImport,
-        'resource',
-        _('Ressource auswählen')
-    )
-    verbose_name = _('Ressource')
-    verbose_name_plural = _('Ressourcen')
-
-    def get_max_num(self, request, obj=None, **kwargs):
-        return Resource.objects.count()
-
-    def get_field_queryset(self, db, db_field, request: HttpRequest):
-        queryset = super().get_field_queryset(db, db_field, request)
-        imported_resources = self.get_queryset(request).values_list('resource_id', flat=True)
-        return queryset.exclude(id__in=imported_resources)
-
-    def has_change_permission(self, request: HttpRequest, obj=None) -> bool:
-        return False
 
 
 @admin.register(Sequence)
@@ -110,6 +80,8 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
         inlines = self.inlines
 
         if apps.is_installed('keyta.apps.resources'):
+            from .resource_import_inline import Resources
+
             inlines = [Resources] + self.inlines
 
         if not sequence:
