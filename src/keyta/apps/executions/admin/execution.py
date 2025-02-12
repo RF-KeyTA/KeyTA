@@ -1,11 +1,12 @@
 import json
 
-from django.apps import apps
 from django.contrib import admin
 from django.contrib.auth.models import AbstractUser
 from django.http import HttpRequest, JsonResponse, HttpResponse
 
 from keyta.apps.libraries.admin import LibraryImportInline
+from keyta.apps.resources.admin import ResourceImportsInline
+from keyta.apps.resources.models import Resource
 from keyta.rf_export.rfgenerator import gen_testsuite
 
 from ..models import Execution
@@ -45,10 +46,8 @@ class ExecutionAdmin(admin.ModelAdmin):
     def get_inlines(self, request, obj):
         inlines = [LibraryImportInline]
 
-        if apps.is_installed('keyta.apps.resources'):
-            from keyta.apps.resources.admin import ResourceImportsInline
-
-            inlines += [ResourceImportsInline]
+        if Resource.objects.count():
+            inlines = [LibraryImportInline, ResourceImportsInline]
 
         return inlines + self.inlines
 

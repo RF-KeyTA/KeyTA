@@ -1,12 +1,12 @@
 from typing import Optional
 
-from django.apps import apps
 from django.contrib.auth.models import AbstractUser
 from django.db.models import QuerySet
 from django.utils.translation import gettext as _
 
 from keyta.apps.keywords.models import Keyword, KeywordCall
 from keyta.apps.libraries.models import LibraryImport
+from keyta.apps.resources.models import Resource, ResourceImport
 from keyta.rf_export.testsuite import RFTestSuite
 
 from ..errors import ValidationError
@@ -38,9 +38,7 @@ class TestCaseExecution(Execution):
         )
 
     def get_resource_dependencies(self) -> QuerySet:
-        if apps.is_installed('keyta.apps.resources'):
-            from keyta.apps.resources.models import ResourceImport
-
+        if Resource.objects.count():
             return (
                 ResourceImport.objects
                 .filter(keyword__id__in=[self.sequence_ids])

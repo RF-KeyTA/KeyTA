@@ -3,7 +3,6 @@ from django.http import HttpRequest
 from django.utils.translation import gettext as _
 
 from keyta.apps.executions.admin.execution import ExecutionAdmin
-from keyta.apps.libraries.admin import LibraryImportInline
 
 from ..models import KeywordExecution
 from .setup_teardown_inline import SetupInline
@@ -19,7 +18,6 @@ class KeywordExecutionSetupInline(SetupInline):
 @admin.register(KeywordExecution)
 class KeywordExecutionAdmin(ExecutionAdmin):
     inlines = [
-        LibraryImportInline,
         KeywordExecutionSetupInline
     ]
 

@@ -1,5 +1,4 @@
 from django import forms
-from django.apps import apps
 from django.contrib import admin
 from django.utils.translation import gettext as _
 
@@ -14,6 +13,7 @@ from keyta.apps.keywords.admin import (
     WindowKeywordAdminMixin,
     WindowKeywordReturnValues
 )
+from keyta.apps.resources.models import Resource
 from keyta.widgets import ModelSelect2MultipleAdminWidget, Select2MultipleWidget
 
 from ..models import (
@@ -21,8 +21,8 @@ from ..models import (
     SequenceDocumentation,
     WindowSequence
 )
+from .resource_import_inline import Resources
 from .steps_inline import SequenceSteps
-
 
 SequenceForm = forms.modelform_factory(
     Sequence,
@@ -79,9 +79,7 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
         sequence: Sequence = obj
         inlines = self.inlines
 
-        if apps.is_installed('keyta.apps.resources'):
-            from .resource_import_inline import Resources
-
+        if Resource.objects.count():
             inlines = [Resources] + self.inlines
 
         if not sequence:

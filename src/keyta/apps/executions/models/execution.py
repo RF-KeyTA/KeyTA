@@ -1,12 +1,12 @@
 from typing import Optional
 
-from django.apps import apps
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models import Q, QuerySet
 from django.utils.translation import gettext as _
 
 from keyta.apps.libraries.models import Library, LibraryImport
+from keyta.apps.resources.models import Resource, ResourceImport
 from keyta.models.base_model import AbstractBaseModel
 from keyta.rf_export.testsuite import RFTestSuite
 from keyta.rf_export.settings import RFSettings
@@ -143,9 +143,7 @@ class Execution(AbstractBaseModel):
             lib_import.delete()
 
     def update_resource_imports(self):
-        if apps.is_installed('keyta.apps.resources'):
-            from keyta.apps.resources.models import Resource, ResourceImport
-
+        if Resource.objects.count():
             resource_ids = self.get_resource_dependencies()
 
             for resource in Resource.objects.filter(id__in=resource_ids):
