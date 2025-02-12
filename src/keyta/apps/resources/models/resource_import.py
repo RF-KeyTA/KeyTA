@@ -70,6 +70,7 @@ class ResourceImport(AbstractBaseModel):
     objects = QuerySet.as_manager()
 
     class Meta:
+        ordering = ['resource__name']
         verbose_name = _('Ressource-Import')
         verbose_name_plural = _('Ressource-Imports')
         constraints = [

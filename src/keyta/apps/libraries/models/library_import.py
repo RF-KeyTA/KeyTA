@@ -87,6 +87,7 @@ class LibraryImport(AbstractBaseModel):
     objects = QuerySet.as_manager()
 
     class Meta:
+        ordering = ['library__name']
         verbose_name = _('Bibliothek-Import')
         verbose_name_plural = _('Bibliothek-Imports')
         constraints = [
