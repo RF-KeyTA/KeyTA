@@ -107,6 +107,14 @@ class Keyword(AbstractBaseModel):
         update_fields=None
     ):
         self.name = re.sub(r"\s{2,}", " ", self.name)
+
+        if not self.pk:
+            if self.library:
+                self.type = KeywordType.LIBRARY
+
+            if self.resource:
+                self.type = KeywordType.RESOURCE
+
         super().save(force_insert, force_update, using, update_fields)
 
     def robot_documentation(self):
