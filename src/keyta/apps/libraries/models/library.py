@@ -1,10 +1,10 @@
 from django.db import models
 from django.utils.translation import gettext as _
 
-from keyta.models.base_model import AbstractBaseModel
+from keyta.models.keyword_source import KeywordSource
 
 
-class Library(AbstractBaseModel):
+class Library(KeywordSource):
     name = models.CharField(
         max_length=255,
         unique=True,
@@ -40,6 +40,9 @@ class Library(AbstractBaseModel):
     @property
     def has_parameters(self):
         return self.kwargs.exists()
+
+    def is_library(self):
+        return True
 
     class Meta:
         verbose_name = _('Bibliothek')

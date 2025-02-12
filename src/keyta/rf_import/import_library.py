@@ -2,7 +2,6 @@ from keyta.apps.libraries.models import Library, LibraryParameter
 
 from .import_keywords import (
     get_default_value,
-    import_keywords,
     section_importing,
     get_init_doc,
     get_libdoc_json
@@ -50,6 +49,6 @@ def import_library(library_name: str):
             if init_arg.name not in init_args_names:
                 init_arg.delete()
 
-    import_keywords(lib_json, lib)
+    lib.import_keywords(lib_json)
 
     return lib

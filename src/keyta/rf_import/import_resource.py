@@ -1,6 +1,6 @@
 from keyta.apps.resources.models import Resource
 
-from .import_keywords import get_libdoc_json, import_keywords
+from .import_keywords import get_libdoc_json
 
 
 def import_resource(resource_path: str):
@@ -13,6 +13,6 @@ def import_resource(resource_path: str):
         }
     )
 
-    import_keywords(lib_json, resource)
+    resource.import_keywords(lib_json)
 
     return resource
