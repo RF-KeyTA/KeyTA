@@ -1,6 +1,7 @@
 import json
 from importlib import import_module
 
+from django.conf import settings
 from django.contrib import admin, messages
 from django.db.models import QuerySet
 from django.http import HttpRequest
@@ -11,7 +12,7 @@ from django.utils.translation import gettext as _
 from keyta.admin.base_admin import BaseAdmin
 from keyta.forms import OptionalArgumentFormSet
 from keyta.rf_import.import_library import import_library
-from keyta.widgets import link
+from keyta.widgets import link, Icon
 
 from ..forms import LibraryForm
 from ..models import (
@@ -62,8 +63,8 @@ class InitArguments(admin.TabularInline):
     def reset(self, obj: LibraryParameter):
         ref = '&ref=' + obj.library.get_admin_url() + obj.get_tab_url()
         url = obj.get_admin_url() + '?reset' + ref
-
-        return link(url, '↩')
+        icon =  str(Icon(settings.FA_ICONS.library_setting_reset, {'font-size': '18px'}))
+        return link(url, icon)
 
 
 @admin.register(Library)
@@ -157,7 +158,7 @@ class LibraryAdmin(BaseAdmin):
         if version and version != library.version:
             return link(
                 reverse('admin:libraries_library_changelist') + f'?update&lib_id={library.id}',
-                '🔄'
+                str(Icon(settings.FA_ICONS.library_update, {'font-size': '18px'}))
             )
 
 
