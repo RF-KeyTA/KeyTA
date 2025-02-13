@@ -1,7 +1,10 @@
+from django.conf import settings
 from django.contrib import admin
 from django.utils.translation import gettext as _
 
-from keyta.widgets import open_link_in_modal
+from keyta.widgets import open_link_in_modal, Icon
+
+
 
 from ..models import LibraryImport
 
@@ -20,7 +23,7 @@ class LibraryImportInline(admin.TabularInline):
         if obj.kwargs.exists():
             return open_link_in_modal(
                 obj.get_admin_url(),
-                '<i class=" fa-solid fa-list" style="font-size: 36px"></i>'
+                str(Icon(settings.FA_ICONS.library_import_args))
             )
 
         return ''

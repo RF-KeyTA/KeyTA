@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib import admin
 from django.http import HttpRequest
 from django.urls import reverse
@@ -6,7 +7,7 @@ from django.utils.translation import gettext as _
 from adminsortable2.admin import SortableInlineAdminMixin
 
 from keyta.models.base_model import AbstractBaseModel
-from keyta.widgets import link, related_field_widget_factory
+from keyta.widgets import link, related_field_widget_factory, Icon
 
 
 class TabularInlineWithDelete(admin.TabularInline):
@@ -17,8 +18,7 @@ class TabularInlineWithDelete(admin.TabularInline):
 
         return link(
             obj.get_delete_url() + "?ref=" + self.url + obj.get_tab_url(getattr(self, 'tab_name', None)),
-            '<i class="fa-solid fa-trash" '
-            'style="font-size: 30px; margin-top: 3px"></i>'
+            str(Icon(settings.FA_ICONS.delete, {'font-size': '30px', 'margin-top': '3px'}))
         )
 
     def get_readonly_fields(self, request: HttpRequest, obj=None):

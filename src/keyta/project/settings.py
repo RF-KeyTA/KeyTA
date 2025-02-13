@@ -286,4 +286,4 @@ TINYMCE_DEFAULT_CONFIG= {
     });}"""
 }
 
-FAIcons = Icons()
+FA_ICONS = Icons()

@@ -1,10 +1,11 @@
+from django.conf import settings
 from django.contrib import admin
 from django.http import HttpRequest
 from django.urls import get_script_prefix
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext as _
 
-from keyta.widgets import open_link_in_modal, link
+from keyta.widgets import open_link_in_modal, link, Icon
 
 from ..models import Execution
 
@@ -27,13 +28,13 @@ class ExecutionInline(admin.TabularInline):
     def settings(self, obj: Execution):
         return open_link_in_modal(
             obj.get_admin_url() + '?settings',
-            '<i class=" fa-solid fa-gear" style="font-size: 36px"></i>'
+            str(Icon(settings.FA_ICONS.exec_settings))
         )
 
     @admin.display(description=_('Ausf.'))
     def start(self, obj):
         url = obj.get_admin_url() + '?start'
-        title = '<i class=" fa-solid fa-circle-play" style="font-size: 36px"></i>'
+        title = str(Icon(settings.FA_ICONS.exec_start))
         return mark_safe('<a href="%s" id="exec-btn">%s</a>' % (url, title))
 
     @admin.display(description=_('Ergebnis'))
@@ -43,10 +44,10 @@ class ExecutionInline(admin.TabularInline):
 
         if (result := user_exec.result) and not user_exec.running:
             if result == 'FAIL':
-                return mark_safe('<img src="/static/img/Fail.png" width="35">')
+                return mark_safe('<div style="width: 35px"><img src="/static/img/Fail.png"></div>')
 
             if result == 'PASS':
-                return mark_safe('<img src="/static/img/Pass.png" width="35">')
+                return mark_safe('<div style="width: 35px"><img src="/static/img/Pass.png"></div>')
 
         return '-'
 
@@ -58,7 +59,7 @@ class ExecutionInline(admin.TabularInline):
         if user_exec.result and not user_exec.running:
             return link(
                 get_script_prefix() + user_exec.log,
-                '<i class="fa-regular fa-file-lines" style="font-size: 36px"></i>',
+                str(Icon(settings.FA_ICONS.exec_log)),
                 True
             )
 
