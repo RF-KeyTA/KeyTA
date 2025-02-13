@@ -161,7 +161,7 @@ iframe.related-iframe {
     float: none !important;
 }
 
-.documentation img {
+p img {
     height: 100%;
     width: 100%;
     object-fit: contain;
