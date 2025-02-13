@@ -1,4 +1,5 @@
 import json
+from collections import defaultdict
 
 from django.contrib import admin
 from django.utils.translation import gettext as _
@@ -11,11 +12,19 @@ from .keyword import KeywordAdmin
 
 class WindowKeywordAdminMixin:
     def autocomplete_name(self, name: str):
-        return json.dumps([
-            '%s (%s :: %s)' % (name, systems, windows or _('Systemweit'))
-            for name, systems, windows in
-            self.model.objects.values_list('name', 'systems__name', 'windows__name')
+        keywords = (
+            self.model.objects
             .filter(name__icontains=name)
+            .values_list('name', 'systems__name')
+        )
+        grouped_keywords = defaultdict(list)
+
+        for name, system in keywords:
+            grouped_keywords[name].append(system)
+
+        return json.dumps([
+            '%s (%s)' % (name, ', '.join(systems))
+            for name, systems in grouped_keywords.items()
         ])
 
     def save_model(self, request, obj, form, change):
