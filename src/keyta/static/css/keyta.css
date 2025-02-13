@@ -160,3 +160,9 @@ iframe.related-iframe {
 .inline-deletelink {
     float: none !important;
 }
+
+.documentation img {
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
+}

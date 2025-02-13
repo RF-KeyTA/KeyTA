@@ -100,7 +100,7 @@ class BaseDocumentationAdmin(BaseReadOnlyAdmin):
 
     @admin.display(description=_('Dokumentation'))
     def dokumentation(self, obj):
-        return mark_safe(obj.documentation)
+        return mark_safe(obj.documentation.replace('<p>', '<div class="documentation">').replace('</p>', '</div>'))
 
 
 class BaseAddAdmin(BaseAdmin):
