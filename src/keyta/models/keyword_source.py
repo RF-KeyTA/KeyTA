@@ -110,8 +110,8 @@ class KeywordSource(AbstractBaseModel):
 
             if href.startswith('#'):
                 if keyword := (
-                    Keyword.objects.filter(library=self, name__iexact=text).first() or
-                    Keyword.objects.filter(resource=self, name__iexact=text).first()
+                    Keyword.objects.filter(library__name=self.name, name__iexact=text).first() or
+                    Keyword.objects.filter(resource__name=self.name, name__iexact=text).first()
                 ):
                     return open_link_in_modal(keyword.get_docadmin_url(), keyword.name)
 
