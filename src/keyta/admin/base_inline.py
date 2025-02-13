@@ -18,7 +18,7 @@ class TabularInlineWithDelete(admin.TabularInline):
 
         return link(
             obj.get_delete_url() + "?ref=" + self.url + obj.get_tab_url(getattr(self, 'tab_name', None)),
-            str(Icon(settings.FA_ICONS.delete, {'font-size': '30px', 'margin-top': '3px'}))
+            str(Icon(settings.FA_ICONS.delete_rel, {'font-size': '30px', 'margin-top': '3px'}))
         )
 
     def get_readonly_fields(self, request: HttpRequest, obj=None):

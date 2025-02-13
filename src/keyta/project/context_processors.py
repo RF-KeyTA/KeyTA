@@ -9,5 +9,8 @@ def icons(request):
     """
 
     return {
-        'kw_call_drag_handle_icon': settings.FA_ICONS.kw_call_drag_handle
+        'clone_icon': settings.FA_ICONS.clone,
+        'delete_icon': settings.FA_ICONS.delete,
+        'kw_call_drag_handle_icon': settings.FA_ICONS.kw_call_drag_handle,
+        'save_icon': settings.FA_ICONS.save
     }

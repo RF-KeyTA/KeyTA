@@ -7,7 +7,7 @@
         <div class="form-group" style="margin-right: 10px">
             <button type="submit" name="_continue" class="button-save">
                 <span class="icon-wrapper">
-                    <i class="fa-regular fa-floppy-disk"></i>
+                    <i class="{{ save_icon }}"></i>
                 </span>
             </button>
         </div>
@@ -17,7 +17,7 @@
         {% url opts|admin_urlname:'delete' original.pk|admin_urlquote as delete_url %}
         <a href="{% add_preserved_filters delete_url %}" role="button" class="button-delete" style="color:white">
             <span class="icon-wrapper">
-                <i class="fa-regular fa-trash-can"></i>
+                <i class="{{ delete_icon }}"></i>
             </span> 
         </a>
     </div>
