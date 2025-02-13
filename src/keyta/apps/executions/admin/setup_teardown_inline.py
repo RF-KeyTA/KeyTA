@@ -5,16 +5,15 @@ from django.http import HttpRequest
 from django.utils.translation import gettext as _
 
 from keyta.apps.actions.models import Action
-from keyta.widgets import (
-    open_link_in_modal,
-    BaseSelect
-)
+from keyta.apps.keywords.admin import KeywordCallArgsField
+from keyta.widgets import BaseSelect
+
 
 from ..forms import SetupTeardownForm
 from ..models import Execution, Setup, Teardown
 
 
-class SetupInline(admin.TabularInline):
+class SetupInline(KeywordCallArgsField, admin.TabularInline):
     model = Setup
     fields = ['user', 'to_keyword', 'args']
     form = SetupTeardownForm
@@ -24,25 +23,13 @@ class SetupInline(admin.TabularInline):
     template = 'admin/setup_teardown/tabular.html'
 
     @admin.display(description=_('Parameters'))
-    def args(self, obj):
-        kw_call: Setup = obj
+    def args(self, kw_call: Setup):
         to_keyword_has_params = kw_call.to_keyword.parameters.exists()
 
         if not kw_call.pk or not to_keyword_has_params:
             return '-'
-
-        if ((to_keyword_has_params and not kw_call.parameters.exists()) or
-            kw_call.has_empty_arg(self.user)
-        ):
-            return open_link_in_modal(
-                kw_call.get_admin_url(),
-                '<i class=" error-duotone fa-solid fa-list" style="font-size: 36px;"></i>'
-            )
         else:
-            return open_link_in_modal(
-                kw_call.get_admin_url(),
-                '<i class="fa-solid fa-list" style="font-size: 36px"></i>'
-            )
+            return super().args(kw_call)
 
     def formfield_for_dbfield(self, db_field, request, **kwargs):
         field = super().formfield_for_dbfield(db_field, request, **kwargs)

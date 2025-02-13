@@ -30,11 +30,50 @@ def link(url: str, title: str, new_page: bool = False, query_parameters: dict[st
         )
 
 
+class Icon:
+    def __init__(self, css_class: str, styles: dict[str, str]=None):
+        self.tag = 'i'
+        self.attrs =  {
+            'class': css_class,
+            'style': {'font-size': '36px'} | (styles or {})
+        }
+        self.body = []
+
+    def __str__(self):
+        def style_to_css(style: dict):
+            return '; '.join([
+                f'{name}: {value}'
+                for name, value
+                in style.items()
+            ])
+
+        def attrs_to_string(attrs: dict) -> str:
+            return ' '.join([
+                f'{name}="{value}"'
+                for name, value
+                in attrs.items()
+            ])
+
+        def html_to_string(html: list) -> str:
+            if not html:
+                return ''
+
+            tag, attrs, body = html
+            return f'<{tag} {attrs}>{html_to_string(body)}</{tag}>'
+
+        attrs = attrs_to_string({
+            **self.attrs,
+            'style': style_to_css(self.attrs['style'])
+        })
+
+        return html_to_string([self.tag, attrs, self.body])
+
+
 def bold(text: str):
     return f"<b>{text}</b>"
 
 
-def open_link_in_modal(url, title):
+def open_link_in_modal(url: str, title: str):
     return mark_safe(
         '<a class="related-widget-wrapper-link view-related" href="%s">%s</a>'
         % (url, title)

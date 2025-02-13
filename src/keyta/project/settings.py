@@ -12,8 +12,10 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 import os
 from pathlib import Path
+
 from django.contrib import admin
 
+from keyta.icons import Icons
 
 LOCALAPPDATA = Path(str(os.getenv('LOCALAPPDATA')))
 KEYTA_DIR = LOCALAPPDATA / 'KeyTA'
@@ -283,3 +285,5 @@ TINYMCE_DEFAULT_CONFIG= {
         }
     });}"""
 }
+
+FAIcons = Icons()

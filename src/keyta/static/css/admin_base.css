@@ -4,10 +4,6 @@
     color: var(--keyta-secondary-color);
 }
 
-.error-duotone {
-    filter: hue-rotate(150deg)
-}
-
 .icon-item .fa-solid {
     font-size: 78px;
 }
