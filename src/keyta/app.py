@@ -64,7 +64,7 @@ class App:
         # The RF logger only works if the current thread is called MainThread
         self.rf_server_thread = DaemonThread(robot_server, name='MainThread')
 
-        img = Image.open(CWD / 'icon.png')
+        img = Image.open(CWD / 'static' / 'keyta.png')
         img_cropped = img.crop(img.getbbox())
         tray_icon = Icon(
             name='KeyTA',

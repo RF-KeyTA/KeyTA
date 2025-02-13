@@ -267,7 +267,7 @@ JAZZMIN_SETTINGS = {
         'windows',
     ],
     "related_modal_active": True,
-    "site_logo": "img/keyta.png",
+    "site_logo": "keyta.png",
     "site_brand": "KeyTA",
     "site_header": "KeyTA",
     "site_title": "KeyTA",

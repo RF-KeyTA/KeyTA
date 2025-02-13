@@ -1,6 +1,6 @@
 # KeyTA
 
-<img src="src/keyta/icon.png" alt="KeyTA-Logo" width="30%">
+<img src="src/keyta/static/keyta.png" alt="KeyTA-Logo" width="30%">
 
 **KeyTA** wurde entwickelt, um die Testautomatisierung mit Robot Framework zu vereinfachen. Es werden keine Programmier- und nur grundlegende Testkenntnisse benötigt.
 
