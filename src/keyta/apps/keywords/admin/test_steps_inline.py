@@ -28,7 +28,7 @@ class TestStepsInline(StepsInline):
         formset.form.base_fields['to_keyword'].widget.can_change_related = False
         formset.form.base_fields['to_keyword'].widget.can_view_related = False
         formset.form.base_fields['to_keyword'].label = _('Sequenz')
-        sequences = formset.form.base_fields['to_keyword'].queryset.sequences().filter(systems__in=system_ids)
+        sequences = formset.form.base_fields['to_keyword'].queryset.sequences().filter(systems__in=system_ids).distinct()
         formset.form.base_fields['to_keyword'].queryset = sequences
 
         return formset
