@@ -10,20 +10,6 @@ from django.utils.safestring import mark_safe
 from django_select2.forms import ModelSelect2Widget
 
 
-def configure_select(widget: forms.Select, placeholder: str, choices: list,
-                     can_view_related=False, can_add_related=False,
-                     can_change_related=False):
-    widget.attrs.update({
-        'data-placeholder': placeholder
-    })
-    widget.choices = choices
-    # These properties are available because Django wraps the widget
-    # with RelatedFieldWidgetWrapper
-    widget.can_view_related = can_view_related # type: ignore
-    widget.can_add_related = can_add_related # type: ignore
-    widget.can_change_related = can_change_related # type: ignore
-
-
 def link(url: str, title: str, new_page: bool = False, query_parameters: dict[str, str]={}):
     if query_parameters:
         url = url + '?' + '&'.join(
