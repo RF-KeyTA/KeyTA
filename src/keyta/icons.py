@@ -13,3 +13,4 @@ class Icons:
     library_import_args: str = 'fa-solid fa-list'
     library_update: str = 'fa-solid fa-circle-arrow-up'
     library_setting_reset: str = 'fa-solid fa-rotate-left'
+    kw_call_drag_handle: str = 'fa-solid fa-sort'

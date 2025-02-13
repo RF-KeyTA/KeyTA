@@ -33,7 +33,7 @@
                             <td class="original">
                                 <p style="font-size: 28px; background-image: none">
                                     {% if inline_admin_form.original and not forloop.last %}
-                                         <i class=" fa-solid fa-sort"></i>
+                                         <i class="{{ kw_call_drag_handle_icon }}"></i>
                                     {% endif %}
                                 </p>
                                 {% if inline_admin_form.needs_explicit_pk_field %}{{ inline_admin_form.pk_field.field }}{% endif %}
