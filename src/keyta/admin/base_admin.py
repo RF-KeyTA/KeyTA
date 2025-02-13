@@ -1,4 +1,5 @@
 import json
+from collections import defaultdict
 
 from django.contrib import admin, messages
 from django.contrib.admin.widgets import AutocompleteSelectMultiple
@@ -35,7 +36,20 @@ class BaseAdmin(admin.ModelAdmin):
         return super().add_view(request, form_url, extra_context)
 
     def autocomplete_name(self, name: str):
-        return json.dumps([])
+        objects = (
+            self.model.objects
+            .filter(name__icontains=name)
+            .values_list('name', 'systems__name')
+        )
+        grouped = defaultdict(list)
+
+        for name, system in objects:
+            grouped[name].append(system)
+
+        return json.dumps([
+            '%s (%s)' % (name, ', '.join(systems))
+            for name, systems in grouped.items()
+        ])
 
     def change_view(self, request, object_id, form_url="", extra_context=None):
         if 'autocomplete' in request.GET:
