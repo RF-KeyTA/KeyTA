@@ -242,7 +242,7 @@ p img {
       to top right,
       var(--keyta-primary-color),
       var(--keyta-tertiary-color),
-      var(--keyta-light-color),
+      var(--keyta-light-color)
   );
 }
 
