@@ -287,3 +287,7 @@ p img {
 .tox-promotion {
     visibility: hidden;
 }
+
+.action-icon {
+	font-size: 30px;
+}
