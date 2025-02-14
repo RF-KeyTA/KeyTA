@@ -201,6 +201,7 @@ JAZZMIN_SETTINGS = {
         'keywords.teststep': 'single',
     },
     "copyright": 'imbus',
+    "custom_css": "css/custom.css",
     "hide_models": [
         'auth.group',
         'auth.user',
