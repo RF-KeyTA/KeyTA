@@ -288,6 +288,9 @@ p img {
     visibility: hidden;
 }
 
+.app-icon {
+    font-size: 78px;
+}
 .action-icon {
 	font-size: 30px;
 }
