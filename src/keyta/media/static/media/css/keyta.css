@@ -165,41 +165,6 @@ p img {
     margin: 0;
 }
 
-.button-delete .fa-trash-can {
-	font-size: 30px;
-    margin-right: 10px;
-}
-
-.button-save {
-    background-color: var(--keyta-primary-color);
-    border: 0;
-    margin: 0;
-    margin-right: 10px;
-    padding: 0;
-}
-
-.button-save .fa-floppy-disk {
-	font-size: 30px;
-    color: var(--keyta-secondary-color);
-}
-
-.clone-link .fa-copy {
-	font-size: 30px;
-    --fa-primary-color: white;
-    --fa-secondary-color: var(--keyta-secondary-color);
-    --fa-secondary-opacity: 1;
-}
-
-
-
-.fa-solid {
-    color: var(--keyta-secondary-color);
-}
-
-.icon-item .fa-solid {
-    font-size: 78px;
-}
-
 .nav-sidebar>.nav-item .nav-icon {
     font-size: 2rem;
     margin-right: 25px;
@@ -211,23 +176,23 @@ p img {
     padding-right: 8px;
 }
 
-.nav-icon {
-    width: 45px;
-    --fa-primary-color: #ffffff;
-    --fa-secondary-color: var(--keyta-secondary-color);
-    --fa-secondary-opacity: 1;
-}
-
-.icon-and-text{
-    display: flex;
-    align-items: flex-end;
-}
-
 .icon-item {
     text-align: center;
     padding-right: 20px;
     margin: 0;
     width: 100px;
+}
+
+.icon-and-text {
+    display: flex;
+    align-items: flex-end;
+}
+
+.icon-text {
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: start;
 }
 
 #jazzy-sidebar {
@@ -237,13 +202,6 @@ p img {
       var(--keyta-tertiary-color),
       var(--keyta-light-color)
   );
-}
-
-.icon-text {
-    color: #ffffff;
-    display: flex;
-    align-items: center;
-    justify-content: start;
 }
 
 .brand-text {
@@ -288,9 +246,23 @@ p img {
     visibility: hidden;
 }
 
+.nav-icon {
+    width: 45px;
+}
+
 .app-icon {
     font-size: 78px;
 }
+
+.button-save {
+    background-color: var(--keyta-primary-color);
+    color: var(--keyta-secondary-color);
+    border: 0;
+    margin: 0;
+    margin-right: 10px;
+    padding: 0;
+}
+
 .action-icon {
 	font-size: 30px;
 }

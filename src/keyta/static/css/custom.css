@@ -4,3 +4,7 @@ html {
     --keyta-tertiary-color: #1a3d6e;
     --keyta-light-color: rgba(0, 159, 227, 0.09);
 }
+
+.fa-solid {
+    color: var(--keyta-secondary-color);
+}
