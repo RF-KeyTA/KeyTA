@@ -1,3 +1,14 @@
+html {
+    --keyta-primary-color: #03224c;
+    --keyta-secondary-color: #00aaba;
+    --keyta-tertiary-color: #1a3d6e;
+    --keyta-light-color: rgba(0, 159, 227, 0.09);
+}
+
+.fa-solid {
+    color: var(--keyta-secondary-color);
+}
+
 /* Disable the bouncing effect at the top and bottom of the page */
 :root { overscroll-behavior: none; }
 

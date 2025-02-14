@@ -33,11 +33,6 @@
     <!-- Custom fixes for django -->
     <link rel="stylesheet" href="{% static "jazzmin/css/main.css" %}">
 
-    {% if jazzmin_settings.custom_css %}
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="{% static jazzmin_settings.custom_css %}">
-    {% endif %}
-
     <!-- favicons -->
     <link rel="shortcut icon" href="{% static jazzmin_settings.site_icon %}" type="image/png">
     <link rel="icon" href="{% static jazzmin_settings.site_icon %}" sizes="32x32" type="image/png">
@@ -50,6 +45,10 @@
     <!-- Extra style -->
     {% block extrastyle %}
     <link rel="stylesheet" href="{% static "media/css/keyta.css" %}">
+    {% if jazzmin_settings.custom_css %}
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static jazzmin_settings.custom_css %}">
+    {% endif %}
     {% endblock %}
 
     <!-- Extra head -->
