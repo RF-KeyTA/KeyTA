@@ -48,7 +48,9 @@
     {% endif %}
 
     <!-- Extra style -->
-    {% block extrastyle %} {% endblock %}
+    {% block extrastyle %}
+    <link rel="stylesheet" href="{% static "media/css/keyta.css" %}">
+    {% endblock %}
 
     <!-- Extra head -->
     {% block extrahead %} {% endblock %}

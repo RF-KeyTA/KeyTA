@@ -86,7 +86,7 @@ KEYTA_APPS = [
     'apps.windows'
 ]
 
-INSTALLED_APPS = ADMIN_APP + DEFAULT_APPS + THIRD_PARTY_APPS + KEYTA_APPS
+INSTALLED_APPS = ADMIN_APP + DEFAULT_APPS + THIRD_PARTY_APPS + KEYTA_APPS + ['media']
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -201,7 +201,6 @@ JAZZMIN_SETTINGS = {
         'keywords.teststep': 'single',
     },
     "copyright": 'imbus',
-    "custom_css": "css/keyta.css",
     "hide_models": [
         'auth.group',
         'auth.user',
