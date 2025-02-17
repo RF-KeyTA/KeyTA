@@ -44,10 +44,18 @@ class ExecutionInline(admin.TabularInline):
 
         if (result := user_exec.result) and not user_exec.running:
             if result == 'FAIL':
-                return mark_safe(str(Icon(settings.FA_ICONS.exec_fail)))
+                icon = Icon(
+                    settings.FA_ICONS.exec_fail,
+                    {'color': 'red'}
+                )
+                return mark_safe(str(icon))
 
             if result == 'PASS':
-                return mark_safe(str(Icon(settings.FA_ICONS.exec_pass)))
+                icon = Icon(
+                    settings.FA_ICONS.exec_pass, 
+                    {'color': 'green'}
+                )
+                return mark_safe(str(icon))
 
         return '-'
 
