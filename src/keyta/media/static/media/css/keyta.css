@@ -239,6 +239,7 @@ p img {
 }
 
 .card-body .tab-content {
+    min-height: 72vh;
     max-height: 72vh;
     overflow-y: auto;
     overscroll-behavior: none;
