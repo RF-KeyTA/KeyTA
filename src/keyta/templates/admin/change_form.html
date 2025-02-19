@@ -203,6 +203,7 @@
                     const inputs = row.find('input[type="text"]')
                     const last_input = inputs.last()
 
+                    // extra rows do not have the class .has-original
                     if(selects.length == 2 && !row.hasClass('has_original')) {
                         last_select.prop('disabled', true)
                         first_select.on('change', function() {
@@ -220,6 +221,7 @@
                         })
                     }
                     
+                    // extra rows do not have the class .has-original
                     if(inputs.length <= 2 && !row.hasClass('has_original')) {
                         last_input.on('blur', function () {
                             $(save_button).click()
