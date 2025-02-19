@@ -195,7 +195,7 @@
                     $(save_button).click()
                 });
                 
-                django.jQuery('.form-row').not('body.popup .form-row, .empty-form .form-row').each(function() {
+                django.jQuery('.form-row').not('body.popup .form-row, .form-row.empty-form').each(function() {
                     const row = $(this)
                     const selects = django.jQuery(row).find('select')
                     const first_select = selects.first()
