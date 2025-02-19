@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.contrib import admin
 from django.http import HttpRequest
 from django.urls import reverse
@@ -6,52 +5,9 @@ from django.utils.translation import gettext as _
 
 from adminsortable2.admin import SortableInlineAdminMixin
 
-from keyta.models.base_model import AbstractBaseModel
-from keyta.widgets import link, related_field_widget_factory, Icon
+from keyta.widgets import related_field_widget_factory
 
-
-class TabularInlineWithDelete(admin.TabularInline):
-    @admin.display(description='')
-    def delete(self, obj: AbstractBaseModel):
-        if not obj.id:
-            return ''
-
-        return link(
-            obj.get_delete_url() + "?ref=" + self.url + obj.get_tab_url(getattr(self, 'tab_name', None)),
-            str(Icon(settings.FA_ICONS.delete_rel, {'font-size': '30px', 'margin-top': '3px'}))
-        )
-
-    def get_readonly_fields(self, request: HttpRequest, obj=None):
-        self.url = request.path
-
-        if self.has_delete_permission(request, obj):
-            return list(self.readonly_fields) + ['delete']
-
-        return self.readonly_fields
-
-    def get_fields(self, request, obj=None):
-        if self.has_delete_permission(request, obj):
-            return self.fields + ['delete']
-
-        return self.fields
-
-    def has_delete_permission(self, request: HttpRequest, obj=None):
-        if obj:
-            app, model = obj._meta.app_label, obj._meta.model_name
-            return request.user.has_perm(f'{app}.delete_{model}', obj)
-
-        return super().has_delete_permission(request, obj)
-
-
-class SortableTabularInline(SortableInlineAdminMixin, admin.TabularInline):
-    template = 'sortable_tabular.html'
-
-
-class SortableTabularInlineWithDelete(
-    SortableInlineAdminMixin,
-    TabularInlineWithDelete
-):
-    template = 'sortable_tabular.html'
+from .field_delete_related_instance import DeleteRelatedField
 
 
 class AddInline(admin.TabularInline):
@@ -81,3 +37,19 @@ class AddInline(admin.TabularInline):
 
     def related_field_widget_url_params(self, request: HttpRequest):
         return {}
+
+
+class SortableTabularInline(SortableInlineAdminMixin, admin.TabularInline):
+    template = 'sortable_tabular.html'
+    
+    # by default readonly_fields is a tuple, which cannot be composed with a list
+    def get_readonly_fields(self, request, obj=None):
+        return list(super().get_readonly_fields(request, obj))
+
+
+class SortableTabularInlineWithDelete(DeleteRelatedField, SortableTabularInline):
+    template = 'sortable_tabular.html'
+
+
+class TabularInlineWithDelete(DeleteRelatedField, admin.TabularInline):
+    pass

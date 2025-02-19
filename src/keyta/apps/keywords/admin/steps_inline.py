@@ -1,24 +1,22 @@
-from django.contrib import admin
 from django.utils.translation import gettext as _
 
-from keyta.admin.base_inline import SortableTabularInlineWithDelete
+from keyta.admin.base_inline import DeleteRelatedField, SortableTabularInline
 
 
 from ..forms import StepsForm
 from ..models import KeywordCall
-from .keywordcall_args_field import KeywordCallArgsField
+from .field_first_parameter import FirstParameterField
+from .field_keywordcall_args import KeywordCallArgsField
 
 
-class StepsInline(KeywordCallArgsField, SortableTabularInlineWithDelete):
+class StepsInline(
+    DeleteRelatedField,
+    FirstParameterField, 
+    KeywordCallArgsField, 
+    SortableTabularInline
+):
     model = KeywordCall
-    fields = ['to_keyword', 'args']
+    fk_name = 'from_keyword'
+    fields = ['to_keyword']
     form = StepsForm
-    readonly_fields = ['args']
-    extra = 1  # Must be > 0 in order for SequenceSteps to work
-
-    @admin.display(description=_('Werte'))
-    def args(self, kw_call: KeywordCall):
-        if not kw_call.pk:
-            return '-'
-        else:
-            return super().args(kw_call)
+    extra = 1  # Must be > 0 in order for django-select2 to work
