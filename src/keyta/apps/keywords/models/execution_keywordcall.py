@@ -1,3 +1,4 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import gettext as _
 
@@ -14,6 +15,12 @@ class ExecutionKeywordCall(KeywordCall):
             )
 
     objects = Manager()
+
+    def has_empty_arg(self, user: AbstractUser):
+        if not self.parameters.exists():
+            return True
+
+        return super().has_empty_arg(user)
 
     def save(
         self, force_insert=False, force_update=False,

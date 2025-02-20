@@ -1,12 +1,9 @@
 from django.contrib import admin
 from django.utils.translation import gettext as _
 
-from keyta.apps.sequences.models import Sequence
-from keyta.widgets import open_link_in_modal
-
 from ..forms import KeywordCallParameterFormset
-from ..models import TestStep
-from .keyword_call import KeywordCallParametersInline, KeywordCallAdmin
+from ..models import TestStep, KeywordCall
+from .keywordcall import KeywordCallParametersInline, KeywordCallAdmin
 
 
 class TestStepParameterFormset(KeywordCallParameterFormset):
@@ -21,18 +18,14 @@ class TestStepParameterFormset(KeywordCallParameterFormset):
         )
 
 
-class TestStepParameters(KeywordCallParametersInline):
+class TestStepParametersInline(KeywordCallParametersInline):
     formset = TestStepParameterFormset
 
 
 @admin.register(TestStep)
 class TestStepAdmin(KeywordCallAdmin):
-    def get_inlines(self, request, obj):
-        return [TestStepParameters]
+    inlines = [TestStepParametersInline]
 
     @admin.display(description=_('Sequenz'))
-    def keyword_doc(self, obj: TestStep):
-        return open_link_in_modal(
-            Sequence(obj.to_keyword.pk).get_docadmin_url(),
-            obj.to_keyword.name
-        )
+    def to_keyword_doc(self, test_step: TestStep):
+        return super().to_keyword_doc(test_step)

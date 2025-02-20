@@ -14,7 +14,7 @@ class KeywordCallParametersInline(admin.TabularInline):
     can_delete = False
 
     def name(self, obj: KeywordCallParameter):
-        return obj.name.replace('_', ' ')
+        return obj.name.replace('_', ' ').title()
 
     def get_queryset(self, request):
         return super().get_queryset(request).order_by('parameter__position')

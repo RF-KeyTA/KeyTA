@@ -14,7 +14,6 @@ from ..models import ActionCall, Sequence
 
 class SequenceSteps(StepsInline):
     model = ActionCall
-    fk_name = 'from_keyword'
 
     form = form_with_select(
         ActionCall,

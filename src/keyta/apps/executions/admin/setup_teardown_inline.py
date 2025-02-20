@@ -5,7 +5,7 @@ from django.http import HttpRequest
 from django.utils.translation import gettext as _
 
 from keyta.apps.actions.models import Action
-from keyta.apps.keywords.admin import KeywordCallArgsField
+from keyta.apps.keywords.admin.field_keywordcall_args import KeywordCallArgsField
 from keyta.widgets import BaseSelect
 
 

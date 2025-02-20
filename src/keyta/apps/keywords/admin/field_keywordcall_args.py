@@ -5,13 +5,13 @@ from django.contrib import admin
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext as _
 
-from keyta.apps.keywords.models import KeywordCall
 from keyta.widgets import Icon, open_link_in_modal
 
+from ..models import KeywordCall
 
-class KeywordCallArgsField(object):
-    @admin.display(description=_('Werte'))
-    def args(self, kw_call: KeywordCall, user: Optional[AbstractUser]=None):
+
+class BaseKeywordCallArgs:
+    def get_icon(self, kw_call: KeywordCall, user: Optional[AbstractUser]=None):
         if not kw_call.pk:
             return '-'
         
@@ -36,6 +36,12 @@ class KeywordCallArgsField(object):
                 kw_call.get_admin_url(),
                 str(icon)
             )
+
+
+class KeywordCallArgsField(BaseKeywordCallArgs):
+    @admin.display(description=_('Werte'))
+    def args(self, kw_call: KeywordCall):
+        return super().get_icon(kw_call)
 
     def get_fields(self, request, obj=None):
         return super().get_fields(request, obj) + ['args']
