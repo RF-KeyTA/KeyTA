@@ -22,6 +22,7 @@ def form_with_select(
         select_field: str,
         placeholder: str,
         labels=None,
+        field_classes=None,
         select_many=False,
         can_view_related=False,
         can_change_related=False
@@ -36,6 +37,7 @@ def form_with_select(
         model,
         BaseForm,
         [select_field],
+        field_classes=field_classes,
         labels=labels,
         widgets={
             select_field: SelectWidget(placeholder)
