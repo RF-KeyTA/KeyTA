@@ -63,12 +63,21 @@ class KeywordCallParameterSource(CloneMixin, models.Model):
                 user_input=None
             ).jsonify()
 
-        return SelectValue(
-            arg_name=None,
-            kw_call_index=None,
-            pk=self.pk,
-            user_input=None
-        ).jsonify()
+
+    def save(self, force_insert=False, force_update=False, using=None,
+        update_fields=None):
+
+        if self.kw_param:
+            self.type = KeywordCallParameterSourceType.KEYWORD_PARAMETER
+
+        if self.kw_call_ret_val:
+            self.type = KeywordCallParameterSourceType.KW_CALL_RETURN_VALUE
+
+        if self.variable_value:
+            self.type = KeywordCallParameterSourceType.VARIABLE_VALUE
+
+        super().save(force_insert, force_update, using, update_fields)
+
 
     class Meta:
         constraints = [
