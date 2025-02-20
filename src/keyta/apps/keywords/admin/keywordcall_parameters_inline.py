@@ -1,15 +1,15 @@
 from django.contrib import admin
 
-from keyta.apps.keywords.forms import KeywordCallParameterFormset
-from keyta.apps.keywords.models import KeywordCallParameter
+from ..forms import KeywordCallParameterFormset
+from ..models import KeywordCallParameter
 
 
 class KeywordCallParametersInline(admin.TabularInline):
     model = KeywordCallParameter
     fields = ['name', 'value']
     readonly_fields = ['name']
-    extra = 0
     formset = KeywordCallParameterFormset
+    extra = 0
     max_num = 0
     can_delete = False
 
@@ -18,4 +18,3 @@ class KeywordCallParametersInline(admin.TabularInline):
 
     def get_queryset(self, request):
         return super().get_queryset(request).order_by('parameter__position')
-    
