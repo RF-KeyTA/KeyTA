@@ -15,7 +15,7 @@ from apps.windows.models import Window
 class Values(TabularInlineWithDelete):
     model = VariableValue
     fields = ['name', 'value']
-    extra = 1 # Must be > 0 in order for auto-save to work
+    extra = 0
     min_num = 1
 
 
