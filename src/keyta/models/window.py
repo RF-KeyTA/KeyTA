@@ -44,6 +44,7 @@ class AbstractWindow(AbstractBaseModel):
 
     class Meta:
         abstract = True
+        ordering = ['name']
         # constraints = [
         #     models.UniqueConstraint(
         #         fields=['system', 'name'],
