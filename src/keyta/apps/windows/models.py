@@ -4,7 +4,7 @@ from keyta.models.window import AbstractWindow
 
 
 class Window(AbstractWindow):
-    class Meta:
+    class Meta(AbstractWindow.Meta):
         verbose_name = _('Maske')
         verbose_name_plural = _('Masken')
 
