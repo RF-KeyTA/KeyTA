@@ -10,16 +10,15 @@ from .keyword_call import KeywordCallParametersInline, KeywordCallAdmin
 
 
 class TestStepParameterFormset(KeywordCallParameterFormset):
-    def get_choices(self, obj: TestStep):
+    def get_choices(self, kw_call: KeywordCall):
         system_ids = list(
-            obj.testcase.systems.values_list('pk', flat=True)
+            kw_call.testcase.systems.values_list('pk', flat=True)
         )
 
         return super().get_prev_return_values() + super().get_window_variables(
-                [obj.window.id],
-                system_ids,
-                lambda value_ref: str(value_ref)
-            )
+            [kw_call.window.id],
+            system_ids
+        )
 
 
 class TestStepParameters(KeywordCallParametersInline):

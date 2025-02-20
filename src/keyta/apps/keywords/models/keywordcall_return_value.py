@@ -3,7 +3,6 @@ from django.utils.translation import gettext as _
 
 from model_clone import CloneMixin
 
-from keyta.select_value import SelectValue
 from .keywordcall_parameter_source import (
     KeywordCallParameterSource,
     KeywordCallParameterSourceType
@@ -42,14 +41,6 @@ class KeywordCallReturnValue(CloneMixin, models.Model):
     @property
     def is_set(self):
         return self.name or self.return_value
-
-    def jsonify(self):
-        return SelectValue(
-            arg_name=None,
-            kw_call_index=self.keyword_call.index,
-            pk=self.return_value.pk,
-            user_input=None
-        ).jsonify()
 
     def save(
         self, force_insert=False, force_update=False, using=None, update_fields=None

@@ -4,7 +4,7 @@ from django.utils.translation import gettext as _
 
 from model_clone import CloneMixin
 
-from keyta.select_value import SelectValue
+from ..keywordcall_parameter_json_value import JSONValue
 
 
 class KeywordCallParameterSourceType(models.TextChoices):
@@ -46,23 +46,30 @@ class KeywordCallParameterSource(CloneMixin, models.Model):
             self.variable_value
         )
 
-    def jsonify(self):
+    def get_value(self) -> JSONValue:
         if self.kw_param:
-            return SelectValue(
+            return JSONValue(
                 arg_name=self.kw_param.name,
                 kw_call_index=None,
                 pk=self.pk,
                 user_input=None
-            ).jsonify()
+            )
 
         if self.kw_call_ret_val:
-            return SelectValue(
+            return JSONValue(
                 arg_name=None,
                 kw_call_index=self.kw_call_ret_val.keyword_call.index,
                 pk=self.pk,
                 user_input=None
-            ).jsonify()
+            )
 
+        if self.variable_value:
+            return JSONValue(
+                arg_name=None,
+                kw_call_index=None,
+                pk=self.pk,
+                user_input=None
+            )
 
     def save(self, force_insert=False, force_update=False, using=None,
         update_fields=None):
@@ -78,6 +85,11 @@ class KeywordCallParameterSource(CloneMixin, models.Model):
 
         super().save(force_insert, force_update, using, update_fields)
 
+    def to_robot(self):
+        if self.type == KeywordCallParameterSourceType.VARIABLE_VALUE:
+            return self.variable_value.value
+        else:
+            return '${' + str(self) + '}'
 
     class Meta:
         constraints = [

@@ -10,11 +10,12 @@ from model_clone import CloneMixin
 
 from keyta.models.base_model import AbstractBaseModel
 from keyta.rf_export.keywords import RFKeywordCall
-from keyta.select_value import SelectValue
 
-from .keywordcall_return_value import KeywordCallReturnValue
+from ..keywordcall_parameter_json_value import JSONValue
 from .keywordcall_parameters import KeywordCallParameter
+from .keywordcall_return_value import KeywordCallReturnValue
 from .keyword_parameters import KeywordParameter
+from .keyword_return_value import KeywordReturnValue
 
 
 class TestSetupTeardown(models.TextChoices):
@@ -110,7 +111,7 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
             parameter=param,
             user=user,
             defaults={
-                'value': SelectValue(
+                'value': JSONValue(
                     arg_name=None,
                     kw_call_index=None,
                     pk=None,
@@ -118,6 +119,16 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
                 ).jsonify()
             }
         )
+
+    def add_return_value(self):
+        if self.type in {KeywordCallType.KEYWORD_CALL, KeywordCallType.TEST_STEP}:
+            return_value: KeywordReturnValue = self.to_keyword.return_value.first()
+
+            if return_value:
+                KeywordCallReturnValue.objects.create(
+                    keyword_call=self,
+                    return_value=return_value.kw_call_return_value
+                )
 
     @property
     def caller(self):
@@ -148,7 +159,10 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
 
     def has_empty_arg(self, user: Optional[AbstractUser]=None) -> bool:
         args: QuerySet = self.parameters.filter(user=user).args()
-        return any(arg.current_value is None for arg in args)
+        arg: KeywordCallParameter
+        for arg in args:
+            if arg.is_empty():
+                return True
 
     def save(
         self, force_insert=False, force_update=False,
@@ -158,12 +172,11 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
             self.type = KeywordCallType.KEYWORD_CALL
 
         if not self.pk:
-            kw_call = super().save(force_insert, force_update, using, update_fields)
+            super().save(force_insert, force_update, using, update_fields)
             self.update_parameters()
-            return kw_call
+            self.add_return_value()
         else:
-            return super().save(force_insert, force_update, using, update_fields)
-
+            super().save(force_insert, force_update, using, update_fields)
 
     def to_robot(self, user: Optional[AbstractUser]=None) -> RFKeywordCall:
         parameters = self.parameters.filter(user=user)
@@ -181,6 +194,11 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
                 else None
             )
         }
+
+    def update_parameter_values(self):
+        kw_call_param: KeywordCallParameter
+        for kw_call_param in self.parameters.all():
+            kw_call_param.update_value()
 
     def update_parameters(self, user: Optional[AbstractUser]=None):
         for param in self.to_keyword.parameters.all():

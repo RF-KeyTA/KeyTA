@@ -7,13 +7,9 @@ from django.utils.translation import gettext as _
 from model_clone import CloneMixin
 
 from keyta.models.base_model import AbstractBaseModel
-from keyta.select_value import SelectValue
 
 from .keyword import Keyword
-from .keywordcall_parameter_source import (
-    KeywordCallParameterSource,
-    KeywordCallParameterSourceType
-)
+from .keywordcall_parameter_source import KeywordCallParameterSource
 
 
 class KeywordParameterType(models.TextChoices):
@@ -92,14 +88,6 @@ class KeywordParameter(CloneMixin, AbstractBaseModel):
             }
         )
 
-    def jsonify(self):
-        return SelectValue(
-            arg_name=self.name,
-            kw_call_index=None,
-            pk=self.pk,
-            user_input=None
-        ).jsonify()
-
     def save(
         self, force_insert=False, force_update=False, using=None,
         update_fields=None
@@ -108,16 +96,13 @@ class KeywordParameter(CloneMixin, AbstractBaseModel):
         if not self.pk:
             super().save(force_insert, force_update, using, update_fields)
 
+            KeywordCallParameterSource.objects.create(kw_param=self)
+
             for kw_call in (
                 self.keyword.uses.keyword_calls() |
                 self.keyword.uses.test_steps()
             ):
                 kw_call.add_parameter(self)
-
-            KeywordCallParameterSource.objects.create(
-                kw_param=self,
-                type=KeywordCallParameterSourceType.KEYWORD_PARAMETER
-            )
         else:
             super().save(force_insert, force_update, using, update_fields)
 

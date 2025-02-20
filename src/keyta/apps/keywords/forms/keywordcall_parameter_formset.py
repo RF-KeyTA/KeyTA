@@ -1,35 +1,24 @@
 import re
-from typing import Callable
 
 from django import forms
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 
-from keyta.apps.keywords.models import (
+from keyta.widgets import KeywordCallSelect
+
+from ..models.keywordcall_parameters import JSONValue
+from ..models import (
     KeywordCall,
     KeywordCallParameterSource,
     KeywordCallParameter
 )
-from keyta.select_value import SelectValue
-from keyta.widgets import KeywordCallSelect
 
 
-def jsonify_value(value):
-    return SelectValue(
-        arg_name=None,
-        kw_call_index=None,
-        pk=None,
-        user_input=re.sub(r"\s{2,}", " ", value)
-    ).jsonify()
+def show_value(json_value: JSONValue) -> tuple:
+    if json_value.user_input:
+        return json_value.jsonify(), json_value.user_input
 
-
-def show_value(json_str: str) -> tuple:
-    select_value = SelectValue.from_json(json_str)
-
-    if select_value.user_input:
-        return json_str, select_value.user_input
-    else:
-        return None, 'Kein Wert'
+    return None, _('Kein Wert')
 
 
 class DynamicChoiceField(forms.CharField):
@@ -40,7 +29,12 @@ class DynamicChoiceField(forms.CharField):
         if value.startswith('{') and value.endswith('}'):
             return value
 
-        return jsonify_value(value)
+        return JSONValue(
+            arg_name=None,
+            kw_call_index=None,
+            pk=None,
+            user_input=re.sub(r"\s{2,}", " ", value)
+        ).jsonify()
 
 
 class KeywordCallParameterFormset(forms.BaseInlineFormSet):
@@ -60,22 +54,15 @@ class KeywordCallParameterFormset(forms.BaseInlineFormSet):
     def add_fields(self, form, index):
         super().add_fields(form, index)
 
+        # The index of an extra form is None
         if index is not None:
             kw_call_parameter: KeywordCallParameter = form.instance
-            current_value = kw_call_parameter.value
-            value, displayed_value = show_value(current_value)
-
-            if value and displayed_value in {'True', 'False'}:
-                choices = [
-                    (jsonify_value('True'), 'True'),
-                    (jsonify_value('False'), 'False'),
-                ]
-            else:
-                choices = (
-                        [(None, '')] +
-                        [[_('Eingabe'), [show_value(current_value)]]] +
-                        self.choices
-                )
+            json_value = kw_call_parameter.json_value
+            choices = (
+                    [(None, '')] +
+                    [[_('Eingabe'), [show_value(json_value)]]] +
+                    self.choices
+            )
 
             form.fields['value'] = DynamicChoiceField(
                 widget=KeywordCallSelect(
@@ -93,13 +80,24 @@ class KeywordCallParameterFormset(forms.BaseInlineFormSet):
                 form.fields['value'].help_text = _('Wert 1, Wert 2, ...')
 
     def get_choices(self, kw_call: KeywordCall):
-        return self.get_keyword_parameters(kw_call) + self.get_prev_return_values()
+        system_ids = list(
+            kw_call.from_keyword.systems.values_list('pk', flat=True)
+        )
+        window_ids = list(
+            kw_call.from_keyword.windows.values_list('pk', flat=True)
+        )
+
+        return (
+            self.get_keyword_parameters(kw_call) + 
+            self.get_prev_return_values() + 
+            self.get_window_variables(window_ids, system_ids)
+        )
 
     def get_keyword_parameters(self, kw_call: KeywordCall):
         return [[
             _('Parameters'),
             [
-                (source.jsonify(), str(source))
+                (source.get_value().jsonify(), str(source))
                 for source in KeywordCallParameterSource.objects
                 .filter(kw_param__keyword=kw_call.from_keyword)
             ]
@@ -113,7 +111,7 @@ class KeywordCallParameterFormset(forms.BaseInlineFormSet):
         return [[
             _('Globale Referenzwerte'),
             [
-                (source.jsonify(), str(source))
+                (source.get_value().jsonify(), str(source))
                 for source in
                 KeywordCallParameterSource.objects
                 .filter(variable_value__variable__systems__in=system_ids)
@@ -127,7 +125,7 @@ class KeywordCallParameterFormset(forms.BaseInlineFormSet):
         return [[
             _('Vorherige Rückgabewerte'),
             [
-                (source.jsonify(), str(source))
+                (source.get_value().jsonify(), str(source))
                 for source in
                 KeywordCallParameterSource.objects
                 .filter(
@@ -139,13 +137,12 @@ class KeywordCallParameterFormset(forms.BaseInlineFormSet):
     def get_window_variables(
         self,
         window_ids: list[int],
-        system_ids: list[int],
-        show: Callable[[KeywordCallParameterSource], str]
+        system_ids: list[int]
     ):
         return [[
             _('Referenzwerte'),
             [
-                (source.jsonify(), show(source))
+                (source.get_value().jsonify(), str(source))
                 for source in
                 KeywordCallParameterSource.objects
                 .filter(variable_value__variable__windows__in=window_ids)

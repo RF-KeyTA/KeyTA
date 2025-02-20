@@ -5,8 +5,8 @@ from keyta.apps.keywords.models import (
     KeywordCallParameterSource,
     KeywordCallParameterSourceType
 )
-from keyta.models.base_model import AbstractBaseModel
-from keyta.select_value import SelectValue
+
+from .base_model import AbstractBaseModel
 
 
 class AbstractVariable(AbstractBaseModel):
@@ -61,14 +61,6 @@ class AbstractVariableValue(AbstractBaseModel):
 
     def __str__(self):
         return f'{self.variable.name}: {self.name}'
-
-    def jsonify(self):
-        return SelectValue(
-            arg_name=None,
-            kw_call_index=None,
-            pk=self.pk,
-            user_input=None
-        ).jsonify()
 
     def save(
         self, force_insert=False, force_update=False, using=None,
