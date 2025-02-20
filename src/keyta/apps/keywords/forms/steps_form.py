@@ -1,6 +1,6 @@
 from keyta.forms import BaseForm
 
-from keyta.apps.keywords.models import Keyword, KeywordCall
+from ..models import Keyword, KeywordCall
 
 
 class StepsForm(BaseForm):

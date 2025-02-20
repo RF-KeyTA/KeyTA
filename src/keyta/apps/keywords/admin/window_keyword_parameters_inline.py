@@ -1,6 +1,5 @@
-from keyta.apps.keywords.admin import ParametersInline
-
 from ..models import WindowKeywordParameter
+from .keyword_parameters_inline import ParametersInline
 
 
 class WindowKeywordParameters(ParametersInline):
