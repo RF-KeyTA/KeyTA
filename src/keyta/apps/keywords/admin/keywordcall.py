@@ -21,7 +21,6 @@ class KeywordCallAdmin(BaseAdmin):
         'to_keyword_doc',
         'return_value'
     ]
-    inlines = [KeywordCallParametersInline]
 
     def change_view(self, request, object_id, form_url="", extra_context=None):
         kw_call = KeywordCall.objects.get(pk=object_id)
@@ -33,9 +32,9 @@ class KeywordCallAdmin(BaseAdmin):
         kw_call: KeywordCall = obj
 
         if kw_call.parameters.exists():
-            return self.inlines
+            return [KeywordCallParametersInline] + self.inlines
         else:
-            return []
+            return self.inlines
 
     @admin.display(description=_('Rückgabewert'))
     def return_value(self, obj):
