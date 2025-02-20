@@ -2,37 +2,32 @@ import json
 
 from django.db import migrations
 
-from keyta.select_value import SelectValue
+from keyta.apps.keywords.keywordcall_parameter_json_value import JSONValue
 
-from ..models.keywordcall_parameter_source import KeywordCallParameterSource
+from ..models.keywordcall_parameters import KeywordCallParameter
 
 
 def extend_json_schema(apps, schema_editor):
-    KeywordCallParameter = apps.get_model('keywords', 'KeywordCallParameter')
-
     for param in KeywordCallParameter.objects.all():
         current_value = json.loads(param.value)
         value = current_value['value']
         pk = current_value['pk']
 
         if pk:
-            param_source = KeywordCallParameterSource.objects.get(id=pk)
-            new_value = param_source.jsonify()
+            param.update_value()
         else:
-            new_value = SelectValue(
+            param.value = JSONValue(
                 arg_name=None,
                 kw_call_index=None,
                 pk=None,
                 user_input=value
             ).jsonify()
-
-        param.value = new_value
-        param.save()
+            param.save()
 
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('keywords', '0004_add_keywordreturnvalue_kw_call_index'),
+        ('keywords', '0005_executionkeywordcall_teststep_and_more'),
     ]
 
     operations = [
