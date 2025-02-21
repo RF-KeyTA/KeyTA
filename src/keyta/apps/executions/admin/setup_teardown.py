@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.translation import gettext as _
 
 from keyta.apps.keywords.admin import KeywordCallAdmin, KeywordCallParametersInline
 from keyta.apps.keywords.models import KeywordCall
@@ -23,3 +24,10 @@ class SetupTeardownAdmin(KeywordCallAdmin):
         kw_call.update_parameters(request.user)
 
         return super().change_view(request, object_id, form_url, extra_context)
+
+    def get_inlines(self, request, obj):
+        return [SetupTeardownParametersInline]
+
+    @admin.display(description=_('Aktion'))
+    def to_keyword_doc(self, kw_call: KeywordCall):
+        return super().to_keyword_doc(kw_call)
