@@ -30,7 +30,6 @@ class ExecutionKeywordCallParametersInline(KeywordCallParametersInline):
 @admin.register(ExecutionKeywordCall)
 class ExecutionKeywordCallAdmin(KeywordCallAdmin):
     readonly_fields = []
-    inlines = [ExecutionKeywordCallParametersInline]
 
     def change_view(self, request: HttpRequest, object_id, form_url="", extra_context=None):
         kw_call = ExecutionKeywordCall.objects.get(id=object_id)
@@ -40,3 +39,6 @@ class ExecutionKeywordCallAdmin(KeywordCallAdmin):
 
     def get_fields(self, request, obj=None):
         return []
+
+    def get_inlines(self, request, obj):
+        return [ExecutionKeywordCallParametersInline]
