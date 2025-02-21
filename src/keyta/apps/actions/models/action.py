@@ -38,13 +38,14 @@ class Action(WindowKeyword):
         verbose_name_plural = _('Aktionen')
 
 
-class ActionDocumentation(Action):
+class ActionQuickAdd(Action):
     class Meta:
         proxy = True
-        verbose_name = _('Aktion Dokumentation')
+        verbose_name = _('Aktion')
+        verbose_name_plural = _('Aktionen')
 
 
-class ActionWindow(AbstractBaseModel, Action.windows.through):
+class ActionWindowRelation(AbstractBaseModel, Action.windows.through):
     def __str__(self):
         return str(self.window)
 
@@ -53,13 +54,3 @@ class ActionWindow(AbstractBaseModel, Action.windows.through):
         proxy = True
         verbose_name = _('Beziehung zu Maske')
         verbose_name_plural = _('Beziehungen zu Masken')
-
-
-class WindowAction(Action):
-    def __str__(self):
-        return str(self.name)
-
-    class Meta:
-        proxy = True
-        verbose_name = _('Aktion')
-        verbose_name_plural = _('Aktionen')

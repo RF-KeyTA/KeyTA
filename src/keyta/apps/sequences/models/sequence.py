@@ -41,16 +41,7 @@ class Sequence(WindowKeyword):
         verbose_name_plural = _('Sequenzen')
 
 
-class SequenceDocumentation(Sequence):
-    class Meta:
-        proxy = True
-        verbose_name = _('Sequenz Dokumentation')
-
-
-class WindowSequence(Sequence):
-    def __str__(self):
-        return str(self.name)
-
+class SequenceQuickAdd(Sequence):
     class Meta:
         proxy = True
         verbose_name = _('Sequenz')

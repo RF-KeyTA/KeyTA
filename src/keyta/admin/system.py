@@ -6,33 +6,29 @@ from django.http import HttpRequest
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext as _
 
-from keyta.admin.base_admin import BaseAdmin
-from keyta.admin.base_inline import AddInline
 from keyta.models.system import AbstractSystem
 from keyta.widgets import ModelSelect2AdminWidget, link, BaseSelect
 
-from apps.windows.models import Window, SystemWindow
+from apps.windows.models import WindowQuickAdd, WindowSystemRelation
+
+from .base_admin import BaseAdmin
+from .base_inline import BaseTabularInline
+from .window import QuickAddMixin
 
 
-class Windows(AddInline):
-    model = Window.systems.through
-    extra = 0
-    can_delete = False
-    show_change_link = True
-    verbose_name = _('Maske')
-    verbose_name_plural = _('Masken')
-
+class Windows(QuickAddMixin, BaseTabularInline):
+    model = WindowSystemRelation
     form = forms.modelform_factory(
-        Window.systems.through,
-        forms.ModelForm,
-        ['window'],
+        WindowSystemRelation,
+        fields=['window'],
         labels={
             'window': _('Maske')
         }
     )
-
-    related_field_name = 'window'
-    related_field_model = SystemWindow
+    quick_add_field = 'window'
+    quick_add_model = WindowQuickAdd
+    verbose_name = _('Maske')
+    verbose_name_plural = _('Masken')
 
     def get_queryset(self, request):
         return super().get_queryset(request).order_by('window__name')
@@ -40,7 +36,7 @@ class Windows(AddInline):
     def has_change_permission(self, request, obj=None):
         return False
 
-    def related_field_widget_url_params(self, request):
+    def quick_add_url_params(self, request):
         system_id = request.resolver_match.kwargs['object_id']
 
         return {
@@ -51,8 +47,9 @@ class Windows(AddInline):
 class BaseSystemAdmin(BaseAdmin):
     list_display = ['name', 'description']
     ordering = ['name']
-    inlines = [Windows]
+
     fields = ['name', 'description', 'library']
+    inlines = [Windows]
 
     def autocomplete_name(self, name: str):
         return json.dumps([
@@ -68,19 +65,20 @@ class BaseSystemAdmin(BaseAdmin):
         if db_field.name == 'library':
             field.widget = BaseSelect(_('Bibliothek auswählen'))
 
-        if system_id := request.resolver_match.kwargs.get('object_id', None):
-            if db_field.name == 'attach_to_system':
-                field.widget = ModelSelect2AdminWidget(
-                    search_fields=['name__icontains'],
-                    attrs={
-                        'data-placeholder': _('Aktion auswählen'),
-                        'style': 'width: 95%'
-                    })
-                field.queryset = (
-                    field.queryset.actions()
-                    .filter(systems__in=[system_id])
-                    .filter(setup_teardown=True)
-                )
+        if db_field.name == 'attach_to_system':
+            field.widget = ModelSelect2AdminWidget(
+                search_fields=['name__icontains'],
+                attrs={
+                    'data-placeholder': _('Aktion auswählen'),
+                    'style': 'width: 95%'
+                })
+            
+            system_id = request.resolver_match.kwargs['object_id']
+            field.queryset = (
+                field.queryset.actions()
+                .filter(systems__in=[system_id])
+                .filter(setup_teardown=True)
+            )
 
         return field
 
@@ -99,14 +97,6 @@ class BaseSystemAdmin(BaseAdmin):
             return self.inlines
 
         return []
-
-    def get_readonly_fields(self, request: HttpRequest, obj=None):
-        readonly_fields = []
-
-        if request.user.is_superuser:
-            return readonly_fields
-        else:
-            return readonly_fields + self.get_fields(request, obj)
 
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)

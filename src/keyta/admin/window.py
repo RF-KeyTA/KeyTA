@@ -1,48 +1,39 @@
 from django import forms
 from django.contrib import admin
-from django.db.models import QuerySet
 from django.http import HttpRequest, HttpResponseRedirect
+from django.urls import reverse
 from django.utils.translation import gettext as _
 
-from keyta.admin.base_admin import BaseAdminWithDoc
-from keyta.admin.base_inline import AddInline
-from keyta.apps.actions.models import Action, WindowAction
-from keyta.apps.keywords.models import KeywordType
-from keyta.apps.sequences.models import Sequence, WindowSequence
+from keyta.admin.base_admin import BaseAdmin
+from keyta.admin.base_inline import BaseTabularInline
+from keyta.apps.actions.models.action import ActionQuickAdd
+from keyta.apps.keywords.models import KeywordWindowRelation
+from keyta.apps.sequences.models.sequence import SequenceQuickAdd
 from keyta.forms.baseform import form_with_select
+from keyta.widgets import CustomRelatedFieldWidgetWrapper
 
-from apps.variables.models import Variable, WindowVariable
-from apps.windows.models import Window
+from apps.variables.models import VariableQuickAdd, VariableWindowRelation
+from apps.windows.models import Window, WindowDocumentation
 
 
-class Actions(AddInline):
-    model = Action.windows.through
-    extra = 0
-    verbose_name = _('Aktion')
-    verbose_name_plural = _('Aktionen')
+class QuickAddMixin:
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        field = super().formfield_for_dbfield(db_field, request, **kwargs)
 
-    form = forms.modelform_factory(
-        Action.windows.through,
-        forms.ModelForm,
-        ['keyword'],
-        labels={
-            'keyword': _('Aktion')
-        }
-    )
+        if db_field.name == self.quick_add_field:
+            app = self.quick_add_model._meta.app_label
+            model = self.quick_add_model._meta.model_name
+            quick_add_url = reverse('admin:%s_%s_add' % (app, model))   
 
-    related_field_name = 'keyword'
-    related_field_model = WindowAction
+            field.widget = self.wrap_related_field_widget(
+                field.widget,
+                quick_add_url,
+                self.quick_add_url_params(request)
+            )
 
-    def get_queryset(self, request):
-        queryset: QuerySet = super().get_queryset(request)
-        return (
-            queryset
-            .prefetch_related('keyword')
-            .filter(keyword__type=KeywordType.ACTION)
-            .order_by('keyword__name')
-        )
+        return field
 
-    def related_field_widget_url_params(self, request):
+    def quick_add_url_params(self, request: HttpRequest):
         window_id = request.resolver_match.kwargs['object_id']
         window = Window.objects.get(pk=window_id)
         system_id = window.systems.first().pk
@@ -52,115 +43,93 @@ class Actions(AddInline):
             'systems': system_id
         }
 
-    def get_readonly_fields(self, request, obj=None):
-        readonly_fields = super().get_readonly_fields(request, obj)
-        return readonly_fields + ('system',)
+    def wrap_related_field_widget(self, widget, quick_add_url, quick_add_url_params):
+        wrapped_widget = CustomRelatedFieldWidgetWrapper(
+            widget,
+            quick_add_url,
+            quick_add_url_params
+        )
+        wrapped_widget.attrs.update({
+            'data-placeholder': _('Klicke auf das Plus-Symbol'),
+            'disabled': True
+        })
 
-    @admin.display(description=_('System'))
-    def system(self, obj):
-        return ', '.join(obj.keyword.systems.values_list('name', flat=True))
+        return wrapped_widget
+
+
+class WindowKeywordInline(BaseTabularInline):
+    model = KeywordWindowRelation
+    readonly_fields = ['systems']
+    
+    def get_queryset(self, request):
+        return (
+            super().get_queryset(request)
+            .prefetch_related('keyword')
+            .order_by('keyword__name')
+        )
 
     def has_change_permission(self, request, obj=None) -> bool:
         return False
 
+    @admin.display(description=_('Systeme'))
+    def systems(self, obj: KeywordWindowRelation):
+        return ', '.join(obj.keyword.systems.values_list('name', flat=True))
 
-class Sequences(AddInline):
-    model = Sequence.windows.through
-    extra = 0
-    verbose_name = _('Sequenz')
-    verbose_name_plural = _('Sequenzen')
 
+class Actions(QuickAddMixin, WindowKeywordInline):
     form = forms.modelform_factory(
-        Sequence.windows.through,
-        forms.ModelForm,
-        ['keyword'],
+        KeywordWindowRelation,
+        fields=['keyword'],
+        labels={
+            'keyword': _('Aktion')
+        }
+    )
+    quick_add_field = 'keyword'
+    quick_add_model = ActionQuickAdd
+    verbose_name = _('Aktion')
+    verbose_name_plural = _('Aktionen')
+
+
+class Sequences(QuickAddMixin, WindowKeywordInline):
+    form = forms.modelform_factory(
+        KeywordWindowRelation,
+        fields=['keyword'],
         labels={
             'keyword': _('Sequenz')
         }
     )
-
-    related_field_name = 'keyword'
-    related_field_model = WindowSequence
-
-    def get_queryset(self, request):
-        queryset: QuerySet = super().get_queryset(request)
-        return (
-            queryset
-            .prefetch_related('keyword')
-            .filter(keyword__type=KeywordType.SEQUENCE)
-            .order_by('keyword__name')
-        )
-
-    def related_field_widget_url_params(self, request):
-        window_id = request.resolver_match.kwargs['object_id']
-        window = Window.objects.get(pk=window_id)
-        system_id = window.systems.first().pk
-
-        return {
-            'windows': window_id,
-            'systems': system_id
-        }
-
-    def get_readonly_fields(self, request, obj=None):
-        readonly_fields = super().get_readonly_fields(request, obj)
-        return readonly_fields + ('system',)
-
-    @admin.display(description=_('System'))
-    def system(self, obj):
-        return ', '.join(obj.keyword.systems.values_list('name', flat=True))
-
-    def has_change_permission(self, request: HttpRequest, obj=None) -> bool:
-        return False
+    quick_add_field = 'keyword'
+    quick_add_model = SequenceQuickAdd
+    verbose_name = _('Sequenz')
+    verbose_name_plural = _('Sequenzen')
 
 
-class Variables(AddInline):
-    model = Variable.windows.through
-    extra = 0
-    verbose_name = _('Referenzwert')
-    verbose_name_plural = _('Referenzwerte')
-
+class Variables(QuickAddMixin, BaseTabularInline):
+    model = VariableWindowRelation
     form = forms.modelform_factory(
-        Variable.windows.through,
-        forms.ModelForm,
-        ['variable'],
+        VariableWindowRelation,
+        fields=['variable'],
         labels={
             'variable': _('Referenzwert')
         }
     )
-
-    related_field_name = 'variable'
-    related_field_model = WindowVariable
+    quick_add_field = 'variable'
+    quick_add_model = VariableQuickAdd
+    verbose_name = _('Referenzwert')
+    verbose_name_plural = _('Referenzwerte')
 
     def get_queryset(self, request):
-        queryset: QuerySet = super().get_queryset(request)
-        return (
-            queryset
-            .order_by('variable__name')
-        )
+        return super().get_queryset(request).order_by('variable__name')
 
-    def has_change_permission(self, request: HttpRequest, obj=None) -> bool:
+    def has_change_permission(self, request, obj=None) -> bool:
         return False
 
     @admin.display(description=_('System'))
     def system(self, obj):
         return ', '.join(obj.variable.systems.values_list('name', flat=True))
 
-    def related_field_widget_url_params(self, request):
-        window_id = request.resolver_match.kwargs['object_id']
-        window = Window.objects.get(pk=window_id)
-        system_id = window.systems.first().pk
 
-        return {
-            'windows': window_id,
-            'systems': system_id
-        }
-
-    def get_readonly_fields(self, request, obj=None):
-        readonly_fields = super().get_readonly_fields(request, obj)
-        return readonly_fields + ('system',)
-
-
-class BaseWindowAdmin(BaseAdminWithDoc):
+class BaseWindowAdmin(BaseAdmin):
     list_display = ['system_list', 'name', 'description']
     list_display_links = ['name']
     list_filter = ['systems']
@@ -169,10 +138,10 @@ class BaseWindowAdmin(BaseAdminWithDoc):
     search_help_text = _('Name')
 
     @admin.display(description=_('Systeme'))
-    def system_list(self, obj: Window):
-        return list(obj.systems.values_list('name', flat=True))
+    def system_list(self, window: Window):
+        return list(window.systems.values_list('name', flat=True))
 
-    fields = ['systems', 'name', 'description']
+    fields = ['systems', 'name', 'description', 'documentation']
     form = form_with_select(
         Window,
         'systems',
@@ -185,28 +154,15 @@ class BaseWindowAdmin(BaseAdminWithDoc):
         Variables
     ]
 
-    def change_view(self, request: HttpRequest, object_id, form_url="",
-                    extra_context=None):
+    def change_view(self, request: HttpRequest, object_id, form_url="", extra_context=None):
         if '_to_field' in request.GET:
-            window = Window.objects.get(id=object_id)
-            return HttpResponseRedirect(window.get_docadmin_url())
+            window_doc = WindowDocumentation.objects.get(id=object_id)
+            return HttpResponseRedirect(window_doc.get_admin_url())
 
         return super().change_view(request, object_id, form_url, extra_context)
-
-    def get_fields(self, request, obj=None):
-        if request.user.is_superuser:
-            return self.fields + ['documentation']
-        else:
-            return self.fields + ['read_documentation']
 
     def get_inlines(self, request, obj):
         if not obj:
             return []
 
         return self.inlines
-
-    def get_readonly_fields(self, request: HttpRequest, obj=None):
-        if request.user.is_superuser:
-            return []
-        else:
-            return self.fields + ['read_documentation']

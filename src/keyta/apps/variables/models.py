@@ -8,6 +8,13 @@ class Variable(AbstractVariable):
     pass
 
 
+class VariableQuickAdd(Variable):
+    class Meta:
+        proxy = True
+        verbose_name = _('Referenzwert')
+        verbose_name_plural = _('Referenzwerte')
+
+
 class VariableValue(AbstractVariableValue):
     pass
 

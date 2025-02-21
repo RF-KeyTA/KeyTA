@@ -3,7 +3,7 @@ from django.contrib import admin
 from keyta.admin.base_admin import BaseAdmin, BaseAddAdmin
 from keyta.admin.variable import BaseVariableAdmin, Values
 
-from apps.variables.models import Variable, VariableValue, VariableWindow, WindowVariable
+from apps.variables.models import Variable, VariableValue, VariableWindowRelation, VariableQuickAdd
 
 
 @admin.register(Variable)
@@ -21,6 +21,6 @@ class VariableWindowAdmin(BaseAdmin):
     pass
 
 
-@admin.register(WindowVariable)
+@admin.register(VariableQuickAdd)
 class WindowVariableAdmin(BaseAddAdmin):
     inlines = [Values]
