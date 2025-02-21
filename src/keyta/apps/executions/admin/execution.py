@@ -13,7 +13,6 @@ from ..models import Execution
 from .setup_teardown_inline import SetupInline, TeardownInline
 
 
-@admin.register(Execution)
 class ExecutionAdmin(admin.ModelAdmin):
     inlines = [
         SetupInline,
@@ -47,7 +46,7 @@ class ExecutionAdmin(admin.ModelAdmin):
         inlines = [LibraryImportInline]
 
         if Resource.objects.count():
-            inlines = [LibraryImportInline, ResourceImportsInline]
+            inlines += [ResourceImportsInline]
 
         return inlines + self.inlines
 
