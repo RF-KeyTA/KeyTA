@@ -6,13 +6,14 @@ from django.utils.translation import gettext as _
 from adminsortable2.admin import SortableAdminBase
 from model_clone import CloneModelAdminMixin
 
-from keyta.admin.base_admin import BaseAdmin
 from keyta.apps.keywords.admin import TestStepsInline
 from keyta.apps.executions.admin import ExecutionInline
 from keyta.apps.executions.models import TestCaseExecution
 from keyta.models.testcase import AbstractTestCase
-from keyta.widgets import BaseSelectMultiple
 from keyta.rf_export.rfgenerator import gen_testsuite
+from keyta.widgets import BaseSelectMultiple
+
+from .base_admin import BaseAdmin
 
 
 class LocalExecution(ExecutionInline):

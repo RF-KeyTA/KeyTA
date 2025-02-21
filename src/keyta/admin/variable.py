@@ -2,13 +2,14 @@ from django.contrib import admin
 from django.db.models.functions import Lower
 from django.utils.translation import gettext as _
 
-from keyta.admin.base_admin import BaseAdmin
-from keyta.admin.base_inline import TabularInlineWithDelete
 from keyta.forms import form_with_select
 from keyta.models.variable import AbstractVariable
 
 from apps.variables.models import VariableValue, VariableWindowRelation, Variable
 from apps.windows.models import Window
+
+from .base_admin import BaseAdmin
+from .base_inline import TabularInlineWithDelete
 
 
 class Values(TabularInlineWithDelete):

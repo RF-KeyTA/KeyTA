@@ -20,6 +20,7 @@ class ResourceKeywordAdmin(BaseDocumentationAdmin):
     def has_add_permission(self, request):
         return False
 
+
 @admin.register(ResourceKeywordDocumentation)
 class ResourceKeywordDocumentationAdmin(BaseDocumentationAdmin):
     pass
