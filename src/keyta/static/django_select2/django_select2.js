@@ -34,7 +34,7 @@
             dependentFields = dependentFields.trim().split(/\s+/)
             $.each(dependentFields, function (i, dependentField) {
               const nameIs = `[name=${dependentField}]`
-              const nameEndsWith = `[name$=${dependentField}]`
+              const nameEndsWith = `[name$=-${dependentField}]`
               result[dependentField] = (findElement(nameIs) || findElement(nameEndsWith)).val()
             })
           }
