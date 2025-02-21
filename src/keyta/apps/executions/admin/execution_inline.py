@@ -5,17 +5,17 @@ from django.urls import get_script_prefix
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext as _
 
+from keyta.admin.base_inline import BaseTabularInline
 from keyta.widgets import open_link_in_modal, link, Icon
 
 from ..models import Execution
 
 
-class ExecutionInline(admin.TabularInline):
+class ExecutionInline(BaseTabularInline):
     model = Execution
     extra = 0
     max_num = 1
     can_delete = False
-    template = 'admin/execution/tabular.html'
 
     def get_fields(self, request, obj=None):
         return ['settings', 'start', 'result_icon', 'log_icon']
