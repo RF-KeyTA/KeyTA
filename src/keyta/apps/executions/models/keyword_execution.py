@@ -140,11 +140,8 @@ class KeywordExecution(Execution):
     def validate_test_setup(self, user: AbstractUser) -> Optional[dict]:
         test_setup = self.test_setup(user)
 
-        if not test_setup:
-            self.add_attach_to_system(user)
-        else:
-            if test_setup.has_empty_arg(user):
-                return ValidationError.INCOMPLETE_ATTACH_TO_SYSTEM_PARAMS
+        if test_setup.has_empty_arg(user):
+            return ValidationError.INCOMPLETE_ATTACH_TO_SYSTEM_PARAMS
 
         return None
 
