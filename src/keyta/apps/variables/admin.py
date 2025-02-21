@@ -16,7 +16,7 @@ class VariableValueAdmin(BaseAdmin):
     pass
 
 
-@admin.register(VariableWindow)
+@admin.register(VariableWindowRelation)
 class VariableWindowAdmin(BaseAdmin):
     pass
 

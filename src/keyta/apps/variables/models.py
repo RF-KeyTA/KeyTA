@@ -12,7 +12,7 @@ class VariableValue(AbstractVariableValue):
     pass
 
 
-class VariableWindow(AbstractBaseModel, Variable.windows.through):
+class VariableWindowRelation(AbstractBaseModel, Variable.windows.through):
     def __str__(self):
         return str(self.window)
 
@@ -21,13 +21,3 @@ class VariableWindow(AbstractBaseModel, Variable.windows.through):
         proxy = True
         verbose_name = _('Beziehung zu Maske')
         verbose_name_plural = _('Beziehungen zu Masken')
-
-
-class WindowVariable(Variable):
-    def __str__(self):
-        return str(self.name)
-
-    class Meta:
-        proxy = True
-        verbose_name = _('Referenzwert')
-        verbose_name_plural = _('Referenzwerte')
