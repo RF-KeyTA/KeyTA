@@ -1,0 +1,18 @@
+{% extends "admin/change_form.html" %}
+
+{% block extrajs %}
+    {{ block.super }}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.button-save').show()
+
+            /* Modal */
+            django.jQuery('body.popup select').off('change')
+            
+            $(document).off('click', 'button.close')
+
+            $('body.popup input[type="checkbox"]').off('change')
+            /* END */
+        })
+    </script>
+{% endblock %}
