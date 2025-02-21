@@ -44,8 +44,5 @@ class WindowKeyword(CloneMixin, Keyword):
 
         return clone
 
-    def robot_documentation(self):
-        return settings.BASE_URI + self.get_admin_url()
-
     class Meta:
         proxy = True
