@@ -1,12 +1,12 @@
-from django.contrib import admin
 from django.db.models import QuerySet
 from django.utils.translation import gettext as _
 
+from keyta.admin.base_inline import BaseTabularInline
 from keyta.apps.libraries.models import LibraryImportParameter
 from keyta.forms import OptionalArgumentFormSet
 
 
-class LibraryImportParametersInline(admin.TabularInline):
+class LibraryImportParametersInline(BaseTabularInline):
     model = LibraryImportParameter
     fields = ['name', 'value']
     formset = OptionalArgumentFormSet
