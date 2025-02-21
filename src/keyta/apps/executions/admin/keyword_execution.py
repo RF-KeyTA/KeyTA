@@ -22,5 +22,8 @@ class KeywordExecutionAdmin(ExecutionAdmin):
 
     def change_view(self, request: HttpRequest, object_id, form_url="", extra_context=None):
         execution = KeywordExecution.objects.get(id=object_id)
-        execution.add_attach_to_system(request.user)
+
+        if not execution.test_setup(request.user):
+            execution.add_attach_to_system(request.user)
+
         return super().change_view(request, object_id, form_url=form_url, extra_context=extra_context)
