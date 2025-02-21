@@ -164,6 +164,10 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
             if arg.is_empty():
                 return True
 
+    def make_clone(self, attrs=None, sub_clone=False, using=None, parent=None):
+        attrs = (attrs or {}) | {'clone': True}
+        return super().make_clone(attrs, sub_clone, using, parent)
+
     def save(
         self, force_insert=False, force_update=False,
         using=None, update_fields=None
@@ -173,8 +177,10 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
 
         if not self.pk:
             super().save(force_insert, force_update, using, update_fields)
-            self.update_parameters()
-            self.add_return_value()
+           
+            if not hasattr(self, 'clone'):
+                self.update_parameters()
+                self.add_return_value()
         else:
             super().save(force_insert, force_update, using, update_fields)
 
