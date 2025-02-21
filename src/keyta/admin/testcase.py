@@ -84,8 +84,8 @@ class BaseTestCaseAdmin(CloneModelAdminMixin, SortableAdminBase, BaseAdmin):
 
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
+        testcase: AbstractTestCase = obj
 
         if not change:
             form.save_m2m()
-            testcase: AbstractTestCase = obj
             testcase.create_execution()
