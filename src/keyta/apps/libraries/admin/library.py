@@ -3,68 +3,22 @@ from importlib import import_module
 
 from django.conf import settings
 from django.contrib import admin, messages
-from django.db.models import QuerySet
 from django.http import HttpRequest
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext as _
 
 from keyta.admin.base_admin import BaseAdmin
-from keyta.forms import OptionalArgumentFormSet
 from keyta.rf_import.import_library import import_library
 from keyta.widgets import link, Icon
 
 from ..forms import LibraryForm
 from ..models import (
     Library,
-    LibraryParameter,
-    LibraryKeyword,
     LibraryInitDocumentation
 )
-
-
-class Keywords(admin.TabularInline):
-    model = LibraryKeyword
-    fields = ['name', 'short_doc']
-    readonly_fields = ['name', 'short_doc']
-    extra = 0
-    can_delete = False
-    show_change_link = True
-    verbose_name_plural = _('Schlüsselwörter')
-
-    def has_add_permission(self, request, obj=None):
-        return False
-
-    def has_change_permission(self, request, obj=None):
-        return False
-
-
-class LibraryParameterFormSet(OptionalArgumentFormSet):
-    value_field = 'default_value'
-
-
-class InitArguments(admin.TabularInline):
-    model = LibraryParameter
-    fields = ['name', 'default_value', 'reset']
-    readonly_fields = ['name', 'reset']
-    formset = LibraryParameterFormSet
-    extra = 0
-    max_num = 0
-    can_delete = False
-
-    def get_queryset(self, request):
-        queryset: QuerySet = super().get_queryset(request)
-        return queryset.prefetch_related('library')
-
-    def has_add_permission(self, request, obj=None):
-        return False
-
-    @admin.display(description=_('zurücksetzen'))
-    def reset(self, obj: LibraryParameter):
-        ref = '&ref=' + obj.library.get_admin_url() + obj.get_tab_url()
-        url = obj.get_admin_url() + '?reset' + ref
-        icon =  str(Icon(settings.FA_ICONS.library_setting_reset, {'font-size': '18px'}))
-        return link(url, icon)
+from .init_parameters_inline import InitArguments
+from .keywords_inline import Keywords
 
 
 @admin.register(Library)
@@ -98,8 +52,8 @@ class LibraryAdmin(BaseAdmin):
         return super().get_changelist(request, **kwargs)
 
     @admin.display(description=_('Dokumentation'))
-    def dokumentation(self, obj):
-        return mark_safe(obj.documentation)
+    def dokumentation(self, library: Library):
+        return mark_safe(library.documentation)
 
     def get_inlines(self, request, obj):
         library: Library = obj
@@ -167,6 +121,5 @@ class LibraryInitDocumentationAdmin(BaseAdmin):
     fields = ['dokumentation']
     readonly_fields = ['dokumentation']
 
-    # noinspection PyMethodMayBeStatic
-    def dokumentation(self, obj: Library):
-        return mark_safe(obj.init_doc)
+    def dokumentation(self, library: Library):
+        return mark_safe(library.init_doc)
