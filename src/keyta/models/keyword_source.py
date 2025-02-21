@@ -3,7 +3,7 @@ import urllib.parse
 import xml.dom.minidom
 from abc import abstractmethod
 
-from keyta.apps.keywords.models import Keyword, KeywordParameter
+from keyta.apps.keywords.models import Keyword, KeywordParameter, KeywordDocumentation
 from keyta.rf_import.import_keywords import args_table, get_default_value
 from keyta.widgets import open_link_in_modal
 
@@ -109,11 +109,11 @@ class KeywordSource(AbstractBaseModel):
                 return link.toxml()
 
             if href.startswith('#'):
-                if keyword := (
-                    Keyword.objects.filter(library__name=self.name, name__iexact=text).first() or
-                    Keyword.objects.filter(resource__name=self.name, name__iexact=text).first()
+                if keyword_doc := (
+                    KeywordDocumentation.objects.filter(library__name=self.name, name__iexact=text).first() or
+                    KeywordDocumentation.objects.filter(resource__name=self.name, name__iexact=text).first()
                 ):
-                    return open_link_in_modal(keyword.get_docadmin_url(), keyword.name)
+                    return open_link_in_modal(keyword_doc.get_admin_url(), keyword_doc.name)
 
                 if heading_links and urllib.parse.unquote(href.lstrip('#')) in heading_ids:
                     link.attributes['href'] = self.get_admin_url() + href
