@@ -7,24 +7,25 @@ from django.http import HttpRequest, HttpResponseRedirect
 from adminsortable2.admin import SortableAdminBase
 
 from keyta.admin.base_admin import (
-    BaseDocumentationAdmin,
-    BaseAdminWithDoc
+    BaseAdmin,
+    BaseDocumentationAdmin
 )
-from keyta.apps.actions.models.action import Action
-from keyta.apps.sequences.models.sequence import Sequence
+from keyta.apps.actions.models import Action
+from keyta.apps.sequences.models import Sequence
 
-from ..models import KeywordDocumentation, Keyword, KeywordType
+from ..models import KeywordDocumentation, Keyword
+from ..models.keyword import KeywordType
 
 
 @admin.register(Keyword)
-class KeywordAdmin(SortableAdminBase, BaseAdminWithDoc):
+class KeywordAdmin(SortableAdminBase, BaseAdmin):
     list_display = ['name', 'short_doc']
     list_display_links = ['name']
     ordering = [Lower('name')]
     search_fields = ['name']
     search_help_text = _('Name')
 
-    fields = ['name', 'short_doc']
+    fields = ['name', 'short_doc', 'documentation']
 
     def change_view(self, request, object_id, form_url="", extra_context=None):
         keyword = Keyword.objects.get(pk=object_id)
@@ -38,18 +39,6 @@ class KeywordAdmin(SortableAdminBase, BaseAdminWithDoc):
             return HttpResponseRedirect(sequence.get_admin_url())
         
         return super().change_view(request, object_id, form_url, extra_context)
-
-    def get_fields(self, request: HttpRequest, obj=None):
-        if request.user.is_superuser:
-            return self.fields + ['documentation']
-        else:
-            return self.fields + ['read_documentation']
-
-    def get_readonly_fields(self, request: HttpRequest, obj=None):
-        if request.user.is_superuser:
-            return []
-        else:
-            return self.fields + ['read_documentation']
 
 
 @admin.register(KeywordDocumentation)
