@@ -144,6 +144,7 @@ class Keyword(DocumentationMixin, AbstractBaseModel):
     objects = QuerySet.as_manager()
 
     class Meta:
+        ordering = ['name']
         constraints = [
             models.UniqueConstraint(
                 fields=["library", "name"],

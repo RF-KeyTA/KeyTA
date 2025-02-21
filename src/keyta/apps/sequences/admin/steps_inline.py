@@ -14,7 +14,6 @@ from ..models import ActionCall, Sequence
 
 class SequenceSteps(StepsInline):
     model = ActionCall
-
     form = form_with_select(
         ActionCall,
         'to_keyword',
@@ -37,7 +36,6 @@ class SequenceSteps(StepsInline):
                 (action.pk, action.name)
                 for action in Action.objects
                 .filter(windows=window)
-                .order_by('name')
             ]
         ]]
 
@@ -49,7 +47,6 @@ class SequenceSteps(StepsInline):
                 .filter(windows__isnull=True)
                 .filter(setup_teardown=False)
                 .distinct()
-                .order_by('name')
             ]
         ]]
 
