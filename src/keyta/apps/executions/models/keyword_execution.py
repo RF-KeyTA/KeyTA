@@ -104,15 +104,6 @@ class KeywordExecution(Execution):
         self.type = ExecutionType.KEYWORD
         super().save(force_insert, force_update, using, update_fields)
 
-    def test_setup(self, user: AbstractUser) -> Optional[KeywordCall]:
-        test_setup = super().test_setup(user)
-
-        if not test_setup:
-            self.add_attach_to_system(user)
-            return super().test_setup(user)
-
-        return test_setup
-
     def validate(self, user: AbstractUser) -> Optional[dict]:
         return (self.validate_keyword_call(user) or
                 self.validate_test_setup(user) or
@@ -139,6 +130,9 @@ class KeywordExecution(Execution):
 
     def validate_test_setup(self, user: AbstractUser) -> Optional[dict]:
         test_setup = self.test_setup(user)
+
+        if not test_setup:
+            self.add_attach_to_system(user)
 
         if test_setup.has_empty_arg(user):
             return ValidationError.INCOMPLETE_ATTACH_TO_SYSTEM_PARAMS
