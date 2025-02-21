@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.utils.translation import gettext as _
 
 from keyta.admin.base_admin import BaseAdmin
+from keyta.apps.keywords.models import KeywordDocumentation
 from keyta.widgets import open_link_in_modal
 
 from ..models import (
@@ -47,7 +48,9 @@ class KeywordCallAdmin(BaseAdmin):
         return _('Kein Rückgabewert')
 
     def to_keyword_doc(self, kw_call: KeywordCall):
+        keyword_doc = KeywordDocumentation(kw_call.to_keyword.pk)
+
         return open_link_in_modal(
-            kw_call.to_keyword.get_docadmin_url(),
+            keyword_doc.get_admin_url(),
             kw_call.to_keyword.name
         )
