@@ -18,12 +18,6 @@ class AbstractBaseModel(models.Model, metaclass=AbstractModelMeta):
         app_model = (self._meta.app_label, self._meta.model_name)
         return reverse('admin:%s_%s_delete' % app_model, args=(self.pk,))
 
-    def get_docadmin_url(self):
-        return self.get_admin_url(self._meta.model_name + 'documentation')
-
-    def get_model_url(self):
-        return '/' + self._meta.app_label + '/' + self._meta.model_name
-
     def get_tab_url(self, tab_name=None):
         return '#' + slugify(tab_name or self._meta.verbose_name_plural) + '-tab'
 
