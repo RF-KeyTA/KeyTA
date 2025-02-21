@@ -1,10 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext as _
 
-from keyta.apps.keywords.models import (
-    KeywordCallParameterSource,
-    KeywordCallParameterSourceType
-)
+from keyta.apps.keywords.models import KeywordCallParameterSource
 
 from .base_model import AbstractBaseModel
 
@@ -69,11 +66,7 @@ class AbstractVariableValue(AbstractBaseModel):
 
         if not self.pk:
             super().save(force_insert, force_update, using, update_fields)
-
-            KeywordCallParameterSource.objects.create(
-                variable_value=self,
-                type=KeywordCallParameterSourceType.VARIABLE_VALUE
-            )
+            KeywordCallParameterSource.objects.create(variable_value=self)
         else:
             super().save(force_insert, force_update, using, update_fields)
 
