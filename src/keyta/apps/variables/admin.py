@@ -22,5 +22,5 @@ class VariableWindowAdmin(BaseAdmin):
 
 
 @admin.register(VariableQuickAdd)
-class WindowVariableAdmin(BaseAddAdmin):
+class VariableQuickAddAdmin(BaseAddAdmin):
     inlines = [Values]
