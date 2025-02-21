@@ -1,2 +1,2 @@
 from .action_call import ActionCallAdmin
-from .sequence import SequenceAdmin, WindowSequenceAdmin
+from .sequence import SequenceAdmin, SequenceQuickAddAdmin

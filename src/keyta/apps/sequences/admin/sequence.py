@@ -76,5 +76,5 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
 
 
 @admin.register(SequenceQuickAdd)
-class WindowSequenceAdmin(WindowKeywordAdminMixin, BaseAddAdmin):
+class SequenceQuickAddAdmin(WindowKeywordAdminMixin, BaseAddAdmin):
     pass
