@@ -22,6 +22,7 @@ def form_with_select(
         select_field: str,
         placeholder: str,
         labels=None,
+        form_class=BaseForm,
         field_classes=None,
         select_many=False,
         can_view_related=False,
@@ -35,7 +36,7 @@ def form_with_select(
 
     form = forms.modelform_factory(
         model,
-        BaseForm,
+        form_class,
         [select_field],
         field_classes=field_classes,
         labels=labels,
