@@ -2,9 +2,8 @@ from django.contrib import admin
 from django.http import HttpRequest
 from django.utils.translation import gettext as _
 
-from keyta.apps.executions.admin.execution import ExecutionAdmin
-
 from ..models import KeywordExecution
+from .execution import ExecutionAdmin
 from .setup_teardown_inline import SetupInline
 
 
