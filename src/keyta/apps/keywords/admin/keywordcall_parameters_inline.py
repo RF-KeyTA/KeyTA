@@ -1,10 +1,12 @@
-from django.contrib import admin
+from django.utils.translation import gettext as _
+
+from keyta.admin.base_inline import BaseTabularInline
 
 from ..forms import KeywordCallParameterFormset
 from ..models import KeywordCallParameter
 
 
-class KeywordCallParametersInline(admin.TabularInline):
+class KeywordCallParametersInline(BaseTabularInline):
     model = KeywordCallParameter
     fields = ['name', 'value']
     readonly_fields = ['name']
@@ -15,6 +17,3 @@ class KeywordCallParametersInline(admin.TabularInline):
 
     def name(self, obj: KeywordCallParameter):
         return obj.name.replace('_', ' ').title()
-
-    def get_queryset(self, request):
-        return super().get_queryset(request).order_by('parameter__position')

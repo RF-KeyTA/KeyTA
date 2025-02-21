@@ -130,5 +130,6 @@ class KeywordCallParameter(CloneMixin, models.Model):
             return JSONValue.from_json(self.value).user_input
 
     class Meta:
+        ordering = ['parameter__type', 'parameter__position']
         verbose_name = _('Parameter')
         verbose_name_plural = _('Parameters')
