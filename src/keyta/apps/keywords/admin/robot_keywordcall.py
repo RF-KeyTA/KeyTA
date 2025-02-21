@@ -1,12 +1,9 @@
 from django.contrib import admin
 from django.utils.translation import gettext as _
 
-from keyta.apps.keywords.admin import (
-    KeywordCallAdmin,
-    KeywordCallReturnValueInline
-)
-
 from ..models import RobotKeywordCall
+from .keywordcall import KeywordCallAdmin
+from .keywordcall_return_value_inline import KeywordCallReturnValueInline
 
 
 @admin.register(RobotKeywordCall)
