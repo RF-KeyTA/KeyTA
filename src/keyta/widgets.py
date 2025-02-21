@@ -215,8 +215,6 @@ class Select2MultipleWidget(ModelSelect2MultipleAdminWidget):
 
 
 class GroupedChoiceIterator(ModelChoiceIterator):
-    group_by = 'library'
-
     def __iter__(self):
         if self.field.empty_label is not None:
             yield "", self.field.empty_label
@@ -238,21 +236,28 @@ class GroupedChoiceIterator(ModelChoiceIterator):
                 ]
             ]
 
+
 class GroupedByLibrary(GroupedChoiceIterator):
     group_by = 'library'
+
 
 class GroupedByResource(GroupedChoiceIterator):
     group_by = 'resource'
 
 
 class CustomRelatedFieldWidgetWrapper(RelatedFieldWidgetWrapper):
-    def __init__(self, related_url, url_params, *args, **kwargs) -> None:
+    def __init__(self, widget, related_url, url_params, **kwargs) -> None:
             self.related_url = related_url
-            self.url_params = '&'.join([
-                f'{name}={value}'
-                for name, value in url_params.items()
-            ])
-            super().__init__(*args, **kwargs)
+            if url_params:
+                self.url_params = '&'.join([
+                    f'{name}={value}'
+                    for name, value in url_params.items()
+                ])
+            super().__init__(
+                widget.widget,
+                widget.rel, 
+                widget.admin_site
+            )
 
     def get_context(self, name, value, attrs):
             context = super().get_context(name, value, attrs)
@@ -261,13 +266,3 @@ class CustomRelatedFieldWidgetWrapper(RelatedFieldWidgetWrapper):
     
     def get_related_url(self, info, action, *args):
         return self.related_url
-
-
-def related_field_widget_factory(related_url, url_params, base_widget):
-    return CustomRelatedFieldWidgetWrapper(
-        related_url,
-        url_params,
-        base_widget.widget,
-        base_widget.rel,
-        base_widget.admin_site
-    )
