@@ -6,10 +6,10 @@ from django.utils.translation import gettext as _
 
 from keyta.apps.keywords.models import (
     Keyword,
-    KeywordCallType,
     KeywordCall,
     TestSetupTeardown
 )
+from keyta.apps.keywords.models.keywordcall import KeywordCallType
 from keyta.apps.libraries.models import LibraryImport
 from keyta.apps.resources.models import Resource, ResourceImport
 from keyta.rf_export.testsuite import RFTestSuite
