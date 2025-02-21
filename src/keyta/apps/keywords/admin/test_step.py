@@ -24,8 +24,9 @@ class TestStepParametersInline(KeywordCallParametersInline):
 
 @admin.register(TestStep)
 class TestStepAdmin(KeywordCallAdmin):
-    inlines = [TestStepParametersInline]
-
     @admin.display(description=_('Sequenz'))
     def to_keyword_doc(self, test_step: TestStep):
         return super().to_keyword_doc(test_step)
+
+    def get_inlines(self, request, obj):
+        return [TestStepParametersInline]

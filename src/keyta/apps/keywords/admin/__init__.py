@@ -5,6 +5,7 @@ from .keywordcall_parameters_inline import KeywordCallParametersInline
 from .keywordcall_return_value_inline import KeywordCallReturnValueInline
 from .keyword_parameters_inline import ParametersInline
 from .return_value_inline import ReturnValueInline
+from .robot_keywordcall import RobotKeywordCallAdmin
 from .steps_inline import StepsInline
 from .test_step import TestStepAdmin
 from .test_steps_inline import TestStepsInline
