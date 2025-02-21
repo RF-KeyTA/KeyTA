@@ -1,6 +1,4 @@
 import re
-from abc import abstractmethod
-from xml.etree import ElementTree
 
 from django.db import models
 from django.utils.translation import gettext as _
@@ -10,10 +8,11 @@ from model_clone import CloneMixin
 from keyta.apps.executions.models import Execution
 from keyta.apps.libraries.models import Library, LibraryImport
 from keyta.models.base_model import AbstractBaseModel
+from keyta.models.documentation_mixin import DocumentationMixin
 from keyta.rf_export.testcases import RFTestCase
 
 
-class AbstractTestCase(CloneMixin, AbstractBaseModel):
+class AbstractTestCase(DocumentationMixin, CloneMixin, AbstractBaseModel):
     name = models.CharField(max_length=255, unique=True, verbose_name=_('Name'))
     documentation = models.TextField(blank=True, verbose_name=_('Dokumentation'))
 
@@ -69,14 +68,6 @@ class AbstractTestCase(CloneMixin, AbstractBaseModel):
         clone: AbstractTestCase = super().make_clone(attrs=attrs, sub_clone=sub_clone, using=using, parent=parent)
         clone.create_execution()
         return clone
-
-    def plaintext_documentation(self):
-        doc = self.documentation.replace('&nbsp;', ' ')
-        return''.join(ElementTree.XML('<doc>' + doc + '</doc>').itertext())
-
-    @abstractmethod
-    def robot_documentation(self):
-        pass
 
     def save(
         self, force_insert=False, force_update=False, using=None,
