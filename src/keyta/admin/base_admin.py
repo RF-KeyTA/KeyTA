@@ -92,12 +92,6 @@ class BaseAdmin(admin.ModelAdmin):
         return super().save_form(request, form, change)
 
 
-class BaseAdminWithDoc(BaseAdmin):
-    @admin.display(description=_('Dokumentation'))
-    def read_documentation(self, obj):
-        return mark_safe(obj.documentation)
-
-
 class BaseReadOnlyAdmin(admin.ModelAdmin):
     list_max_show_all = 50
     list_per_page = 50
