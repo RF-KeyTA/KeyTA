@@ -10,13 +10,13 @@ from .setup_teardown_inline import SetupInline, TeardownInline
 class TestSetupInline(SetupInline):
     verbose_name_plural = _('Testvorbereitung')
 
+
 class TestTeardownInline(TeardownInline):
     verbose_name_plural = _('Testnachbereitung')
 
 
 @admin.register(TestCaseExecution)
 class TestCaseExecutionAdmin(ExecutionAdmin):
-    change_form_template = 'admin/setup_teardown/change_form.html'
     inlines = [
         TestSetupInline,
         TestTeardownInline
