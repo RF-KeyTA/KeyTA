@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
         ('executions', '0001_initial'),
         ('keywords', '0001_initial'),
         ('testcases', '0001_initial'),
-        ('resources', '0001_initial'),
+        ('resources', '0002_alter_resource_options_alter_resourceimport_options_and_more'),
     ]
 
     operations = [

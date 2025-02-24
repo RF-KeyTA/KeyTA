@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
         ('keywords', '0001_initial'),
         ('windows', '0001_initial'),
         ('executions', '0002_initial'),
-        ('resources', '0001_initial'),
+        ('resources', '0002_alter_resource_options_alter_resourceimport_options_and_more'),
     ]
 
     operations = [
