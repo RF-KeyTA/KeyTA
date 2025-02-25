@@ -186,8 +186,8 @@
                     }
                 })
 
-                $('body.popup input[type="checkbox"]').on('change', function () {
-                    $('body.popup .button-save').click()
+                $('body.popup .form-row.has_original input[type="checkbox"]').on('change', function () {
+                    $.post(url, $('form').serialize() + "&_continue=")
                 })
                 /* END */
                 
