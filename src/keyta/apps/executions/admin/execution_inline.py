@@ -22,54 +22,54 @@ class ExecutionInline(BaseTabularInline):
         return self.get_readonly_fields(request, obj)
 
     def get_readonly_fields(self, request: HttpRequest, obj=None):
-        self.user = request.user
+        @admin.display(description=_('Ergebnis'))
+        def result_icon(self, execution: Execution):
+            user_exec = execution.user_execs.get(user=request.user)
+
+            if (result := user_exec.result) and not user_exec.running:
+                if result == 'FAIL':
+                    icon = Icon(
+                        settings.FA_ICONS.exec_fail,
+                        {'color': 'red'}
+                    )
+                    return mark_safe(str(icon))
+
+                if result == 'PASS':
+                    icon = Icon(
+                        settings.FA_ICONS.exec_pass,
+                        {'color': 'green'}
+                    )
+                    return mark_safe(str(icon))
+
+            return '-'
+
+        @admin.display(description=_('Protokoll'))
+        def log_icon(self, execution: Execution):
+            user_exec = execution.user_execs.get(user=request.user)
+
+            if user_exec.result and not user_exec.running:
+                return link(
+                    get_script_prefix() + user_exec.log,
+                    str(Icon(settings.FA_ICONS.exec_log)),
+                    True
+                )
+
+            return '-'
+
+        ExecutionInline.result_icon = result_icon
+        ExecutionInline.log_icon = log_icon
+
         return ['settings', 'start', 'result_icon', 'log_icon']
 
     @admin.display(description=_('Einstellungen'))
-    def settings(self, obj: Execution):
+    def settings(self, execution: Execution):
         return open_link_in_modal(
-            obj.get_admin_url() + '?settings',
+            execution.get_admin_url() + '?settings',
             str(Icon(settings.FA_ICONS.exec_settings))
         )
 
     @admin.display(description=_('Ausf.'))
-    def start(self, obj):
-        url = obj.get_admin_url() + '?start'
+    def start(self, execution: Execution):
+        url = execution.get_admin_url() + '?start'
         title = str(Icon(settings.FA_ICONS.exec_start))
         return mark_safe('<a href="%s" id="exec-btn">%s</a>' % (url, title))
-
-    @admin.display(description=_('Ergebnis'))
-    def result_icon(self, obj):
-        exec: Execution = obj
-        user_exec = exec.user_execs.get(user=self.user)
-
-        if (result := user_exec.result) and not user_exec.running:
-            if result == 'FAIL':
-                icon = Icon(
-                    settings.FA_ICONS.exec_fail,
-                    {'color': 'red'}
-                )
-                return mark_safe(str(icon))
-
-            if result == 'PASS':
-                icon = Icon(
-                    settings.FA_ICONS.exec_pass, 
-                    {'color': 'green'}
-                )
-                return mark_safe(str(icon))
-
-        return '-'
-
-    @admin.display(description=_('Protokoll'))
-    def log_icon(self, obj):
-        exec: Execution = obj
-        user_exec = exec.user_execs.get(user=self.user)
-
-        if user_exec.result and not user_exec.running:
-            return link(
-                get_script_prefix() + user_exec.log,
-                str(Icon(settings.FA_ICONS.exec_log)),
-                True
-            )
-
-        return '-'
