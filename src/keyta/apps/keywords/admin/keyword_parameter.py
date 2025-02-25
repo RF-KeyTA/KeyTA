@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from admin.base_admin import BaseAdmin
+from keyta.admin.base_admin import BaseAdmin
 
 from ..models import KeywordParameter
 
