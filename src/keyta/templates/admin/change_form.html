@@ -171,6 +171,23 @@
 
                 /* Modal */
                 django.jQuery('body.popup select').on('change', function() {
+                const extra_rows = django.jQuery('body.popup .form-row').not('.has_original').not('.empty-form')
+                
+                if (extra_rows.length === 2) {
+                    const selects = django.jQuery('select', extra_rows)
+                    const first_select = selects.first()
+                    const last_select = selects.last()
+    
+                    last_select.prop('disabled', true)
+                    first_select.on('change', function() {
+                        last_select.prop('disabled', false)
+                    })
+                    
+                    last_select.on('change', function() {
+                        $.post(url, $('form').serialize() + "&_continue=")
+                    });
+                }
+                
                     $.post(url, $('form').serialize() + "&_continue=")
                 });
 
