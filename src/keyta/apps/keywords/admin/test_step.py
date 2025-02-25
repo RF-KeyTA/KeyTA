@@ -29,4 +29,9 @@ class TestStepAdmin(KeywordCallAdmin):
         return super().to_keyword_doc(test_step)
 
     def get_inlines(self, request, obj):
-        return [TestStepParametersInline]
+        test_step: TestStep = obj
+
+        if test_step.parameters.exists():
+            return [TestStepParametersInline]
+
+        return super().get_inlines(request, obj)
