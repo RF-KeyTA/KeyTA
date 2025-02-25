@@ -1,6 +1,6 @@
 from keyta.forms import BaseForm
 
-from ..models import Keyword, KeywordCall
+from ..models import KeywordCall
 
 
 class StepsForm(BaseForm):
@@ -8,12 +8,10 @@ class StepsForm(BaseForm):
         kw_call: KeywordCall = super().save(commit)
 
         if kw_call.pk and 'to_keyword' in self.changed_data:
-            to_keyword: Keyword = self.cleaned_data['to_keyword']
-
             for param in kw_call.parameters.all():
                 param.delete()
 
-            for param in to_keyword.parameters.all():
-                kw_call.add_parameter(param, kw_call.user)
+            if return_value := kw_call.return_value.first():
+                return_value.delete()
 
         return kw_call
