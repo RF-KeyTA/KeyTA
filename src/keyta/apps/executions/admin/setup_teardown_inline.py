@@ -1,11 +1,11 @@
-from django import forms
 from django.contrib import admin
+from django import forms
 from django.db.models import QuerySet
 from django.http import HttpRequest
 from django.utils.translation import gettext as _
 
 from keyta.admin.base_inline import BaseTabularInline
-from keyta.apps.keywords.admin.field_keywordcall_args import KeywordCallArgsField
+from keyta.apps.keywords.admin.field_keywordcall_args import BaseKeywordCallArgs
 from keyta.apps.keywords.forms import StepsForm
 from keyta.apps.keywords.models import Keyword
 from keyta.forms.baseform import form_with_select
@@ -13,7 +13,21 @@ from keyta.forms.baseform import form_with_select
 from ..models import Execution, Setup, Teardown
 
 
-class SetupInline(KeywordCallArgsField, BaseTabularInline):
+class KeywordCallUserArgsField(BaseKeywordCallArgs):
+    def get_fields(self, request, obj=None):
+        return super().get_fields(request, obj) + ['args']
+
+    def get_readonly_fields(self, request: HttpRequest, obj=None):
+        @admin.display(description=_('Werte'))
+        def args(self, kw_call: Setup):
+            return super().get_icon(kw_call, request.user)
+
+        KeywordCallUserArgsField.args = args
+
+        return super().get_readonly_fields(request, obj) + ['args']
+
+
+class SetupInline(KeywordCallUserArgsField, BaseTabularInline):
     model = Setup
     fields = ['enabled', 'user', 'to_keyword']
     form = form_with_select(
@@ -27,13 +41,6 @@ class SetupInline(KeywordCallArgsField, BaseTabularInline):
     )
     extra = 1
     max_num = 1
-
-    @admin.display(description=_('Werte'))
-    def args(self, setup: Setup):
-        if setup.to_keyword.parameters.exists():
-            return super().args(setup)
-        
-        return '-'
 
     def get_formset(self, request: HttpRequest, obj=None, **kwargs):
         execution: Execution = obj
