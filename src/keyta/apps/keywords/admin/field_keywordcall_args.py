@@ -12,7 +12,7 @@ from ..models import KeywordCall
 
 class BaseKeywordCallArgs:
     def get_icon(self, kw_call: KeywordCall, user: Optional[AbstractUser]=None):
-        if not kw_call.pk:
+        if not kw_call.pk or not kw_call.to_keyword.parameters.exists():
             return '-'
         
         if (kw_call.parameters.count() != kw_call.to_keyword.parameters.count() or
