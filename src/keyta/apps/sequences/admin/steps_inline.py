@@ -4,6 +4,7 @@ from django.utils.translation import gettext as _
 
 from keyta.apps.actions.models import Action
 from keyta.apps.keywords.admin import StepsInline
+from keyta.apps.keywords.forms import StepsForm
 from keyta.apps.keywords.models import Keyword
 from keyta.forms import form_with_select
 
@@ -18,9 +19,10 @@ class SequenceSteps(StepsInline):
         ActionCall,
         'to_keyword',
         _('Aktion auswählen'),
-        {
+        labels={
             'to_keyword': _('Aktion')
         },
+        form_class=StepsForm,
         can_change_related=True
     )
 
