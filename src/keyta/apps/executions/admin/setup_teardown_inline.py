@@ -25,7 +25,7 @@ class SetupInline(KeywordCallArgsField, BaseTabularInline):
         },
         form_class=StepsForm
     )
-    extra = 0
+    extra = 1
     max_num = 1
 
     @admin.display(description=_('Werte'))
