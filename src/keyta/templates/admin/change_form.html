@@ -197,10 +197,6 @@
                 
                 $(document).on('click', 'button.close', function() {
                     $('body.popup .button-save').click()
-
-                    if ($('.modal-dialog').length == 1) {
-                        $(save_button).click()
-                    }
                 })
 
                 $('body.popup .form-row.has_original input[type="checkbox"]').on('change', function () {
