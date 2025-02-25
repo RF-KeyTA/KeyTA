@@ -54,11 +54,11 @@ class TestCaseExecution(Execution):
             Keyword.objects.filter(pk__in=self.sequence_ids|self.action_ids)
         }
 
-        if (test_setup := self.test_setup(user)) and test_setup.enabled:
+        if (test_setup := self.test_setup()) and test_setup.enabled:
             if to_keyword := test_setup.to_keyword:
                 keywords[to_keyword.id] = to_keyword.to_robot() # to_keyword.get_admin_url()
 
-        if (test_teardown := self.test_teardown(user)) and test_teardown.enabled:
+        if (test_teardown := self.test_teardown()) and test_teardown.enabled:
             if to_keyword := test_teardown.to_keyword:
                 keywords[to_keyword.id] = to_keyword.to_robot()  # to_keyword.get_admin_url()
 
@@ -80,8 +80,8 @@ class TestCaseExecution(Execution):
         if any(step.has_empty_arg() for step in self.testcase.steps.all()):
             return ValidationError.INCOMPLETE_STEP_PARAMS
 
-        test_setup = self.test_setup(user)
-        test_teardown = self.test_teardown(user)
+        test_setup = self.test_setup()
+        test_teardown = self.test_teardown()
 
         if test_setup and test_setup.has_empty_arg(user):
            return ValidationError.INCOMPLETE_TEST_SETUP_PARAMS

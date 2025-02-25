@@ -52,9 +52,6 @@ class Execution(AbstractBaseModel):
             if keyword_call and keyword_call.enabled:
                 return keyword_call.to_robot(user)
 
-        test_setup = self.test_setup(user)
-        test_teardown = self.test_teardown(user)
-
         return {
             'library_imports': [
                 lib_import.to_robot(user)
@@ -68,8 +65,8 @@ class Execution(AbstractBaseModel):
             ],
             'suite_setup': None,
             'suite_teardown': None,
-            'test_setup': maybe_to_robot(test_setup, user),
-            'test_teardown': maybe_to_robot(test_teardown, user)
+            'test_setup': maybe_to_robot(self.test_setup(), user),
+            'test_teardown': maybe_to_robot(self.test_teardown(), user)
         }
 
     def get_rf_testsuite(self, user: AbstractUser) -> RFTestSuite:
@@ -107,29 +104,27 @@ class Execution(AbstractBaseModel):
             .first()
         )
 
-    def test_setup(self, user: AbstractUser):
+    def test_setup(self):
         return (
             self.keyword_calls
             .test_setup()
-            .filter(user=user)
             .first()
         )
 
-    def test_teardown(self, user: AbstractUser):
+    def test_teardown(self):
         return (
             self.keyword_calls
             .test_teardown()
-            .filter(user=user)
             .first()
         )
 
     def update_library_imports(self, user: AbstractUser):
         library_ids = self.get_library_dependencies()
 
-        if test_setup := self.test_setup(user):
+        if test_setup := self.test_setup():
             library_ids |= LibraryImport.objects.filter(keyword=test_setup.to_keyword).library_ids()
 
-        if test_teardown := self.test_teardown(user):
+        if test_teardown := self.test_teardown():
             library_ids |= LibraryImport.objects.filter(keyword=test_teardown.to_keyword).library_ids()
 
         for library in Library.objects.filter(id__in=library_ids):

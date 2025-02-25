@@ -41,7 +41,6 @@ class KeywordExecution(Execution):
             kw_call, created = KeywordCall.objects.get_or_create(
                 execution=self,
                 type=TestSetupTeardown.TEST_SETUP,
-                user=user,
                 to_keyword=attach_to_system
             )
 
@@ -79,7 +78,7 @@ class KeywordExecution(Execution):
             for keyword in Keyword.objects.filter(pk__in=self.action_ids):
                 keywords[keyword.pk] = keyword.to_robot() # to_keyword.get_admin_url()
 
-        if (test_setup := self.test_setup(user)) and test_setup.enabled:
+        if (test_setup := self.test_setup()) and test_setup.enabled:
             if to_keyword := test_setup.to_keyword:
                 action = Keyword.objects.get(id=to_keyword.id)
                 keywords[action.id] = action.to_robot() # to_keyword.get_admin_url()
@@ -129,10 +128,10 @@ class KeywordExecution(Execution):
         return None
 
     def validate_test_setup(self, user: AbstractUser) -> Optional[dict]:
-        test_setup = self.test_setup(user)
+        test_setup = self.test_setup()
 
         if not test_setup:
-            self.add_attach_to_system(user)
+            self.add_attach_to_system()
 
         if test_setup.has_empty_arg(user):
             return ValidationError.INCOMPLETE_ATTACH_TO_SYSTEM_PARAMS

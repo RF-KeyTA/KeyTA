@@ -1,8 +1,7 @@
 from typing import Optional
 
-from django.conf import settings
 from django.db import models
-from django.db.models import Q, QuerySet
+from django.db.models import Q, QuerySet, UniqueConstraint
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext as _
 
@@ -78,12 +77,6 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
         TestSetupTeardown.choices +
         SuiteSetupTeardown.choices
     )
-    # Test/Suite Setup/Teardown are user-dependent
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        null=True
-    )
 
     # --Customization--
     # In a TestCase keyword calls depend on the selected Window
@@ -109,8 +102,8 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
         KeywordCallParameter.objects.get_or_create(
             keyword_call=self,
             parameter=param,
+            user=user,
             defaults={
-                'user': user,
                 'value': JSONValue(
                     arg_name=None,
                     kw_call_index=None,
@@ -319,5 +312,9 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
                  Q(from_keyword__isnull=True) &
                  Q(testcase__isnull=True) &
                  Q(window__isnull=True))
+            ),
+            UniqueConstraint(
+                'execution', 'type',
+                name='unique_keyword_call_type_per_execution'
             )
         ]

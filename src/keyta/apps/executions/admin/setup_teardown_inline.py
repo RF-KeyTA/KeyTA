@@ -1,5 +1,4 @@
 from django.contrib import admin
-from django import forms
 from django.db.models import QuerySet
 from django.http import HttpRequest
 from django.utils.translation import gettext as _
@@ -29,7 +28,7 @@ class KeywordCallUserArgsField(BaseKeywordCallArgs):
 
 class SetupInline(KeywordCallUserArgsField, BaseTabularInline):
     model = Setup
-    fields = ['enabled', 'user', 'to_keyword']
+    fields = ['enabled', 'to_keyword']
     form = form_with_select(
         Setup,
         'to_keyword',
@@ -61,13 +60,8 @@ class SetupInline(KeywordCallUserArgsField, BaseTabularInline):
 
         formset = super().get_formset(request, obj, **kwargs)
         formset.form.base_fields['to_keyword'].queryset = keywords
-        formset.form.base_fields['user'].initial = request.user
-        formset.form.base_fields['user'].widget = forms.HiddenInput()
 
         return formset
-
-    def get_queryset(self, request: HttpRequest):
-        return super().get_queryset(request).filter(user=request.user)
 
 
 class TeardownInline(SetupInline):
