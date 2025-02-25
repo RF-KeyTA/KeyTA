@@ -66,9 +66,9 @@ class KeywordParameter(CloneMixin, AbstractBaseModel):
             keyword=keyword,
             position=position,
             defaults={
+                'default_value': '@{EMPTY}' if is_list else None,
                 'name': name,
                 'type': KeywordParameterType.ARG,
-                'default_value': '@{EMPTY}' if is_list else None,
                 'is_list': is_list
             }
         )
