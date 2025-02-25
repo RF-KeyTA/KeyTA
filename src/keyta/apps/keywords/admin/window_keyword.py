@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.http import HttpRequest
 from django.utils.translation import gettext as _
 
 from apps.windows.models import Window
@@ -8,13 +9,15 @@ from .keyword import KeywordAdmin
 
 
 class WindowKeywordAdminMixin:
-    def save_model(self, request, obj, form, change):
+    def save_model(self, request: HttpRequest, obj, form, change):
         super().save_model(request, obj, form, change)
         keyword: WindowKeyword = obj
 
         if not change:
             form.save_m2m()
-            keyword.create_execution()
+
+        if not getattr(keyword, 'execution', None):
+            keyword.create_execution(request.user)
 
 
 class WindowKeywordAdmin(WindowKeywordAdminMixin, KeywordAdmin):
