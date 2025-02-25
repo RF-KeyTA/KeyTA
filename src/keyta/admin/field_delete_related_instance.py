@@ -8,10 +8,7 @@ from keyta.widgets import link, Icon
 
 class DeleteRelatedField:
     def get_fields(self, request, obj=None):
-        if self.has_delete_permission(request, obj):
-            return super().get_fields(request, obj) + ['delete']
-
-        return super().get_fields(request, obj)
+        return super().get_fields(request, obj) + ['delete']
 
     def get_readonly_fields(self, request: HttpRequest, obj=None):
         @admin.display(description='')
@@ -29,15 +26,5 @@ class DeleteRelatedField:
                 ))
             )
 
-        if self.has_delete_permission(request, obj):
-            DeleteRelatedField.delete = delete
-            return super().get_readonly_fields(request, obj) + ['delete']
-
-        return super().get_readonly_fields(request, obj)
-
-    def has_delete_permission(self, request: HttpRequest, obj=None):
-        if obj:
-            app, model = obj._meta.app_label, obj._meta.model_name
-            return request.user.has_perm(f'{app}.delete_{model}', obj)
-
-        return super().has_delete_permission(request, obj)
+        DeleteRelatedField.delete = delete
+        return super().get_readonly_fields(request, obj) + ['delete']
