@@ -14,6 +14,6 @@ class StepsForm(BaseForm):
                 param.delete()
 
             for param in to_keyword.parameters.all():
-                kw_call.add_parameter(param)
+                kw_call.add_parameter(param, kw_call.user)
 
         return kw_call
