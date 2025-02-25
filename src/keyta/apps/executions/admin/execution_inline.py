@@ -16,7 +16,7 @@ class ExecutionInline(BaseTabularInline):
     extra = 0
     max_num = 1
     can_delete = False
-    template = 'tabular.html'
+    template = 'execution_inline_tabular.html'
 
     def get_fields(self, request, obj=None):
         return ['settings', 'start', 'result_icon', 'log_icon']
