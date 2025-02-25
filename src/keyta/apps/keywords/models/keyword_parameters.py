@@ -49,9 +49,6 @@ class KeywordParameter(CloneMixin, AbstractBaseModel):
     USE_UNIQUE_DUPLICATE_SUFFIX = False
 
     class Manager(models.Manager):
-        def get_queryset(self):
-            return super().get_queryset().order_by('type')
-
         def args(self):
             return self.get_queryset().filter(type=KeywordParameterType.ARG)
 
