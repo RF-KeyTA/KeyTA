@@ -10,9 +10,6 @@ from .setup_teardown_inline import SetupInline
 class KeywordExecutionSetupInline(SetupInline):
     verbose_name_plural = _('Anbindung an ein laufendes System')
 
-    def get_fields(self, request, obj=None):
-        return ['enabled'] + super().get_fields(request, obj)
-
 
 @admin.register(KeywordExecution)
 class KeywordExecutionAdmin(ExecutionAdmin):

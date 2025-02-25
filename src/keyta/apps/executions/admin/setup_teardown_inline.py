@@ -15,7 +15,7 @@ from ..models import Execution, Setup, Teardown
 
 class SetupInline(KeywordCallArgsField, BaseTabularInline):
     model = Setup
-    fields = ['user', 'to_keyword']
+    fields = ['enabled', 'user', 'to_keyword']
     form = form_with_select(
         Setup,
         'to_keyword',
