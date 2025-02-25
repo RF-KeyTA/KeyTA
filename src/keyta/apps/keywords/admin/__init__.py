@@ -3,14 +3,12 @@ from .keyword import KeywordAdmin, KeywordDocumentationAdmin
 from .keywordcall import KeywordCallAdmin
 from .keywordcall_parameters_inline import KeywordCallParametersInline
 from .keywordcall_return_value_inline import KeywordCallReturnValueInline
+from .keyword_parameter import KeywordParameterAdmin
 from .keyword_parameters_inline import ParametersInline
+from .return_value import ReturnValueAdmin
 from .return_value_inline import ReturnValueInline
 from .robot_keywordcall import RobotKeywordCallAdmin
 from .steps_inline import StepsInline
 from .test_step import TestStepAdmin
 from .test_steps_inline import TestStepsInline
 from .window_keyword import WindowKeywordAdmin, WindowKeywordAdminMixin
-from .window_keyword_parameter import WindowKeywordParameterAdmin
-from .window_keyword_parameters_inline import WindowKeywordParameters
-from .window_keyword_return_value import WindowKeywordReturnValueAdmin
-from .window_keyword_return_value_inline import WindowKeywordReturnValues

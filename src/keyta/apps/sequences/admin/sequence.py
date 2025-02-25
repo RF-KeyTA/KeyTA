@@ -8,10 +8,10 @@ from keyta.forms.baseform import BaseForm
 from keyta.admin.base_admin import BaseAddAdmin
 from keyta.apps.executions.admin import KeywordExecutionInline
 from keyta.apps.keywords.admin import (
-    WindowKeywordParameters,
+    ParametersInline,
+    ReturnValueInline,
     WindowKeywordAdmin,
-    WindowKeywordAdminMixin,
-    WindowKeywordReturnValues
+    WindowKeywordAdminMixin
 )
 from keyta.apps.resources.models import Resource
 from keyta.widgets import ModelSelect2MultipleAdminWidget, Select2MultipleWidget
@@ -52,7 +52,7 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
         }
     )
     inlines = [
-        WindowKeywordParameters,
+        ParametersInline,
         SequenceSteps
     ]
 
@@ -67,10 +67,10 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
             inlines = [Resources] + self.inlines
 
         if not sequence:
-            return [WindowKeywordParameters]
+            return [ParametersInline]
 
         if not sequence.has_empty_sequence:
-            return inlines + [WindowKeywordReturnValues, KeywordExecutionInline]
+            return inlines + [ReturnValueInline, KeywordExecutionInline]
 
         return inlines
 

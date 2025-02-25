@@ -6,10 +6,10 @@ from model_clone import CloneModelAdminMixin
 from keyta.admin.base_admin import BaseAdmin, BaseAddAdmin
 from keyta.apps.executions.admin import KeywordExecutionInline
 from keyta.apps.keywords.admin import (
-    WindowKeywordParameters,
+    ParametersInline,
+    ReturnValueInline,
     WindowKeywordAdmin,
     WindowKeywordAdminMixin,
-    WindowKeywordReturnValues
 )
 from keyta.apps.libraries.models import Library, LibraryImport
 from keyta.forms.baseform import form_with_select
@@ -51,7 +51,7 @@ class ActionAdmin(ActionAdminMixin, CloneModelAdminMixin, WindowKeywordAdmin):
     )
     inlines = [
         Libraries,
-        WindowKeywordParameters,
+        ParametersInline,
         ActionSteps
     ]
 
@@ -65,12 +65,12 @@ class ActionAdmin(ActionAdminMixin, CloneModelAdminMixin, WindowKeywordAdmin):
         action: Action = obj
 
         if not action:
-            return [WindowKeywordParameters]
+            return [ParametersInline]
 
         inlines = [Windows] + self.inlines
 
         if not action.has_empty_sequence:
-            return inlines + [WindowKeywordReturnValues, KeywordExecutionInline]
+            return inlines + [ReturnValueInline, KeywordExecutionInline]
 
         return inlines
 
