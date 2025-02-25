@@ -1,3 +1,5 @@
+from typing import Optional
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import gettext as _
@@ -16,7 +18,7 @@ class ExecutionKeywordCall(KeywordCall):
 
     objects = Manager()
 
-    def has_empty_arg(self, user: AbstractUser):
+    def has_empty_arg(self, user: Optional[AbstractUser]=None):
         if not self.parameters.exists():
             return True
 
