@@ -170,7 +170,6 @@
                 $(save_button).hide()
 
                 /* Modal */
-                django.jQuery('body.popup select').on('change', function() {
                 const extra_rows = django.jQuery('body.popup .form-row').not('.has_original').not('.empty-form')
                 
                 if (extra_rows.length === 2) {
@@ -188,6 +187,7 @@
                     });
                 }
                 
+                django.jQuery('body.popup .form-row.has_original select').on('change', function() {
                     $.post(url, $('form').serialize() + "&_continue=")
                 });
 
