@@ -19,7 +19,7 @@ class ExecutionInline(BaseTabularInline):
     template = 'execution_inline_tabular.html'
 
     def get_fields(self, request, obj=None):
-        return ['settings', 'start', 'result_icon', 'log_icon']
+        return self.get_readonly_fields(request, obj)
 
     def get_readonly_fields(self, request: HttpRequest, obj=None):
         self.user = request.user
