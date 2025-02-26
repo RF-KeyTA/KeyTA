@@ -6,9 +6,9 @@ from django.utils.translation import gettext as _
 
 from keyta.admin.base_admin import BaseAdmin
 from keyta.admin.base_inline import BaseTabularInline
-from keyta.apps.actions.models.action import ActionQuickAdd
+from keyta.apps.actions.models import ActionQuickAdd
 from keyta.apps.keywords.models import KeywordWindowRelation
-from keyta.apps.sequences.models.sequence import SequenceQuickAdd
+from keyta.apps.sequences.models import SequenceQuickAdd
 from keyta.forms.baseform import form_with_select
 from keyta.widgets import CustomRelatedFieldWidgetWrapper
 
@@ -90,6 +90,9 @@ class Actions(QuickAddMixin, WindowKeywordInline):
     verbose_name = _('Aktion')
     verbose_name_plural = _('Aktionen')
 
+    def get_queryset(self, request):
+        return super().get_queryset(request).actions()
+
 
 class Sequences(QuickAddMixin, WindowKeywordInline):
     form = forms.modelform_factory(
@@ -103,6 +106,9 @@ class Sequences(QuickAddMixin, WindowKeywordInline):
     quick_add_model = SequenceQuickAdd
     verbose_name = _('Sequenz')
     verbose_name_plural = _('Sequenzen')
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).sequences()
 
 
 class Variables(QuickAddMixin, BaseTabularInline):
