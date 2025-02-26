@@ -26,8 +26,9 @@ class SetupTeardownAdmin(KeywordCallAdmin):
     def change_view(self, request, object_id, form_url="", extra_context=None):
         kw_call = KeywordCall.objects.get(pk=object_id)
         kw_call.update_parameters(request.user)
+        kw_call.update_parameter_values()
 
-        return super().change_view(request, object_id, form_url, extra_context)
+        return super().changeform_view(request, object_id, form_url, extra_context)
 
     def get_inlines(self, request, obj):
         return [SetupTeardownParametersInline]
