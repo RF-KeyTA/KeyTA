@@ -19,21 +19,15 @@ TestStepsForm = forms.modelform_factory(
     },
     widgets={
         'window': ModelSelect2AdminWidget(
+            placeholder=_('Maske auswählen'),
             model=Window,
             search_fields=['name__icontains'],
-            attrs={
-                'data-placeholder': _('Maske auswählen'),
-                'style': 'width: 95%'
-            }
         ),
         'to_keyword': ModelSelect2AdminWidget(
+            placeholder=_('Sequenz auswählen'),
             model=Sequence,
             search_fields=['name__icontains'],
             dependent_fields={'window': 'windows'},
-            attrs={
-                'data-placeholder': _('Sequenz auswählen'),
-                'style': 'width: 95%',
-            }
         )
     }
 )

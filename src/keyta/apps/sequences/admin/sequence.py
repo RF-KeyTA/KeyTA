@@ -35,19 +35,15 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
         },
         widgets={
             'systems': ModelSelect2MultipleAdminWidget(
+                placeholder=_('System hinzufügen'),
                 model=Sequence.systems.through,
                 search_fields=['name__icontains'],
-                attrs={
-                    'data-placeholder': _('System hinzufügen'),
-                }
             ),
             'windows': Select2MultipleWidget(
+                placeholder=_('Maske auswählen'),
                 model=Sequence.windows.through,
                 search_fields=['name__icontains'],
                 dependent_fields={'systems': 'systems'},
-                attrs={
-                    'data-placeholder': _('Maske auswählen'),
-                }
             )
         }
     )

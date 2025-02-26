@@ -176,8 +176,10 @@ class ModelSelect2AdminWidget(ModelSelect2Widget):
             attrs={
                 'data-allow-clear': 'false',
                 'data-minimum-input-length': 0,
+                'data-placeholder': kwargs.get('placeholder'),
                 'data-width': '100%',
                 'data-style': 'width: 100%',
+                'style': 'width: 95%'
             } | (attrs if attrs else {}),
             **kwargs
         )
