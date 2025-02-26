@@ -51,7 +51,8 @@ class QuickAddMixin:
         )
         wrapped_widget.attrs.update({
             'data-placeholder': _('Klicke auf das Plus-Symbol'),
-            'disabled': True
+            'data-width': '95%',
+            'disabled': True,
         })
 
         return wrapped_widget
