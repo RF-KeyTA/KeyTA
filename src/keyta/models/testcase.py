@@ -30,6 +30,7 @@ class AbstractTestCase(DocumentationMixin, CloneMixin, AbstractBaseModel):
 
     _clone_linked_m2m_fields = ['systems']
     _clone_m2o_or_o2m_fields = ['steps']
+    _clone_o2o_fields = ['execution']
     USE_UNIQUE_DUPLICATE_SUFFIX = False
 
     def __str__(self):
@@ -65,9 +66,7 @@ class AbstractTestCase(DocumentationMixin, CloneMixin, AbstractBaseModel):
 
     def make_clone(self, attrs=None, sub_clone=False, using=None, parent=None):
         attrs = (attrs or {}) | {'name': self.name + _(' Kopie')}
-        clone: AbstractTestCase = super().make_clone(attrs=attrs, sub_clone=sub_clone, using=using, parent=parent)
-        clone.create_execution()
-        return clone
+        return super().make_clone(attrs=attrs, sub_clone=sub_clone, using=using, parent=parent)
 
     def save(
         self, force_insert=False, force_update=False, using=None,

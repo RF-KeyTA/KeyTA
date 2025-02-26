@@ -5,6 +5,8 @@ from django.db import models
 from django.db.models import Q, QuerySet
 from django.utils.translation import gettext as _
 
+from model_clone import CloneMixin
+
 from keyta.apps.libraries.models import Library, LibraryImport
 from keyta.apps.resources.models import Resource, ResourceImport
 from keyta.models.base_model import AbstractBaseModel
@@ -19,7 +21,7 @@ class ExecutionType(models.TextChoices):
     TESTCASE = 'TESTCASE_EXECUTION', _('Testfall Ausführung')
 
 
-class Execution(AbstractBaseModel):
+class Execution(CloneMixin, AbstractBaseModel):
     keyword = models.OneToOneField(
         'keywords.Keyword',
         on_delete=models.CASCADE,
@@ -37,6 +39,8 @@ class Execution(AbstractBaseModel):
         related_name='execution'
     )
     type = models.CharField(max_length=255)
+
+    _clone_m2o_or_o2m_fields = ['keyword_calls']
 
     def __str__(self):
         return str(self.keyword or self.testcase)
@@ -75,11 +79,17 @@ class Execution(AbstractBaseModel):
     def save(
         self, force_insert=False, force_update=False, using=None, update_fields=None
     ):
-        if not self.pk:
+        if not self.type:
             if self.testcase:
                 self.type = ExecutionType.TESTCASE
             if self.keyword:
                 self.type = ExecutionType.KEYWORD
+
+        if self.type == ExecutionType.TESTCASE:
+            self.keyword = None
+
+        if self.type == ExecutionType.KEYWORD:
+            self.testcase = None
 
         super().save(force_insert, force_update, using, update_fields)
 
