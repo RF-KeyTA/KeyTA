@@ -19,7 +19,10 @@ class KeywordCallUserArgsField(BaseKeywordCallArgs):
     def get_readonly_fields(self, request: HttpRequest, obj=None):
         @admin.display(description=_('Werte'))
         def args(self, kw_call: Setup):
-            return super().get_icon(kw_call, request.user)
+            if kw_call.to_keyword.parameters.exists():
+                return super().get_icon(kw_call, request.user)
+            else:
+                return '-'
 
         KeywordCallUserArgsField.args = args
 
