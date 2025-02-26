@@ -116,6 +116,7 @@ class Variables(QuickAddMixin, BaseTabularInline):
     )
     quick_add_field = 'variable'
     quick_add_model = VariableQuickAdd
+    readonly_fields = ['systems']
     verbose_name = _('Referenzwert')
     verbose_name_plural = _('Referenzwerte')
 
@@ -126,7 +127,7 @@ class Variables(QuickAddMixin, BaseTabularInline):
         return False
 
     @admin.display(description=_('System'))
-    def system(self, obj):
+    def systems(self, obj):
         return ', '.join(obj.variable.systems.values_list('name', flat=True))
 
 
