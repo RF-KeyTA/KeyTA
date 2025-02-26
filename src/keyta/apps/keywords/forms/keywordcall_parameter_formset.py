@@ -116,16 +116,18 @@ class KeywordCallParameterFormset(forms.BaseInlineFormSet):
 
     def get_prev_return_values(self):
         kw_call: KeywordCall = self.instance
+        sources = KeywordCallParameterSource.objects.filter(
+            kw_call_ret_val__in=kw_call.get_previous_return_values()
+        )
+
+        if not sources.exists():
+            return []
 
         return [[
             _('Vorherige Rückgabewerte'),
             [
                 (source.get_value().jsonify(), str(source))
-                for source in
-                KeywordCallParameterSource.objects
-                .filter(
-                    kw_call_ret_val__in=kw_call.get_previous_return_values()
-                )
+                for source in sources
             ]
         ]]
 
