@@ -118,4 +118,13 @@
         }
     </script>
     <script type="text/javascript" src="{% static 'jazzmin/js/change_list.js' %}"></script>
+    <script type="text/javascript">
+    $(document).ready(function () {
+        const search_button = 'button[type=submit]'
+        
+        $('select').on('change', function() {
+            $(search_button).click()
+        })
+    })
+    </script>
 {% endblock %}
