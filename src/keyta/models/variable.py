@@ -57,7 +57,7 @@ class AbstractVariableValue(AbstractBaseModel):
     )
 
     def __str__(self):
-        return f'{self.variable.name}: {self.name}'
+        return self.name
 
     def save(
         self, force_insert=False, force_update=False, using=None,
