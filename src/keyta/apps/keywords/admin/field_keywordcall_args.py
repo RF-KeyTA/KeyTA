@@ -27,7 +27,7 @@ class BaseKeywordCallArgs:
             )
 
             return open_link_in_modal(
-                kw_call.get_admin_url(),
+                kw_call.get_admin_url() + '?empty_args=1',
                 str(icon)
             )
         else:

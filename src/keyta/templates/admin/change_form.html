@@ -195,8 +195,20 @@
                     $.post(url, $('form').serialize() + "&_continue=")
                 });
                 
+                const urlParams = new URLSearchParams(window.location.search)
+                const emptyArgs = urlParams.get('empty_args')
+                
+                if (emptyArgs != null) {
+                    sessionStorage.setItem('empty_args', urlParams.get('empty_args'))
+                }
+                
                 $(document).on('click', 'button.close', function() {
                     $('body.popup .button-save').click()
+
+                    if (sessionStorage.getItem('empty_args') !== null && $('.modal-dialog').length === 1) {
+                        $(save_button).click()
+                        sessionStorage.clear();
+                    }
                 })
 
                 $('body.popup .form-row.has_original input[type="checkbox"]').on('change', function () {
