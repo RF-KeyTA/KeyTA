@@ -6,6 +6,11 @@ from keyta.apps.keywords.models import KeywordCallParameterSource
 from .base_model import AbstractBaseModel
 
 
+class VariableType(models.TextChoices):
+    DICT = 'DICT', _('Dictionary')
+    LIST = 'LIST', _('List')
+
+
 class AbstractVariable(AbstractBaseModel):
     name = models.CharField(max_length=255, verbose_name=_('Name'))
 
@@ -15,10 +20,20 @@ class AbstractVariable(AbstractBaseModel):
         blank=True,
         verbose_name=_('Beschreibung')
     )
+    schema = models.ForeignKey(
+        'variables.VariableSchema',
+        null=True,
+        on_delete=models.CASCADE
+    )
     systems = models.ManyToManyField(
         'systems.System',
         related_name='variables',
         verbose_name=_('Systeme')
+    )
+    type = models.CharField(
+        max_length=255,
+        choices=VariableType.choices,
+        default=VariableType.DICT
     )
     windows = models.ManyToManyField(
         'windows.Window',
@@ -28,6 +43,12 @@ class AbstractVariable(AbstractBaseModel):
 
     def __str__(self):
         return self.name
+
+    def is_dict(self):
+        return self.type == VariableType.DICT
+
+    def is_list(self):
+        return self.type == VariableType.LIST
 
     class Meta:
         abstract = True
@@ -40,6 +61,24 @@ class AbstractVariable(AbstractBaseModel):
         #         name='unique_variable_per_window'
         #     )
         # ]
+
+
+class AbstractVariableInList(AbstractBaseModel):
+    list_variable = models.ForeignKey(
+        'variables.Variable',
+        on_delete=models.CASCADE,
+        related_name='elements'
+    )
+    variable = models.ForeignKey(
+        'variables.Variable',
+        on_delete=models.CASCADE,
+        related_name='in_list'
+    )
+    index = models.PositiveSmallIntegerField(default=0)
+
+    class Meta:
+        abstract = True
+        ordering = ['index']
 
 
 class AbstractVariableValue(AbstractBaseModel):
@@ -80,3 +119,38 @@ class AbstractVariableValue(AbstractBaseModel):
         ]
         verbose_name = _('Wert')
         verbose_name_plural = _('Werte')
+
+
+class AbstractVariableSchema(AbstractBaseModel):
+    windows = models.ManyToManyField(
+        'windows.Window',
+        related_name='schemas',
+        verbose_name=_('Masken')
+    )
+    name = models.CharField(
+        max_length=255
+    )
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        abstract = True
+        verbose_name = _('Schema')
+        verbose_name_plural = _('Schemas')
+
+
+class AbstractVariableSchemaField(AbstractBaseModel):
+    schema = models.ForeignKey(
+        'variables.VariableSchema',
+        on_delete=models.CASCADE,
+        related_name='fields'
+    )
+    name = models.CharField(
+        max_length=255
+    )
+
+    class Meta:
+        abstract = True
+        verbose_name = _('Field')
+        verbose_name_plural = _('Fields')

@@ -12,8 +12,12 @@ from keyta.apps.sequences.models import SequenceQuickAdd
 from keyta.forms.baseform import form_with_select
 from keyta.widgets import CustomRelatedFieldWidgetWrapper
 
-from apps.variables.models import VariableQuickAdd, VariableWindowRelation
-from apps.windows.models import Window, WindowDocumentation
+from apps.variables.models import (
+    VariableQuickAdd,
+    VariableSchemaQuickAdd,
+    VariableWindowRelation
+)
+from apps.windows.models import Window, WindowDocumentation, WindowSchemaRelation
 
 
 class QuickAddMixin:
@@ -127,14 +131,57 @@ class Variables(QuickAddMixin, BaseTabularInline):
     verbose_name_plural = _('Referenzwerte')
 
     def get_queryset(self, request):
-        return super().get_queryset(request).order_by('variable__name')
+        return (
+            super().get_queryset(request)
+            .exclude(variable__in_list__isnull=False)
+            .order_by('variable__name')
+    )
 
     def has_change_permission(self, request, obj=None) -> bool:
         return False
 
+    def quick_add_url_params(self, request: HttpRequest):
+        window_id = request.resolver_match.kwargs['object_id']
+        window = Window.objects.get(pk=window_id)
+        system_id = window.systems.first().pk
+
+        query_params = {
+            'windows': window_id,
+            'systems': system_id
+        }
+
+        if schema := window.schemas.first():
+            return query_params | {'schema': schema.pk}
+
+        return  query_params
+
     @admin.display(description=_('System'))
     def systems(self, obj):
         return ', '.join(obj.variable.systems.values_list('name', flat=True))
+
+
+class Schemas(QuickAddMixin, BaseTabularInline):
+    model = WindowSchemaRelation
+    form = forms.modelform_factory(
+        WindowSchemaRelation,
+        fields=['variableschema'],
+        labels={
+            'variableschema': _('Schema')
+        }
+    )
+
+    quick_add_field = 'variableschema'
+    quick_add_model = VariableSchemaQuickAdd
+
+    def has_change_permission(self, request, obj=None) -> bool:
+        return False
+
+    def quick_add_url_params(self, request: HttpRequest):
+        window_id = request.resolver_match.kwargs['object_id']
+
+        return {
+            'windows': window_id,
+        }
 
 
 class BaseWindowAdmin(BaseAdmin):
@@ -159,7 +206,8 @@ class BaseWindowAdmin(BaseAdmin):
     inlines = [
         Actions,
         Sequences,
-        Variables
+        Variables,
+        Schemas
     ]
 
     def change_view(self, request: HttpRequest, object_id, form_url="", extra_context=None):

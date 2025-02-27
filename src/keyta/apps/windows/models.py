@@ -3,6 +3,8 @@ from django.utils.translation import gettext as _
 from keyta.models.base_model import AbstractBaseModel
 from keyta.models.window import AbstractWindow
 
+from apps.variables.models import VariableSchema
+
 
 class Window(AbstractWindow):
     class Meta(AbstractWindow.Meta):
@@ -33,3 +35,14 @@ class WindowSystemRelation(AbstractBaseModel, Window.systems.through):
         proxy = True
         verbose_name = _('Beziehung zum System')
         verbose_name_plural = _('Beziehungen zu Systemen')
+
+
+class WindowSchemaRelation(AbstractBaseModel, VariableSchema.windows.through):
+    def __str__(self):
+        return str(self.window)
+
+    class Meta:
+        auto_created = True
+        proxy = True
+        verbose_name = _('Schema')
+        verbose_name_plural = _('Schemata')
