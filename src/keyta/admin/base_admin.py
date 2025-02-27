@@ -114,11 +114,12 @@ class BaseDocumentationAdmin(BaseReadOnlyAdmin):
 
 
 class BaseAddAdmin(BaseAdmin):
+    fields = ['systems', 'windows', 'name']
+
     def get_form(self, request, obj=None, change=False, **kwargs):
         return forms.modelform_factory(
             self.model,
-            forms.ModelForm,
-            ['systems', 'windows', 'name'],
+            fields=self.fields,
             widgets={
                 'systems': ModelSelect2MultipleAdminWidget(
                     model=self.model.systems.through,
