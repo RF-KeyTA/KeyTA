@@ -11,16 +11,14 @@ from ..models import KeywordCall
 
 
 class BaseKeywordCallArgs:
+    def invalid_keyword_call_args(self, kw_call: KeywordCall, user: Optional[AbstractUser]=None) -> bool:
+        return kw_call.has_empty_arg()
+
     def get_icon(self, kw_call: KeywordCall, user: Optional[AbstractUser]=None):
         if not kw_call.pk:
             return '-'
 
-        kw_call_user_parameters = kw_call.parameters.filter(user=user)
-        kw_parameters = kw_call.to_keyword.parameters
-
-        if (kw_call_user_parameters.count() != kw_parameters.count() or
-            kw_call.has_empty_arg(user)
-        ):
+        if self.invalid_keyword_call_args(kw_call, user):
             icon = Icon(
                 settings.FA_ICONS.kw_call_parameters,
                 {'filter': 'hue-rotate(150deg)'}
