@@ -4,6 +4,7 @@
 
 {% block extrastyle %}
     {{ block.super }}
+    <link rel="stylesheet" href="{% static 'admin/css/jquery.floatingscroll.css' %}">
     <link rel="stylesheet" href="{% static 'vendor/select2/css/select2.min.css' %}">
 {% endblock %}
 
@@ -133,6 +134,7 @@
 {% block extrajs %}
     {{ block.super }}
     <!-- BEGIN change_form.html -->
+    <script type="text/javascript" src="{% static 'admin/js/jquery.floatingscroll.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'vendor/select2/js/select2.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'jazzmin/js/change_form.js' %}"></script>
     <script type="text/javascript" src="{% static 'admin/js/bootstrap3-typeahead.min.js' %}"></script>
@@ -142,6 +144,8 @@
     {% endif %}
     <script type="text/javascript">
         $(document).ready(function () {
+            $(".tabular").floatingScroll();
+
             {% if add %}
                 $('input:text, select').first().focus()
                 setTimeout(function() { $('body.popup input:text, body.popup select').first().focus() }, 400);
@@ -167,7 +171,7 @@
 
             if (url.includes("/change")) {
                 const save_button = '.button-save'
-                $(save_button).hide()
+                {#$(save_button).hide()#}
 
                 /* Modal */
                 const extra_rows = django.jQuery('body.popup .form-row').not('.has_original').not('.empty-form')
