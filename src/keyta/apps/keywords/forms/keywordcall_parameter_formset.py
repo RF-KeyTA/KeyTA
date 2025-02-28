@@ -122,12 +122,11 @@ class KeywordCallParameterFormset(forms.BaseInlineFormSet):
 
             form.fields['value'] = DynamicChoiceField(
                 widget=KeywordCallSelect(
+                    _('Wert auswählen oder eintragen'),
                     choices=choices,
                     attrs={
                         # Allow manual input
                         'data-tags': 'true',
-                        'data-width': '60%',
-                        'data-placeholder': _('Wert auswählen oder eintragen')
                     }
                 )
             )

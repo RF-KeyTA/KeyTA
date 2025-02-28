@@ -149,12 +149,16 @@ class KeywordCallSelect(BaseSelect):
         option_attrs = (
             self.build_attrs(self.attrs, attrs) if self.option_inherits_attrs else {}
         )
+
         if value is None:
             option_attrs.update({'disabled': 'true'})
+
         if selected:
             option_attrs.update(self.checked_attribute)
+
         if "id" in option_attrs:
             option_attrs["id"] = self.id_for_label(option_attrs["id"], index)
+
         return {
             "name": name,
             "value": value,
@@ -166,33 +170,6 @@ class KeywordCallSelect(BaseSelect):
             "template_name": self.option_template_name,
             "wrap_label": True,
         }
-
-    @property
-    def media(self):
-        self.i18n_name = get_select2_language()
-        extra = "" if settings.DEBUG else ".min"
-        i18n_file = (
-            ("admin/js/vendor/select2/i18n/%s.js" % self.i18n_name,)
-            if self.i18n_name
-            else ()
-        )
-        return forms.Media(
-            js=(
-                   "admin/js/vendor/jquery/jquery%s.js" % extra,
-                   "admin/js/vendor/select2/select2.full%s.js" % extra,
-               )
-               + i18n_file
-               + (
-                   "admin/js/jquery.init.js",
-                   "admin/js/autocomplete.js",
-               ),
-            css={
-                "screen": (
-                    "admin/css/vendor/select2/select2%s.css" % extra,
-                    "admin/css/autocomplete.css",
-                ),
-            },
-        )
 
 
 class ModelSelect2AdminWidget(ModelSelect2Widget):
