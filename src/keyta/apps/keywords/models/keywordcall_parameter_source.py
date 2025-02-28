@@ -11,6 +11,7 @@ class KeywordCallParameterSourceType(models.TextChoices):
     KEYWORD_PARAMETER = 'KEYWORD_PARAMETER', _('Schlüsselwort-Parameter')
     KW_CALL_RETURN_VALUE = 'KW_CALL_RETURN_VALUE', _('Aufrufs-Rückgabewert')
     VARIABLE_VALUE = 'VARIABLE_VALUE', _('Referenzwert')
+    VARIABLE_SCHEMA_FIELD = 'VARIABLE_SCHEMA_FIELD', _('Schemafeld')
 
 
 class KeywordCallParameterSource(CloneMixin, models.Model):
@@ -26,6 +27,12 @@ class KeywordCallParameterSource(CloneMixin, models.Model):
         null=True,
         default=None
     )
+    variable_schema_field = models.OneToOneField(
+        'variables.VariableSchemaField',
+        on_delete=models.CASCADE,
+        null=True,
+        default=None
+    )
     variable_value = models.OneToOneField(
         'variables.VariableValue',
         on_delete=models.CASCADE,
@@ -37,12 +44,13 @@ class KeywordCallParameterSource(CloneMixin, models.Model):
         choices=KeywordCallParameterSourceType.choices
     )
 
-    _clone_o2o_fields = ['kw_param', 'kw_call_ret_val', 'variable_value']
+    _clone_o2o_fields = ['kw_param', 'kw_call_ret_val', 'variable_schema_field', 'variable_value']
 
     def __str__(self):
         return str(
             self.kw_param or
             self.kw_call_ret_val or
+            self.variable_schema_field or
             self.variable_value
         )
 
@@ -63,7 +71,7 @@ class KeywordCallParameterSource(CloneMixin, models.Model):
                 user_input=None
             )
 
-        if self.variable_value:
+        if self.variable_schema_field or self.variable_value:
             return JSONValue(
                 arg_name=None,
                 kw_call_index=None,
@@ -79,6 +87,9 @@ class KeywordCallParameterSource(CloneMixin, models.Model):
 
         if self.kw_call_ret_val:
             self.type = KeywordCallParameterSourceType.KW_CALL_RETURN_VALUE
+
+        if self.variable_schema_field:
+            self.type = KeywordCallParameterSourceType.VARIABLE_SCHEMA_FIELD
 
         if self.variable_value:
             self.type = KeywordCallParameterSourceType.VARIABLE_VALUE
@@ -99,16 +110,25 @@ class KeywordCallParameterSource(CloneMixin, models.Model):
                 (Q(type=KeywordCallParameterSourceType.KEYWORD_PARAMETER) &
                  Q(kw_param__isnull=False) &
                  Q(kw_call_ret_val__isnull=True) &
+                 Q(variable_schema_field__isnull=True) &
                  Q(variable_value__isnull=True))
                 |
                 (Q(type=KeywordCallParameterSourceType.KW_CALL_RETURN_VALUE) &
                  Q(kw_param__isnull=True) &
                  Q(kw_call_ret_val__isnull=False) &
+                 Q(variable_schema_field__isnull=True) &
+                 Q(variable_value__isnull=True))
+                |
+                (Q(type=KeywordCallParameterSourceType.VARIABLE_SCHEMA_FIELD) &
+                 Q(kw_param__isnull=True) &
+                 Q(kw_call_ret_val__isnull=True) &
+                 Q(variable_schema_field__isnull=False) &
                  Q(variable_value__isnull=True))
                 |
                 (Q(type=KeywordCallParameterSourceType.VARIABLE_VALUE) &
                  Q(kw_param__isnull=True) &
                  Q(kw_call_ret_val__isnull=True) &
+                 Q(variable_schema_field__isnull=True) &
                  Q(variable_value__isnull=False))
             )
         ]
