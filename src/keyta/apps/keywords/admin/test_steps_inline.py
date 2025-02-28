@@ -1,5 +1,3 @@
-from django.utils.translation import gettext as _
-
 from keyta.admin.base_inline import SortableTabularInline
 from keyta.admin.field_delete_related_instance import DeleteRelatedField
 from keyta.apps.keywords.models.keyword import Keyword
