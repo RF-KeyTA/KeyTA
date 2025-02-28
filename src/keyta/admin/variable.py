@@ -2,7 +2,7 @@ from django import forms
 from django.contrib import admin
 from django.db.models.functions import Lower
 from django.forms import HiddenInput
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponseRedirect
 from django.utils.translation import gettext as _
 
 from adminsortable2.admin import SortableAdminBase
@@ -13,16 +13,17 @@ from keyta.widgets import BaseSelect
 
 from apps.variables.models import (
     Variable,
+    VariableDocumentation,
+    VariableInList,
     VariableQuickAdd,
     VariableSchemaField,
     VariableValue,
-    VariableInList,
     VariableWindowRelation,
 )
 from apps.windows.models import Window
 
 from .base_admin import BaseAdmin
-from .base_inline import TabularInlineWithDelete, SortableTabularInlineWithDelete
+from .base_inline import TabularInlineWithDelete, SortableTabularInlineWithDelete, BaseTabularInline
 from .window import QuickAddMixin
 
 
@@ -62,6 +63,7 @@ class ListElements(QuickAddMixin, SortableTabularInlineWithDelete):
 
 
 class Values(TabularInlineWithDelete):
+    fk_name = 'variable'
     model = VariableValue
     fields = ['name', 'value']
     extra = 0
@@ -124,12 +126,19 @@ class Windows(TabularInlineWithDelete):
 
 # TODO: If variable.in_list then show variable.in_list.list_variable
 class BaseVariableAdmin(SortableAdminBase, BaseAdmin):
-    list_display = ['system_list', 'name', 'description']
+    list_display = ['name', 'description']
     list_display_links = ['name']
-    list_filter = ['systems']
+    list_filter = ['systems', 'windows']
     ordering = [Lower('name')]
     search_fields = ['name']
     search_help_text = _('Name')
+
+    def change_view(self, request: HttpRequest, object_id, form_url="", extra_context=None):
+        if '_to_field' in request.GET:
+            variable_doc = VariableDocumentation.objects.get(id=object_id)
+            return HttpResponseRedirect(variable_doc.get_admin_url())
+
+        return super().change_view(request, object_id, form_url, extra_context)
 
     @admin.display(description=_('Systeme'))
     def system_list(self, obj):
@@ -246,16 +255,68 @@ class BaseVariableQuickAddAdmin(BaseAdmin):
 
         if not change:
             variable: Variable = obj
+            list_variable = None
 
             if list_id := request.GET.get('list_id', None):
+                list_variable = Variable.objects.get(id=list_id)
                 VariableInList.objects.create(
-                    list_variable=Variable.objects.get(id=list_id),
+                    list_variable=list_variable,
                     variable=variable
                 )
 
             if variable.schema:
                 for field in variable.schema.fields.all():
                     VariableValue.objects.create(
+                        list_variable=list_variable,
                         variable=variable,
                         name=field.name
                     )
+
+
+class DictionaryValues(BaseTabularInline):
+    fk_name = 'variable'
+    model = VariableValue
+    fields = ['name', 'value']
+    readonly_fields = ['name', 'value']
+    verbose_name = ''
+    verbose_name_plural = ''
+
+
+class ListValues(BaseTabularInline):
+    fk_name = 'list_variable'
+    model = VariableValue
+    fields = ['name', 'value']
+    readonly_fields = ['name', 'value']
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).filter(variable=self.variable_pk)
+
+
+class BaseVariableDocumentationAdmin(admin.ModelAdmin):
+    def get_fields(self, request, obj=None):
+        return []
+
+    def get_inline_instances(self, request, obj=None):
+        inline_instances = super().get_inline_instances(request, obj)
+
+        variable: Variable = obj
+
+        if variable.is_dict():
+            inline_instances.append(DictionaryValues(self.model, self.admin_site))
+
+        if variable.is_list():
+            variables = variable.elements.values_list('variable_id', 'variable__name')
+
+            for variable_pk, variable_name in variables:
+                inline_instance = ListValues(self.model, self.admin_site)
+                inline_instance.variable_pk = variable_pk
+                inline_instance.verbose_name_plural = variable_name
+                inline_instances.append(inline_instance)
+
+        return inline_instances
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False

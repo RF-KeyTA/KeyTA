@@ -83,6 +83,12 @@ class AbstractVariableInList(AbstractBaseModel):
 
 
 class AbstractVariableValue(AbstractBaseModel):
+    list_variable = models.ForeignKey(
+        'variables.Variable',
+        on_delete=models.CASCADE,
+        null=True,
+        related_name='values'
+    )
     variable = models.ForeignKey(
         'variables.Variable',
         on_delete=models.CASCADE
@@ -103,7 +109,6 @@ class AbstractVariableValue(AbstractBaseModel):
         self, force_insert=False, force_update=False, using=None,
             update_fields=None
     ):
-
         if not self.pk:
             super().save(force_insert, force_update, using, update_fields)
             KeywordCallParameterSource.objects.create(variable_value=self)

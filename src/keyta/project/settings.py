@@ -225,6 +225,7 @@ JAZZMIN_SETTINGS = {
         'resources.resourcekeyworddocumentation',
         'sequences.actioncall',
         'sequences.sequencequickadd',
+        'variables.variabledocumentation',
         'variables.variableinlist',
         'variables.variablevalue',
         'variables.variablewindowrelation',
