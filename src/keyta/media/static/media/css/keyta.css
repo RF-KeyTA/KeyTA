@@ -207,12 +207,13 @@ p img {
 }
 
 #jazzy-sidebar {
-  background: linear-gradient(
-      to top right,
-      var(--keyta-primary-color),
-      var(--keyta-tertiary-color),
-      var(--keyta-light-color)
-  );
+    background: linear-gradient(
+        to top right,
+        var(--keyta-primary-color),
+        var(--keyta-tertiary-color),
+        var(--keyta-light-color)
+    );
+    position: fixed;
 }
 
 .brand-text {
@@ -236,13 +237,6 @@ p img {
     background-color: var(--keyta-primary-color);
     color: white;
     vertical-align: middle
-}
-
-.card-body .tab-content {
-    min-height: 72vh;
-    max-height: 72vh;
-    overflow-y: auto;
-    overscroll-behavior: none;
 }
 
 .card-body.table-responsive {
