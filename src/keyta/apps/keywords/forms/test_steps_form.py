@@ -15,7 +15,7 @@ TestStepsForm = forms.modelform_factory(
     StepsForm,
     [],
     labels={
-        'to_keyword': _('Step')
+        'to_keyword': _('Sequenz')
     },
     widgets={
         'window': ModelSelect2AdminWidget(

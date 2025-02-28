@@ -28,8 +28,6 @@ class TestStepsInline(
 
         formset = super().get_formset(request, obj, **kwargs)
         formset.form.base_fields['window'].queryset = windows
-        formset.form.base_fields['to_keyword'].queryset = (
-            Keyword.objects.sequences() | Keyword.objects.actions()
-        )
+        formset.form.base_fields['to_keyword'].queryset = Keyword.objects.sequences()
 
         return formset
