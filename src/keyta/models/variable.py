@@ -7,8 +7,8 @@ from .base_model import AbstractBaseModel
 
 
 class VariableType(models.TextChoices):
-    DICT = 'DICT', _('Dictionary')
-    LIST = 'LIST', _('List')
+    DICT = 'DICT', _('Name-Wert Paaren')
+    LIST = 'LIST', _('Tabelle')
 
 
 class AbstractVariable(AbstractBaseModel):
@@ -33,7 +33,8 @@ class AbstractVariable(AbstractBaseModel):
     type = models.CharField(
         max_length=255,
         choices=VariableType.choices,
-        default=VariableType.DICT
+        default=VariableType.DICT,
+        verbose_name=_('Datenstruktur')
     )
     windows = models.ManyToManyField(
         'windows.Window',
