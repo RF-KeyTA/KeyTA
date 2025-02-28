@@ -32,6 +32,10 @@ class VariableDocumentationAdmin(BaseVariableDocumentationAdmin):
     pass
 
 
+@admin.register(VariableInList)
+class VariableInListAdmin(BaseAdmin):
+    pass
+
 
 @admin.register(VariableSchema)
 class VariableSchemaAdmin(BaseVariableSchemaAdmin):
@@ -60,9 +64,4 @@ class VariableQuickAddAdmin(BaseVariableQuickAddAdmin):
 
 @admin.register(VariableSchemaQuickAdd)
 class VariableSchemaQuickAddAdmin(BaseVariableSchemaQuickAddAdmin):
-    pass
-
-
-@admin.register(VariableInList)
-class VariableInListAdmin(BaseAdmin):
     pass

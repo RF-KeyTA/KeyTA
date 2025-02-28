@@ -21,6 +21,10 @@ class VariableDocumentation(Variable):
         verbose_name_plural = _('Referenzwerte')
 
 
+class VariableInList(AbstractVariableInList):
+    pass
+
+
 class VariableQuickAdd(Variable):
     class Meta:
         proxy = True
@@ -32,15 +36,15 @@ class VariableSchema(AbstractVariableSchema):
     pass
 
 
+class VariableSchemaField(AbstractVariableSchemaField):
+    pass
+
+
 class VariableSchemaQuickAdd(VariableSchema):
     class Meta:
         proxy = True
         verbose_name = _('Schema')
         verbose_name_plural = _('Schemata')
-
-
-class VariableSchemaField(AbstractVariableSchemaField):
-    pass
 
 
 class VariableValue(AbstractVariableValue):
@@ -56,7 +60,3 @@ class VariableWindowRelation(AbstractBaseModel, Variable.windows.through):
         proxy = True
         verbose_name = _('Beziehung zu Maske')
         verbose_name_plural = _('Beziehungen zu Masken')
-
-
-class VariableInList(AbstractVariableInList):
-    pass
