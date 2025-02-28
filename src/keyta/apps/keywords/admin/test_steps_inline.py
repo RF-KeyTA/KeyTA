@@ -17,7 +17,7 @@ class TestStepsInline(
 ):
     model = TestStep
     fk_name = 'testcase'
-    fields = ['window', 'to_keyword']
+    fields = ['window', 'variable', 'to_keyword']
     extra = 1
     form = TestStepsForm
 

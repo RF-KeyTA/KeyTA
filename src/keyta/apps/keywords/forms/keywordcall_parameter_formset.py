@@ -16,6 +16,60 @@ from ..models import (
 )
 
 
+def get_global_variables(system_ids: list[int]):
+    sources = (
+        KeywordCallParameterSource.objects
+        .filter(variable_value__variable__systems__in=system_ids)
+        .filter(variable_value__variable__windows__isnull=True)
+    )
+
+    return get_variables_choices(sources)
+
+
+def get_keyword_parameters(kw_call: KeywordCall):
+    return [[
+        _('Parameters'),
+        [
+            (source.get_value().jsonify(), str(source))
+            for source in KeywordCallParameterSource.objects
+            .filter(kw_param__keyword=kw_call.from_keyword)
+        ]
+    ]]
+
+
+def get_prev_return_values(kw_call: KeywordCall):
+    sources = KeywordCallParameterSource.objects.filter(
+        kw_call_ret_val__in=kw_call.get_previous_return_values()
+    )
+
+    if not sources.exists():
+        return []
+
+    return [[
+        _('Vorherige Rückgabewerte'),
+        [
+            (source.get_value().jsonify(), str(source))
+            for source in sources
+        ]
+    ]]
+
+
+def get_variables_choices(kw_call_param_sources: QuerySet):
+    variable_names = [source.variable_value.variable.name for source in kw_call_param_sources]
+    grouped_variable_values = defaultdict(list)
+
+    for variable_name, source in zip(variable_names, kw_call_param_sources):
+        grouped_variable_values[variable_name].append((source.get_value().jsonify(), str(source)))
+
+    return [
+        [
+            variable,
+            values
+        ]
+        for variable, values in grouped_variable_values.items()
+    ]
+
+
 def show_value(json_value: JSONValue) -> tuple:
     if json_value.user_input:
         return json_value.jsonify(), json_value.user_input
@@ -82,76 +136,4 @@ class KeywordCallParameterFormset(forms.BaseInlineFormSet):
                 form.fields['value'].help_text = _('Wert 1, Wert 2, ...')
 
     def get_choices(self, kw_call: KeywordCall):
-        system_ids = list(
-            kw_call.from_keyword.systems.values_list('pk', flat=True)
-        )
-        window_ids = list(
-            kw_call.from_keyword.windows.values_list('pk', flat=True)
-        )
-
-        return (
-            self.get_keyword_parameters(kw_call) + 
-            self.get_prev_return_values() + 
-            self.get_window_variables(window_ids, system_ids)
-        )
-
-    def get_keyword_parameters(self, kw_call: KeywordCall):
-        return [[
-            _('Parameters'),
-            [
-                (source.get_value().jsonify(), str(source))
-                for source in KeywordCallParameterSource.objects
-                .filter(kw_param__keyword=kw_call.from_keyword)
-            ]
-        ]]
-
-    def get_global_variables(self, system_ids: list[int]):
-        sources = (
-            KeywordCallParameterSource.objects
-            .filter(variable_value__variable__systems__in=system_ids)
-            .filter(variable_value__variable__windows__isnull=True)
-        )
-
-        return self.get_variables_choices(sources)
-
-    def get_prev_return_values(self):
-        kw_call: KeywordCall = self.instance
-        sources = KeywordCallParameterSource.objects.filter(
-            kw_call_ret_val__in=kw_call.get_previous_return_values()
-        )
-
-        if not sources.exists():
-            return []
-
-        return [[
-            _('Vorherige Rückgabewerte'),
-            [
-                (source.get_value().jsonify(), str(source))
-                for source in sources
-            ]
-        ]]
-
-    def get_variables_choices(self, kw_call_param_sources: QuerySet):
-        variable_names = [source.variable_value.variable.name for source in kw_call_param_sources]
-        grouped_variable_values = defaultdict(list)
-
-        for variable_name, source in zip(variable_names, kw_call_param_sources):
-            grouped_variable_values[variable_name].append((source.get_value().jsonify(), str(source)))
-
-        return [
-            [
-                variable,
-                values
-            ]
-            for variable, values in grouped_variable_values.items()
-        ]
-
-    def get_window_variables(self, window_ids: list[int], system_ids: list[int]):
-        sources = (
-            KeywordCallParameterSource.objects
-            .filter(variable_value__variable__windows__in=window_ids)
-            .filter(variable_value__variable__systems__in=system_ids)
-            .distinct()
-        )
-
-        return self.get_variables_choices(sources)
+        return get_keyword_parameters(kw_call) + get_prev_return_values(kw_call)

@@ -1,6 +1,7 @@
 from django.db.models import QuerySet
 
 from keyta.apps.keywords.forms import KeywordCallParameterFormset
+from keyta.apps.keywords.forms.keywordcall_parameter_formset import get_global_variables
 from keyta.apps.keywords.models import KeywordCall
 
 
@@ -15,4 +16,4 @@ class SetupTeardownParametersFormset(KeywordCallParameterFormset):
         if testcase := execution.testcase:
             systems = testcase.systems
 
-        return self.get_global_variables(system_ids=systems.values_list('id'))
+        return get_global_variables(system_ids=systems.values_list('id'))

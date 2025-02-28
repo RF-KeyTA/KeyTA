@@ -4,6 +4,7 @@ from django.utils.translation import gettext as _
 from keyta.apps.sequences.models import Sequence
 from keyta.widgets import ModelSelect2AdminWidget
 
+from apps.variables.models import Variable
 from apps.windows.models import Window
 
 from ..models import KeywordCall
@@ -23,6 +24,12 @@ TestStepsForm = forms.modelform_factory(
             model=Window,
             search_fields=['name__icontains'],
         ),
+        'variable': ModelSelect2AdminWidget(
+            placeholder=_('Referenzwert auswählen'),
+            model=Variable,
+            search_fields=['name__icontains'],
+            dependent_fields={'window': 'windows'},
+        ),
         'to_keyword': ModelSelect2AdminWidget(
             placeholder=_('Sequenz auswählen'),
             model=Sequence,
@@ -32,5 +39,5 @@ TestStepsForm = forms.modelform_factory(
     }
 )
 
-TestStepsForm.fields_can_view_related = ['window']
+TestStepsForm.fields_can_view_related = ['window', 'variable']
 TestStepsForm.fields_can_change_related = ['to_keyword']
