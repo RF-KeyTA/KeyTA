@@ -4,10 +4,9 @@ from pathlib import Path
 from django import forms
 from django.contrib import admin
 from django.http import HttpRequest
-from django.utils.safestring import mark_safe
-from django.utils.translation import gettext as _
 
 from keyta.admin.base_admin import BaseAdmin
+from keyta.admin.field_documentation import DocumentationField
 from keyta.rf_import.import_resource import import_resource
 
 from ..models import Resource
@@ -15,20 +14,16 @@ from .keywords_inline import Keywords
 
 
 @admin.register(Resource)
-class ResourceAdmin(BaseAdmin):
+class ResourceAdmin(DocumentationField, BaseAdmin):
     list_display = ['name']
     ordering = ['name']
     inlines = [Keywords]
-
-    @admin.display(description=_('Dokumentation'))
-    def dokumentation(self, obj):
-        return mark_safe(obj.documentation)
 
     def get_fields(self, request, obj=None):
         if not obj:
             return ['name']
 
-        return ['dokumentation']
+        return self.fields
 
     def formfield_for_dbfield(self, db_field, request, **kwargs):
         if db_field.name == 'name':
@@ -40,7 +35,7 @@ class ResourceAdmin(BaseAdmin):
         if not obj:
             return []
 
-        return ['dokumentation']
+        return self.readonly_fields
 
     def get_inlines(self, request, obj):
         if not obj:

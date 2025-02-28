@@ -7,12 +7,13 @@ from django.db import models
 from django import forms
 from django.forms import SelectMultiple, CheckboxSelectMultiple
 from django.http import HttpRequest, HttpResponseRedirect, HttpResponse
-from django.utils.safestring import mark_safe
 from django.utils.translation import gettext as _
 
 from tinymce.widgets import AdminTinyMCE
 
-from keyta.widgets import ModelSelect2MultipleAdminWidget, Select2MultipleWidget # type: ignore
+from keyta.widgets import ModelSelect2MultipleAdminWidget, Select2MultipleWidget
+
+from .field_documentation import DocumentationField
 
 
 class BaseAdmin(admin.ModelAdmin):
@@ -104,13 +105,8 @@ class BaseReadOnlyAdmin(admin.ModelAdmin):
         return False
 
 
-class BaseDocumentationAdmin(BaseReadOnlyAdmin):
-    fields = ['dokumentation']
-    readonly_fields = ['dokumentation']
-
-    @admin.display(description=_('Dokumentation'))
-    def dokumentation(self, obj):
-        return mark_safe(obj.documentation)
+class BaseDocumentationAdmin(DocumentationField, BaseReadOnlyAdmin):
+    pass
 
 
 class BaseAddAdmin(BaseAdmin):
