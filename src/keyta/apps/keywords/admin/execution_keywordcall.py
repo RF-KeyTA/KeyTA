@@ -10,14 +10,7 @@ from .keywordcall_parameters_inline import KeywordCallParametersInline
 
 class ExecutionKeywordCallParameterFormset(KeywordCallParameterFormset):
     def get_choices(self, kw_call: KeywordCall):
-        keyword = kw_call.execution.keyword
-        window_ids = list(keyword.windows.values_list('id', flat=True))
-        system_ids = list(keyword.systems.values_list('id', flat=True))
-
-        return self.get_window_variables(
-            window_ids,
-            system_ids
-        )
+        return []
 
 
 class ExecutionKeywordCallParametersInline(KeywordCallParametersInline):
