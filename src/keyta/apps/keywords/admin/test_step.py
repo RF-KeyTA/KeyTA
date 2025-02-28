@@ -60,11 +60,6 @@ class TestStepParametersInline(KeywordCallParametersInline):
 
 @admin.register(TestStep)
 class TestStepAdmin(KeywordCallAdmin):
-    fields = [
-        'to_keyword_doc',
-        'variable_doc',
-        'return_value'
-    ]
     readonly_fields = [
         'to_keyword_doc',
         'variable_doc',
@@ -83,6 +78,21 @@ class TestStepAdmin(KeywordCallAdmin):
             variable_doc.get_admin_url(),
             test_step.variable.name
         )
+
+    def get_fields(self, request, obj=None):
+        test_step: TestStep = obj
+
+        if test_step.variable:
+            return [
+                'to_keyword_doc',
+                'variable_doc',
+                'return_value'
+            ]
+
+        return [
+            'to_keyword_doc',
+            'return_value'
+        ]
 
     def get_inlines(self, request, obj):
         test_step: TestStep = obj
