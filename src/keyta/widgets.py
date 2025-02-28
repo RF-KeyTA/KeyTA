@@ -89,7 +89,7 @@ class BaseSelect(forms.Select):
         default_attrs = {
             'data-width': '100%',
             'data-placeholder': placeholder
-        } | (attrs if attrs else {})
+        } | (attrs or {})
 
         super().__init__(default_attrs, choices)
 
@@ -139,7 +139,7 @@ class BaseSelectMultiple(BaseSelect):
         return False
 
 
-class KeywordCallSelect(forms.Select):
+class KeywordCallSelect(BaseSelect):
     template_name = 'admin/keywordcall/select.html'
 
     def create_option(
