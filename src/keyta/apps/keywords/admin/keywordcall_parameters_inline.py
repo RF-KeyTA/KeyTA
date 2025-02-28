@@ -15,5 +15,10 @@ class KeywordCallParametersInline(BaseTabularInline):
     max_num = 0
     can_delete = False
 
-    def name(self, obj: KeywordCallParameter):
-        return obj.name.replace('_', ' ').title()
+    def name(self, kw_call_param: KeywordCallParameter):
+        name = kw_call_param.name
+
+        if '_' in name:
+            return name.replace('_', ' ').title()
+
+        return name
