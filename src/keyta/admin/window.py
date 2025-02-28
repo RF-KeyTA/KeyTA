@@ -4,6 +4,7 @@ from django.http import HttpRequest, HttpResponseRedirect
 from django.urls import reverse
 from django.utils.translation import gettext as _
 
+from keyta.admin.field_documentation import DocumentationField
 from keyta.admin.base_admin import BaseAdmin
 from keyta.admin.base_inline import BaseTabularInline
 from keyta.apps.actions.models import ActionQuickAdd
@@ -184,17 +185,14 @@ class Schemas(QuickAddMixin, BaseTabularInline):
         }
 
 
-class BaseWindowAdmin(BaseAdmin):
-    list_display = ['system_list', 'name', 'description']
+class BaseWindowAdmin(DocumentationField, BaseAdmin):
+    list_display = ['name', 'readonly_documentation']
     list_display_links = ['name']
     list_filter = ['systems']
+    list_per_page = 10
     ordering = ['name']
     search_fields = ['name']
     search_help_text = _('Name')
-
-    @admin.display(description=_('Systeme'))
-    def system_list(self, window: Window):
-        return list(window.systems.values_list('name', flat=True))
 
     fields = ['systems', 'name', 'description', 'documentation']
     form = form_with_select(

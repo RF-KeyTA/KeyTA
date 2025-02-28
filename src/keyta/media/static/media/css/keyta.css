@@ -168,7 +168,7 @@ iframe.related-iframe {
 
 p img {
     height: 100%;
-    width: 100%;
+    width: 50%;
     object-fit: contain;
 }
 
