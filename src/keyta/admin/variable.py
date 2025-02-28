@@ -163,7 +163,7 @@ class BaseVariableAdmin(SortableAdminBase, BaseAdmin):
 
         fields = []
 
-        if variable.schema:
+        if variable and variable.schema:
             fields += ['schema']
 
         return super().get_fields(request, obj) + fields
@@ -183,7 +183,7 @@ class BaseVariableAdmin(SortableAdminBase, BaseAdmin):
     def get_readonly_fields(self, request, obj=None):
         variable: Variable = obj
 
-        if variable.schema:
+        if variable and variable.schema:
             return ['schema']
 
         return []
