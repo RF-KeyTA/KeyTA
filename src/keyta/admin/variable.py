@@ -66,13 +66,13 @@ class Values(TabularInlineWithDelete):
     extra = 0
     min_num = 1
 
-    def get_max_num(self, request, obj=None, **kwargs):
-        variable: Variable = obj
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        field = super().formfield_for_dbfield(db_field, request, **kwargs)
 
-        if variable.schema:
-            return 0
+        if db_field.name == 'value':
+            field.required = False
 
-        return super().get_max_num(request, obj, **kwargs)
+        return field
 
     def get_fields(self, request, obj=None):
         variable: Variable = obj
@@ -81,6 +81,14 @@ class Values(TabularInlineWithDelete):
             return self.fields
 
         return super().get_fields(request, obj)
+
+    def get_max_num(self, request, obj=None, **kwargs):
+        variable: Variable = obj
+
+        if variable.schema:
+            return 0
+
+        return super().get_max_num(request, obj, **kwargs)
 
     def get_readonly_fields(self, request: HttpRequest, obj=None):
         variable: Variable = obj
