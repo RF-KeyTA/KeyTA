@@ -74,7 +74,8 @@ class AbstractVariableInList(AbstractBaseModel):
     variable = models.ForeignKey(
         'variables.Variable',
         on_delete=models.CASCADE,
-        related_name='in_list'
+        related_name='in_list',
+        verbose_name=_('Referenzwert')
     )
     index = models.PositiveSmallIntegerField(default=0)
 
