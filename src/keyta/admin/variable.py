@@ -240,6 +240,10 @@ class BaseVariableQuickAddAdmin(BaseAdmin):
                 widget=BaseSelect(_('Variablentyp auswählen'))
             )
 
+        if db_field.name == 'schema':
+            windows = request.GET['windows']
+            field.queryset = field.queryset.filter(windows__in=[windows])
+
         if request.GET.get('list_id', None):
             if db_field.name in {'schema', 'type'}:
                 field.widget = HiddenInput()
