@@ -9,7 +9,7 @@ from adminsortable2.admin import SortableAdminBase, CustomInlineFormSet
 
 from keyta.forms import form_with_select
 from keyta.models.variable import AbstractVariable
-from keyta.widgets import BaseSelect, link
+from keyta.widgets import BaseSelect, link, Icon
 
 from apps.variables.models import (
     Variable,
@@ -21,6 +21,7 @@ from apps.variables.models import (
     VariableWindowRelation,
 )
 from apps.windows.models import Window
+from project.settings import FA_ICONS
 
 from .base_admin import BaseAdmin
 from .base_inline import TabularInlineWithDelete, SortableTabularInlineWithDelete, BaseTabularInline
@@ -46,11 +47,21 @@ class ListElements(QuickAddMixin, SortableTabularInlineWithDelete):
     model = VariableInList
     fk_name = 'list_variable'
     formset = ListElementsFormset
-    fields = ['variable']
+    fields = ['variable', 'view']
     quick_add_field = 'variable'
     quick_add_model = VariableQuickAdd
     verbose_name = _('Referenzwert')
     verbose_name_plural = _('Referenzwerte')
+
+    @admin.display(description='')
+    def view(self, obj: VariableInList):
+        return link(
+            obj.variable.get_admin_url(),
+            str(Icon(FA_ICONS.view, {'font-size': '18px', 'margin-top': '10px'}))
+        )
+
+    def get_readonly_fields(self, request: HttpRequest, obj=None):
+        return super().get_readonly_fields(request, obj) + ['view']
 
     def quick_add_url_params(self, request: HttpRequest):
         variable_id = request.resolver_match.kwargs['object_id']
