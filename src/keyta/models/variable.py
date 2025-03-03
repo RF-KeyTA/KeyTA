@@ -78,6 +78,9 @@ class AbstractVariableInList(AbstractBaseModel):
     )
     index = models.PositiveSmallIntegerField(default=0)
 
+    def __str__(self):
+        return f'{self.list_variable.name}[{self.index}] = {self.variable.name}'
+
     class Meta:
         abstract = True
         ordering = ['index']
