@@ -156,7 +156,7 @@ class Variables(QuickAddMixin, BaseTabularInline):
 
         return  query_params
 
-    @admin.display(description=_('System'))
+    @admin.display(description=_('Systeme'))
     def systems(self, obj):
         return ', '.join(obj.variable.systems.values_list('name', flat=True))
 
