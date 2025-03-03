@@ -156,7 +156,10 @@ class BaseVariableAdmin(SortableAdminBase, BaseAdmin):
     def get_fields(self, request, obj=None):
         variable: Variable = obj
 
-        fields = []
+        fields = self.fields
+
+        if variable.windows.exists():
+            fields = ['systems', 'windows', 'name', 'description']
 
         if variable and variable.schema:
             fields += ['schema']
@@ -164,7 +167,7 @@ class BaseVariableAdmin(SortableAdminBase, BaseAdmin):
         if variable.in_list.exists():
             fields += ['in_list']
 
-        return super().get_fields(request, obj) + fields
+        return fields
 
     def get_inlines(self, request, obj):
         variable: AbstractVariable = obj
@@ -178,6 +181,9 @@ class BaseVariableAdmin(SortableAdminBase, BaseAdmin):
         variable: Variable = obj
 
         fields = []
+
+        if variable.windows.exists():
+            fields += ['windows']
 
         if variable and variable.schema:
             fields += ['schema']
