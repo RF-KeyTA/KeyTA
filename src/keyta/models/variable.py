@@ -7,7 +7,7 @@ from .base_model import AbstractBaseModel
 
 
 class VariableType(models.TextChoices):
-    DICT = 'DICT', _('Name-Wert Paare')
+    DICT = 'DICT', _('Datensatz')
     LIST = 'LIST', _('Tabelle')
 
 
