@@ -5,7 +5,7 @@ from django.forms import HiddenInput
 from django.http import HttpRequest, HttpResponseRedirect
 from django.utils.translation import gettext as _
 
-from adminsortable2.admin import SortableAdminBase
+from adminsortable2.admin import SortableAdminBase, CustomInlineFormSet
 
 from keyta.forms import form_with_select
 from keyta.models.variable import AbstractVariable
@@ -27,21 +27,30 @@ from .base_inline import TabularInlineWithDelete, SortableTabularInlineWithDelet
 from .window import QuickAddMixin
 
 
+class ListElementsFormset(CustomInlineFormSet):
+    def add_fields(self, form, index):
+        super().add_fields(form, index)
+
+        variable_field = form.fields['variable']
+
+        # Extra forms have index None
+        if index is not None:
+            form.fields['variable'] = forms.ModelChoiceField(
+                variable_field.queryset,
+                disabled=True,
+                widget=BaseSelect('')
+            )
+
+
 class ListElements(QuickAddMixin, SortableTabularInlineWithDelete):
     model = VariableInList
     fk_name = 'list_variable'
+    formset = ListElementsFormset
     fields = ['variable']
-    form = forms.modelform_factory(
-        VariableInList,
-        fields=['variable']
-    )
     quick_add_field = 'variable'
     quick_add_model = VariableQuickAdd
     verbose_name = _('Referenzwert')
     verbose_name_plural = _('Referenzwerte')
-
-    def has_change_permission(self, request, obj=None) -> bool:
-        return False
 
     def quick_add_url_params(self, request: HttpRequest):
         variable_id = request.resolver_match.kwargs['object_id']
