@@ -9,7 +9,7 @@ from adminsortable2.admin import SortableAdminBase
 
 from keyta.forms import form_with_select
 from keyta.models.variable import AbstractVariable
-from keyta.widgets import BaseSelect
+from keyta.widgets import BaseSelect, link
 
 from apps.variables.models import (
     Variable,
@@ -129,7 +129,6 @@ class Windows(TabularInlineWithDelete):
     def has_change_permission(self, request, obj=None) -> bool:
         return False
 
-# TODO: If variable.in_list then show variable.in_list.list_variable
 class BaseVariableAdmin(SortableAdminBase, BaseAdmin):
     list_display = ['name', 'description']
     list_display_links = ['name']
@@ -162,6 +161,9 @@ class BaseVariableAdmin(SortableAdminBase, BaseAdmin):
         if variable and variable.schema:
             fields += ['schema']
 
+        if variable.in_list.exists():
+            fields += ['in_list']
+
         return super().get_fields(request, obj) + fields
 
     def get_inlines(self, request, obj):
@@ -175,10 +177,23 @@ class BaseVariableAdmin(SortableAdminBase, BaseAdmin):
     def get_readonly_fields(self, request, obj=None):
         variable: Variable = obj
 
-        if variable and variable.schema:
-            return ['schema']
+        fields = []
 
-        return []
+        if variable and variable.schema:
+            fields += ['schema']
+
+        if variable.in_list.exists():
+            fields += ['in_list']
+
+        return fields
+
+    @admin.display(description=_('Tabelle'))
+    def in_list(self, variable: Variable):
+        if in_list := variable.in_list.first():
+            return link(
+                in_list.list_variable.get_admin_url(),
+                str(in_list.list_variable)
+            )
 
 
 class SchemaFields(TabularInlineWithDelete):
