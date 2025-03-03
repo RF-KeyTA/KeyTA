@@ -40,9 +40,6 @@ class ListElements(QuickAddMixin, SortableTabularInlineWithDelete):
     verbose_name = _('Referenzwert')
     verbose_name_plural = _('Referenzwerte')
 
-    def get_queryset(self, request):
-        return super().get_queryset(request).order_by('variable__name')
-
     def has_change_permission(self, request, obj=None) -> bool:
         return False
 
@@ -139,15 +136,6 @@ class BaseVariableAdmin(SortableAdminBase, BaseAdmin):
             return HttpResponseRedirect(variable_doc.get_admin_url())
 
         return super().change_view(request, object_id, form_url, extra_context)
-
-    @admin.display(description=_('Systeme'))
-    def system_list(self, obj):
-        variable: AbstractVariable = obj
-
-        if not variable.systems.exists():
-            return _('System unabhängig')
-
-        return list(variable.systems.values_list('name', flat=True))
 
     fields = ['systems', 'name', 'description']
     form = form_with_select(
