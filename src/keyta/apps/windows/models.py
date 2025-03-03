@@ -44,5 +44,5 @@ class WindowSchemaRelation(AbstractBaseModel, VariableSchema.windows.through):
     class Meta:
         auto_created = True
         proxy = True
-        verbose_name = _('Schema')
-        verbose_name_plural = _('Schemata')
+        verbose_name = _('Vorlage')
+        verbose_name_plural = _('Vorlagen')

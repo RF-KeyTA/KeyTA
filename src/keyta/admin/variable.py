@@ -213,7 +213,7 @@ class BaseVariableQuickAddAdmin(BaseAdmin):
     form = form_with_select(
         VariableQuickAdd,
         'schema',
-        _('Schema auswählen')
+        _('Vorlage auswählen')
     )
 
     def formfield_for_manytomany(self, db_field, request, **kwargs):

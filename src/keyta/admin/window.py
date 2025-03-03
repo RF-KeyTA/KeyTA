@@ -167,7 +167,7 @@ class Schemas(QuickAddMixin, BaseTabularInline):
         WindowSchemaRelation,
         fields=['variableschema'],
         labels={
-            'variableschema': _('Schema')
+            'variableschema': _('Vorlage')
         }
     )
 

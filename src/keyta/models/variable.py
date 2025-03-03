@@ -23,7 +23,8 @@ class AbstractVariable(AbstractBaseModel):
     schema = models.ForeignKey(
         'variables.VariableSchema',
         null=True,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        verbose_name=_('Vorlage')
     )
     systems = models.ManyToManyField(
         'systems.System',
@@ -142,8 +143,8 @@ class AbstractVariableSchema(AbstractBaseModel):
 
     class Meta:
         abstract = True
-        verbose_name = _('Schema')
-        verbose_name_plural = _('Schemata')
+        verbose_name = _('Vorlage')
+        verbose_name_plural = _('Vorlagen')
 
 
 class AbstractVariableSchemaField(AbstractBaseModel):

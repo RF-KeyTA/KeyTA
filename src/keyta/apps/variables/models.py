@@ -43,8 +43,8 @@ class VariableSchemaField(AbstractVariableSchemaField):
 class VariableSchemaQuickAdd(VariableSchema):
     class Meta:
         proxy = True
-        verbose_name = _('Schema')
-        verbose_name_plural = _('Schemata')
+        verbose_name = _('Vorlage')
+        verbose_name_plural = _('Vorlagen')
 
 
 class VariableValue(AbstractVariableValue):
