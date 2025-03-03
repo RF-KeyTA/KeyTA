@@ -77,7 +77,7 @@ class Values(TabularInlineWithDelete):
     def get_fields(self, request, obj=None):
         variable: Variable = obj
 
-        if variable.schema:
+        if variable and variable.schema:
             return self.fields
 
         return super().get_fields(request, obj)
@@ -85,7 +85,7 @@ class Values(TabularInlineWithDelete):
     def get_max_num(self, request, obj=None, **kwargs):
         variable: Variable = obj
 
-        if variable.schema:
+        if variable and variable.schema:
             return 0
 
         return super().get_max_num(request, obj, **kwargs)
@@ -93,7 +93,7 @@ class Values(TabularInlineWithDelete):
     def get_readonly_fields(self, request: HttpRequest, obj=None):
         variable: Variable = obj
 
-        if variable.schema:
+        if variable and variable.schema:
             return ['name']
 
         return super().get_readonly_fields(request, obj)
@@ -167,14 +167,10 @@ class BaseVariableAdmin(SortableAdminBase, BaseAdmin):
     def get_inlines(self, request, obj):
         variable: AbstractVariable = obj
 
-        if not variable or not variable.systems.exists():
-            return []
-
-        if variable.type == 'DICT':
-            return [Values]
-
-        if variable.type == 'LIST':
+        if variable and variable.type == 'LIST':
             return [ListElements]
+
+        return self.inlines
 
     def get_readonly_fields(self, request, obj=None):
         variable: Variable = obj
