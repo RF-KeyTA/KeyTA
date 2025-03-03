@@ -143,7 +143,7 @@ class AbstractVariableSchema(AbstractBaseModel):
     class Meta:
         abstract = True
         verbose_name = _('Schema')
-        verbose_name_plural = _('Schemas')
+        verbose_name_plural = _('Schemata')
 
 
 class AbstractVariableSchemaField(AbstractBaseModel):
@@ -170,5 +170,5 @@ class AbstractVariableSchemaField(AbstractBaseModel):
 
     class Meta:
         abstract = True
-        verbose_name = _('Field')
-        verbose_name_plural = _('Fields')
+        verbose_name = _('Feld')
+        verbose_name_plural = _('Felder')
