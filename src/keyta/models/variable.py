@@ -52,6 +52,25 @@ class AbstractVariable(AbstractBaseModel):
     def is_list(self):
         return self.type == VariableType.LIST
 
+    def to_robot(self):
+        if self.is_dict():
+            return (
+                '&{%s}' % self.name,
+                {
+                    value.name: value.value
+                    for value in self.values.all()
+                }
+            )
+
+        if self.is_list():
+            return (
+                '@{%s}' % self.name,
+                [
+                    '${%s}' % element.variable.name
+                    for element in self.elements.all()
+                ]
+            )
+
     class Meta:
         abstract = True
         verbose_name = _('Referenzwert')
@@ -91,12 +110,12 @@ class AbstractVariableValue(AbstractBaseModel):
     list_variable = models.ForeignKey(
         'variables.Variable',
         on_delete=models.CASCADE,
-        null=True,
-        related_name='values'
+        null=True
     )
     variable = models.ForeignKey(
         'variables.Variable',
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name='values'
     )
     name = models.CharField(
         max_length=255,

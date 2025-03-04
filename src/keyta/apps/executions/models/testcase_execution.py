@@ -4,9 +4,10 @@ from django.contrib.auth.models import AbstractUser
 from django.db.models import QuerySet
 from django.utils.translation import gettext as _
 
-from keyta.apps.keywords.models import Keyword, KeywordCall
+from keyta.apps.keywords.models import Keyword, KeywordCall, TestStep
 from keyta.apps.libraries.models import LibraryImport
 from keyta.apps.resources.models import Resource, ResourceImport
+from keyta.models.variable import AbstractVariable, AbstractVariableInList
 from keyta.rf_export.testsuite import RFTestSuite
 
 from ..errors import ValidationError
@@ -62,9 +63,24 @@ class TestCaseExecution(Execution):
             if to_keyword := test_teardown.to_keyword:
                 keywords[to_keyword.id] = to_keyword.to_robot()  # to_keyword.get_admin_url()
 
+        dict_variables = []
+        list_variables = []
+
+        step: TestStep
+        for step in self.testcase.steps.all():
+            variable: AbstractVariable = step.variable
+            if variable and variable.is_list():
+                    list_variables.append(variable.to_robot())
+
+                    element: AbstractVariableInList
+                    for element in variable.elements.all():
+                        dict_variables.append(element.variable.to_robot())
+
         return {
             'name': self.testcase.name,
             'settings': self.get_rf_settings(user),
+            'dict_variables': dict_variables,
+            'list_variables': list_variables,
             'keywords': list(keywords.values()),
             'testcases': [self.testcase.to_robot()]
         }

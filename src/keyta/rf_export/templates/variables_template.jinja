@@ -1,4 +1,8 @@
 *** Variables ***
-{%- for variable in variables %}
-{{ variable.name }}     {{ variable.value }}
+{%- for name, dict_v in dict_variables %}
+{{ name }}     {{ kwargs_list(dict_v) }}
+{%- endfor %}
+
+{%- for name, list_v in list_variables %}
+{{ name }}     {{ rf_join(list_v) }}
 {%- endfor %}

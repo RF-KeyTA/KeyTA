@@ -1,5 +1,9 @@
 {% include 'settings_template.jinja' %}
 
+{% if dict_variables or list_variables %}
+{% include 'variables_template.jinja' %}
+{%- endif %}
+
 {% if keywords %}
 {% include 'keywords_template.jinja' %}
 {%- endif %}
