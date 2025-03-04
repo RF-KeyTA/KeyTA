@@ -21,6 +21,9 @@ class TestStepsInline(
     extra = 1
     form = TestStepsForm
 
+    def get_fields(self, request, obj=None):
+        return ['window', 'to_keyword', 'args', 'variable', 'delete']
+
     def get_formset(self, request, obj=None, **kwargs):
         testcase: AbstractTestCase = obj
         systems = testcase.systems.all()
