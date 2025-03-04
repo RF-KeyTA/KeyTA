@@ -1,4 +1,5 @@
 from django import forms
+from django.conf import settings
 from django.contrib import admin
 from django.db.models.functions import Lower
 from django.forms import HiddenInput
@@ -21,7 +22,6 @@ from apps.variables.models import (
     VariableWindowRelation,
 )
 from apps.windows.models import Window
-from project.settings import FA_ICONS
 
 from .base_admin import BaseAdmin
 from .base_inline import TabularInlineWithDelete, SortableTabularInlineWithDelete, BaseTabularInline
@@ -57,7 +57,7 @@ class ListElements(QuickAddMixin, SortableTabularInlineWithDelete):
     def view(self, obj: VariableInList):
         return link(
             obj.variable.get_admin_url(),
-            str(Icon(FA_ICONS.view, {'font-size': '18px', 'margin-top': '10px'}))
+            str(Icon(settings.FA_ICONS.view, {'font-size': '18px', 'margin-top': '10px'}))
         )
 
     def get_readonly_fields(self, request: HttpRequest, obj=None):
