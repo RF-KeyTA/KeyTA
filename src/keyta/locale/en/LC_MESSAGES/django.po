@@ -3,12 +3,11 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-04 08:38+0100\n"
+"POT-Creation-Date: 2025-03-04 13:35+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -50,7 +49,7 @@ msgstr "Window"
 #: .\admin\system.py:31 .\admin\variable.py:126 .\admin\variable.py:128
 #: .\apps\actions\admin\windows_inline.py:24 .\apps\windows\apps.py:8
 #: .\apps\windows\models.py:12 .\apps\windows\models.py:26
-#: .\models\variable.py:43 .\models\variable.py:139
+#: .\models\variable.py:43 .\models\variable.py:142
 msgid "Masken"
 msgstr "Windows"
 
@@ -104,8 +103,7 @@ msgstr "Add Systems"
 msgid "Referenzwert"
 msgstr "Reference Value"
 
-#: .\admin\variable.py:54 .\admin\window.py:132
-#: .\apps\keywords\models\keywordcall.py:89 .\apps\variables\apps.py:7
+#: .\admin\variable.py:54 .\admin\window.py:132 .\apps\variables\apps.py:7
 #: .\apps\variables\models.py:21 .\apps\variables\models.py:32
 #: .\models\variable.py:58
 msgid "Referenzwerte"
@@ -115,17 +113,19 @@ msgstr "Reference Values"
 msgid "Tabelle"
 msgstr "Table"
 
-#: .\admin\variable.py:257
-#, fuzzy
-#| msgid "Maske auswählen"
+#: .\admin\variable.py:265
 msgid "Vorlage auswählen"
-msgstr "Select a Window"
+msgstr "Select a Template"
 
-#: .\admin\variable.py:277
-#, fuzzy
-#| msgid "Bibliothek auswählen"
+#: .\admin\variable.py:285
 msgid "Variablentyp auswählen"
-msgstr "Select a Library"
+msgstr "Select a Type"
+
+#: .\admin\variable.py:329 .\apps\keywords\models\keywordcall_parameters.py:29
+#: .\apps\libraries\models\library_import_parameter.py:21
+#: .\models\variable.py:107 .\models\variable.py:134
+msgid "Wert"
+msgstr "Value"
 
 #: .\admin\window.py:58
 msgid "Klicke auf das Plus-Symbol"
@@ -161,7 +161,7 @@ msgid "Sequenzen"
 msgstr "Sequences"
 
 #: .\admin\window.py:170 .\apps\variables\models.py:46
-#: .\apps\windows\models.py:47 .\models\variable.py:27 .\models\variable.py:150
+#: .\apps\windows\models.py:47 .\models\variable.py:27 .\models\variable.py:153
 msgid "Vorlage"
 msgstr "Template"
 
@@ -211,9 +211,9 @@ msgstr "Exec."
 msgid "Anbindung an ein laufendes System"
 msgstr "Attach to a running system"
 
-#: .\apps\executions\admin\keyword_execution_inline.py:30
+#: .\apps\executions\admin\keyword_execution_inline.py:20
 #: .\apps\executions\admin\setup_teardown_inline.py:26
-#: .\apps\keywords\admin\field_keywordcall_args.py:43 .\models\variable.py:132
+#: .\apps\keywords\admin\field_keywordcall_args.py:43 .\models\variable.py:135
 msgid "Werte"
 msgstr "Values"
 
@@ -393,10 +393,8 @@ msgid "Wert 1, Wert 2, ..."
 msgstr "Value 1, value 2, ..."
 
 #: .\apps\keywords\forms\test_steps_form.py:28
-#, fuzzy
-#| msgid "Sequenz auswählen"
 msgid "Referenzwert auswählen"
-msgstr "Select a Sequence"
+msgstr "Select a Reference Value"
 
 #: .\apps\keywords\forms\test_steps_form.py:34
 msgid "Sequenz auswählen"
@@ -466,6 +464,10 @@ msgstr "Keyword Call"
 msgid "Testschritt"
 msgstr "Test Step"
 
+#: .\apps\keywords\models\keywordcall.py:89
+msgid "Referenzwerte (optional)"
+msgstr "Reference Values (optional)"
+
 #: .\apps\keywords\models\keywordcall.py:277
 #: .\apps\keywords\models\robot_keywordcall.py:29
 #: .\apps\keywords\models\test_step.py:28
@@ -499,12 +501,6 @@ msgstr "Parameter reference"
 #: .\apps\keywords\models\keywordcall_parameter_source.py:136
 msgid "Parameter-Referenzen"
 msgstr "Parameter references"
-
-#: .\apps\keywords\models\keywordcall_parameters.py:29
-#: .\apps\libraries\models\library_import_parameter.py:21
-#: .\models\variable.py:107 .\models\variable.py:131
-msgid "Wert"
-msgstr "Value"
 
 #: .\apps\keywords\models\window_keyword.py:39 .\models\testcase.py:68
 msgid " Kopie"
@@ -548,8 +544,6 @@ msgid "Die Bibliothek \"{name}\" ist nicht vorhanden"
 msgstr "The library \"{name}\" is not available"
 
 #: .\apps\libraries\management\commands\import_library.py:20
-#, fuzzy, python-brace-format
-#| msgid "Die Bibliothek \"{library_name}\" wurde erfolgreich aktualisiert"
 msgid "Die Bibliothek \"{library}\" wurde erfolgreich importiert."
 msgstr "The library \"{library_name}\" was successfully imported"
 
@@ -640,7 +634,7 @@ msgid "Testfall"
 msgstr "Test Case"
 
 #: .\apps\variables\models.py:47 .\apps\windows\models.py:48
-#: .\models\variable.py:151
+#: .\models\variable.py:154
 msgid "Vorlagen"
 msgstr "Templates"
 
@@ -673,16 +667,14 @@ msgid "Datensatz"
 msgstr "Record"
 
 #: .\models\variable.py:38
-#, fuzzy
-#| msgid "Datensatz"
 msgid "Datenstruktur"
-msgstr "Record"
+msgstr "Data Structure"
 
-#: .\models\variable.py:178
+#: .\models\variable.py:181
 msgid "Feld"
 msgstr "Field"
 
-#: .\models\variable.py:179
+#: .\models\variable.py:182
 msgid "Felder"
 msgstr "Fields"
 
@@ -832,26 +824,3 @@ msgstr ""
 #: .\templates\jazzmin\includes\horizontal_tabs.html:2
 msgid "General"
 msgstr ""
-
-#~ msgid "Menge"
-#~ msgstr "Quantity"
-
-#~ msgid "Instanz"
-#~ msgstr "One Record"
-
-#, fuzzy
-#~| msgid "System auswählen"
-#~ msgid "Schema auswählen"
-#~ msgstr "Select a System"
-
-#~ msgid "Schemata"
-#~ msgstr "Schemas"
-
-#~ msgid "Name-Wert Paare"
-#~ msgstr "Name-value pairs"
-
-#~ msgid "System unabhängig"
-#~ msgstr "System-independent"
-
-#~ msgid "Globale Referenzwerte"
-#~ msgstr "Global Reference Values"
