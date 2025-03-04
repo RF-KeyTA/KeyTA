@@ -55,7 +55,7 @@ def gen_rf_var(name: str) -> str:
     return "${" + name + "}"
 
 
-def library_args(kwargs: dict[str, str]):
+def kwargs_list(kwargs: dict[str, str]):
     return rf_join(dict_as_kwargs(kwargs))
 
 
@@ -69,7 +69,7 @@ def splitlines(string: str) -> list[str]:
 env = Environment(loader=PackageLoader('keyta.rf_export'))
 env.globals['call_keyword'] = call_keyword
 env.globals['keyword_arguments'] = keyword_arguments
-env.globals['library_args'] = library_args
+env.globals['kwargs_list'] = kwargs_list
 env.filters['splitlines'] = splitlines
 
 
