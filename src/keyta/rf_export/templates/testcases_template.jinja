@@ -1,0 +1,18 @@
+*** Test Cases ***
+{%- for testcase in testcases %}
+{{ testcase.name }}
+    {%- if testcase.doc %}
+    [Documentation]    {%- for line in testcase.doc|splitlines %}
+    ...  {{ line }}
+    {%- endfor %}
+    {%- endif %}
+    {%- for step in testcase.steps %}
+    {%- if step.list_var %}
+    FOR   ${row}   IN   {{ step.list_var }}
+        {{ call_keyword(step) }}
+    END
+    {%- else %}
+    {{ call_keyword(step) }}
+    {%- endif %}
+    {%- endfor %}
+{%- endfor %}

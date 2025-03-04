@@ -192,15 +192,26 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
         kwargs = parameters.kwargs()
         return_value: KeywordCallReturnValue = self.return_value.first()
 
+        rf_args = [arg.to_robot() for arg in args]
+        list_var = None
+
+        if self.variable and self.variable.is_list():
+            list_var = '@{%s}' % self.variable.name
+            rf_args = [
+                '${row}[%s]' % arg.name
+                for arg in args
+            ]
+
         return {
             'keyword': self.to_keyword.unique_name,
-            'args': [arg.to_robot() for arg in args],
+            'args': rf_args,
             'kwargs': {kwarg.name: kwarg.to_robot() for kwarg in kwargs},
             'return_value': (
                 '${' + str(return_value) + '}'
                 if return_value and return_value.is_set
                 else None
-            )
+            ),
+            'list_var': list_var
         }
 
     def update_parameter_values(self):
