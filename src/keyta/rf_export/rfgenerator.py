@@ -70,6 +70,7 @@ env = Environment(loader=PackageLoader('keyta.rf_export'))
 env.globals['call_keyword'] = call_keyword
 env.globals['keyword_arguments'] = keyword_arguments
 env.globals['kwargs_list'] = kwargs_list
+env.globals['rf_join'] = rf_join
 env.filters['splitlines'] = splitlines
 
 
