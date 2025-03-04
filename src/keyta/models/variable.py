@@ -66,6 +66,7 @@ class AbstractVariable(AbstractBaseModel):
 
 
 class AbstractVariableInList(AbstractBaseModel):
+    index = models.PositiveSmallIntegerField(default=0)
     list_variable = models.ForeignKey(
         'variables.Variable',
         on_delete=models.CASCADE,
@@ -77,7 +78,6 @@ class AbstractVariableInList(AbstractBaseModel):
         related_name='in_list',
         verbose_name=_('Referenzwert')
     )
-    index = models.PositiveSmallIntegerField(default=0)
 
     def __str__(self):
         return f'{self.list_variable.name}[{self.index}] = {self.variable.name}'
