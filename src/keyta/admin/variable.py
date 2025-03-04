@@ -227,6 +227,14 @@ class SchemaFields(TabularInlineWithDelete):
     fields = ['name']
     min_num = 1
 
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        field = super().formfield_for_dbfield(db_field, request, **kwargs)
+
+        if db_field.name == 'name':
+            field.widget.attrs.update({'style': 'width: 100%'})
+
+        return field
+
 
 class BaseVariableSchemaAdmin(BaseAdmin):
     fields = ['name']
