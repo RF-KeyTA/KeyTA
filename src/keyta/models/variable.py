@@ -110,6 +110,9 @@ class AbstractVariableValue(AbstractBaseModel):
     def __str__(self):
         return self.name
 
+    def current_value(self):
+        return self.value
+
     def save(
         self, force_insert=False, force_update=False, using=None,
             update_fields=None

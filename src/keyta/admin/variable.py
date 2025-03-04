@@ -321,10 +321,14 @@ class BaseVariableQuickAddAdmin(BaseAdmin):
 class DictionaryValues(BaseTabularInline):
     fk_name = 'variable'
     model = VariableValue
-    fields = ['name', 'value']
-    readonly_fields = ['name', 'value']
+    fields = ['name', 'current_value']
+    readonly_fields = ['name', 'current_value']
     verbose_name = ''
     verbose_name_plural = ''
+
+    @admin.display(description=_('Wert'))
+    def current_value(self, variable_value: VariableValue):
+        return variable_value.current_value()
 
 
 class ListValues(BaseTabularInline):
