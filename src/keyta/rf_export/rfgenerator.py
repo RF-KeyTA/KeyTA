@@ -10,9 +10,16 @@ from keyta.rf_export.testsuite import RFTestSuite
 _logger = logging.getLogger('django')
 
 
+def rf_var(name: str) -> str:
+    return "${" + name + "}"
+
+
+EMPTY = rf_var('EMPTY')
+
+
 def call_keyword(keyword_call: RFKeywordCall):
     kw_call_args = [
-        arg or '${EMPTY}'
+        arg or EMPTY
         for arg in keyword_call['args']
     ]
 
@@ -30,7 +37,7 @@ def call_keyword(keyword_call: RFKeywordCall):
 
 def dict_as_kwargs(dic):
     return [
-        escape_spaces(f'{key}={val}')
+        escape_spaces(f'{key}={val or EMPTY}')
         for key, val in dic.items()
     ]
 
@@ -45,18 +52,18 @@ def escape_spaces(text: str):
 
 def keyword_arguments(args, kwargs):
     return rf_join(
-        [gen_rf_var(arg) for arg in args] +
-        [gen_rf_var(kwarg) + '=' + (default_value or gen_rf_var('EMPTY'))
-        for kwarg, default_value in kwargs.items()]
+        [rf_var(arg) for arg in args] +
+        [rf_var(kwarg) + '=' + (default_value or EMPTY)
+         for kwarg, default_value in kwargs.items()]
     )
-
-
-def gen_rf_var(name: str) -> str:
-    return "${" + name + "}"
 
 
 def kwargs_list(kwargs: dict[str, str]):
     return rf_join(dict_as_kwargs(kwargs))
+
+
+def rf_join(strings: list[str]):
+    return "   ".join(strings)
 
 
 def splitlines(string: str) -> list[str]:
@@ -82,7 +89,3 @@ def gen_testsuite(testsuite: RFTestSuite) -> str:
 def gen_resource(resource: RFResource) -> str:
     resource_template = env.get_template('template.resource.jinja')
     return escape_backslashes(resource_template.render(resource))
-
-
-def rf_join(strings: list[str]):
-    return "   ".join(strings)
