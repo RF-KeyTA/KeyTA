@@ -24,12 +24,12 @@ class TestStepsInline(
     def get_formset(self, request, obj=None, **kwargs):
         testcase: AbstractTestCase = obj
         systems = testcase.systems.all()
-        windows = Window.objects.filter(systems__in=systems).distinct()
+        windows = Window.objects.filter(systems__in=systems).distinct().order_by('name')
 
         formset = super().get_formset(request, obj, **kwargs)
         formset.form.base_fields['window'].queryset = windows
         variable_field = formset.form.base_fields['variable']
-        variable_field.queryset = variable_field.queryset.filter(in_list__isnull=True)
-        formset.form.base_fields['to_keyword'].queryset = Keyword.objects.sequences()
+        variable_field.queryset = variable_field.queryset.filter(in_list__isnull=True).order_by('name')
+        formset.form.base_fields['to_keyword'].queryset = Keyword.objects.sequences().order_by('name')
 
         return formset
