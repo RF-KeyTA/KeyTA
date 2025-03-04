@@ -8,7 +8,7 @@ from django.utils.translation import gettext as _
 from adminsortable2.admin import SortableAdminBase, CustomInlineFormSet
 
 from keyta.forms import form_with_select
-from keyta.models.variable import AbstractVariable
+from keyta.models.variable import AbstractVariable, VariableType
 from keyta.widgets import BaseSelect, link, Icon
 
 from apps.variables.models import (
@@ -74,7 +74,7 @@ class ListElements(QuickAddMixin, SortableTabularInlineWithDelete):
             'windows': window_id,
             'systems': system_id,
             'schema': schema_id,
-            'type': 'DICT',
+            'type': VariableType.DICT,
             'list_id': variable_id
         }
 
@@ -192,7 +192,7 @@ class BaseVariableAdmin(SortableAdminBase, BaseAdmin):
     def get_inlines(self, request, obj):
         variable: AbstractVariable = obj
 
-        if variable and variable.type == 'LIST':
+        if variable and variable.type == VariableType.LIST:
             return [ListElements]
 
         return self.inlines
