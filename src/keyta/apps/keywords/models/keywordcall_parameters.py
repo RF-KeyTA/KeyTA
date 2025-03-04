@@ -63,15 +63,15 @@ class KeywordCallParameter(CloneMixin, models.Model):
         if pk := json_value.pk:
             return str(KeywordCallParameterSource.objects.get(pk=pk))
 
-    @property
-    def json_value(self) -> JSONValue:
-        return JSONValue.from_json(self.value)
-
     def is_empty(self):
         return (
             not self.value_ref and 
             JSONValue.from_json(self.value).user_input is None
         )
+
+    @property
+    def json_value(self) -> JSONValue:
+        return JSONValue.from_json(self.value)
 
     def make_clone(self, attrs=None, sub_clone=False, using=None, parent=None):
         clone: KeywordCallParameter = super().make_clone(attrs=attrs, sub_clone=sub_clone, using=using, parent=parent)
@@ -118,16 +118,16 @@ class KeywordCallParameter(CloneMixin, models.Model):
 
         super().save(force_insert, force_update, using, update_fields)
 
-    def update_value(self):
-        if self.value_ref:
-            self.value = self.value_ref.get_value().jsonify()
-            self.save()
-
     def to_robot(self):
         if value_ref := self.value_ref:
             return value_ref.to_robot()
         else:
             return JSONValue.from_json(self.value).user_input
+
+    def update_value(self):
+        if self.value_ref:
+            self.value = self.value_ref.get_value().jsonify()
+            self.save()
 
     class Meta:
         ordering = ['parameter__type', 'parameter__position']
