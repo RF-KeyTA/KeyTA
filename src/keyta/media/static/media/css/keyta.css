@@ -126,6 +126,10 @@ iframe.related-iframe {
     overflow-x: visible
 }
 
+.tabular {
+    overflow-x: auto
+}
+
 .bootstrap-datetimepicker-widget.dropdown-menu {
     width: auto !important
 }
