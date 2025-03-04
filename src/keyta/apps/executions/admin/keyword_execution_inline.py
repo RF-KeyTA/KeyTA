@@ -13,16 +13,6 @@ from .execution_inline import ExecutionInline
 
 
 class KeywordCallArgsField(BaseKeywordCallArgs):
-    class BaseKeywordCallArgs:
-        def invalid_keyword_call_args(self, kw_call: ExecutionKeywordCall, user: Optional[AbstractUser] = None) -> bool:
-            kw_call_user_parameters = kw_call.parameters.filter(user=user)
-            kw_parameters = kw_call.to_keyword.parameters
-
-            return (
-                kw_call_user_parameters.count() != kw_parameters.count() or
-                kw_call.has_empty_arg(user)
-            )
-
     def get_fields(self, request, obj=None):
         return self.get_readonly_fields(request, obj)
 
@@ -40,6 +30,15 @@ class KeywordCallArgsField(BaseKeywordCallArgs):
             return ['args'] + super().get_readonly_fields(request, obj)
         
         return super().get_readonly_fields(request, obj)
+
+    def invalid_keyword_call_args(self, kw_call: ExecutionKeywordCall, user: Optional[AbstractUser] = None) -> bool:
+        kw_call_user_parameters = kw_call.parameters.filter(user=user)
+        kw_parameters = kw_call.to_keyword.parameters
+
+        return (
+            kw_call_user_parameters.count() != kw_parameters.count() or
+            kw_call.has_empty_arg(user)
+        )
 
 
 class KeywordExecutionInline(KeywordCallArgsField, ExecutionInline):
