@@ -8,7 +8,7 @@ from django.utils.translation import gettext as _
 
 from adminsortable2.admin import SortableAdminBase, CustomInlineFormSet
 
-from keyta.forms import form_with_select
+from keyta.forms import BaseForm, form_with_select
 from keyta.models.variable import AbstractVariable, VariableType
 from keyta.widgets import BaseSelect, link, Icon
 
@@ -260,10 +260,14 @@ class BaseVariableSchemaQuickAddAdmin(BaseAdmin):
 
 class BaseVariableQuickAddAdmin(BaseAdmin):
     fields = ['systems', 'windows', 'name', 'schema', 'type']
-    form = form_with_select(
+    form = forms.modelform_factory(
         VariableQuickAdd,
-        'schema',
-        _('Vorlage auswählen')
+        form=BaseForm,
+        fields=['systems', 'windows', 'name', 'schema', 'type'],
+        widgets={
+            'schema': BaseSelect(_('Vorlage auswählen')),
+            'type': BaseSelect(_('Variablentyp auswählen'))
+        }
     )
 
     def formfield_for_manytomany(self, db_field, request, **kwargs):
@@ -279,12 +283,6 @@ class BaseVariableQuickAddAdmin(BaseAdmin):
 
     def formfield_for_dbfield(self, db_field, request: HttpRequest, **kwargs):
         field = super().formfield_for_dbfield(db_field, request, **kwargs)
-
-        if db_field.name == 'type':
-            field = forms.ChoiceField(
-                choices=field.choices,
-                widget=BaseSelect(_('Variablentyp auswählen'))
-            )
 
         if db_field.name == 'schema':
             windows = request.GET['windows']
