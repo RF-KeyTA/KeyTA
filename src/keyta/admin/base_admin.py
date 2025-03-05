@@ -1,6 +1,5 @@
 import json
 from collections import defaultdict
-from typing import Optional
 
 from django.contrib import admin, messages
 from django.contrib.admin.widgets import AutocompleteSelectMultiple
@@ -29,13 +28,13 @@ class BaseAdmin(admin.ModelAdmin):
     def add_view(self, request: HttpRequest, form_url="", extra_context=None):
         if 'autocomplete' in request.GET:
             name = str(request.GET['name'])
-            data = self.autocomplete_name(name)
+            data = self.autocomplete_name(name, request)
 
             return HttpResponse(data, content_type='application/json')
 
         return super().add_view(request, form_url, extra_context)
 
-    def autocomplete_name(self, name: str, request: Optional[HttpRequest]=None) -> str:
+    def autocomplete_name(self, name: str, request: HttpRequest) -> str:
         objects = (
             self.model.objects
             .filter(name__icontains=name)
@@ -54,7 +53,7 @@ class BaseAdmin(admin.ModelAdmin):
     def change_view(self, request, object_id, form_url="", extra_context=None):
         if 'autocomplete' in request.GET:
             name = request.GET['name']
-            data = self.autocomplete_name(name)
+            data = self.autocomplete_name(name, request)
 
             return HttpResponse(data, content_type='application/json')
 
