@@ -1,5 +1,3 @@
-from typing import Optional
-
 from django.utils.translation import gettext as _
 
 from keyta.models.base_model import AbstractBaseModel
@@ -13,17 +11,7 @@ from keyta.models.variable import (
 
 
 class Variable(AbstractVariable):
-    def add_value(
-            self,
-            schema_field: AbstractVariableSchemaField,
-            list_variable: Optional[AbstractVariable]=None
-    ):
-        VariableValue.objects.get_or_create(
-            name=schema_field.name,
-            variable=self,
-            list_variable=list_variable,
-            schema_field=schema_field
-        )
+    pass
 
 
 class VariableDocumentation(Variable):

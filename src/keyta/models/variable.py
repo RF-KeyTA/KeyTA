@@ -1,3 +1,6 @@
+from typing import Optional
+
+from django.apps import apps
 from django.db import models
 from django.utils.translation import gettext as _
 
@@ -46,6 +49,19 @@ class AbstractVariable(AbstractBaseModel):
 
     def __str__(self):
         return self.name
+
+    def add_value(
+            self,
+            schema_field: 'AbstractVariableSchemaField',
+            list_variable: Optional['AbstractVariable']=None
+    ):
+        VariableValue = apps.get_model('variables', 'VariableValue')
+        VariableValue.objects.get_or_create(
+            name=schema_field.name,
+            variable=self,
+            list_variable=list_variable,
+            schema_field=schema_field
+        )
 
     def delete(self, using=None, keep_parents=False):
         if self.is_list():
