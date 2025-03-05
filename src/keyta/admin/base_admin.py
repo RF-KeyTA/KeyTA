@@ -1,5 +1,6 @@
 import json
 from collections import defaultdict
+from typing import Optional
 
 from django.contrib import admin, messages
 from django.contrib.admin.widgets import AutocompleteSelectMultiple
@@ -29,16 +30,16 @@ class BaseAdmin(admin.ModelAdmin):
     # By default, the field inlines is a tuple, which cannot be combined with a list
     inlines = []
 
-    def add_view(self, request, form_url="", extra_context=None):
+    def add_view(self, request: HttpRequest, form_url="", extra_context=None):
         if 'autocomplete' in request.GET:
-            name = request.GET['name']
+            name = str(request.GET['name'])
             data = self.autocomplete_name(name)
 
             return HttpResponse(data, content_type='application/json')
 
         return super().add_view(request, form_url, extra_context)
 
-    def autocomplete_name(self, name: str):
+    def autocomplete_name(self, name: str, request: Optional[HttpRequest]=None) -> str:
         objects = (
             self.model.objects
             .filter(name__icontains=name)
