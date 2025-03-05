@@ -179,13 +179,13 @@ class BaseVariableAdmin(SortableAdminBase, BaseAdmin):
 
         fields = self.fields
 
-        if variable.windows.exists():
+        if variable and variable.windows.exists():
             fields = ['systems', 'windows', 'name', 'description']
 
         if variable and variable.schema:
             fields += ['schema']
 
-        if variable.in_list.exists():
+        if variable and variable.in_list.exists():
             fields += ['in_list']
 
         return fields
@@ -203,13 +203,13 @@ class BaseVariableAdmin(SortableAdminBase, BaseAdmin):
 
         fields = []
 
-        if variable.windows.exists():
+        if variable and variable.windows.exists():
             fields += ['windows']
 
         if variable and variable.schema:
             fields += ['schema']
 
-        if variable.in_list.exists():
+        if variable and variable.in_list.exists():
             fields += ['in_list']
 
         return fields
