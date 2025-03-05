@@ -149,6 +149,7 @@ class Windows(TabularInlineWithDelete):
     def has_change_permission(self, request, obj=None) -> bool:
         return False
 
+
 class BaseVariableAdmin(SortableAdminBase, BaseAdmin):
     list_display = ['name', 'description']
     list_display_links = ['name']
