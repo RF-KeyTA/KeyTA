@@ -310,13 +310,9 @@ class BaseVariableQuickAddAdmin(BaseAdmin):
                     variable=variable
                 )
 
-            if variable.schema:
-                for field in variable.schema.fields.all():
-                    VariableValue.objects.create(
-                        list_variable=list_variable,
-                        variable=variable,
-                        name=field.name
-                    )
+            if schema := variable.schema:
+                for field in schema.fields.all():
+                    variable.add_value(field, list_variable)
 
 
 class DictionaryValues(BaseTabularInline):

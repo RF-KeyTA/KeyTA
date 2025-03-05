@@ -24,6 +24,7 @@ class AbstractVariable(AbstractBaseModel):
         'variables.VariableSchema',
         null=True,
         on_delete=models.CASCADE,
+        related_name='instances',
         verbose_name=_('Vorlage')
     )
     systems = models.ManyToManyField(
@@ -120,6 +121,12 @@ class AbstractVariableValue(AbstractBaseModel):
         on_delete=models.CASCADE,
         null=True
     )
+    schema_field = models.ForeignKey(
+        'variables.VariableSchemaField',
+        on_delete=models.CASCADE,
+        null=True,
+        related_name='uses'
+    )
     variable = models.ForeignKey(
         'variables.Variable',
         on_delete=models.CASCADE,
@@ -194,8 +201,17 @@ class AbstractVariableSchemaField(AbstractBaseModel):
         if not self.pk:
             super().save(force_insert, force_update, using, update_fields)
             KeywordCallParameterSource.objects.create(variable_schema_field=self)
+
+            instance: AbstractVariable
+            for instance in self.schema.instances.filter(type=VariableType.DICT):
+                instance.add_value(self)
         else:
             super().save(force_insert, force_update, using, update_fields)
+
+            value: AbstractVariableValue
+            for value in self.uses.all():
+                value.name = self.name
+                value.save()
 
     class Meta:
         abstract = True
