@@ -1,3 +1,5 @@
+import json
+
 from django import forms
 from django.contrib import admin
 from django.http import HttpRequest
@@ -45,6 +47,22 @@ class WindowKeywordQuickAddAdmin(BaseAdmin):
             'systems': BaseSelectMultiple(_('System auswählen')),
         }
     )
+
+    def add_view(self, request: HttpRequest, form_url="", extra_context=None):
+        if 'windows' in request.GET:
+            self.window_id = request.GET['windows']
+
+        return super().add_view(request, form_url, extra_context)
+
+    def autocomplete_name(self, name: str, request: HttpRequest):
+        names = list(
+            self.model.objects
+            .filter(name__icontains=name)
+            .filter(windows__in=[self.window_id])
+            .values_list('name', flat=True),
+        )
+
+        return json.dumps(names)
 
     def formfield_for_manytomany(self, db_field, request, **kwargs):
         field = super().formfield_for_manytomany(db_field, request, **kwargs)
