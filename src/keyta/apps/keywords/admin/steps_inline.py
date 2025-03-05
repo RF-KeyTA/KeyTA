@@ -1,7 +1,4 @@
-from django.utils.translation import gettext as _
-
 from keyta.admin.base_inline import DeleteRelatedField, SortableTabularInline
-
 
 from ..forms import StepsForm
 from ..models import KeywordCall
@@ -19,4 +16,4 @@ class StepsInline(
     fk_name = 'from_keyword'
     fields = ['to_keyword']
     form = StepsForm
-    extra = 1  # Must be > 0 in order for django-select2 to work
+    extra = 0
