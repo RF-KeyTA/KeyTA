@@ -3,14 +3,13 @@ from django.utils.translation import gettext as _
 
 from model_clone import CloneModelAdminMixin
 
-from keyta.admin.base_admin import BaseAdmin
+from keyta.admin.base_admin import BaseAdmin, BaseQuickAddAdmin
 from keyta.apps.executions.admin import KeywordExecutionInline
 from keyta.apps.keywords.admin import (
     ParametersInline,
     ReturnValueInline,
     WindowKeywordAdmin,
-    WindowKeywordAdminMixin,
-    WindowKeywordQuickAddAdmin
+    WindowKeywordAdminMixin
 )
 from keyta.apps.libraries.models import Library, LibraryImport
 from keyta.forms.baseform import form_with_select
@@ -77,7 +76,7 @@ class ActionAdmin(ActionAdminMixin, CloneModelAdminMixin, WindowKeywordAdmin):
 
 
 @admin.register(ActionQuickAdd)
-class ActionQuickAddAdmin(ActionAdminMixin, WindowKeywordQuickAddAdmin):
+class ActionQuickAddAdmin(ActionAdminMixin, BaseQuickAddAdmin):
     pass
 
 

@@ -11,4 +11,4 @@ from .robot_keywordcall import RobotKeywordCallAdmin
 from .steps_inline import StepsInline
 from .test_step import TestStepAdmin
 from .test_steps_inline import TestStepsInline
-from .window_keyword import WindowKeywordAdmin, WindowKeywordAdminMixin, WindowKeywordQuickAddAdmin
+from .window_keyword import WindowKeywordAdmin, WindowKeywordAdminMixin

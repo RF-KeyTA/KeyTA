@@ -4,13 +4,13 @@ from django.utils.translation import gettext as _
 
 from model_clone import CloneModelAdminMixin
 
+from admin.base_admin import BaseQuickAddAdmin
 from keyta.apps.executions.admin import KeywordExecutionInline
 from keyta.apps.keywords.admin import (
     ParametersInline,
     ReturnValueInline,
     WindowKeywordAdmin,
     WindowKeywordAdminMixin,
-    WindowKeywordQuickAddAdmin
 )
 from keyta.apps.resources.models import Resource
 from keyta.forms.baseform import BaseForm
@@ -72,5 +72,5 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
 
 
 @admin.register(SequenceQuickAdd)
-class SequenceQuickAddAdmin(WindowKeywordAdminMixin, WindowKeywordQuickAddAdmin):
+class SequenceQuickAddAdmin(WindowKeywordAdminMixin, BaseQuickAddAdmin):
     pass

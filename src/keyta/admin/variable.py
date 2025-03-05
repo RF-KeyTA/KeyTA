@@ -8,7 +8,7 @@ from django.utils.translation import gettext as _
 
 from adminsortable2.admin import SortableAdminBase, CustomInlineFormSet
 
-from keyta.forms import BaseForm, form_with_select
+from keyta.forms import form_with_select
 from keyta.models.variable import AbstractVariable, VariableType
 from keyta.widgets import BaseSelect, link, Icon
 
@@ -23,7 +23,7 @@ from apps.variables.models import (
 )
 from apps.windows.models import Window
 
-from .base_admin import BaseAdmin
+from .base_admin import BaseAdmin, BaseQuickAddAdmin
 from .base_inline import TabularInlineWithDelete, SortableTabularInlineWithDelete, BaseTabularInline
 from .window import QuickAddMixin
 
@@ -242,55 +242,41 @@ class BaseVariableSchemaAdmin(BaseAdmin):
     inlines = [SchemaFields]
 
 
-class BaseVariableSchemaQuickAddAdmin(BaseAdmin):
+class BaseVariableSchemaQuickAddAdmin(BaseQuickAddAdmin):
     fields = ['windows', 'name']
     inlines = [SchemaFields]
 
-    def formfield_for_manytomany(self, db_field, request, **kwargs):
-        field = super().formfield_for_manytomany(db_field, request, **kwargs)
 
-        if db_field.name == 'windows':
-            field = forms.ModelMultipleChoiceField(
-                field.queryset,
-                widget=forms.MultipleHiddenInput
-            )
-
-        return field
-
-
-class BaseVariableQuickAddAdmin(BaseAdmin):
+class BaseVariableQuickAddAdmin(BaseQuickAddAdmin):
     fields = ['systems', 'windows', 'name', 'schema', 'type']
-    form = forms.modelform_factory(
-        VariableQuickAdd,
-        form=BaseForm,
-        fields=['systems', 'windows', 'name', 'schema', 'type'],
-        widgets={
-            'schema': BaseSelect(_('Vorlage auswählen')),
-            'type': BaseSelect(_('Variablentyp auswählen'))
-        }
-    )
 
-    def formfield_for_manytomany(self, db_field, request, **kwargs):
-        field = super().formfield_for_manytomany(db_field, request, **kwargs)
+    def add_view(self, request: HttpRequest, form_url="", extra_context=None):
+        if 'list_id' in request.GET:
+            self.in_list = True
 
-        if db_field.name in {'systems', 'windows'}:
-            field = forms.ModelMultipleChoiceField(
-                field.queryset,
-                widget=forms.MultipleHiddenInput
-            )
+        return super().add_view(request, form_url, extra_context)
 
-        return field
+    def autocomplete_name(self, name: str, request: HttpRequest):
+        if self.in_list:
+            return []
 
-    def formfield_for_dbfield(self, db_field, request: HttpRequest, **kwargs):
+        return super().autocomplete_name(name, request)
+
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
         field = super().formfield_for_dbfield(db_field, request, **kwargs)
 
         if db_field.name == 'schema':
-            windows = request.GET['windows']
-            field.queryset = field.queryset.filter(windows__in=[windows])
-
-        if request.GET.get('list_id', None):
-            if db_field.name in {'schema', 'type'}:
+            if 'list_id' in request.GET:
                 field.widget = HiddenInput()
+            else:
+                field.widget = BaseSelect('')
+                field.queryset = field.queryset.filter(windows__in=[self.window_id])
+
+        if db_field.name == 'type':
+            if 'list_id' in request.GET:
+                field.widget = HiddenInput()
+            else:
+                field.widget = BaseSelect('', choices=field.choices)
 
         return field
 

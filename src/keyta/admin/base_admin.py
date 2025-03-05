@@ -1,13 +1,17 @@
 import json
 from collections import defaultdict
 
+from django import forms
 from django.contrib import admin, messages
 from django.contrib.admin.widgets import AutocompleteSelectMultiple
 from django.db import models
 from django.forms import SelectMultiple, CheckboxSelectMultiple
 from django.http import HttpRequest, HttpResponseRedirect, HttpResponse
+from django.utils.translation import gettext as _
 
 from tinymce.widgets import AdminTinyMCE
+
+from keyta.widgets import BaseSelectMultiple
 
 from .field_documentation import DocumentationField
 
@@ -103,3 +107,34 @@ class BaseReadOnlyAdmin(admin.ModelAdmin):
 
 class BaseDocumentationAdmin(DocumentationField, BaseReadOnlyAdmin):
     pass
+
+
+class BaseQuickAddAdmin(BaseAdmin):
+    fields = ['systems', 'windows', 'name']
+
+    def add_view(self, request: HttpRequest, form_url="", extra_context=None):
+        if 'windows' in request.GET:
+            self.window_id = request.GET['windows']
+
+        return super().add_view(request, form_url, extra_context)
+
+    def autocomplete_name(self, name: str, request: HttpRequest):
+        names = list(
+            self.model.objects
+            .filter(name__icontains=name)
+            .filter(windows__in=[self.window_id])
+            .values_list('name', flat=True),
+        )
+
+        return json.dumps(names)
+
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        field = super().formfield_for_dbfield(db_field, request, **kwargs)
+
+        if db_field.name == 'systems':
+            field.widget = BaseSelectMultiple(_('System auswählen'))
+
+        if db_field.name == 'windows':
+            field.widget = forms.MultipleHiddenInput()
+
+        return field
