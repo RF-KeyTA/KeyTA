@@ -4,7 +4,7 @@ from django.utils.translation import gettext as _
 
 from model_clone import CloneModelAdminMixin
 
-from admin.base_admin import BaseQuickAddAdmin
+from keyta.admin.base_admin import BaseQuickAddAdmin
 from keyta.apps.executions.admin import KeywordExecutionInline
 from keyta.apps.keywords.admin import (
     ParametersInline,
