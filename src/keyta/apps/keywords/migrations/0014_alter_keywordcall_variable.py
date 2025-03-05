@@ -7,7 +7,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('variables', '0012_variablevalue_schema_field_alter_variable_schema_and_more'),
+        ('variables', '0001_initial'),
         ('keywords', '0013_alter_keywordcallparametersource_type'),
     ]
 
