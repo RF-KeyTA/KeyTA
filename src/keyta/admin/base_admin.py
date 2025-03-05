@@ -5,14 +5,10 @@ from typing import Optional
 from django.contrib import admin, messages
 from django.contrib.admin.widgets import AutocompleteSelectMultiple
 from django.db import models
-from django import forms
 from django.forms import SelectMultiple, CheckboxSelectMultiple
 from django.http import HttpRequest, HttpResponseRedirect, HttpResponse
-from django.utils.translation import gettext as _
 
 from tinymce.widgets import AdminTinyMCE
-
-from keyta.widgets import ModelSelect2MultipleAdminWidget, Select2MultipleWidget
 
 from .field_documentation import DocumentationField
 
@@ -108,30 +104,3 @@ class BaseReadOnlyAdmin(admin.ModelAdmin):
 
 class BaseDocumentationAdmin(DocumentationField, BaseReadOnlyAdmin):
     pass
-
-
-class BaseAddAdmin(BaseAdmin):
-    fields = ['systems', 'windows', 'name']
-
-    def get_form(self, request, obj=None, change=False, **kwargs):
-        return forms.modelform_factory(
-            self.model,
-            fields=self.fields,
-            widgets={
-                'systems': ModelSelect2MultipleAdminWidget(
-                    model=self.model.systems.through,
-                    search_fields=['name__icontains'],
-                    attrs={
-                        'data-placeholder': _('System hinzufügen'),
-                    }
-                ),
-                'windows': Select2MultipleWidget(
-                    model=self.model.windows.through,
-                    search_fields=['name__icontains'],
-                    dependent_fields={'systems': 'systems'},
-                    attrs={
-                        'data-placeholder': _('Maske auswählen'),
-                    }
-                )
-            }
-        )

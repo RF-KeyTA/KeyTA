@@ -4,16 +4,16 @@ from django.utils.translation import gettext as _
 
 from model_clone import CloneModelAdminMixin
 
-from keyta.forms.baseform import BaseForm
-from keyta.admin.base_admin import BaseAddAdmin
 from keyta.apps.executions.admin import KeywordExecutionInline
 from keyta.apps.keywords.admin import (
     ParametersInline,
     ReturnValueInline,
     WindowKeywordAdmin,
-    WindowKeywordAdminMixin
+    WindowKeywordAdminMixin,
+    WindowKeywordQuickAddAdmin
 )
 from keyta.apps.resources.models import Resource
+from keyta.forms.baseform import BaseForm
 from keyta.widgets import ModelSelect2MultipleAdminWidget, Select2MultipleWidget
 
 from ..models import (
@@ -72,5 +72,5 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
 
 
 @admin.register(SequenceQuickAdd)
-class SequenceQuickAddAdmin(WindowKeywordAdminMixin, BaseAddAdmin):
+class SequenceQuickAddAdmin(WindowKeywordAdminMixin, WindowKeywordQuickAddAdmin):
     pass
