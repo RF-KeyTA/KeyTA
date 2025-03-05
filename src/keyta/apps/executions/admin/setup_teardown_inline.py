@@ -17,7 +17,7 @@ from ..models import Execution, Setup, Teardown
 
 class KeywordCallUserArgsField(BaseKeywordCallArgs):
     def invalid_keyword_call_args(self, kw_call: Setup, user: Optional[AbstractUser]=None) -> bool:
-        return kw_call.has_empty_arg(user)
+        return not kw_call.parameters.exists() or kw_call.has_empty_arg(user)
 
     def get_fields(self, request, obj=None):
         return super().get_fields(request, obj) + ['args']
