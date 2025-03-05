@@ -17,12 +17,13 @@ class TestStepsInline(
 ):
     model = TestStep
     fk_name = 'testcase'
-    fields = ['window', 'variable', 'to_keyword']
+    fields = ['window', 'to_keyword']
     extra = 0 # necessary for saving, since to_keyword is not nullable and is null in an extra
     form = TestStepsForm
 
     def get_fields(self, request, obj=None):
-        return ['window', 'to_keyword', 'args', 'variable', 'delete']
+        *fields, delete = super().get_fields(request, obj)
+        return [*fields, 'variable', delete]
 
     def get_formset(self, request, obj=None, **kwargs):
         testcase: AbstractTestCase = obj
