@@ -197,8 +197,9 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
 
         if self.variable and self.variable.is_list():
             list_var = '@{%s}' % self.variable.name
+            arg: KeywordCallParameter
             rf_args = [
-                '${row}[%s]' % arg.name
+                '${row}[%s]' % str(arg.value_ref)
                 for arg in args
             ]
 
