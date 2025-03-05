@@ -7,8 +7,8 @@ from .base_model import AbstractBaseModel
 
 
 class VariableType(models.TextChoices):
-    DICT = 'DICT', _('Datensatz')
-    LIST = 'LIST', _('Tabelle')
+    DICT = 'DICT', _('Eine Instanz')
+    LIST = 'LIST', _('Mehrere Instanzen')
 
 
 class AbstractVariable(AbstractBaseModel):
