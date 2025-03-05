@@ -46,6 +46,14 @@ class AbstractVariable(AbstractBaseModel):
     def __str__(self):
         return self.name
 
+    def delete(self, using=None, keep_parents=False):
+        if self.is_list():
+            for element in self.elements.all():
+                element.variable.delete()
+                element.delete()
+
+        super().delete(using, keep_parents)
+
     def is_dict(self):
         return self.type == VariableType.DICT
 
