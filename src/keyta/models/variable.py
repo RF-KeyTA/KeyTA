@@ -35,7 +35,7 @@ class AbstractVariable(AbstractBaseModel):
         max_length=255,
         choices=VariableType.choices,
         default=VariableType.DICT,
-        verbose_name=_('Datenstruktur')
+        verbose_name=_('Menge')
     )
     windows = models.ManyToManyField(
         'windows.Window',
