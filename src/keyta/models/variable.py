@@ -144,12 +144,6 @@ class AbstractVariableValue(AbstractBaseModel):
 
     class Meta:
         abstract = True
-        constraints = [
-            models.UniqueConstraint(
-                fields=['variable', 'name'],
-                name='unique_value_per_variable'
-            )
-        ]
         verbose_name = _('Wert')
         verbose_name_plural = _('Werte')
 
