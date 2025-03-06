@@ -8,7 +8,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('variables', '0001_initial'),
-        ('keywords', '0013_alter_keywordcallparametersource_type'),
+        ('keywords', '0012_alter_keywordcallparametersource_type'),
     ]
 
     operations = [

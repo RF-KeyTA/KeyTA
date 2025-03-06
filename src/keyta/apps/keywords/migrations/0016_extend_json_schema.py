@@ -27,7 +27,7 @@ def extend_json_schema(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('keywords', '0005_executionkeywordcall_teststep_and_more'),
+        ('keywords', '0015_alter_keywordcall_condition'),
     ]
 
     operations = [

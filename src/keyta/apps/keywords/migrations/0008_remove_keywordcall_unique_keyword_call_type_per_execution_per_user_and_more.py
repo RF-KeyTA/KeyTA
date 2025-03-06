@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('keywords', '0008_keywordcall_unique_keyword_call_type_per_execution_per_user'),
+        ('keywords', '0007_keywordcall_unique_keyword_call_type_per_execution_per_user'),
     ]
 
     operations = [

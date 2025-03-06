@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('keywords', '0006_extend_json_schema'),
+        ('keywords', '0005_executionkeywordcall_teststep_and_more'),
     ]
 
     operations = [

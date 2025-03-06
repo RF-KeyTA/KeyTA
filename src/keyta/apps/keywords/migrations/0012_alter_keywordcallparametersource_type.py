@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('keywords', '0012_remove_keywordcallparametersource_kw_call_parameter_source_sum_type_and_more'),
+        ('keywords', '0011_remove_keywordcallparametersource_kw_call_parameter_source_sum_type_and_more'),
     ]
 
     operations = [

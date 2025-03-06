@@ -8,7 +8,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('variables', '0001_initial'),
-        ('keywords', '0010_delete_windowkeywordparameter_and_more'),
+        ('keywords', '0009_delete_windowkeywordparameter_and_more'),
     ]
 
     operations = [

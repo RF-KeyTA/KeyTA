@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('keywords', '0007_robotkeywordcall_alter_keyword_options_and_more'),
+        ('keywords', '0006_robotkeywordcall_alter_keyword_options_and_more'),
     ]
 
     operations = [
