@@ -189,6 +189,10 @@
                     })
                 }
                 
+                django.jQuery('body.popup select').not('.form-row select').on('change', function() {
+                    $.post(url, $('form').serialize() + "&_continue=")
+                });                
+                
                 django.jQuery('body.popup .form-row.has_original select').on('change', function() {
                     $.post(url, $('form').serialize() + "&_continue=")
                 });
