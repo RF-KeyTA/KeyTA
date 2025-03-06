@@ -1,13 +1,11 @@
 import os
 import signal
 import subprocess
+import sys
 from os.path import realpath
 from pathlib import Path
 from threading import Thread
 from typing import Optional
-
-from PIL import Image
-from pystray import Icon, Menu, MenuItem # type: ignore
 
 from .IProcess import IProcess
 from .rf_remote_server import RobotRemoteServer
@@ -63,31 +61,38 @@ class App:
         robot_server = RobotRemoteServer(ROBOT_REMOTE_HOST, ROBOT_REMOTE_PORT)
         # The RF logger only works if the current thread is called MainThread
         self.rf_server_thread = DaemonThread(robot_server, name='MainThread')
+        self.icon_thread = None
 
-        img = Image.open(CWD / 'static' / 'keyta.png')
-        img_cropped = img.crop(img.getbbox())
-        tray_icon = Icon(
-            name='KeyTA',
-            title='KeyTA',
-            icon=img_cropped,
-            menu=Menu(
-                MenuItem(
-                    texts['open_keyta'],
-                    open_keyta,
-                    default=True
-                ),
-                MenuItem(
-                    texts['terminate_keyta'],
-                    lambda icon, query: self.terminate()
+        if not sys.platform.startswith('linux'):
+            from PIL import Image
+            from pystray import Icon, Menu, MenuItem # type: ignore
+            
+            img = Image.open(CWD / 'static' / 'keyta.png')
+            img_cropped = img.crop(img.getbbox())
+            tray_icon = Icon(
+                name='KeyTA',
+                title='KeyTA',
+                icon=img_cropped,
+                menu=Menu(
+                    MenuItem(
+                        texts['open_keyta'],
+                        open_keyta,
+                        default=True
+                    ),
+                    MenuItem(
+                        texts['terminate_keyta'],
+                        lambda icon, query: self.terminate()
+                    )
                 )
             )
-        )
-        self.icon_thread = DaemonThread(tray_icon)
+            self.icon_thread = DaemonThread(tray_icon)
 
     def run(self):
         self.django_server = django_runserver()
         self.rf_server_thread.start()
-        self.icon_thread.start()
+
+        if self.icon_thread:
+            self.icon_thread.start()
 
         try:
             self.django_server.wait()
