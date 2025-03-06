@@ -118,6 +118,10 @@
         }
     </script>
     <script type="text/javascript" src="{% static 'jazzmin/js/change_list.js' %}"></script>
+    {% if jazzmin_settings.related_modal_active %}
+    <script type="text/javascript" src="{% static 'jazzmin/plugins/bootstrap-show-modal/bootstrap-show-modal.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'jazzmin/js/related-modal.js' %}"></script>
+    {% endif %}
     <script type="text/javascript">
     $(document).ready(function () {
         const search_button = 'button[type=submit]'
