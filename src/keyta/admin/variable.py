@@ -158,6 +158,14 @@ class BaseVariableAdmin(SortableAdminBase, BaseAdmin):
     search_fields = ['name']
     search_help_text = _('Name')
 
+    def get_queryset(self, request: HttpRequest):
+        queryset = super().get_queryset(request)
+
+        if request.path == '/variables/variable/':
+            return queryset.filter(in_list__isnull=True)
+
+        return queryset
+
     def change_view(self, request: HttpRequest, object_id, form_url="", extra_context=None):
         if '_to_field' in request.GET:
             variable_doc = VariableDocumentation.objects.get(id=object_id)
