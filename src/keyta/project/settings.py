@@ -11,14 +11,22 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 import os
+import sys
 from pathlib import Path
 
 from django.contrib import admin
 
 from keyta.icons import Icons
 
-LOCALAPPDATA = Path(str(os.getenv('LOCALAPPDATA')))
-KEYTA_DIR = LOCALAPPDATA / 'KeyTA'
+
+def get_home_dir():
+    if sys.platform.startswith('win'):
+        return Path(str(os.getenv('LOCALAPPDATA')))
+    else:
+        return Path(str(os.getenv('HOME')))
+
+
+KEYTA_DIR = get_home_dir() / 'KeyTA'
 KEYTA_DIR.mkdir(exist_ok=True)
 
 
