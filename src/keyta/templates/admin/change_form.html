@@ -280,7 +280,7 @@
                     $.post(url, $('form').serialize() + "&_continue=")
                 })
 
-                $('input').not('.form-row input, input[type="hidden"], input[type="checkbox"]').on('blur', function () {
+                $('input').not('body.popup input, .form-row input, input[type="hidden"], input[type="checkbox"]').on('blur', function () {
                     // TODO: Use htmx (+ sse) to swap the card title instead of reloading the page
                     $(save_button).click()
                 })
