@@ -7,7 +7,7 @@
     {%- endfor %}
 
     {%- for step in keyword.steps %}
-    {{ call_keyword(step) }}
+    {% if step.condition %}Run Keyword If    {{ step.condition }}    {% endif %}{{ call_keyword(step) }}
     {%- endfor %}
     {%- if keyword.return_value %}
     RETURN      {{ keyword.return_value }}

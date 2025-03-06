@@ -8,7 +8,7 @@ from .keywordcall_return_value_inline import KeywordCallReturnValueInline
 
 @admin.register(RobotKeywordCall)
 class RobotKeywordCallAdmin(KeywordCallAdmin):
-    fields = ['to_keyword_doc']
+    fields = ['to_keyword_doc', 'condition']
     readonly_fields = ['to_keyword_doc']
     inlines = [KeywordCallReturnValueInline]
 

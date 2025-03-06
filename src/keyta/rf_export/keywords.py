@@ -2,6 +2,7 @@ from typing import Optional, TypedDict
 
 
 class RFKeywordCall(TypedDict):
+    condition: str
     keyword: str
     args: list[str]
     kwargs: dict[str, str]

@@ -63,6 +63,12 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
         on_delete=models.CASCADE,
         related_name='uses'
     )
+    condition = models.CharField(
+        max_length=255,
+        default='',
+        blank=True,
+        verbose_name=_('Bedingung (optional)')
+    )
     enabled = models.BooleanField(
         default=True,
         verbose_name=''
@@ -204,6 +210,7 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
             ]
 
         return {
+            'condition': self.condition,
             'keyword': self.to_keyword.unique_name,
             'args': rf_args,
             'kwargs': {kwarg.name: kwarg.to_robot() for kwarg in kwargs},
