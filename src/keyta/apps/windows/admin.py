@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from keyta.admin.base_admin import BaseDocumentationAdmin
-from keyta.admin.window import BaseWindowAdmin
+from keyta.admin.window import BaseWindowAdmin, BaseWindowQuickAddAdmin
 
 from .models import Window, WindowDocumentation, WindowQuickAdd
 
@@ -17,5 +17,5 @@ class WindowDocumentationAdmin(BaseDocumentationAdmin):
 
 
 @admin.register(WindowQuickAdd)
-class SystemWindowAdmin(BaseWindowAdmin):
+class WindowQuickAddAdmin(BaseWindowQuickAddAdmin):
     pass

@@ -227,3 +227,13 @@ class BaseWindowAdmin(BaseAdmin):
             return []
 
         return self.inlines
+
+
+class BaseWindowQuickAddAdmin(BaseWindowAdmin):
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        field = super().formfield_for_dbfield(db_field, request, **kwargs)
+
+        if db_field.name == 'systems':
+            field.widget = forms.MultipleHiddenInput()
+
+        return field
