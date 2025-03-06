@@ -43,6 +43,9 @@ class ActionAdminMixin(WindowKeywordAdminMixin):
 
 @admin.register(Action)
 class ActionAdmin(ActionAdminMixin, CloneModelAdminMixin, WindowKeywordAdmin):
+    def get_list_filter(self, request):
+        return super().get_list_filter(request) + ['setup_teardown']
+
     form = form_with_select(
         Action,
         'systems',
