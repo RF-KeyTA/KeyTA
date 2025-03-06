@@ -16,5 +16,6 @@ class Icons:
     library_update: str = 'fa-solid fa-circle-arrow-up'
     library_setting_reset: str = 'fa-solid fa-rotate-left'
     kw_call_drag_handle: str = 'fa-solid fa-sort'
+    preview: str = 'fa-solid fa-image'
     save: str = 'fa-regular fa-floppy-disk'
     view: str = 'fa-solid fa-pencil'

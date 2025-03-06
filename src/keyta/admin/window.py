@@ -1,17 +1,17 @@
 from django import forms
+from django.conf import settings
 from django.contrib import admin
 from django.http import HttpRequest, HttpResponseRedirect
 from django.urls import reverse
 from django.utils.translation import gettext as _
 
-from keyta.admin.field_documentation import DocumentationField
 from keyta.admin.base_admin import BaseAdmin
 from keyta.admin.base_inline import BaseTabularInline
 from keyta.apps.actions.models import ActionQuickAdd
 from keyta.apps.keywords.models import KeywordWindowRelation
 from keyta.apps.sequences.models import SequenceQuickAdd
 from keyta.forms.baseform import form_with_select
-from keyta.widgets import CustomRelatedFieldWidgetWrapper
+from keyta.widgets import CustomRelatedFieldWidgetWrapper, Icon, open_link_in_modal
 
 from apps.variables.models import (
     VariableQuickAdd,
@@ -185,14 +185,21 @@ class Schemas(QuickAddMixin, BaseTabularInline):
         }
 
 
-class BaseWindowAdmin(DocumentationField, BaseAdmin):
-    list_display = ['name', 'readonly_documentation']
+class BaseWindowAdmin(BaseAdmin):
+    list_display = ['name', 'preview']
     list_display_links = ['name']
     list_filter = ['systems']
     list_per_page = 10
     ordering = ['name']
     search_fields = ['name']
     search_help_text = _('Name')
+
+    @admin.display(description=_('Vorschau'))
+    def preview(self, window: Window):
+        return open_link_in_modal(
+            WindowDocumentation.objects.get(id=window.pk).get_admin_url(),
+            str(Icon(settings.FA_ICONS.preview, {'font-size': '18px'}))
+        )
 
     fields = ['systems', 'name', 'description', 'documentation']
     form = form_with_select(
