@@ -1,6 +1,4 @@
-from django.contrib import admin
 from django.http import HttpRequest
-from django.utils.translation import gettext as _
 
 from ..models import WindowKeyword
 from .keyword import KeywordAdmin
@@ -19,12 +17,8 @@ class WindowKeywordAdminMixin:
 
 
 class WindowKeywordAdmin(WindowKeywordAdminMixin, KeywordAdmin):
-    list_display = ['system_list', 'name', 'short_doc']
-    list_filter = ['systems']
-
-    @admin.display(description=_('Systeme'))
-    def system_list(self, window):
-        return list(window.systems.values_list('name', flat=True))
+    list_display = ['name', 'short_doc']
+    list_filter = ['systems', 'windows']
 
     def change_view(self, request, object_id, form_url="", extra_context=None):
         return super().changeform_view(request, object_id, form_url, extra_context)
