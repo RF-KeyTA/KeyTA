@@ -52,6 +52,9 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
         SequenceSteps
     ]
 
+    def has_add_permission(self, request, obj=None):
+        return False
+
     def get_fields(self, request, obj=None):
         return ['systems', 'windows'] + super().get_fields(request, obj)
 
