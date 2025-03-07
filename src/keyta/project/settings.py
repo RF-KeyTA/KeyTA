@@ -231,6 +231,7 @@ JAZZMIN_SETTINGS = {
         'libraries.libraryinitdocumentation',
         'resources.resourcekeyword',
         'resources.resourcekeyworddocumentation',
+        'resources.resourceimport',
         'sequences.actioncall',
         'sequences.sequencequickadd',
         'variables.variabledocumentation',
