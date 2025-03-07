@@ -1,14 +1,14 @@
-import tempfile
-from pathlib import Path
-
+import json
 from django import forms
 from django.contrib import admin
 from django.http import HttpRequest
+from django.utils.translation import gettext as _
 
 from keyta.admin.base_admin import BaseAdmin
 from keyta.admin.field_documentation import DocumentationField
 from keyta.rf_import.import_resource import import_resource
 
+from ..forms import ResourceForm
 from ..models import Resource
 from .keywords_inline import Keywords
 
@@ -17,19 +17,29 @@ from .keywords_inline import Keywords
 class ResourceAdmin(DocumentationField, BaseAdmin):
     list_display = ['name']
     ordering = ['name']
+    form = forms.modelform_factory(
+        Resource,
+        fields=['name'],
+        form=ResourceForm,
+        labels={
+            'name': _('Filename (ending with .resource)')
+        }
+    )
     inlines = [Keywords]
+
+    def autocomplete_name(self, name: str, request: HttpRequest):
+        return json.dumps([
+            name + '.resource'
+            for name in
+            self.model.objects.values_list('name', flat=True)
+            .filter(name__icontains=name.rstrip('.resource'))
+        ])
 
     def get_fields(self, request, obj=None):
         if not obj:
             return ['name']
 
         return self.fields
-
-    def formfield_for_dbfield(self, db_field, request, **kwargs):
-        if db_field.name == 'name':
-            return forms.FileField()
-
-        return super().formfield_for_dbfield(db_field, request, **kwargs)
 
     def get_readonly_fields(self, request, obj=None):
         if not obj:
@@ -47,14 +57,9 @@ class ResourceAdmin(DocumentationField, BaseAdmin):
         return False
 
     def save_form(self, request, form, change):
-        file_obj = request.FILES['name']
-        file_name = str(file_obj._name)
-        tmp_resource = Path(tempfile.gettempdir()) / file_name
-
-        with open(tmp_resource, 'w', encoding='utf-8') as fp:
-            fp.write(file_obj.file.read().decode())
-
-        resource = import_resource(str(tmp_resource))
+        resource_name = form.cleaned_data.get('name', None)
+        resource = import_resource(str(resource_name))
+        
         super().save_form(request, form, change)
 
         return resource
