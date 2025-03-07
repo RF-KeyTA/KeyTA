@@ -1,3 +1,5 @@
+import json
+
 from django import forms
 from django.conf import settings
 from django.contrib import admin
@@ -258,17 +260,20 @@ class BaseVariableSchemaQuickAddAdmin(BaseQuickAddAdmin):
 class BaseVariableQuickAddAdmin(BaseQuickAddAdmin):
     fields = ['systems', 'windows', 'name', 'schema', 'type']
 
-    def add_view(self, request: HttpRequest, form_url="", extra_context=None):
-        if 'list_id' in request.GET:
-            self.in_list = True
-
-        return super().add_view(request, form_url, extra_context)
-
     def autocomplete_name(self, name: str, request: HttpRequest):
-        if self.in_list:
-            return []
+        queryset = self.model.objects.filter(name__icontains=name)
+        
+        if 'list_id' in request.GET:
+            queryset = queryset.filter(in_list__list_variable=request.GET['list_id'])
+        else:
+            queryset = queryset.filter(in_list__isnull=True)
 
-        return super().autocomplete_name(name, request)
+        if 'windows' in request.GET:
+            queryset = queryset.filter(windows__in=[request.GET['windows']])
+
+        names = list(queryset.values_list('name', flat=True))
+
+        return json.dumps(names)
 
     def formfield_for_dbfield(self, db_field, request, **kwargs):
         field = super().formfield_for_dbfield(db_field, request, **kwargs)
