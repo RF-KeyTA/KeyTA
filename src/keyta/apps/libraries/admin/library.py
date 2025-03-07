@@ -29,7 +29,7 @@ class LibraryAdmin(BaseAdmin):
     form = LibraryForm
     errors = set()
 
-    def autocomplete_name(self, name: str):
+    def autocomplete_name(self, name: str, request: HttpRequest):
         return json.dumps([
             name
             for name in
