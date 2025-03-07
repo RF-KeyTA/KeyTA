@@ -3,6 +3,9 @@ import urllib.parse
 import xml.dom.minidom
 from abc import abstractmethod
 
+from django.db import models
+from django.utils.translation import gettext as _
+
 from keyta.apps.keywords.models import Keyword, KeywordParameter, KeywordDocumentation
 from keyta.rf_import.import_keywords import args_table, get_default_value
 from keyta.widgets import open_link_in_modal
@@ -11,6 +14,18 @@ from .base_model import AbstractBaseModel
 
 
 class KeywordSource(AbstractBaseModel):
+    name = models.CharField(
+        max_length=255, 
+        unique=True,
+        verbose_name=_('Name')
+    )
+    documentation = models.TextField(
+        verbose_name=_('Dokumentation')
+    )
+
+    def __str__(self):
+        return self.name
+
     def import_keywords(self, libdoc_json):
         keyword_names = set()
         deprecated_keywords = set()

@@ -5,23 +5,12 @@ from keyta.models.keyword_source import KeywordSource
 
 
 class Library(KeywordSource):
-    name = models.CharField(
-        max_length=255,
-        unique=True,
-        verbose_name=_('Name')
-    )
     version = models.CharField(
         max_length=255
     )
     init_doc = models.TextField(
         verbose_name=_('Einrichtung')
     )
-    documentation = models.TextField(
-        verbose_name=_('Dokumentation')
-    )
-
-    def __str__(self):
-        return self.name
 
     ROBOT_LIBRARIES = {
         'BuiltIn',
