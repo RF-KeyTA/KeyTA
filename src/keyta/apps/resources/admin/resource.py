@@ -26,7 +26,7 @@ class ResourceAdmin(DocumentationField, BaseAdmin):
         fields=['name'],
         form=ResourceForm,
         labels={
-            'name': _('Filename (ending with .resource)')
+            'name': _('Dateiname (mit .resource Endung)')
         }
     )
     inlines = [Keywords]

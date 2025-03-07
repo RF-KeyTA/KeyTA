@@ -20,7 +20,7 @@ class Resource(KeywordSource):
         )
 
         if not resource_exists:
-            return _(f'Die Ressource "{filename}" ist im PYTHONPATH nicht vorhanden.')
+            return _(f'Die Ressource "{filename}" ist nicht im PYTHONPATH vorhanden.')
         
         return None
 
