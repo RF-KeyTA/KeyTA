@@ -43,9 +43,10 @@ class ExecutionAdmin(admin.ModelAdmin):
         return super().change_view(request, object_id, form_url, extra_context)
 
     def get_inlines(self, request, obj):
+        execution: Execution = obj
         inlines = [LibraryImportInline]
 
-        if Resource.objects.count():
+        if execution.get_resource_dependencies():
             inlines += [ResourceImportsInline]
 
         return inlines + self.inlines
