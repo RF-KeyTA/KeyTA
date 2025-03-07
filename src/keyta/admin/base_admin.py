@@ -112,19 +112,13 @@ class BaseDocumentationAdmin(DocumentationField, BaseReadOnlyAdmin):
 class BaseQuickAddAdmin(BaseAdmin):
     fields = ['systems', 'windows', 'name']
 
-    def add_view(self, request: HttpRequest, form_url="", extra_context=None):
-        if 'windows' in request.GET:
-            self.window_id = request.GET['windows']
-
-        return super().add_view(request, form_url, extra_context)
-
     def autocomplete_name(self, name: str, request: HttpRequest):
-        names = list(
-            self.model.objects
-            .filter(name__icontains=name)
-            .filter(windows__in=[self.window_id])
-            .values_list('name', flat=True),
-        )
+        queryset = self.model.objects.filter(name__icontains=name)
+
+        if 'windows' in request.GET:
+            queryset = queryset.filter(windows__in=[request.GET['windows']])
+
+        names = list(queryset.values_list('name', flat=True))
 
         return json.dumps(names)
 
