@@ -160,6 +160,17 @@ class BaseVariableAdmin(SortableAdminBase, BaseAdmin):
     search_fields = ['name']
     search_help_text = _('Name')
 
+    def autocomplete_name(self, name: str, request: HttpRequest):
+        queryset = (
+            self.model.objects
+            .filter(name__icontains=name)
+            .filter(windows__isnull=True)
+        )
+
+        names = list(queryset.values_list('name', flat=True))
+
+        return json.dumps(names)
+
     def get_queryset(self, request: HttpRequest):
         queryset = super().get_queryset(request)
 
