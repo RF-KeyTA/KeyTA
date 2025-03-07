@@ -223,10 +223,6 @@
                 })
                 /* END */
                 
-                django.jQuery('select').not('body.popup select, .form-row select').on('change', function() {
-                    $(save_button).click()
-                })
-                
                 document.addEventListener('formset:added', (event) => {
                     const formset = $(event.target)
                     const row = $(formset[0])
@@ -259,26 +255,37 @@
                     const inputs = row.find('input[type="text"]')
                     const last_input = inputs.last()
 
-                    last_select.on('change', function() {
-                        $(save_button).click()
+                    row.on('dragend', function() {
+                        $.post(url, $('form').serialize() + "&_continue=")
                     })
 
-                    if(inputs.length <= 2 && row.hasClass('has_original')) {
-                        inputs.on('blur', function () {
+                    if(row.hasClass('has_original')) {
+                        if (inputs.length <= 2) {
+                            inputs.on('blur', function () {
+                                $.post(url, $('form').serialize() + "&_continue=")
+                            })
+                        }
+                        
+                        selects.on('change', function() {
                             $.post(url, $('form').serialize() + "&_continue=")
                         })
                     }
-                    
                     // extra rows do not have the class .has-original
-                    if(inputs.length <= 2 && !row.hasClass('has_original')) {
-                        last_input.on('blur', function () {
+                    else {
+                        if(inputs.length <= 2) {
+                            last_input.on('blur', function () {
+                                $(save_button).click()
+                            })
+                        }
+
+                        last_select.on('change', function() {
                             $(save_button).click()
                         })
                     }
                 })
 
-                $('.form-row').on('dragend', function() {
-                    $.post(url, $('form').serialize() + "&_continue=")
+                django.jQuery('select').not('body.popup select, .form-row select').on('change', function() {
+                    $(save_button).click()
                 })
 
                 $('input[type="checkbox"]').not('body.popup input').on('change', function () {
