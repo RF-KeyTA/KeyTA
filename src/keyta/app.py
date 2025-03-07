@@ -37,11 +37,11 @@ def django_runserver():
     else:
         exec_django_command('migrate')
 
-    return subprocess.Popen(['python', 'manage.py', 'runserver'], cwd=DJANGO_DIR)
+    return subprocess.Popen('python manage.py runserver', cwd=DJANGO_DIR, shell=True)
 
 
 def exec_command(command: str, working_dir: Path=CWD):
-    return subprocess.run(command, shell=True, cwd=working_dir, stdout=subprocess.PIPE)
+    return subprocess.run(command, cwd=working_dir, shell=True, stdout=subprocess.PIPE)
 
 
 def exec_django_command(command: str):
