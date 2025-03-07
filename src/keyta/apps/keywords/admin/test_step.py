@@ -8,7 +8,12 @@ from apps.variables.models import VariableDocumentation
 from ..forms import KeywordCallParameterFormset
 from ..forms.keywordcall_parameter_formset import get_prev_return_values
 from ..models import TestStep, KeywordCall, KeywordCallParameterSource
-from .keywordcall import KeywordCallParametersInline, KeywordCallAdmin
+from .keywordcall import (
+    KeywordCallParametersInline, 
+    KeywordCallAdmin, 
+    KeywordDocField, 
+    ReturnValueField
+)
 
 
 def get_schema_fields(schema_pk, variable_name):
@@ -58,19 +63,9 @@ class TestStepParametersInline(KeywordCallParametersInline):
     formset = TestStepParameterFormset
 
 
-@admin.register(TestStep)
-class TestStepAdmin(KeywordCallAdmin):
-    readonly_fields = [
-        'to_keyword_doc',
-        'variable_doc',
-        'return_value'
-    ]
 
-    @admin.display(description=_('Sequenz'))
-    def to_keyword_doc(self, test_step: TestStep):
-        return super().to_keyword_doc(test_step)
-
-    @admin.display(description=_('Referenzwert'))
+class VariableDocField:
+    @admin.display(description=_('Referenzwerte'))
     def variable_doc(self, test_step: TestStep):
         variable_doc = VariableDocumentation(test_step.variable.pk)
 
@@ -83,21 +78,24 @@ class TestStepAdmin(KeywordCallAdmin):
         test_step: TestStep = obj
 
         if test_step.variable:
-            return [
-                'to_keyword_doc',
-                'variable_doc',
-                'return_value'
-            ]
+            return super().get_fields(request, obj) + ['variable_doc']
 
-        return [
-            'to_keyword_doc',
-            'return_value'
-        ]
+        return super().get_fields(request, obj)
 
-    def get_inlines(self, request, obj):
+    def get_readonly_fields(self, request, obj=None):
         test_step: TestStep = obj
 
-        if test_step.parameters.exists():
-            return [TestStepParametersInline]
+        if test_step.variable:
+            return super().get_readonly_fields(request, obj) + ['variable_doc']
 
-        return super().get_inlines(request, obj)
+        return super().get_readonly_fields(request, obj)
+
+
+@admin.register(TestStep)
+class TestStepAdmin(
+    ReturnValueField,
+    VariableDocField,
+    KeywordDocField,
+    KeywordCallAdmin
+):
+    parameters_inline = TestStepParametersInline
