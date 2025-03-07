@@ -1,3 +1,5 @@
+from adminsortable2.admin import CustomInlineFormSet
+
 from keyta.admin.base_inline import SortableTabularInline
 from keyta.admin.field_delete_related_instance import DeleteRelatedField
 from keyta.apps.keywords.models import Keyword
@@ -11,6 +13,21 @@ from ..models import TestStep
 from .field_keywordcall_args import KeywordCallArgsField
 
 
+class TestStepsFormset(CustomInlineFormSet):
+    def add_fields(self, form, index):
+        super().add_fields(form, index)
+
+        # The index of an extra form is None
+        if index is not None:
+            test_step: TestStep = form.instance
+
+            if test_step.to_keyword.resource:
+                form.fields['to_keyword'].widget.can_change_related = False
+
+            if not test_step.variable:
+                form.fields['variable'].widget.can_view_related = False
+
+
 class TestStepsInline(   
     DeleteRelatedField,
     KeywordCallArgsField, 
@@ -21,6 +38,7 @@ class TestStepsInline(
     fields = ['window', 'to_keyword']
     extra = 0 # necessary for saving, since to_keyword is not nullable and is null in an extra
     form = TestStepsForm
+    formset = TestStepsFormset
 
     def get_fields(self, request, obj=None):
         *fields, delete = super().get_fields(request, obj)
@@ -36,8 +54,10 @@ class TestStepsInline(
         formset.form.base_fields['window'].queryset = windows
         variable_field = formset.form.base_fields['variable']
         variable_field.queryset = variable_field.queryset.filter(in_list__isnull=True).order_by('name')
-        formset.form.base_fields['to_keyword'].queryset = (
-            Keyword.objects.sequences() | Keyword.objects.filter(resource__in=resource_ids)
+        to_keyword_field = formset.form.base_fields['to_keyword']
+        to_keyword_field.queryset = (
+            Keyword.objects.sequences() | 
+            Keyword.objects.filter(resource__in=resource_ids)
         ).order_by('name')
         
         return formset
