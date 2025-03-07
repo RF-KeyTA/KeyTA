@@ -41,14 +41,14 @@ class KeywordAdmin(SortableAdminBase, BaseAdmin):
         return super().change_view(request, object_id, form_url, extra_context)
 
 
-@admin.register(KeywordDocumentation)
-class KeywordDocumentationAdmin(BaseDocumentationAdmin):
+class ArgsTableMixin:
     @admin.display(description=_('Parameters'))
-    def args_table(self, obj):
-        return mark_safe(obj.args_doc)
+    def args_table(self, keyword: Keyword):
+        return mark_safe(keyword.args_doc)
 
     def get_fields(self, request: HttpRequest, obj=None):
         keyword: Keyword = obj
+        
         if keyword.args_doc:
             return ['args_table'] + self.fields
         
@@ -56,7 +56,16 @@ class KeywordDocumentationAdmin(BaseDocumentationAdmin):
     
     def get_readonly_fields(self, request: HttpRequest, obj=None):
         keyword: Keyword = obj
+
         if keyword.args_doc:
             return ['args_table'] + self.readonly_fields
         
         return self.readonly_fields
+
+
+@admin.register(KeywordDocumentation)
+class KeywordDocumentationAdmin(
+    ArgsTableMixin,
+    BaseDocumentationAdmin
+):
+    pass

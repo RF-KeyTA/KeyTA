@@ -2,13 +2,14 @@ from django.contrib import admin
 from django.utils.translation import gettext as _
 
 from keyta.admin.base_admin import BaseDocumentationAdmin
+from keyta.apps.keywords.admin.keyword import KeywordDocumentationAdmin, ArgsTableMixin
 
 from ..models import LibraryKeywordDocumentation, LibraryKeyword
 
 
 @admin.register(LibraryKeyword)
-class LibraryKeywordAdmin(BaseDocumentationAdmin):
-    list_display = ['library', 'name', 'short_doc']
+class LibraryKeywordAdmin(ArgsTableMixin, BaseDocumentationAdmin):
+    list_display = ['name', 'short_doc']
     list_filter = ['library']
     list_display_links = ['name']
     search_fields = ['name']
@@ -23,5 +24,5 @@ class LibraryKeywordAdmin(BaseDocumentationAdmin):
 
 
 @admin.register(LibraryKeywordDocumentation)
-class LibraryKeywordDocumentationAdmin(BaseDocumentationAdmin):
+class LibraryKeywordDocumentationAdmin(KeywordDocumentationAdmin):
     pass

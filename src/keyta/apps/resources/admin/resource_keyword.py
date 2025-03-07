@@ -2,13 +2,14 @@ from django.contrib import admin
 from django.utils.translation import gettext as _
 
 from keyta.admin.base_admin import BaseDocumentationAdmin
+from keyta.apps.keywords.admin.keyword import KeywordDocumentationAdmin, ArgsTableMixin
 
 from ..models import ResourceKeyword, ResourceKeywordDocumentation
 
 
 @admin.register(ResourceKeyword)
-class ResourceKeywordAdmin(BaseDocumentationAdmin):
-    list_display = ['resource', 'name', 'short_doc']
+class ResourceKeywordAdmin(ArgsTableMixin, BaseDocumentationAdmin):
+    list_display = ['name', 'short_doc']
     list_filter = ['resource']
     search_fields = ['name']
     search_help_text = _('Name')
@@ -22,5 +23,5 @@ class ResourceKeywordAdmin(BaseDocumentationAdmin):
 
 
 @admin.register(ResourceKeywordDocumentation)
-class ResourceKeywordDocumentationAdmin(BaseDocumentationAdmin):
+class ResourceKeywordDocumentationAdmin(KeywordDocumentationAdmin):
     pass
