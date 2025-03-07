@@ -15,6 +15,6 @@ class LibraryForm(forms.ModelForm):
             try:
                 import_module(name)
             except ModuleNotFoundError as err:
-                raise ValidationError(_('Die Bibliothek "{name}" ist nicht vorhanden').format(name=name))
+                raise ValidationError(_(f'Die Bibliothek "{name}" ist im PYTHONPATH nicht vorhanden.'))
 
         return name
