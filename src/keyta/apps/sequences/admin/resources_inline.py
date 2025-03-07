@@ -5,6 +5,8 @@ from keyta.apps.resources.admin import ResourceImportsInline
 from keyta.apps.resources.models import Resource, ResourceImport
 from keyta.forms import form_with_select
 
+from ..models import Sequence
+
 
 class Resources(DeleteRelatedField, ResourceImportsInline):
     fk_name = 'keyword'
@@ -15,10 +17,15 @@ class Resources(DeleteRelatedField, ResourceImportsInline):
         _('Ressource auswählen')
     )
 
-    def get_field_queryset(self, db, db_field, request):
-        queryset = super().get_field_queryset(db, db_field, request)
-        imported_resources = self.get_queryset(request).values_list('resource_id', flat=True)
-        return queryset.exclude(id__in=imported_resources)
+    def get_formset(self, request, obj=None, **kwargs):
+        formset = super().get_formset(request, obj, **kwargs)
+        sequence: Sequence = obj
+
+        imported_resources = self.get_queryset(request).filter(keyword_id=sequence.pk).values_list('resource_id', flat=True)
+        resource_field = formset.form.base_fields['resource']
+        resource_field.queryset = resource_field.queryset.exclude(id__in=imported_resources)
+
+        return formset
 
     def get_max_num(self, request, obj=None, **kwargs):
         return Resource.objects.count()
