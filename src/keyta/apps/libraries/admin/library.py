@@ -97,8 +97,7 @@ class LibraryAdmin(BaseAdmin):
             return super().save_form(request, form, change)
 
     @admin.display(description=_('Aktualisierung'))
-    def update(self, obj):
-        library: Library = obj
+    def update(self, library: Library):
         version = None
 
         if library.name in Library.ROBOT_LIBRARIES:
