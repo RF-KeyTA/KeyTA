@@ -14,7 +14,7 @@ __all__ = ['ResourceImport', 'ResourceImportType']
 
 class ResourceImportType(models.TextChoices):
     FROM_EXECUTION = 'FROM_EXECUTION', _('Aus einer Ausführung')
-    FROM_SEQUENCE = 'FROM_SEQUENCE', _('Aus einer Sequenz')
+    FROM_WINDOW = 'FROM_WINDOW', _('Aus einer Maske')
 
 
 class ResourceImport(AbstractBaseModel):
@@ -26,8 +26,8 @@ class ResourceImport(AbstractBaseModel):
         blank=True,
         related_name='resource_imports'
     )
-    keyword = models.ForeignKey(
-        'keywords.Keyword',
+    window = models.ForeignKey(
+        'windows.Window',
         null=True,
         default=None,
         blank=True,
@@ -42,15 +42,18 @@ class ResourceImport(AbstractBaseModel):
     type = models.CharField(max_length=255, choices=ResourceImportType.choices)
 
     def __str__(self):
-        return f'{self.keyword} -> {self.resource}'
+        if self.window:
+            return f'{self.window} -> {self.resource}'
+
+        return str(self.resource)
 
     def save(
         self, force_insert=False, force_update=False, using=None,
             update_fields=None
     ):
         if not self.pk:
-            if self.keyword:
-                self.type = ResourceImportType.FROM_SEQUENCE
+            if self.window:
+                self.type = ResourceImportType.FROM_WINDOW
             if self.execution:
                 self.type = ResourceImportType.FROM_EXECUTION
 
@@ -79,11 +82,11 @@ class ResourceImport(AbstractBaseModel):
                 check=
                 (Q(type=ResourceImportType.FROM_EXECUTION) &
                  Q(execution__isnull=False) &
-                 Q(keyword__isnull=True))
+                 Q(window__isnull=True))
                 |
-                (Q(type=ResourceImportType.FROM_SEQUENCE) &
+                (Q(type=ResourceImportType.FROM_WINDOW) &
                  Q(execution__isnull=True) &
-                 Q(keyword__isnull=False))
+                 Q(window__isnull=False))
             ),
             models.UniqueConstraint(
                 name='unique_execution_resource_import',
@@ -91,8 +94,8 @@ class ResourceImport(AbstractBaseModel):
                 fields=['execution', 'resource'],
             ),
             models.UniqueConstraint(
-                name='unique_keyword_resource_import',
-                condition=Q(keyword__isnull=False),
-                fields=['keyword', 'resource'],
+                name='unique_window_resource_import',
+                condition=Q(window__isnull=False),
+                fields=['window', 'resource'],
             )
         ]

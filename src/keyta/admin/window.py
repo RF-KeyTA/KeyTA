@@ -7,8 +7,11 @@ from django.utils.translation import gettext as _
 
 from keyta.admin.base_admin import BaseAdmin
 from keyta.admin.base_inline import BaseTabularInline
+from keyta.admin.field_delete_related_instance import DeleteRelatedField
 from keyta.apps.actions.models import ActionQuickAdd
 from keyta.apps.keywords.models import KeywordWindowRelation
+from keyta.apps.resources.admin import ResourceImportsInline
+from keyta.apps.resources.models import Resource, ResourceImport
 from keyta.apps.sequences.models import SequenceQuickAdd
 from keyta.forms.baseform import form_with_select
 from keyta.widgets import CustomRelatedFieldWidgetWrapper, Icon, open_link_in_modal
@@ -80,6 +83,29 @@ class WindowKeywordInline(BaseTabularInline):
     @admin.display(description=_('Systeme'))
     def systems(self, obj: KeywordWindowRelation):
         return ', '.join(obj.keyword.systems.values_list('name', flat=True))
+
+
+class Resources(DeleteRelatedField, ResourceImportsInline):
+    fk_name = 'window'
+    fields = ['resource']
+    form = form_with_select(
+        ResourceImport,
+        'resource',
+        _('Ressource auswählen')
+    )
+
+    def get_formset(self, request, obj=None, **kwargs):
+        formset = super().get_formset(request, obj, **kwargs)
+        window: Window = obj
+
+        imported_resources = self.get_queryset(request).filter(window_id=window.pk).values_list('resource_id', flat=True)
+        resource_field = formset.form.base_fields['resource']
+        resource_field.queryset = resource_field.queryset.exclude(id__in=imported_resources)
+
+        return formset
+
+    def get_max_num(self, request, obj=None, **kwargs):
+        return Resource.objects.count()
 
 
 class Actions(QuickAddMixin, WindowKeywordInline):
@@ -226,7 +252,12 @@ class BaseWindowAdmin(BaseAdmin):
         if not obj:
             return []
 
-        return self.inlines
+        inlines = self.inlines
+
+        if Resource.objects.count():
+            inlines = [Resources] + self.inlines
+
+        return inlines
 
 
 class BaseWindowQuickAddAdmin(BaseWindowAdmin):

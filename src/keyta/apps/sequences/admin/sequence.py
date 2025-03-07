@@ -12,7 +12,6 @@ from keyta.apps.keywords.admin import (
     WindowKeywordAdmin,
     WindowKeywordAdminMixin,
 )
-from keyta.apps.resources.models import Resource
 from keyta.forms.baseform import BaseForm
 from keyta.widgets import ModelSelect2MultipleAdminWidget, Select2MultipleWidget
 
@@ -20,7 +19,6 @@ from ..models import (
     Sequence,
     SequenceQuickAdd
 )
-from .resources_inline import Resources
 from .steps_inline import SequenceSteps
 
 
@@ -61,9 +59,6 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
     def get_inlines(self, request, obj):
         sequence: Sequence = obj
         inlines = self.inlines
-
-        if Resource.objects.count():
-            inlines = [Resources] + self.inlines
 
         if not sequence:
             return [ParametersInline]

@@ -31,7 +31,8 @@ class SequenceSteps(StepsInline):
         sequence: Sequence = obj
         window: Window = sequence.windows.first()
 
-        resource_kws = Keyword.objects.filter(resource__in=sequence.resource_ids)
+        resource_ids = window.resource_imports.values_list('resource_id')
+        resource_kws = Keyword.objects.filter(resource__in=resource_ids)
 
         window_actions = [[
             window.name, [
@@ -67,8 +68,8 @@ class SequenceSteps(StepsInline):
         field.choices = (
                 [(None, None)] +
                 window_actions +
-                global_actions +
-                resource_kws
+                resource_kws +
+                global_actions
         )
 
         return formset

@@ -1,6 +1,7 @@
 from keyta.admin.base_inline import SortableTabularInline
 from keyta.admin.field_delete_related_instance import DeleteRelatedField
-from keyta.apps.keywords.models.keyword import Keyword
+from keyta.apps.keywords.models import Keyword
+from keyta.apps.resources.models import ResourceImport
 from keyta.models.testcase import AbstractTestCase
 
 from apps.windows.models import Window
@@ -29,11 +30,14 @@ class TestStepsInline(
         testcase: AbstractTestCase = obj
         systems = testcase.systems.all()
         windows = Window.objects.filter(systems__in=systems).distinct().order_by('name')
+        resource_ids = ResourceImport.objects.filter(window__in=windows).values_list('resource').distinct()
 
         formset = super().get_formset(request, obj, **kwargs)
         formset.form.base_fields['window'].queryset = windows
         variable_field = formset.form.base_fields['variable']
         variable_field.queryset = variable_field.queryset.filter(in_list__isnull=True).order_by('name')
-        formset.form.base_fields['to_keyword'].queryset = Keyword.objects.sequences().order_by('name')
-
+        formset.form.base_fields['to_keyword'].queryset = (
+            Keyword.objects.sequences() | Keyword.objects.filter(resource__in=resource_ids)
+        ).order_by('name')
+        
         return formset
