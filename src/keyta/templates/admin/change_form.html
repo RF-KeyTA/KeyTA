@@ -160,8 +160,11 @@
             $('#id_name').typeahead({
                 source: function (query, process) {
                     if (query.length > 2) {
+                        const query_parameters = new URLSearchParams(window.location.search)
+                        query_parameters.set("autocomplete", "")
+
                         return $.get(
-                            url + "?autocomplete", 
+                            url + '?' + query_parameters.toString(), 
                             {name: query}, 
                             (data) => process(data)
                         )
