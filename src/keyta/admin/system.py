@@ -51,7 +51,7 @@ class BaseSystemAdmin(BaseAdmin):
     fields = ['name', 'description', 'library']
     inlines = [Windows]
 
-    def autocomplete_name(self, name: str):
+    def autocomplete_name(self, name: str, request: HttpRequest):
         return json.dumps([
             name
             for name in
