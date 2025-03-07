@@ -18,7 +18,6 @@ def args_table(args):
         for arg in args
     ])}
     </table>
-    <p></p>
     """
 
 
