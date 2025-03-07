@@ -144,17 +144,17 @@
     {% endif %}
     <script type="text/javascript">
         $(document).ready(function () {
-            $(".tabular").floatingScroll();
+            $(".tabular").floatingScroll()
 
             {% if add %}
                 $('input:text, select').first().focus()
-                setTimeout(function() { $('body.popup input:text, body.popup select').first().focus() }, 400);
+                setTimeout(function() { $('body.popup input:text, body.popup select').first().focus() }, 400)
             {% endif %}
 
             {% if original.pk %}
-                var url = "{% url opts|admin_urlname:'change' original.pk %}";
+                var url = "{% url opts|admin_urlname:'change' original.pk %}"
             {% else %}
-                var url = "{% url opts|admin_urlname:'add' %}";
+                var url = "{% url opts|admin_urlname:'add' %}"
             {% endif %}
 
             $('#id_name').typeahead({
@@ -164,10 +164,10 @@
                             url + "?autocomplete", 
                             {name: query}, 
                             (data) => process(data)
-                        );
+                        )
                     }
                 }
-            });
+            })
 
             if (url.includes("/change")) {
                 const save_button = '.button-save'
@@ -177,9 +177,10 @@
                 const extra_rows = django.jQuery('body.popup .form-row').not('.has_original').not('.empty-form')
                 const selects = django.jQuery('select', extra_rows)
                 const last_select = selects.last()
+                
                 last_select.on('change', function() {
                     $.post(url, $('form').serialize() + "&_continue=")
-                });
+                })
                 
                 if (extra_rows.length === 2) {
                     last_select.prop('disabled', true)
@@ -191,15 +192,15 @@
                 
                 django.jQuery('body.popup select').not('.form-row select').on('change', function() {
                     $.post(url, $('form').serialize() + "&_continue=")
-                });                
+                })
                 
                 django.jQuery('body.popup .form-row.has_original select').on('change', function() {
                     $.post(url, $('form').serialize() + "&_continue=")
-                });
+                })
 
                 django.jQuery('body.popup input[type="text"]').on('blur', function() {
                     $.post(url, $('form').serialize() + "&_continue=")
-                });
+                })
                 
                 const urlParams = new URLSearchParams(window.location.search)
                 const emptyArgs = urlParams.get('empty_args')
@@ -213,7 +214,7 @@
 
                     if (sessionStorage.getItem('empty_args') !== null && $('.modal-dialog').length === 1) {
                         $(save_button).click()
-                        sessionStorage.clear();
+                        sessionStorage.clear()
                     }
                 })
 
@@ -224,7 +225,7 @@
                 
                 django.jQuery('select').not('body.popup select, .form-row select').on('change', function() {
                     $(save_button).click()
-                });
+                })
                 
                 document.addEventListener('formset:added', (event) => {
                     const formset = $(event.target)
@@ -289,7 +290,7 @@
                     $(save_button).click()
                 })
             }
-        });
+        })
     </script>
     <!-- END change_form.html -->
 {% endblock %}
