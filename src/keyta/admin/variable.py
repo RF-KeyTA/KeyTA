@@ -283,7 +283,10 @@ class BaseVariableQuickAddAdmin(BaseQuickAddAdmin):
                 field.widget = HiddenInput()
             else:
                 field.widget = BaseSelect('')
-                field.queryset = field.queryset.filter(windows__in=[self.window_id])
+                
+                if 'windows' in request.GET:
+                    field.queryset = field.queryset.filter(windows__in=request.GET['windows'])
+
 
         if db_field.name == 'type':
             if 'list_id' in request.GET:
