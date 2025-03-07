@@ -26,8 +26,9 @@ class BaseAdmin(admin.ModelAdmin):
     list_max_show_all = 50
     list_per_page = 50
     preserve_filters = False
-    # By default, the field inlines is a tuple, which cannot be combined with a list
+    # By default, inlines and readonly_fields are tuples, which cannot be combined with a list
     inlines = []
+    readonly_fields = []
 
     def add_view(self, request: HttpRequest, form_url="", extra_context=None):
         if 'autocomplete' in request.GET:
