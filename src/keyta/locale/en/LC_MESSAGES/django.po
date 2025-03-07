@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-07 13:57+0100\n"
+"POT-Creation-Date: 2025-03-07 15:56+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,12 +17,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: .\admin\base_admin.py:135 .\apps\actions\admin\action.py:52
+#: .\admin\base_admin.py:129 .\apps\actions\admin\action.py:55
 msgid "System auswählen"
 msgstr "Select a System"
 
-#: .\admin\system.py:25 .\admin\system.py:30 .\admin\variable.py:127
-#: .\admin\variable.py:135 .\apps\actions\admin\windows_inline.py:20
+#: .\admin\system.py:25 .\admin\system.py:30 .\admin\variable.py:129
+#: .\admin\variable.py:137 .\apps\actions\admin\windows_inline.py:20
 #: .\apps\actions\admin\windows_inline.py:23
 #: .\apps\keywords\models\keyword.py:66
 #: .\apps\keywords\models\keywordcall.py:104 .\apps\windows\models.py:11
@@ -30,7 +30,7 @@ msgstr "Select a System"
 msgid "Maske"
 msgstr "Window"
 
-#: .\admin\system.py:31 .\admin\variable.py:126 .\admin\variable.py:128
+#: .\admin\system.py:31 .\admin\variable.py:128 .\admin\variable.py:130
 #: .\apps\actions\admin\windows_inline.py:24 .\apps\windows\apps.py:8
 #: .\apps\windows\models.py:12 .\apps\windows\models.py:26
 #: .\models\variable.py:47 .\models\variable.py:186
@@ -54,7 +54,7 @@ msgstr "Create"
 msgid " die Aktion zur Anbindung an das System"
 msgstr " the action used for attaching to a running system"
 
-#: .\admin\testcase.py:25 .\admin\variable.py:159 .\admin\window.py:195
+#: .\admin\testcase.py:25 .\admin\variable.py:161 .\admin\window.py:195
 #: .\apps\keywords\admin\keyword.py:26 .\apps\keywords\models\keyword.py:38
 #: .\apps\keywords\models\keyword_parameters.py:28
 #: .\apps\libraries\admin\library_keyword.py:16
@@ -69,7 +69,7 @@ msgstr "Name"
 msgid "Systeme hinzufügen"
 msgstr "Add Systems"
 
-#: .\admin\variable.py:53 .\admin\window.py:125 .\admin\window.py:131
+#: .\admin\variable.py:55 .\admin\window.py:125 .\admin\window.py:131
 #: .\apps\keywords\admin\test_step.py:73
 #: .\apps\keywords\models\keywordcall_parameter_source.py:13
 #: .\apps\variables\models.py:20 .\apps\variables\models.py:31
@@ -77,28 +77,28 @@ msgstr "Add Systems"
 msgid "Referenzwert"
 msgstr "Reference Value"
 
-#: .\admin\variable.py:54 .\admin\window.py:132 .\apps\variables\apps.py:7
+#: .\admin\variable.py:56 .\admin\window.py:132 .\apps\variables\apps.py:7
 #: .\apps\variables\models.py:21 .\apps\variables\models.py:32
 #: .\models\variable.py:102
 msgid "Referenzwerte"
 msgstr "Reference Values"
 
-#: .\admin\variable.py:133 .\apps\actions\admin\windows_inline.py:18
+#: .\admin\variable.py:135 .\apps\actions\admin\windows_inline.py:18
 #: .\apps\keywords\forms\test_steps_form.py:23
 #: .\apps\sequences\admin\sequence.py:43
 msgid "Maske auswählen"
 msgstr "Select a Window"
 
-#: .\admin\variable.py:180 .\admin\window.py:208
+#: .\admin\variable.py:193 .\admin\window.py:208
 #: .\apps\sequences\admin\sequence.py:38
 msgid "System hinzufügen"
 msgstr "Add a System"
 
-#: .\admin\variable.py:225
+#: .\admin\variable.py:238
 msgid "Tabelle"
 msgstr "Table"
 
-#: .\admin\variable.py:318 .\apps\keywords\models\keywordcall_parameters.py:29
+#: .\admin\variable.py:337 .\apps\keywords\models\keywordcall_parameters.py:29
 #: .\apps\libraries\models\library_import_parameter.py:21
 #: .\models\variable.py:157 .\models\variable.py:178
 msgid "Wert"
@@ -370,10 +370,8 @@ msgid "Kein Wert"
 msgstr "No Value"
 
 #: .\apps\keywords\admin\robot_keywordcall.py:58
-#, fuzzy
-#| msgid "Bedingung (optional)"
 msgid "Bedingung eintragen"
-msgstr "Condition (optional)"
+msgstr "Enter a condition"
 
 #: .\apps\keywords\forms\keywordcall_parameter_formset.py:49
 msgid "Vorherige Rückgabewerte"
@@ -591,7 +589,6 @@ msgid "Einstellung"
 msgstr "Setting"
 
 #: .\apps\resources\admin\resource.py:29
-#, fuzzy
 #| msgid "Filename (ending with .resource)"
 msgid "Dateiname (mit .resource Endung)"
 msgstr "Filename (ending with .resource)"
