@@ -14,6 +14,8 @@ class ExecutionKeywordCallParameterFormset(KeywordCallParameterFormset):
 
 
 class ExecutionKeywordCallParametersInline(KeywordCallParametersInline):
+    verbose_name_plural = ''
+
     formset = ExecutionKeywordCallParameterFormset
 
     def get_queryset(self, request: HttpRequest):
