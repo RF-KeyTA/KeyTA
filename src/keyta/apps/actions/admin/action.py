@@ -1,4 +1,7 @@
+import json
+
 from django.contrib import admin
+from django.http import HttpRequest
 from django.utils.translation import gettext as _
 
 from model_clone import CloneModelAdminMixin
@@ -57,6 +60,16 @@ class ActionAdmin(ActionAdminMixin, CloneModelAdminMixin, WindowKeywordAdmin):
         ParametersInline,
         ActionSteps
     ]
+
+    def autocomplete_name(self, name: str, request: HttpRequest):
+        names = list(
+            self.model.objects
+            .filter(name__icontains=name)
+            .filter(windows__isnull=True)
+            .values_list('name', flat=True)
+        )
+
+        return json.dumps(names)
 
     def get_fields(self, request, obj=None):
         action: Action = obj
