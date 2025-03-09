@@ -33,7 +33,10 @@ class Library(KeywordSource):
     def is_library(self):
         return True
 
-    class Meta:
+    class Meta(KeywordSource.Meta):
+        constraints = [
+            models.UniqueConstraint(fields=['name'], name='unique_library_name')
+        ]
         verbose_name = _('Bibliothek')
         verbose_name_plural = _('Bibliotheken')
 

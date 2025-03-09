@@ -16,7 +16,6 @@ from .base_model import AbstractBaseModel
 class KeywordSource(AbstractBaseModel):
     name = models.CharField(
         max_length=255, 
-        unique=True,
         verbose_name=_('Name')
     )
     documentation = models.TextField(
@@ -145,3 +144,4 @@ class KeywordSource(AbstractBaseModel):
 
     class Meta:
         abstract = True
+        ordering = ['name']

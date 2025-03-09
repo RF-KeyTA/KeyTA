@@ -24,7 +24,6 @@ from .keywords_inline import Keywords
 @admin.register(Library)
 class LibraryAdmin(BaseAdmin):
     list_display = ['name', 'version', 'update']
-    ordering = ['name']
     inlines = [Keywords]
     form = LibraryForm
     errors = set()
