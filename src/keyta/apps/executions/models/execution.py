@@ -45,7 +45,7 @@ class Execution(CloneMixin, AbstractBaseModel):
     def __str__(self):
         return str(self.keyword or self.testcase)
 
-    def get_library_dependencies(self) -> QuerySet:
+    def get_library_dependencies(self) -> list[int]:
         pass
 
     def get_resource_dependencies(self) -> list[int]:
@@ -132,10 +132,10 @@ class Execution(CloneMixin, AbstractBaseModel):
         library_ids = self.get_library_dependencies()
 
         if test_setup := self.test_setup():
-            library_ids |= LibraryImport.objects.filter(keyword=test_setup.to_keyword).library_ids()
+            library_ids += LibraryImport.objects.filter(keyword=test_setup.to_keyword).library_ids()
 
         if test_teardown := self.test_teardown():
-            library_ids |= LibraryImport.objects.filter(keyword=test_teardown.to_keyword).library_ids()
+            library_ids += LibraryImport.objects.filter(keyword=test_teardown.to_keyword).library_ids()
 
         for library in Library.objects.filter(id__in=library_ids):
             lib_import, created = LibraryImport.objects.get_or_create(

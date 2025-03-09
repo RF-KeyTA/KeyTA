@@ -55,14 +55,18 @@ class KeywordExecution(Execution):
             .first()
         )
 
-    def get_library_dependencies(self) -> QuerySet:
+    def get_library_dependencies(self) -> list[int]:
+        action_ids = self.action_ids
         keyword = self.keyword
 
-        if keyword.is_action:
-            return LibraryImport.objects.filter(keyword=keyword).library_ids()
+        if (test_setup := self.test_setup()) and test_setup.enabled:
+            if to_keyword := test_setup.to_keyword:
+                action_ids.append(to_keyword.pk)
 
-        if keyword.is_sequence:
-            return LibraryImport.objects.filter(keyword__id__in=self.action_ids).library_ids()
+        if keyword.is_action:
+            action_ids.append(keyword.pk)
+
+        return list(LibraryImport.objects.filter(keyword__id__in=action_ids).library_ids())
 
     def get_resource_dependencies(self) -> list[int]:
         if self.keyword.is_sequence and Resource.objects.count():

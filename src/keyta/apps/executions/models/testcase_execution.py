@@ -40,10 +40,20 @@ class TestCaseExecution(Execution):
             .distinct()
         )
 
-    def get_library_dependencies(self) -> QuerySet:
-        return (
+    def get_library_dependencies(self) -> list[int]:
+        action_ids = list(self.action_ids)
+
+        if (test_setup := self.test_setup()) and test_setup.enabled:
+            if to_keyword := test_setup.to_keyword:
+                action_ids.append(to_keyword.pk)
+
+        if (test_teardown := self.test_teardown()) and test_teardown.enabled:
+            if to_keyword := test_teardown.to_keyword:
+                action_ids.append(to_keyword.pk)
+        
+        return list(
             LibraryImport.objects
-            .filter(keyword__id__in=[self.action_ids])
+            .filter(keyword__id__in=action_ids)
             .library_ids()
         )
 
@@ -59,18 +69,18 @@ class TestCaseExecution(Execution):
 
     def get_rf_testsuite(self, user: AbstractUser) -> RFTestSuite:
         keywords = {
-            keyword.pk: keyword.to_robot() # keyword.get_admin_url()
+            keyword.pk: keyword.to_robot()
             for keyword in
             Keyword.objects.filter(pk__in=self.sequence_ids|self.action_ids)
         }
 
         if (test_setup := self.test_setup()) and test_setup.enabled:
             if to_keyword := test_setup.to_keyword:
-                keywords[to_keyword.id] = to_keyword.to_robot() # to_keyword.get_admin_url()
+                keywords[to_keyword.id] = to_keyword.to_robot()
 
         if (test_teardown := self.test_teardown()) and test_teardown.enabled:
             if to_keyword := test_teardown.to_keyword:
-                keywords[to_keyword.id] = to_keyword.to_robot()  # to_keyword.get_admin_url()
+                keywords[to_keyword.id] = to_keyword.to_robot()
 
         dict_variables = []
         list_variables = []
