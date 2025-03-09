@@ -143,7 +143,36 @@
     <script type="text/javascript" src="{% static 'jazzmin/js/related-modal.js' %}"></script>
     {% endif %}
     <script type="text/javascript">
+        // From django/contrib/admin/static/admin/js/admin/RelatedObjectLookups.js
+        function updateRelatedObjectLinks(select) {
+            const $this = $(select);
+            const links = $('.view-related, .change-related, .delete-related', $this.parent());
+
+            if (!links.length) {
+                return;
+            }
+            const value = $this.val();
+            if (value) {
+                links.each(function() {
+                    const elm = $(this);
+                    elm.attr('href', elm.attr('data-href-template').replace('__fk__', value));
+                });
+            } else {
+                links.removeAttr('href');
+            }
+        }
+
         $(document).ready(function () {
+            // From django/contrib/admin/static/admin/js/admin/RelatedObjectLookups.js
+            $('body').on('change', '.related-widget-wrapper select', function(e) {
+                const event = $.Event('django:update-related');
+                $(this).trigger(event);
+                if (!event.isDefaultPrevented()) {
+                    updateRelatedObjectLinks(this);
+                }
+            });
+            $('.related-widget-wrapper select').trigger('change');
+
             $(".tabular").floatingScroll()
 
             {% if add %}

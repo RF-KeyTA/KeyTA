@@ -115,7 +115,7 @@ iframe.related-iframe {
 }
 
 .related-widget-wrapper-link {
-    padding: 0;
+    padding: .25rem 1rem;
 }
 
 .inline-group {
