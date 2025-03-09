@@ -1,5 +1,3 @@
-import json
-
 from django import forms
 from django.conf import settings
 from django.contrib import admin, messages
@@ -20,33 +18,16 @@ from .keywords_inline import Keywords
 @admin.register(Resource)
 class ResourceAdmin(DocumentationField, BaseAdmin):
     list_display = ['name', 'update']
-    ordering = ['name']
-    form = forms.modelform_factory(
-        Resource,
-        fields=['name'],
-        form=ResourceForm,
-        labels={
-            'name': _('Dateiname (mit .resource Endung)')
-        }
-    )
     inlines = [Keywords]
-
-    def autocomplete_name(self, name: str, request: HttpRequest):
-        return json.dumps([
-            name + '.resource'
-            for name in
-            self.model.objects.values_list('name', flat=True)
-            .filter(name__icontains=name.rstrip('.resource'))
-        ])
 
     def get_changelist(self, request: HttpRequest, **kwargs):
         if 'update' in request.GET:
             resource = Resource.objects.get(id=int(request.GET['resource_id']))
 
-            if error := Resource.resource_file_not_found(resource.name + '.resource'):
+            if error := Resource.resource_file_not_found(resource.path):
                 messages.warning(request, error)
             else:
-                import_resource(resource.name + '.resource')
+                import_resource(resource.path)
                 messages.info(
                     request,
                     _(f'Die Ressource "{resource.name}" wurde erfolgreich aktualisiert')
@@ -56,15 +37,27 @@ class ResourceAdmin(DocumentationField, BaseAdmin):
 
     def get_fields(self, request, obj=None):
         if not obj:
-            return ['name']
+            return ['path']
 
-        return self.fields
+        return ['path'] + self.fields
 
-    def get_readonly_fields(self, request, obj=None):
+    def get_form(self, request, obj=None, change=False, **kwargs):
+        path_help_text = ''
+
         if not obj:
-            return []
+            path_help_text = _('Dateipfad wie beim Importieren einer Ressource in einer .robot Datei') 
 
-        return self.readonly_fields
+        return forms.modelform_factory(
+            Resource,
+            fields=['path'],
+            form=ResourceForm,
+            labels={
+                'path': 'Ressource'
+            },
+            help_texts={
+                'path': path_help_text
+            }
+        )
 
     def get_inlines(self, request, obj):
         if not obj:
@@ -72,13 +65,17 @@ class ResourceAdmin(DocumentationField, BaseAdmin):
 
         return super().get_inlines(request, obj)
 
+    def get_readonly_fields(self, request, obj=None):
+        if not obj:
+            return []
+
+        return ['path'] + self.readonly_fields
+
     def has_delete_permission(self, request: HttpRequest, obj=None) -> bool:
-        return False
+        return True
 
     def save_form(self, request, form, change):
-        resource_name = form.cleaned_data.get('name', None)
-        resource = import_resource(str(resource_name))
-        
+        resource = import_resource(form.cleaned_data['path'])
         super().save_form(request, form, change)
 
         return resource
