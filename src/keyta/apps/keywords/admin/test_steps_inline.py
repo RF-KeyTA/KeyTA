@@ -26,6 +26,7 @@ class TestStepsFormset(CustomInlineFormSet):
 
             if not test_step.variable:
                 form.fields['variable'].widget.can_view_related = False
+                form.fields['variable'].widget.can_change_related = False
 
 
 class TestStepsInline(   
