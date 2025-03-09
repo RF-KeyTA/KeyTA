@@ -31,6 +31,15 @@ class TestCaseExecution(Execution):
             .values_list('to_keyword', flat=True)
         )
 
+    @property
+    def window_ids(self):
+        return (
+            KeywordCall.objects
+            .filter(testcase_id=self.testcase.pk)
+            .values_list('window_id', flat=True)
+            .distinct()
+        )
+
     def get_library_dependencies(self) -> QuerySet:
         return (
             LibraryImport.objects
@@ -38,15 +47,15 @@ class TestCaseExecution(Execution):
             .library_ids()
         )
 
-    def get_resource_dependencies(self) -> QuerySet:
+    def get_resource_dependencies(self) -> list[int]:
         if Resource.objects.count():
-            return (
+            return list(
                 ResourceImport.objects
-                .filter(keyword__id__in=[self.sequence_ids])
+                .filter(window__id__in=self.window_ids)
                 .resource_ids()
             )
 
-        return QuerySet()
+        return []
 
     def get_rf_testsuite(self, user: AbstractUser) -> RFTestSuite:
         keywords = {

@@ -64,11 +64,15 @@ class KeywordExecution(Execution):
         if keyword.is_sequence:
             return LibraryImport.objects.filter(keyword__id__in=self.action_ids).library_ids()
 
-    def get_resource_dependencies(self) -> QuerySet:
-        if Resource.objects.count():
-            return ResourceImport.objects.filter(keyword=self.keyword).resource_ids()
+    def get_resource_dependencies(self) -> list[int]:
+        if self.keyword.is_sequence and Resource.objects.count():
+            return list(
+                ResourceImport.objects
+                .filter(window=self.keyword.windows.first())
+                .resource_ids()
+            )
 
-        return QuerySet()
+        return []
 
     def get_rf_testsuite(self, user: AbstractUser) -> RFTestSuite:
         keyword = self.keyword

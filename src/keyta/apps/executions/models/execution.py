@@ -48,7 +48,7 @@ class Execution(CloneMixin, AbstractBaseModel):
     def get_library_dependencies(self) -> QuerySet:
         pass
 
-    def get_resource_dependencies(self) -> QuerySet:
+    def get_resource_dependencies(self) -> list[int]:
         pass
 
     def get_rf_settings(self, user: AbstractUser) -> RFSettings:
@@ -149,16 +149,15 @@ class Execution(CloneMixin, AbstractBaseModel):
 
     def update_resource_imports(self):
         if Resource.objects.count():
-            resource_ids = self.get_resource_dependencies()
+            if resource_ids := self.get_resource_dependencies():
+                for resource in Resource.objects.filter(id__in=resource_ids):
+                    ResourceImport.objects.get_or_create(
+                        execution=self,
+                        resource=resource
+                    )
 
-            for resource in Resource.objects.filter(id__in=resource_ids):
-                ResourceImport.objects.get_or_create(
-                    execution=self,
-                    resource=resource
-                )
-
-            for resource_import in self.resource_imports.exclude(resource_id__in=resource_ids):
-                resource_import.delete()
+                for resource_import in self.resource_imports.exclude(resource_id__in=resource_ids):
+                    resource_import.delete()
 
     def validate(self, user: AbstractUser) -> Optional[dict]:
         pass
