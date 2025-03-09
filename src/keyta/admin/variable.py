@@ -180,7 +180,7 @@ class BaseVariableAdmin(SortableAdminBase, BaseAdmin):
         return queryset
 
     def change_view(self, request: HttpRequest, object_id, form_url="", extra_context=None):
-        if '_to_field' in request.GET:
+        if 'view' in request.GET:
             variable_doc = VariableDocumentation.objects.get(id=object_id)
             return HttpResponseRedirect(variable_doc.get_admin_url())
 
