@@ -17,10 +17,10 @@ class TestStepsFormset(CustomInlineFormSet):
     def add_fields(self, form, index):
         super().add_fields(form, index)
 
-        # The index of an extra form is None
-        if index is not None:
-            test_step: TestStep = form.instance
+        test_step: TestStep = form.instance
 
+        # The index of an extra form is None
+        if index is not None and test_step.pk:
             if test_step.to_keyword.resource:
                 form.fields['to_keyword'].widget.can_change_related = False
 
