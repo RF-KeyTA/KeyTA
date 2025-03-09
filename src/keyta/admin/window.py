@@ -242,7 +242,7 @@ class BaseWindowAdmin(BaseAdmin):
     ]
 
     def change_view(self, request: HttpRequest, object_id, form_url="", extra_context=None):
-        if '_to_field' in request.GET:
+        if 'view' in request.GET:
             window_doc = WindowDocumentation.objects.get(id=object_id)
             return HttpResponseRedirect(window_doc.get_admin_url())
 
