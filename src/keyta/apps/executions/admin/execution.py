@@ -44,7 +44,10 @@ class ExecutionAdmin(admin.ModelAdmin):
 
     def get_inlines(self, request, obj):
         execution: Execution = obj
-        inlines = [LibraryImportInline]
+        inlines = []
+
+        if execution.get_library_dependencies():
+            inlines += [LibraryImportInline]
 
         if execution.get_resource_dependencies():
             inlines += [ResourceImportsInline]
