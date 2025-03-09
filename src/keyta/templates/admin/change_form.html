@@ -173,6 +173,10 @@
             });
             $('.related-widget-wrapper select').trigger('change');
 
+            $('.related-widget-wrapper a').on('mouseup', function(e) {
+                $(this).closest('.dropdown').dropdown('toggle')
+            })
+
             $(".tabular").floatingScroll()
 
             {% if add %}
