@@ -4,7 +4,6 @@ from django.utils.translation import gettext as _
 
 from keyta.apps.keywords.models.keyword import Keyword
 from keyta.apps.resources.models.resource_import import ResourceImport
-from keyta.apps.sequences.models import Sequence
 from keyta.widgets import ModelSelect2AdminWidget
 
 from apps.variables.models import Variable
