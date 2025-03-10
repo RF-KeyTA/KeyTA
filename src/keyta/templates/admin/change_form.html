@@ -210,6 +210,7 @@
                 $(save_button).hide()
 
                 /* Modal */
+                // extra rows do not have the class .has-original
                 const extra_rows = django.jQuery('body.popup .form-row').not('.has_original').not('.empty-form')
                 const selects = django.jQuery('select', extra_rows)
                 const last_select = selects.last()
@@ -264,23 +265,34 @@
                     const row = $(formset[0])
 
                     // extra rows do not have the class .has-original
-                    if (row.find('select').length === 3 && !row.hasClass('has_original')) {
+                    if (!row.hasClass('has_original')) {
                         const selects = row.find('select')
-                        const first_select = $(selects[0])
-                        const second_select = $(selects[1])
-                        const third_select = $(selects[2])
 
-                        second_select.prop('disabled', true)
-                        third_select.prop('disabled', true)
+                        if (selects.length === 3) {
+                            const first_select = $(selects[0])
+                            const second_select = $(selects[1])
+                            const third_select = $(selects[2])
 
-                        django.jQuery(first_select).on('change', function() {
-                            second_select.prop('disabled', false)
-                        })
+                            second_select.prop('disabled', true)
+                            third_select.prop('disabled', true)
 
-                        django.jQuery(second_select).on('change', function() {
-                            third_select.prop('disabled', false)
-                            $(save_button).click()
-                        })
+                            django.jQuery(first_select).on('change', function() {
+                                second_select.prop('disabled', false)
+                            })
+
+                            django.jQuery(second_select).on('change', function() {
+                                third_select.prop('disabled', false)
+                                $(save_button).click()
+                            })
+                        }
+
+                        if (selects.length === 1) {
+                            const first_select = $(selects[0])
+
+                            django.jQuery(first_select).on('change', function() {
+                                $(save_button).click()
+                            })
+                        }
                     }
                 })
                 
