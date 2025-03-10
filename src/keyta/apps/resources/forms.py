@@ -11,7 +11,7 @@ class ResourceForm(forms.ModelForm):
     def clean_path(self):
         filepath = Path(self.cleaned_data["path"]).as_posix()
 
-        if Resource.objects.filter(path=filepath).exists():
+        if not self.instance.pk and Resource.objects.filter(path=filepath).exists():
             raise ValidationError(_(f'Die Ressource "{filepath}" ist bereits vorhanden.'))
 
         if err := Resource.resource_file_not_found(filepath):
