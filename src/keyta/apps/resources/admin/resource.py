@@ -52,7 +52,7 @@ class ResourceAdmin(DocumentationField, BaseAdmin):
             fields=['path'],
             form=ResourceForm,
             labels={
-                'path': 'Ressource'
+                'path': _('Ressource')
             },
             help_texts={
                 'path': path_help_text
