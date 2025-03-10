@@ -69,7 +69,7 @@ class ResourceAdmin(DocumentationField, BaseAdmin):
         if not obj:
             return []
 
-        return ['path'] + self.readonly_fields
+        return self.readonly_fields
 
     def has_delete_permission(self, request: HttpRequest, obj=None) -> bool:
         return True
