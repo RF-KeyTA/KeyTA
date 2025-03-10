@@ -12,7 +12,6 @@ def import_resource(resource_path: str):
         name=lib_json["name"],
         defaults={
             'documentation': lib_json["doc"],
-            'name': Path(resource_path).stem,
             'path': Path(resource_path).as_posix()
         }
     )
