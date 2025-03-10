@@ -1,7 +1,6 @@
 from typing import Optional
 
 from django.contrib.auth.models import AbstractUser
-from django.db.models import QuerySet
 from django.utils.translation import gettext as _
 
 from keyta.apps.keywords.models import Keyword, KeywordCall, TestStep
@@ -20,6 +19,7 @@ class TestCaseExecution(Execution):
         return (
             KeywordCall.objects
             .filter(from_keyword__in=self.sequence_ids)
+            .filter(to_keyword__resource__isnull=True)
             .values_list('to_keyword', flat=True)
         )
 
@@ -28,6 +28,7 @@ class TestCaseExecution(Execution):
         return (
             KeywordCall.objects
             .filter(testcase_id=self.testcase.pk)
+            .filter(to_keyword__resource__isnull=True)
             .values_list('to_keyword', flat=True)
         )
 

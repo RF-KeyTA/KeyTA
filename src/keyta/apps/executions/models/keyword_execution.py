@@ -1,7 +1,6 @@
 from typing import Optional
 
 from django.contrib.auth.models import AbstractUser
-from django.db.models import QuerySet
 from django.utils.translation import gettext as _
 
 from keyta.apps.keywords.models import (
@@ -22,7 +21,11 @@ class KeywordExecution(Execution):
     @property
     def action_ids(self) -> list[int]:
         if self.keyword.is_sequence:
-            return list(self.keyword.calls.values_list('to_keyword', flat=True))
+            return list(
+                self.keyword.calls
+                .filter(to_keyword__resource__isnull=True)
+                .values_list('to_keyword', flat=True)
+            )
 
         return []
 
@@ -80,16 +83,16 @@ class KeywordExecution(Execution):
 
     def get_rf_testsuite(self, user: AbstractUser) -> RFTestSuite:
         keyword = self.keyword
-        keywords = {keyword.pk: keyword.to_robot()} # to_keyword.get_admin_url()
+        keywords = {keyword.pk: keyword.to_robot()}
 
         if keyword.is_sequence:
             for keyword in Keyword.objects.filter(pk__in=self.action_ids):
-                keywords[keyword.pk] = keyword.to_robot() # to_keyword.get_admin_url()
+                keywords[keyword.pk] = keyword.to_robot()
 
         if (test_setup := self.test_setup()) and test_setup.enabled:
             if to_keyword := test_setup.to_keyword:
                 action = Keyword.objects.get(id=to_keyword.id)
-                keywords[action.id] = action.to_robot() # to_keyword.get_admin_url()
+                keywords[action.id] = action.to_robot()
 
         return {
             'name': self.keyword.name,
