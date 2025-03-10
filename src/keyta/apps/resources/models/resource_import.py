@@ -63,7 +63,7 @@ class ResourceImport(AbstractBaseModel):
 
     def to_robot(self, user: Optional[AbstractUser]=None) -> RFResourceImport:
         return {
-            'resource': str(self.resource),
+            'resource': self.resource.path,
         }
 
     class QuerySet(models.QuerySet):
