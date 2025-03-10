@@ -1,5 +1,6 @@
 import os
 import sys
+from pathlib import Path
 from typing import Optional
 
 from django.db import models
@@ -29,6 +30,14 @@ class Resource(KeywordSource):
             return _(f'Die Ressource "{filepath}" ist nicht im PYTHONPATH vorhanden.')
         
         return None
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        filename = Path(self.path).stem
+
+        if not filename == self.name:
+            self.name = filename
+         
+        super().save(force_insert, force_update, using, update_fields)
 
     class Meta(KeywordSource.Meta):
         verbose_name = _('Ressource')
