@@ -75,10 +75,12 @@ class ResourceAdmin(DocumentationField, BaseAdmin):
         return True
 
     def save_form(self, request, form, change):
-        resource = import_resource(form.cleaned_data['path'])
-        super().save_form(request, form, change)
-
-        return resource
+        if change:
+            return super().save_form(request, form, change)
+        else:
+            resource = import_resource(form.cleaned_data['path'])
+            super().save_form(request, form, change)
+            return resource
 
     @admin.display(description=_('Aktualisierung'))
     def update(self, resource: Resource):
