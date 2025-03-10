@@ -307,16 +307,28 @@
                         $.post(url, $('form').serialize() + "&_continue=")
                     })
 
-                    if(row.hasClass('has_original')) {
+                    if (row.hasClass('has_original')) {
                         if (inputs.length <= 2) {
                             inputs.on('blur', function () {
                                 $.post(url, $('form').serialize() + "&_continue=")
                             })
                         }
                         
-                        selects.on('change', function() {
-                            $.post(url, $('form').serialize() + "&_continue=")
-                        })
+                        if (selects.length > 0) {
+                            select_values = {}
+                            selects.each((index, select) => select_values[$(select).attr('id')] = $(select).val())
+                            
+                            selects.on('change', function(event) {
+                                const select_id = $(event.target).attr('id')
+                                
+                                if (select_values[select_id] === '') {
+                                    $(save_button).click()
+                                }
+                                else {
+                                    $.post(url, $('form').serialize() + "&_continue=")
+                                }
+                            })
+                        }
                     }
                     // extra rows do not have the class .has-original
                     else {
