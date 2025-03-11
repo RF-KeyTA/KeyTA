@@ -52,5 +52,4 @@ TestStepsForm = forms.modelform_factory(
     }
 )
 
-TestStepsForm.fields_can_view_related = ['window', 'variable']
 TestStepsForm.fields_can_change_related = ['window', 'to_keyword', 'variable']
