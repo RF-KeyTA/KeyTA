@@ -98,6 +98,8 @@ class BaseReadOnlyAdmin(admin.ModelAdmin):
     list_max_show_all = 50
     list_per_page = 50
     preserve_filters = False
+    # By default, readonly_fields is a tuple, which cannot be combined with a list
+    readonly_fields = []
 
     def has_delete_permission(self, request: HttpRequest, obj=None) -> bool:
         return False
