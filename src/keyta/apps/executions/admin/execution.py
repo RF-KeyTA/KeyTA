@@ -54,6 +54,9 @@ class ExecutionAdmin(admin.ModelAdmin):
 
         return inlines + self.inlines
 
+    def has_delete_permission(self, request, obj=None):
+        return False
+
     def to_robot(self, execution: Execution, user: AbstractUser) -> dict:
         err = execution.validate(user)
         if err:
