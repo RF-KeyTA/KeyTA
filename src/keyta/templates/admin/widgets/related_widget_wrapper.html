@@ -4,47 +4,37 @@
     {% block links %}
         {% spaceless %}
         {% if not is_hidden %}
-        {% if can_add_related %}
-        <a class="related-widget-wrapper-link add-related" id="add_id_{{ name }}"
-           href="{{ add_related_url }}?{{ url_params }}"
-           data-popup="yes"
-        >
-            <i class="fa-solid fa-circle-plus mr-2"></i>
-        </a>
-        {% endif %}
-        {% if can_delete_related %}
-        <a class="related-widget-wrapper-link delete-related dropdown-item" id="delete_id_{{ name }}"
-            data-href-template="{{ delete_related_template_url }}?{{ url_params }}"
-            data-popup="yes"
-        >
-            <i class="fa-solid fa-trash mr-2"></i> {% translate 'Delete' %}
-        </a>
-        {% endif %}
-        {% if can_change_related or can_view_related %}
-        <div class="dropdown" style="display: inline-block;">
-            <button title="Menu" type="button" id="relatedWidgetLinksMenu" style="padding: 0; width: 16px; border: 0px; background-color: rgba(255, 255, 255, 0)" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fa-solid fa-caret-right"></i>
-            </button>
-            <div class="dropdown-menu" aria-labelledby="relatedWidgetLinksMenu">
-                {% if can_view_related %}
-                <a class="related-widget-wrapper-link view-related dropdown-item" id="view_id_{{ name }}"
-                    data-href-template="{{ change_related_template_url }}?{{ view_related_url_params }}&view"
-                    data-popup="yes"
-                >
-                    <i class="fa-solid fa-eye mr-2"></i> {% translate 'View' %}
-                </a>
-                {% endif %}
-                {% if can_change_related %}
-                <a class="related-widget-wrapper-link change-related dropdown-item" id="change_id_{{ name }}"
-                    data-href-template="{{ change_related_template_url }}?{{ url_params }}"
-                    data-popup="yes"
-                >
-                    <i class="fa-solid fa-pencil mr-2"></i> {% translate 'Change' %}
-                </a>
-                {% endif %}
-            </div>
-          </div>
-        {% endif %}
+            {% if can_add_related %}
+            <a class="add-related" id="add_id_{{ name }}"
+               href="{{ add_related_url }}?{{ url_params }}"
+            >
+                <i class="fa-solid fa-circle-plus mr-2"></i>
+            </a>
+            {% endif %}
+            {% if can_change_related %}
+            <a class="related-widget-wrapper-link change-related" id="change_id_{{ name }}"
+                data-href-template="{{ change_related_template_url }}?{{ url_params }}"
+                data-popup="yes"
+            >
+                <i class="fa-solid fa-square-up-right"></i>
+            </a>
+            {% endif %}
+            {% if can_delete_related %}
+            <a class="related-widget-wrapper-link delete-related" id="delete_id_{{ name }}"
+                data-href-template="{{ delete_related_template_url }}?{{ url_params }}"
+                data-popup="yes"
+            >
+                <i class="fa-solid fa-trash mr-2"></i>
+            </a>
+            {% endif %}
+            {% if can_view_related %}
+            <a class="related-widget-wrapper-link view-related" id="view_id_{{ name }}"
+                data-href-template="{{ change_related_template_url }}?{{ view_related_url_params }}&view"
+                data-popup="yes"
+            >
+                <i class="fa-solid fa-eye mr-2"></i>
+            </a>
+            {% endif %}
         {% endif %}
         {% endspaceless %}
     {% endblock %}
