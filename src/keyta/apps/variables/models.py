@@ -11,7 +11,8 @@ from keyta.models.variable import (
 
 
 class Variable(AbstractVariable):
-    pass
+    class Meta(AbstractVariable.Meta):
+        pass
 
 
 class VariableDocumentation(Variable):

@@ -98,6 +98,7 @@ class AbstractVariable(AbstractBaseModel):
 
     class Meta:
         abstract = True
+        ordering = ['name']
         verbose_name = _('Referenzwert')
         verbose_name_plural = _('Referenzwerte')
 
