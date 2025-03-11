@@ -114,7 +114,10 @@
         // Apply select2 to any select boxes that don't yet have it
         // and are not part of the django's empty-form inline
         const noSelect2 = '.empty-form select, .select2-hidden-accessible, .selectfilter, .selector-available select, .selector-chosen select, select[data-autocomplete-light-function=select2]';
-        django.jQuery('select').not(noSelect2).select2({ width: 'element' });
+        const selects = django.jQuery('select').not(noSelect2)
+        if (selects.length > 0) {
+            selects.select2({ width: 'element' });
+        }
     }
 
     $(document).ready(function () {
