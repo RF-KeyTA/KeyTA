@@ -175,6 +175,9 @@
                 const save_button = '.button-save'
                 $(save_button).hide()
 
+                // If the keyword call has empty args reload the page 
+                // upon closing the keyword call modal in order to update
+                // the args icon 
                 const urlParams = new URLSearchParams(window.location.search)
                 const emptyArgs = urlParams.get('empty_args')
 
@@ -195,17 +198,17 @@
                     $.post(url, $('form').serialize() + "&_continue=")
                 })
 
+                // Reload the page when an input changes in order to update the title
+                // This can be avoided using HTMX to swap the card
+                $('input[type=text]').on('blur', function() {
+                    $(save_button).click()
+                })
+                
                 $(document).on('shown.bs.modal', '.modal', function (event) {
                     const modal = $(event.target)
                     const iframe = $('iframe', modal)
-                    const inIframe = iframe.contents()
 
-                    inIframe.find('input[type=text]').first().focus()
-
-                    inIframe.find('input[type=text]').on('blur', function() {
-                        const iframeUrl = iframe.get(0).contentWindow.location.href
-                        $.post(iframeUrl, inIframe.find('form').serialize() + "&_continue=")
-                    })
+                    iframe.contents().find('input[type=text]').first().focus()
                 })
 
                 django.jQuery('.form-row.has_original input[type=checkbox]').on('change', function() {
