@@ -143,52 +143,8 @@
     <script type="text/javascript" src="{% static 'jazzmin/js/related-modal.js' %}"></script>
     {% endif %}
     <script type="text/javascript">
-        // From django/contrib/admin/static/admin/js/admin/RelatedObjectLookups.js
-        function updateRelatedObjectLinks(select) {
-            const $this = $(select);
-            const links = $('.view-related, .change-related, .delete-related', $this.parent());
-
-            if (!links.length) {
-                return;
-            }
-            const value = $this.val();
-            if (value) {
-                links.each(function() {
-                    const elm = $(this);
-                    elm.attr('href', elm.attr('data-href-template').replace('__fk__', value));
-                });
-            } else {
-                links.removeAttr('href');
-            }
-        }
-
         $(document).ready(function () {
-            // From django/contrib/admin/static/admin/js/admin/RelatedObjectLookups.js
-            $('body').on('change', '.related-widget-wrapper select', function(e) {
-                const event = $.Event('django:update-related');
-                $(this).trigger(event);
-                if (!event.isDefaultPrevented()) {
-                    updateRelatedObjectLinks(this);
-                }
-            });
-            $('.related-widget-wrapper select').trigger('change');
-
-            $('.related-widget-wrapper a').on('mouseup', function(e) {
-                $(this).closest('.dropdown').dropdown('toggle')
-            })
-
             $(".tabular").floatingScroll()
-
-            {% if add %}
-                $('input:text, select').first().focus()
-                setTimeout(function() { $('body.popup input:text, body.popup select').first().focus() }, 400)
-            {% endif %}
-
-            {% if original.pk %}
-                var url = "{% url opts|admin_urlname:'change' original.pk %}"
-            {% else %}
-                var url = "{% url opts|admin_urlname:'add' %}"
-            {% endif %}
 
             $('#id_name').typeahead({
                 source: function (query, process) {
@@ -197,55 +153,35 @@
                         query_parameters.set("autocomplete", "")
 
                         return $.get(
-                            url + '?' + query_parameters.toString(), 
-                            {name: query}, 
+                            url + '?' + query_parameters.toString(),
+                            {name: query},
                             (data) => process(data)
                         )
                     }
                 }
             })
 
+            {% if original.pk %}
+                var url = "{% url opts|admin_urlname:'change' original.pk %}"
+            {% else %}
+                var url = "{% url opts|admin_urlname:'add' %}"
+            {% endif %}
+
+            {% if add %}
+                $('input:text, select').first().focus()
+            {% endif %}
+
             if (url.includes("/change")) {
                 const save_button = '.button-save'
                 $(save_button).hide()
 
-                /* Modal */
-                // extra rows do not have the class .has-original
-                const extra_rows = django.jQuery('body.popup .form-row').not('.has_original').not('.empty-form')
-                const selects = django.jQuery('select', extra_rows)
-                const last_select = selects.last()
-                
-                last_select.on('change', function() {
-                    $.post(url, $('form').serialize() + "&_continue=")
-                })
-                
-                if (extra_rows.length === 2) {
-                    last_select.prop('disabled', true)
-                    
-                    selects.first().on('change', function() {
-                        $.post(url, $('form').serialize() + "&_continue=")
-                    })
-                }
-                
-                django.jQuery('body.popup select').not('.form-row select').on('change', function() {
-                    $.post(url, $('form').serialize() + "&_continue=")
-                })
-                
-                django.jQuery('body.popup .form-row.has_original select').on('change', function() {
-                    $.post(url, $('form').serialize() + "&_continue=")
-                })
-
-                django.jQuery('body.popup input[type="text"]').on('blur', function() {
-                    $.post(url, $('form').serialize() + "&_continue=")
-                })
-                
                 const urlParams = new URLSearchParams(window.location.search)
                 const emptyArgs = urlParams.get('empty_args')
-                
+
                 if (emptyArgs != null) {
                     sessionStorage.setItem('empty_args', urlParams.get('empty_args'))
                 }
-                
+
                 $(document).on('click', 'button.close', function() {
                     $('body.popup .button-save').click()
 
@@ -255,105 +191,70 @@
                     }
                 })
 
-                $('body.popup .form-row.has_original input[type="checkbox"]').on('change', function () {
+                $('.form-row.has_original').on('dragend', function() {
                     $.post(url, $('form').serialize() + "&_continue=")
                 })
-                /* END */
-                
-                document.addEventListener('formset:added', (event) => {
-                    const formset = $(event.target)
-                    const row = $(formset[0])
 
-                    // extra rows do not have the class .has-original
-                    if (!row.hasClass('has_original')) {
-                        const selects = row.find('select')
+                $(document).on('shown.bs.modal', '.modal', function (event) {
+                    const modal = $(event.target)
+                    const iframe = $('iframe', modal)
+                    const inIframe = iframe.contents()
 
-                        if (selects.length === 3) {
-                            const first_select = $(selects[0])
-                            const second_select = $(selects[1])
-                            const third_select = $(selects[2])
+                    inIframe.find('input[type=text]').first().focus()
 
-                            second_select.prop('disabled', true)
-                            third_select.prop('disabled', true)
-
-                            django.jQuery(first_select).on('change', function() {
-                                second_select.prop('disabled', false)
-                            })
-
-                            django.jQuery(second_select).on('change', function() {
-                                third_select.prop('disabled', false)
-                                $(save_button).click()
-                            })
-                        }
-
-                        if (selects.length === 1) {
-                            const first_select = $(selects[0])
-
-                            django.jQuery(first_select).on('change', function() {
-                                $(save_button).click()
-                            })
-                        }
-                    }
+                    inIframe.find('input[type=text]').on('blur', function() {
+                        const iframeUrl = iframe.get(0).contentWindow.location.href
+                        $.post(iframeUrl, inIframe.find('form').serialize() + "&_continue=")
+                    })
                 })
-                
-                django.jQuery('.form-row').not('body.popup .form-row').each(function() {
-                    const row = django.jQuery(this)
-                    const selects = row.find('select')
-                    const last_select = selects.last()
-                    const inputs = row.find('input[type="text"]')
-                    const last_input = inputs.last()
 
-                    row.on('dragend', function() {
-                        $.post(url, $('form').serialize() + "&_continue=")
+                django.jQuery('.form-row.has_original input[type=checkbox]').on('change', function() {
+                    $.post(url, $('form').serialize() + "&_continue=")
+                })
+
+                document.addEventListener('formset:added', function(event) {
+                    const row = $(event.target)
+                    const selects = $('select', row)
+
+                    if (selects.length === 3) {
+                        $(selects[1]).prop('disabled', true)
+                        $(selects[2]).prop('disabled', true)
+                    }
+
+                    django.jQuery('select').on('change', function() {
+                        $(save_button).click()
                     })
 
-                    if (row.hasClass('has_original')) {
-                        if (inputs.length <= 2) {
-                            inputs.on('blur', function () {
-                                $.post(url, $('form').serialize() + "&_continue=")
-                            })
-                        }
-                        
-                        if (selects.length > 0) {
-                            select_values = {}
-                            selects.each((index, select) => select_values[$(select).attr('id')] = $(select).val())
-                            
-                            selects.on('change', function(event) {
-                                const select_id = $(event.target).attr('id')
-                                
-                                if (select_values[select_id] === '') {
-                                    $(save_button).click()
-                                }
-                                else {
-                                    $.post(url, $('form').serialize() + "&_continue=")
-                                }
-                            })
-                        }
-                    }
-                    // extra rows do not have the class .has-original
-                    else {
-                        if(inputs.length <= 2) {
-                            last_input.on('blur', function () {
-                                $(save_button).click()
-                            })
-                        }
+                    django.jQuery('input[type=text]').on('blur', function() {
+                        $(save_button).click()
+                    })
+                })
 
-                        last_select.on('change', function() {
+                // A select in a formset
+                const selects = django.jQuery('.form-row.has_original select')
+                select_values = {}
+                selects.each((index, select) => select_values[$(select).attr('id')] = $(select).val())
+
+                if (selects.length > 1 && Object.values(select_values).every(value => value === '')) {
+                    selects.last().on('change', function () {
+                        $(save_button).click()
+                    })
+                }
+                else {
+                    selects.on('change', function(event) {
+                        const select_id = $(event.target).attr('id')
+
+                        if (select_values[select_id] === '') {
                             $(save_button).click()
-                        })
-                    }
-                })
+                        }
+                        else {
+                            $.post(url, $('form').serialize() + "&_continue=")
+                        }
+                    })
+                }
 
-                django.jQuery('select').not('body.popup select, .form-row select').on('change', function() {
-                    $(save_button).click()
-                })
-
-                $('input[type="checkbox"]').not('body.popup input').on('change', function () {
-                    $.post(url, $('form').serialize() + "&_continue=")
-                })
-
-                $('input').not('body.popup input, .form-row input, input[type="hidden"], input[type="checkbox"]').on('blur', function () {
-                    // TODO: Use htmx (+ sse) to swap the card title instead of reloading the page
+                // A select in a form
+                django.jQuery('.form-group select').on('change', function() {
                     $(save_button).click()
                 })
             }
