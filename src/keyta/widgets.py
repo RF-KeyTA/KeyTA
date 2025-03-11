@@ -265,7 +265,7 @@ class CustomRelatedFieldWidgetWrapper(RelatedFieldWidgetWrapper):
 
     def get_context(self, name, value, attrs):
             context = super().get_context(name, value, attrs)
-            context['url_params'] += '&' + self.url_params
+            context['url_params'] = self.url_params
             return context
     
     def get_related_url(self, info, action, *args):
