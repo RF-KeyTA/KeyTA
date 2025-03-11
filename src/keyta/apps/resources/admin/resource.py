@@ -39,7 +39,7 @@ class ResourceAdmin(DocumentationField, BaseAdmin):
         if not obj:
             return ['path']
 
-        return ['path'] + self.fields
+        return ['path'] + super().get_fields(request, obj)
 
     def get_form(self, request, obj=None, change=False, **kwargs):
         path_help_text = ''
@@ -69,7 +69,7 @@ class ResourceAdmin(DocumentationField, BaseAdmin):
         if not obj:
             return []
 
-        return self.readonly_fields
+        return super().get_readonly_fields(request, obj)
 
     def has_delete_permission(self, request: HttpRequest, obj=None) -> bool:
         return True
