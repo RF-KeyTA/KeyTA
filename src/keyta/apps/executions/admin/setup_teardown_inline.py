@@ -47,7 +47,7 @@ class SetupInline(KeywordCallUserArgsField, BaseTabularInline):
         },
         form_class=StepsForm
     )
-    extra = 1
+    extra = 0
     max_num = 1
 
     def get_formset(self, request: HttpRequest, obj=None, **kwargs):
