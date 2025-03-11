@@ -1,19 +1,18 @@
 import json
 
-from django.contrib import admin
 from django.contrib.auth.models import AbstractUser
 from django.http import HttpRequest, JsonResponse, HttpResponse
 
+from keyta.admin.base_admin import BaseAdmin
 from keyta.apps.libraries.admin import LibraryImportInline
 from keyta.apps.resources.admin import ResourceImportsInline
-from keyta.apps.resources.models import Resource
 from keyta.rf_export.rfgenerator import gen_testsuite
 
 from ..models import Execution
 from .setup_teardown_inline import SetupInline, TeardownInline
 
 
-class ExecutionAdmin(admin.ModelAdmin):
+class ExecutionAdmin(BaseAdmin):
     inlines = [
         SetupInline,
         TeardownInline
