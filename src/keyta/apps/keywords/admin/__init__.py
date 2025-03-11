@@ -2,6 +2,7 @@ from .execution_keywordcall import ExecutionKeywordCallAdmin
 from .keyword import KeywordAdmin, KeywordDocumentationAdmin
 from .keywordcall import KeywordCallAdmin
 from .keywordcall_parameters_inline import KeywordCallParametersInline
+from .keywordcall_return_value import KeywordCallReturnValueAdmin
 from .keywordcall_return_value_inline import KeywordCallReturnValueInline
 from .keyword_parameter import KeywordParameterAdmin
 from .keyword_parameters_inline import ParametersInline
