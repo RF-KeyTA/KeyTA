@@ -11,8 +11,6 @@ from ..models import TestStep, KeywordCall, KeywordCallParameterSource
 from .keywordcall import (
     KeywordCallParametersInline, 
     KeywordCallAdmin, 
-    KeywordDocField, 
-    ReturnValueField
 )
 
 
@@ -93,9 +91,6 @@ class VariableDocField:
 
 @admin.register(TestStep)
 class TestStepAdmin(
-    ReturnValueField,
-    VariableDocField,
-    KeywordDocField,
     KeywordCallAdmin
 ):
     parameters_inline = TestStepParametersInline
