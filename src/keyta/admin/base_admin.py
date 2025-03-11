@@ -115,6 +115,17 @@ class BaseDocumentationAdmin(DocumentationField, BaseReadOnlyAdmin):
 class BaseQuickAddAdmin(BaseAdmin):
     fields = ['systems', 'windows', 'name']
 
+    def add_view(self, request, form_url='', extra_context=None):
+        if request.POST and 'ref' in request.GET:
+            response = super().add_view(request, form_url, extra_context)
+
+            if hasattr(response, 'context_data') and response.context_data['errors']:
+                return response
+            else:
+                return HttpResponseRedirect(request.GET['ref'])
+
+        return super().add_view(request, form_url, extra_context)
+
     def autocomplete_name(self, name: str, request: HttpRequest):
         queryset = self.model.objects.filter(name__icontains=name)
 
