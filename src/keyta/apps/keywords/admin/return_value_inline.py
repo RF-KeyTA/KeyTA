@@ -10,7 +10,7 @@ from ..models import KeywordReturnValue, Keyword
 class ReturnValueInline(TabularInlineWithDelete):
     model = KeywordReturnValue
     fields = ['kw_call_return_value']
-    extra = 1
+    extra = 0
     max_num = 1
 
     def get_formset(self, request, obj=None, **kwargs):
