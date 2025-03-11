@@ -121,3 +121,6 @@ class LibraryInitDocumentationAdmin(BaseAdmin):
 
     def dokumentation(self, library: Library):
         return mark_safe(library.init_doc)
+
+    def has_delete_permission(self, request, obj=None):
+        return False
