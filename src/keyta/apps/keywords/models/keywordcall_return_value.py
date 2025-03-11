@@ -3,13 +3,15 @@ from django.utils.translation import gettext as _
 
 from model_clone import CloneMixin
 
+from keyta.models.base_model import AbstractBaseModel
+
 from .keywordcall_parameter_source import (
     KeywordCallParameterSource,
     KeywordCallParameterSourceType
 )
 
 
-class KeywordCallReturnValue(CloneMixin, models.Model):
+class KeywordCallReturnValue(CloneMixin, AbstractBaseModel):
     keyword_call = models.ForeignKey(
         'keywords.KeywordCall',
         on_delete=models.CASCADE,
