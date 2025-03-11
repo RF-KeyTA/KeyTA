@@ -154,6 +154,7 @@ class AbstractVariableValue(AbstractBaseModel):
     )
     value = models.CharField(
         max_length=255,
+        blank=True,
         verbose_name=_('Wert')
     )
 
