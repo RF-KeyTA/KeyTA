@@ -41,8 +41,8 @@
         const iframeHistoryEntries = history.length
 
         if (iframeHistoryEntries > 1) {
-            return '<a id="back-link" href="#" onclick="history.back()">' +
-            '<span aria-hidden="true">↩</span>' +
+            return '<a class="pr-4" href="#" onclick="history.back()">' +
+            '<i class="fa-solid fa-arrow-left"></i>' +
             '</a>'
         }
         else {
