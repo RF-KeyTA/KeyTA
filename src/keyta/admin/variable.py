@@ -51,21 +51,24 @@ class ListElements(QuickAddMixin, SortableTabularInlineWithDelete):
     model = VariableInList
     fk_name = 'list_variable'
     formset = ListElementsFormset
-    fields = ['variable', 'view']
+    fields = ['variable', 'edit']
     quick_add_field = 'variable'
     quick_add_model = VariableQuickAdd
     verbose_name = _('Referenzwert')
     verbose_name_plural = _('Referenzwerte')
 
     @admin.display(description='')
-    def view(self, obj: VariableInList):
+    def edit(self, obj: VariableInList):
         return link(
             obj.variable.get_admin_url(),
-            str(Icon(settings.FA_ICONS.view, {'font-size': '18px', 'margin-top': '10px'}))
+            str(Icon(
+                settings.FA_ICONS.edit,
+                {'font-size': '18px', 'margin-top': '10px'}
+            ))
         )
 
     def get_readonly_fields(self, request: HttpRequest, obj=None):
-        return super().get_readonly_fields(request, obj) + ['view']
+        return super().get_readonly_fields(request, obj) + ['edit']
 
     def quick_add_url_params(self, request: HttpRequest):
         variable_id = request.resolver_match.kwargs['object_id']

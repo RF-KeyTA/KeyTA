@@ -6,6 +6,7 @@ class Icons:
     clone: str = 'fa-solid fa-copy'
     delete: str = 'fa-solid fa-trash-can'
     delete_rel: str = 'fa-solid fa-trash'
+    edit: str = 'fa-solid fa-pencil'
     exec_log: str = 'fa-regular fa-file-lines'
     exec_pass: str = 'fa-solid fa-circle-check'
     exec_fail: str = 'fa-solid fa-circle-xmark'
@@ -18,4 +19,3 @@ class Icons:
     kw_call_drag_handle: str = 'fa-solid fa-sort'
     preview: str = 'fa-solid fa-image'
     save: str = 'fa-regular fa-floppy-disk'
-    view: str = 'fa-solid fa-pencil'
