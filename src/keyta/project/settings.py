@@ -203,7 +203,8 @@ JAZZMIN_SETTINGS = {
         'keywords.teststep': 'single',
         'libraries.libraryimport': 'single',
         'sequences.actioncall': 'single',
-        'variables.variablequickadd': 'single'
+        'variables.variablequickadd': 'single',
+        'variables.variableschema': 'single'
     },
     "copyright": 'imbus',
     "hide_models": [
