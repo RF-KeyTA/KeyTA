@@ -72,7 +72,11 @@ class ListElements(QuickAddMixin, SortableTabularInlineWithDelete):
     def get_readonly_fields(self, request: HttpRequest, obj=None):
         return super().get_readonly_fields(request, obj) + ['edit']
 
-    def quick_add_url_params(self, request: HttpRequest):
+    # Sortable inlines need change permission
+    def has_change_permission(self, request, obj=None) -> bool:
+        return True
+
+    def quick_add_url_params(self, request: HttpRequest, url_params: dict):
         variable_id = request.resolver_match.kwargs['object_id']
         variable = Variable.objects.get(pk=variable_id)
         window_id = variable.windows.first().pk
