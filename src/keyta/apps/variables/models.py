@@ -66,5 +66,5 @@ class VariableWindowRelation(AbstractBaseModel, Variable.windows.through):
     class Meta:
         auto_created = True
         proxy = True
-        verbose_name = _('Beziehung zu Maske')
-        verbose_name_plural = _('Beziehungen zu Masken')
+        verbose_name = _('Referenzwert')
+        verbose_name_plural = _('Referenzwerte')
