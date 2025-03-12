@@ -26,6 +26,13 @@ class WindowQuickAdd(Window):
         verbose_name_plural = _('Masken')
 
 
+class WindowQuickChange(Window):
+    class Meta:
+        proxy = True
+        verbose_name = _('Maske')
+        verbose_name_plural = _('Masken')
+
+
 class WindowSystemRelation(AbstractBaseModel, Window.systems.through):
     def __str__(self):
         return str(self.window)

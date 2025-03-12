@@ -8,6 +8,7 @@ from django.utils.translation import gettext as _
 from keyta.admin.base_admin import BaseAdmin
 from keyta.admin.base_inline import BaseTabularInline
 from keyta.admin.field_delete_related_instance import DeleteRelatedField
+from keyta.admin.field_documentation import DocumentationField
 from keyta.apps.actions.models import ActionQuickAdd
 from keyta.apps.keywords.models import KeywordWindowRelation
 from keyta.apps.resources.admin import ResourceImportsInline
@@ -21,7 +22,7 @@ from apps.variables.models import (
     VariableSchemaQuickAdd,
     VariableWindowRelation
 )
-from apps.windows.models import Window, WindowDocumentation, WindowSchemaRelation
+from apps.windows.models import Window, WindowDocumentation, WindowSchemaRelation, WindowQuickChange
 
 
 class QuickAddMixin:
@@ -242,6 +243,10 @@ class BaseWindowAdmin(BaseAdmin):
     ]
 
     def change_view(self, request: HttpRequest, object_id, form_url="", extra_context=None):
+        if 'quick_change' in request.GET:
+            window = WindowQuickChange.objects.get(pk=object_id)
+            return HttpResponseRedirect(window.get_admin_url())
+
         if 'view' in request.GET:
             window_doc = WindowDocumentation.objects.get(id=object_id)
             return HttpResponseRedirect(window_doc.get_admin_url())
@@ -268,3 +273,11 @@ class BaseWindowQuickAddAdmin(BaseWindowAdmin):
             field.widget = forms.MultipleHiddenInput()
 
         return field
+
+
+class BaseWindowQuickChangeAdmin(DocumentationField, BaseWindowAdmin):
+    def get_inlines(self, request, obj):
+        return [Resources, Sequences, Variables, Schemas]
+
+    def has_delete_permission(self, request, obj=None):
+        return False
