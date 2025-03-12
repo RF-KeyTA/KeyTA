@@ -72,13 +72,16 @@ class ListElements(QuickAddMixin, SortableTabularInlineWithDelete):
         window_id = variable.windows.first().pk
         system_id = variable.systems.first().pk
         schema_id = variable.schema.pk
+        window = Window.objects.get(pk=window_id)
+        tab_url = window.get_tab_url(getattr(self, 'tab_name', None))
 
         return {
             'windows': window_id,
             'systems': system_id,
             'schema': schema_id,
             'type': VariableType.DICT,
-            'list_id': variable_id
+            'list_id': variable_id,
+            'ref': request.path + tab_url
         }
 
 
