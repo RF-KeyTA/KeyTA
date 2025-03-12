@@ -46,5 +46,5 @@ class WindowKeyword(CloneMixin, Keyword):
 
         return clone
 
-    class Meta:
+    class Meta(Keyword.Meta):
         proxy = True

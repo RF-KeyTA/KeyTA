@@ -28,7 +28,6 @@ def url_params(params: dict):
 class KeywordAdmin(SortableAdminBase, BaseAdmin):
     list_display = ['name', 'short_doc']
     list_display_links = ['name']
-    ordering = [Lower('name')]
     search_fields = ['name']
     search_help_text = _('Name')
 

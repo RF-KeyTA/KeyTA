@@ -35,7 +35,7 @@ class Sequence(WindowKeyword):
 
     objects = Manager()
 
-    class Meta:
+    class Meta(WindowKeyword.Meta):
         proxy = True
         verbose_name = _('Sequenz')
         verbose_name_plural = _('Sequenzen')

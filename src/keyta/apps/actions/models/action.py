@@ -32,7 +32,7 @@ class Action(WindowKeyword):
 
     objects = Manager()
 
-    class Meta:
+    class Meta(WindowKeyword.Meta):
         proxy = True
         verbose_name = _('Aktion')
         verbose_name_plural = _('Aktionen')
