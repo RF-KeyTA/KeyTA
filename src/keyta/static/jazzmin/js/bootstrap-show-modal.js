@@ -50,6 +50,12 @@
         }
     }
 
+    const reload = function () {
+        return `<a class="pr-4" id="reload" href="#" onclick="document.getElementById('related-modal-iframe').contentWindow.location.reload()">` +
+        '<i class="fa-solid fa-arrow-rotate-right"></i>' +
+        '</a>'
+    }
+
     Modal.prototype.createContainerElement = function () {
         var self = this
         this.element = document.createElement("div")
@@ -62,6 +68,7 @@
             '<div class="modal-content">' +
             '<div class="modal-header">' +
             goBack() +
+            reload() +
             '<h5 class="modal-title"></h5>' +
             '<button type="button" class="close" data-dismiss="modal" aria-label="Close">' +
             '<span aria-hidden="true">&times;</span>' +
