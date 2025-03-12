@@ -88,3 +88,4 @@ class AbstractTestCase(DocumentationMixin, CloneMixin, AbstractBaseModel):
 
     class Meta:
         abstract = True
+        ordering = ['name']

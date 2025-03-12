@@ -7,6 +7,6 @@ class TestCase(AbstractTestCase):
     def robot_documentation(self):
         return super().plaintext_documentation()
 
-    class Meta:
+    class Meta(AbstractTestCase.Meta):
         verbose_name = _('Testfall')
         verbose_name_plural = _('Testfälle')

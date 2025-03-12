@@ -26,7 +26,6 @@ class BaseTestCaseAdmin(CloneModelAdminMixin, SortableAdminBase, BaseAdmin):
     ]
     search_fields = ['name']
     search_help_text = _('Name')
-    ordering = [Lower('name')]
 
     fields = [
         'systems',
