@@ -253,8 +253,8 @@
                             $(save_button).click()
                         }
                     })
-
-                    django.jQuery('input[type=text]').on('blur', function() {
+                    
+                    django.jQuery('input[type=text]', row).last().on('blur', function() {
                         $(save_button).click()
                     })
                 })
