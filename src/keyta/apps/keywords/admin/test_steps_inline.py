@@ -5,6 +5,7 @@ from keyta.admin.field_delete_related_instance import DeleteRelatedField
 from keyta.apps.keywords.models import Keyword
 from keyta.apps.resources.models import ResourceImport
 from keyta.models.testcase import AbstractTestCase
+from keyta.widgets import CustomRelatedFieldWidgetWrapper
 
 from apps.windows.models import Window
 
@@ -12,6 +13,13 @@ from ..forms import TestStepsForm
 from ..models import TestStep
 from .field_keywordcall_args import KeywordCallArgsField
 
+
+def quick_change_widget(widget):
+    return CustomRelatedFieldWidgetWrapper(
+        widget,
+        '',
+        {'quick_change': 1}
+    )
 
 
 class TestStepsFormset(CustomInlineFormSet):
@@ -48,17 +56,37 @@ class TestStepsInline(
     def get_formset(self, request, obj=None, **kwargs):
         testcase: AbstractTestCase = obj
         systems = testcase.systems.all()
-        windows = Window.objects.filter(systems__in=systems).distinct().order_by('name')
-        resource_ids = ResourceImport.objects.filter(window__in=windows).values_list('resource').distinct()
+        windows = (
+            Window.objects
+            .filter(systems__in=systems)
+            .distinct()
+        )
+        resource_ids = (
+            ResourceImport.objects
+            .filter(window__in=windows)
+            .values_list('resource')
+            .distinct()
+        )
 
         formset = super().get_formset(request, obj, **kwargs)
         formset.form.base_fields['window'].queryset = windows
-        variable_field = formset.form.base_fields['variable']
-        variable_field.queryset = variable_field.queryset.filter(in_list__isnull=True).order_by('name')
+
+        window_field = formset.form.base_fields['window']
+        window_field.widget = quick_change_widget(window_field.widget)
+
         to_keyword_field = formset.form.base_fields['to_keyword']
         to_keyword_field.queryset = (
-            Keyword.objects.sequences() | 
+            Keyword.objects.sequences().filter(systems__in=systems) |
             Keyword.objects.filter(resource__in=resource_ids)
         ).order_by('name')
-        
+        to_keyword_field.widget = quick_change_widget(to_keyword_field.widget)
+
+        variable_field = formset.form.base_fields['variable']
+        variable_field.queryset = (
+            variable_field.queryset
+            .filter(systems__in=systems)
+            .filter(in_list__isnull=True)
+        )
+        variable_field.widget = quick_change_widget(variable_field.widget)
+
         return formset
