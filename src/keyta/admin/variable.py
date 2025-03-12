@@ -33,6 +33,7 @@ from .base_inline import (
     SortableTabularInlineWithDelete,
     TabularInlineWithDelete,
 )
+from .list_filters import SystemListFilter, WindowListFilter
 from .window import QuickAddMixin
 
 
@@ -164,7 +165,10 @@ class Windows(TabularInlineWithDelete):
 class BaseVariableAdmin(SortableAdminBase, BaseAdmin):
     list_display = ['name', 'description']
     list_display_links = ['name']
-    list_filter = ['systems', 'windows']
+    list_filter = [
+        ('systems', SystemListFilter),
+        ('windows', WindowListFilter)
+    ]
     ordering = [Lower('name')]
     search_fields = ['name']
     search_help_text = _('Name')

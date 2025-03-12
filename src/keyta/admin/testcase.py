@@ -11,6 +11,7 @@ from keyta.models.testcase import AbstractTestCase
 from keyta.widgets import BaseSelectMultiple
 
 from .base_admin import BaseAdmin
+from .list_filters import SystemListFilter
 
 
 class LocalExecution(ExecutionInline):
@@ -20,7 +21,9 @@ class LocalExecution(ExecutionInline):
 class BaseTestCaseAdmin(CloneModelAdminMixin, SortableAdminBase, BaseAdmin):
     list_display = ['name', 'description']
     list_display_links = ['name']
-    list_filter = ['systems']
+    list_filter = [
+        ('systems', SystemListFilter),
+    ]
     search_fields = ['name']
     search_help_text = _('Name')
     ordering = [Lower('name')]

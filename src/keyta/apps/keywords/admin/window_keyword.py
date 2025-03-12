@@ -1,5 +1,7 @@
 from django.http import HttpRequest
 
+from keyta.admin.list_filters import SystemListFilter, WindowListFilter
+
 from ..models import WindowKeyword
 from .keyword import KeywordAdmin
 
@@ -18,7 +20,10 @@ class WindowKeywordAdminMixin:
 
 class WindowKeywordAdmin(WindowKeywordAdminMixin, KeywordAdmin):
     list_display = ['name', 'short_doc']
-    list_filter = ['systems', 'windows']
+    list_filter = [
+        ('system', SystemListFilter),
+        ('windows', WindowListFilter)
+    ]
 
     def change_view(self, request, object_id, form_url="", extra_context=None):
         return super().changeform_view(request, object_id, form_url, extra_context)

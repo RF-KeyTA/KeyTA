@@ -4,6 +4,7 @@ from django.contrib import admin
 from django.http import HttpRequest, HttpResponseRedirect
 from django.utils.translation import gettext as _
 
+from admin.list_filters import SystemListFilter
 from keyta.admin.base_admin import BaseAdmin, QuickAddMixin
 from keyta.admin.base_inline import BaseTabularInline
 from keyta.admin.field_delete_related_instance import DeleteRelatedField
@@ -173,7 +174,9 @@ class Schemas(WindowQuickAddMixin, BaseTabularInline):
 class BaseWindowAdmin(BaseAdmin):
     list_display = ['name', 'preview']
     list_display_links = ['name']
-    list_filter = ['systems']
+    list_filter = [
+        ('systems', SystemListFilter),
+    ]
     list_per_page = 10
     search_fields = ['name']
     search_help_text = _('Name')
