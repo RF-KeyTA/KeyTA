@@ -1,8 +1,8 @@
 from django.contrib import admin
 from django.http import HttpRequest
-from django.utils.translation import gettext as _
 
 from keyta.apps.keywords.admin import KeywordCallAdmin, KeywordCallParametersInline
+from keyta.apps.keywords.admin.keywordcall import KeywordDocField
 from keyta.apps.keywords.models import KeywordCall
 
 from ..forms import SetupTeardownParametersFormset
@@ -18,11 +18,10 @@ class SetupTeardownParametersInline(KeywordCallParametersInline):
 
 @admin.register(Setup)
 @admin.register(Teardown)
-class SetupTeardownAdmin(KeywordCallAdmin):
-    fields = ['to_keyword_doc']
-    readonly_fields = ['to_keyword_doc']
-    inlines = [SetupTeardownParametersInline]
-
+class SetupTeardownAdmin(
+    KeywordDocField,
+    KeywordCallAdmin
+):
     def change_view(self, request, object_id, form_url="", extra_context=None):
         kw_call = KeywordCall.objects.get(pk=object_id)
         kw_call.update_parameters(request.user)
@@ -32,7 +31,3 @@ class SetupTeardownAdmin(KeywordCallAdmin):
 
     def get_inlines(self, request, obj):
         return [SetupTeardownParametersInline]
-
-    @admin.display(description=_('Aktion'))
-    def to_keyword_doc(self, kw_call: KeywordCall):
-        return super().to_keyword_doc(kw_call)
