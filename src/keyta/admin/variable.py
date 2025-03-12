@@ -19,6 +19,7 @@ from apps.variables.models import (
     VariableDocumentation,
     VariableInList,
     VariableQuickAdd,
+    VariableQuickChange,
     VariableSchemaField,
     VariableValue,
     VariableWindowRelation,
@@ -180,6 +181,10 @@ class BaseVariableAdmin(SortableAdminBase, BaseAdmin):
         return queryset
 
     def change_view(self, request: HttpRequest, object_id, form_url="", extra_context=None):
+        if 'quick_change' in request.GET:
+            variable = VariableQuickChange.objects.get(id=object_id)
+            return HttpResponseRedirect(variable.get_admin_url())
+
         if 'view' in request.GET:
             variable_doc = VariableDocumentation.objects.get(id=object_id)
             return HttpResponseRedirect(variable_doc.get_admin_url())
@@ -349,7 +354,7 @@ class ListValues(BaseTabularInline):
         return super().get_queryset(request).filter(variable=self.variable_pk)
 
 
-class BaseVariableDocumentationAdmin(admin.ModelAdmin):
+class BaseVariableQuickChangeAdmin(BaseAdmin):
     def get_fields(self, request, obj=None):
         return []
 
@@ -373,6 +378,9 @@ class BaseVariableDocumentationAdmin(admin.ModelAdmin):
         return inline_instances
 
     def has_change_permission(self, request, obj=None):
+        return True
+
+    def has_delete_permission(self, request, obj=None):
         return False
 
     def has_delete_permission(self, request, obj=None):

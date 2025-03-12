@@ -33,6 +33,13 @@ class VariableQuickAdd(Variable):
         verbose_name_plural = _('Referenzwerte')
 
 
+class VariableQuickChange(Variable):
+    class Meta:
+        proxy = True
+        verbose_name = _('Referenzwert')
+        verbose_name_plural = _('Referenzwerte')
+
+
 class VariableSchema(AbstractVariableSchema):
     pass
 
