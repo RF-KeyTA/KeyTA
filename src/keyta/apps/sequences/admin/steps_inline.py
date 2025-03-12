@@ -1,5 +1,6 @@
 from itertools import groupby
 
+from django.db.models import QuerySet
 from django.utils.translation import gettext as _
 
 from keyta.apps.actions.models import Action
@@ -11,6 +12,26 @@ from keyta.forms import form_with_select
 from apps.windows.models import Window
 
 from ..models import ActionCall, Sequence
+
+
+def global_actions(systems: QuerySet):
+    global_actions = (
+        Action.objects
+        .filter(systems__in=systems)
+        .filter(windows__isnull=True)
+        .filter(setup_teardown=False)
+    )
+
+    if not global_actions.exists():
+        return []
+
+    return [[
+        _('Globale Aktionen'), [
+            (action.pk, action.name)
+            for action in global_actions
+            .distinct()
+        ]
+    ]]
 
 
 class SequenceSteps(StepsInline):
@@ -42,17 +63,6 @@ class SequenceSteps(StepsInline):
             ]
         ]]
 
-        global_actions = [[
-            _('Globale Aktionen'), [
-                (action.pk, action.name)
-                for action in Action.objects
-                .filter(systems__in=sequence.systems.all())
-                .filter(windows__isnull=True)
-                .filter(setup_teardown=False)
-                .distinct()
-            ]
-        ]]
-
         groups = groupby(resource_kws, key=lambda x: getattr(x, 'resource'))
         resource_kws = [
             [
@@ -69,7 +79,7 @@ class SequenceSteps(StepsInline):
                 [(None, None)] +
                 window_actions +
                 resource_kws +
-                global_actions
+                global_actions(sequence.systems.all())
         )
 
         return formset
