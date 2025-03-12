@@ -155,8 +155,6 @@ class Variables(QuickAddMixin, BaseTabularInline):
     quick_add_field = 'variable'
     quick_add_model = VariableQuickAdd
     readonly_fields = ['systems']
-    verbose_name = _('Referenzwert')
-    verbose_name_plural = _('Referenzwerte')
 
     def get_queryset(self, request):
         return (
