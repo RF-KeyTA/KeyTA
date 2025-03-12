@@ -22,7 +22,12 @@ from apps.variables.models import (
     VariableSchemaQuickAdd,
     VariableWindowRelation
 )
-from apps.windows.models import Window, WindowDocumentation, WindowSchemaRelation, WindowQuickChange
+from apps.windows.models import (
+    Window,
+    WindowDocumentation,
+    WindowQuickChange,
+    WindowSchemaRelation,
+)
 
 
 class QuickAddMixin:
