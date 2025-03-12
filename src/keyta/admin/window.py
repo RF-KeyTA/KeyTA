@@ -42,23 +42,26 @@ class QuickAddMixin:
             field.widget = quick_add_widget(
                 field.widget,
                 quick_add_url,
-                self.quick_add_url_params(request)
+                self.quick_add_url_params(request, {})
             )
 
         return field
 
-    def quick_add_url_params(self, request: HttpRequest):
     def has_change_permission(self, request, obj=None) -> bool:
         return False
 
+    def quick_add_url_params(self, request: HttpRequest, url_params: dict):
         window_id = request.resolver_match.kwargs['object_id']
         window = Window.objects.get(pk=window_id)
         system_id = window.systems.first().pk
         tab_url = window.get_tab_url(getattr(self, 'tab_name', None))
 
+        # ref has to be the last key in the dictionary in order for the form
+        # fields to be automatically filled with the values in the query params
         return {
             'windows': window_id,
             'systems': system_id,
+            **url_params,
             'ref': request.path + tab_url
         }
 
@@ -158,26 +161,12 @@ class Variables(QuickAddMixin, BaseTabularInline):
             .order_by('variable__name')
     )
 
-    def has_change_permission(self, request, obj=None) -> bool:
-        return False
-
-    def quick_add_url_params(self, request: HttpRequest):
+    def quick_add_url_params(self, request: HttpRequest, url_params: dict):
         window_id = request.resolver_match.kwargs['object_id']
         window = Window.objects.get(pk=window_id)
-        system_id = window.systems.first().pk
-        tab_url = window.get_tab_url(getattr(self, 'tab_name', None))
-
-        query_params = {
-            'windows': window_id,
-            'systems': system_id
-        }
 
         if schema := window.schemas.first():
-            query_params |= {'schema': schema.pk}
-
-        # ref has to be the last key in the dictionary in order for the form
-        # fields to be automatically filled with the values in the query params
-        return query_params | {'ref': request.path + tab_url}
+            return super().quick_add_url_params(request, {'schema': schema.pk})
 
     @admin.display(description=_('Systeme'))
     def systems(self, obj):
