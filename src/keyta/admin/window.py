@@ -95,7 +95,11 @@ class Resources(DeleteRelatedField, ResourceImportsInline):
         formset = super().get_formset(request, obj, **kwargs)
         window: Window = obj
 
-        imported_resources = self.get_queryset(request).filter(window_id=window.pk).values_list('resource_id', flat=True)
+        imported_resources = (
+            self.get_queryset(request)
+            .filter(window_id=window.pk)
+            .values_list('resource_id', flat=True)
+        )
         resource_field = formset.form.base_fields['resource']
         resource_field.queryset = resource_field.queryset.exclude(id__in=imported_resources)
 
