@@ -61,6 +61,8 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
     to_keyword = models.ForeignKey(
         'keywords.Keyword',
         on_delete=models.CASCADE,
+        null=True,
+        blank=True,
         related_name='uses'
     )
     condition = models.CharField(
@@ -187,8 +189,9 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
             super().save(force_insert, force_update, using, update_fields)
            
             if not hasattr(self, 'clone'):
-                self.update_parameters()
-                self.add_return_value()
+                if self.to_keyword:
+                    self.update_parameters()
+                    self.add_return_value()
         else:
             super().save(force_insert, force_update, using, update_fields)
 

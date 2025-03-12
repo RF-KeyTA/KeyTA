@@ -15,7 +15,7 @@ class BaseKeywordCallArgs:
         return kw_call.has_empty_arg()
 
     def get_icon(self, kw_call: KeywordCall, user: Optional[AbstractUser]=None):
-        if not kw_call.pk:
+        if not kw_call.pk or not kw_call.to_keyword:
             return '-'
 
         if self.invalid_keyword_call_args(kw_call, user):
