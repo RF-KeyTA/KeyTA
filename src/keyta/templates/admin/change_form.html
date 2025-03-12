@@ -209,10 +209,17 @@
                     $.post(url, $('form').serialize() + "&_continue=")
                 })
 
-                // Reload the page when an input changes in order to update the title
-                // This can be avoided using HTMX to swap the card
                 $('input[type=text]').on('blur', function() {
-                    $(save_button).click()
+                    const input = $(this)
+                    
+                    // Reload the page when the name changes in order to update the title
+                    // This can be avoided using HTMX to swap the card
+                    if (input.attr('name') === 'name') {
+                        $(save_button).click()
+                    }
+                    else {
+                        $.post(url, $('form').serialize() + "&_continue=")
+                    }
                 })
                 
                 $(document).on('shown.bs.modal', '.modal', function (event) {
