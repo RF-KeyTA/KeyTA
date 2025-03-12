@@ -252,7 +252,7 @@
 
                 if (selects.length > 1 && Object.values(select_values).every(value => value === '')) {
                     selects.last().on('change', function () {
-                        $(save_button).click()
+                        $.post(url, $('form').serialize() + "&_continue=")
                     })
                 }
                 else {
