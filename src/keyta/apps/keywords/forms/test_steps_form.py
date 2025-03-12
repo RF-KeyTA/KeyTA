@@ -37,17 +37,20 @@ TestStepsForm = forms.modelform_factory(
             model=Window,
             search_fields=['name__icontains'],
         ),
-        'variable': ModelSelect2AdminWidget(
-            placeholder=_('Referenzwert auswählen'),
-            model=Variable,
-            search_fields=['name__icontains'],
-            dependent_fields={'window': 'windows'},
-        ),
         'to_keyword': KeywordSelectWidget(
             placeholder=_('Sequenz auswählen'),
             model=Keyword,
             search_fields=['name__icontains'],
             dependent_fields={'window': 'windows'},
+        ),
+        'variable': ModelSelect2AdminWidget(
+            placeholder=_('Referenzwert auswählen'),
+            model=Variable,
+            search_fields=['name__icontains'],
+            dependent_fields={'window': 'windows'},
+            attrs={
+                'data-allow-clear': 'true',
+            }
         )
     }
 )
