@@ -194,7 +194,6 @@ class BaseVariableAdmin(SortableAdminBase, BaseAdmin):
 
         return super().change_view(request, object_id, form_url, extra_context)
 
-    fields = ['systems', 'name', 'description']
     form = form_with_select(
         Variable,
         'systems',
@@ -206,10 +205,12 @@ class BaseVariableAdmin(SortableAdminBase, BaseAdmin):
     def get_fields(self, request, obj=None):
         variable: Variable = obj
 
-        fields = self.fields
+        fields = ['systems']
 
-        if variable and variable.windows.exists():
-            fields = ['systems', 'windows', 'name', 'description']
+        if variable and variable.windows.count() == 1:
+            fields += ['window']
+
+        fields += ['name', 'description']
 
         if variable and variable.schema:
             fields += ['schema']
@@ -232,8 +233,8 @@ class BaseVariableAdmin(SortableAdminBase, BaseAdmin):
 
         fields = []
 
-        if variable and variable.windows.exists():
-            fields += ['windows']
+        if variable and variable.windows.count() == 1:
+            fields += ['window']
 
         if variable and variable.schema:
             fields += ['schema']
@@ -242,6 +243,15 @@ class BaseVariableAdmin(SortableAdminBase, BaseAdmin):
             fields += ['in_list']
 
         return fields
+
+    @admin.display(description=_('Maske'))
+    def window(self, variable: Variable):
+        window = variable.windows.first()
+
+        return link(
+            window.get_admin_url(),
+            window.name
+        )
 
     @admin.display(description=_('Tabelle'))
     def in_list(self, variable: Variable):
