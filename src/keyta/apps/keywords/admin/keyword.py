@@ -17,6 +17,13 @@ from ..models import KeywordDocumentation, Keyword
 from ..models.keyword import KeywordType
 
 
+def url_params(params: dict):
+    return '&'.join([
+        '%s=%s' % (name, value)
+        for name, value in params.items()
+    ])
+
+
 @admin.register(Keyword)
 class KeywordAdmin(SortableAdminBase, BaseAdmin):
     list_display = ['name', 'short_doc']
@@ -40,7 +47,7 @@ class KeywordAdmin(SortableAdminBase, BaseAdmin):
         
         if keyword.type == KeywordType.SEQUENCE:
             sequence = Sequence.objects.get(pk=object_id)
-            return HttpResponseRedirect(sequence.get_admin_url())
+            return HttpResponseRedirect(sequence.get_admin_url() + '?' + url_params(request.GET))
         
         return super().change_view(request, object_id, form_url, extra_context)
 
