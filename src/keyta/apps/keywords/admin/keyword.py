@@ -69,9 +69,9 @@ class ArgsTableMixin:
         keyword: Keyword = obj
 
         if keyword.args_doc:
-            return ['args_table'] + self.get_readonly_fields(request, obj)
+            return ['args_table'] + super().get_readonly_fields(request, obj)
         
-        return self.get_readonly_fields(request, obj)
+        return super().get_readonly_fields(request, obj)
 
 
 @admin.register(KeywordDocumentation)
