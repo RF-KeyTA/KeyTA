@@ -2,10 +2,9 @@ from django import forms
 from django.conf import settings
 from django.contrib import admin
 from django.http import HttpRequest, HttpResponseRedirect
-from django.urls import reverse
 from django.utils.translation import gettext as _
 
-from keyta.admin.base_admin import BaseAdmin
+from keyta.admin.base_admin import BaseAdmin, QuickAddMixin
 from keyta.admin.base_inline import BaseTabularInline
 from keyta.admin.field_delete_related_instance import DeleteRelatedField
 from keyta.admin.field_documentation import DocumentationField
@@ -15,7 +14,7 @@ from keyta.apps.resources.admin import ResourceImportsInline
 from keyta.apps.resources.models import Resource, ResourceImport
 from keyta.apps.sequences.models import SequenceQuickAdd
 from keyta.forms.baseform import form_with_select
-from keyta.widgets import Icon, open_link_in_modal, quick_add_widget
+from keyta.widgets import Icon, open_link_in_modal
 
 from apps.variables.models import (
     VariableQuickAdd,
@@ -30,26 +29,7 @@ from apps.windows.models import (
 )
 
 
-class QuickAddMixin:
-    def formfield_for_dbfield(self, db_field, request, **kwargs):
-        field = super().formfield_for_dbfield(db_field, request, **kwargs)
-
-        if db_field.name == self.quick_add_field:
-            app = self.quick_add_model._meta.app_label
-            model = self.quick_add_model._meta.model_name
-            quick_add_url = reverse('admin:%s_%s_add' % (app, model))   
-
-            field.widget = quick_add_widget(
-                field.widget,
-                quick_add_url,
-                self.quick_add_url_params(request, {})
-            )
-
-        return field
-
-    def has_change_permission(self, request, obj=None) -> bool:
-        return False
-
+class WindowQuickAddMixin(QuickAddMixin):
     def quick_add_url_params(self, request: HttpRequest, url_params: dict):
         window_id = request.resolver_match.kwargs['object_id']
         window = Window.objects.get(pk=window_id)
@@ -109,7 +89,7 @@ class Resources(DeleteRelatedField, ResourceImportsInline):
         return Resource.objects.count()
 
 
-class Actions(QuickAddMixin, WindowKeywordInline):
+class Actions(WindowQuickAddMixin, WindowKeywordInline):
     form = forms.modelform_factory(
         KeywordWindowRelation,
         fields=['keyword'],
@@ -126,7 +106,7 @@ class Actions(QuickAddMixin, WindowKeywordInline):
         return super().get_queryset(request).actions()
 
 
-class Sequences(QuickAddMixin, WindowKeywordInline):
+class Sequences(WindowQuickAddMixin, WindowKeywordInline):
     form = forms.modelform_factory(
         KeywordWindowRelation,
         fields=['keyword'],
@@ -143,7 +123,7 @@ class Sequences(QuickAddMixin, WindowKeywordInline):
         return super().get_queryset(request).sequences()
 
 
-class Variables(QuickAddMixin, BaseTabularInline):
+class Variables(WindowQuickAddMixin, BaseTabularInline):
     model = VariableWindowRelation
     form = forms.modelform_factory(
         VariableWindowRelation,
@@ -175,7 +155,7 @@ class Variables(QuickAddMixin, BaseTabularInline):
         return ', '.join(obj.variable.systems.values_list('name', flat=True))
 
 
-class Schemas(QuickAddMixin, BaseTabularInline):
+class Schemas(WindowQuickAddMixin, BaseTabularInline):
     model = WindowSchemaRelation
     form = forms.modelform_factory(
         WindowSchemaRelation,

@@ -7,11 +7,12 @@ from django.contrib.admin.widgets import AutocompleteSelectMultiple
 from django.db import models
 from django.forms import SelectMultiple, CheckboxSelectMultiple
 from django.http import HttpRequest, HttpResponseRedirect, HttpResponse
+from django.urls import reverse
 from django.utils.translation import gettext as _
 
 from tinymce.widgets import AdminTinyMCE
 
-from keyta.widgets import BaseSelectMultiple
+from keyta.widgets import BaseSelectMultiple, quick_add_widget
 
 from .field_documentation import DocumentationField
 
@@ -146,3 +147,27 @@ class BaseQuickAddAdmin(BaseAdmin):
             field.widget = forms.MultipleHiddenInput()
 
         return field
+
+
+class QuickAddMixin:
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        field = super().formfield_for_dbfield(db_field, request, **kwargs)
+
+        if db_field.name == self.quick_add_field:
+            app = self.quick_add_model._meta.app_label
+            model = self.quick_add_model._meta.model_name
+            quick_add_url = reverse('admin:%s_%s_add' % (app, model))
+
+            field.widget = quick_add_widget(
+                field.widget,
+                quick_add_url,
+                self.quick_add_url_params(request, {})
+            )
+
+        return field
+
+    def has_change_permission(self, request, obj=None) -> bool:
+        return False
+
+    def quick_add_url_params(self, request: HttpRequest, url_params: dict):
+        return {}
