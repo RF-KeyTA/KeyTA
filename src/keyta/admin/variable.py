@@ -167,24 +167,23 @@ class BaseVariableAdmin(SortableAdminBase, BaseAdmin):
     search_fields = ['name']
     search_help_text = _('Name')
 
+    form = form_with_select(
+        Variable,
+        'systems',
+        _('System hinzufügen'),
+        select_many=True
+    )
+    inlines = [Values]
+
     def autocomplete_name(self, name: str, request: HttpRequest):
         queryset = (
             self.model.objects
             .filter(name__icontains=name)
             .filter(windows__isnull=True)
         )
-
         names = list(queryset.values_list('name', flat=True))
 
         return json.dumps(names)
-
-    def get_queryset(self, request: HttpRequest):
-        queryset = super().get_queryset(request)
-
-        if request.path == '/variables/variable/':
-            return queryset.filter(in_list__isnull=True)
-
-        return queryset
 
     def change_view(self, request: HttpRequest, object_id, form_url="", extra_context=None):
         if 'quick_change' in request.GET:
@@ -196,14 +195,6 @@ class BaseVariableAdmin(SortableAdminBase, BaseAdmin):
             return HttpResponseRedirect(variable_doc.get_admin_url())
 
         return super().change_view(request, object_id, form_url, extra_context)
-
-    form = form_with_select(
-        Variable,
-        'systems',
-        _('System hinzufügen'),
-        select_many=True
-    )
-    inlines = [Values]
 
     def get_fields(self, request, obj=None):
         variable: Variable = obj
@@ -231,6 +222,15 @@ class BaseVariableAdmin(SortableAdminBase, BaseAdmin):
 
         return self.inlines
 
+    def get_queryset(self, request: HttpRequest):
+        queryset = super().get_queryset(request)
+
+        # In the list view do not show variables that belong to a list variable
+        if request.path == '/variables/variable/':
+            return queryset.filter(in_list__isnull=True)
+
+        return queryset
+
     def get_readonly_fields(self, request, obj=None):
         variable: Variable = obj
 
@@ -247,6 +247,14 @@ class BaseVariableAdmin(SortableAdminBase, BaseAdmin):
 
         return fields
 
+    @admin.display(description=_('Tabelle'))
+    def in_list(self, variable: Variable):
+        if in_list := variable.in_list.first():
+            return link(
+                in_list.list_variable.get_admin_url(),
+                str(in_list.list_variable)
+            )
+
     @admin.display(description=_('Maske'))
     def window(self, variable: Variable):
         window = variable.windows.first()
@@ -255,14 +263,6 @@ class BaseVariableAdmin(SortableAdminBase, BaseAdmin):
             window.get_admin_url(),
             window.name
         )
-
-    @admin.display(description=_('Tabelle'))
-    def in_list(self, variable: Variable):
-        if in_list := variable.in_list.first():
-            return link(
-                in_list.list_variable.get_admin_url(),
-                str(in_list.list_variable)
-            )
 
 
 class SchemaFields(TabularInlineWithDelete):
