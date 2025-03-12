@@ -50,17 +50,17 @@ class ArgsTableMixin:
         keyword: Keyword = obj
         
         if keyword.args_doc:
-            return ['args_table'] + self.fields
+            return ['args_table'] + super().get_fields(request, obj)
         
-        return self.fields
-    
+        return super().get_fields(request, obj)
+
     def get_readonly_fields(self, request: HttpRequest, obj=None):
         keyword: Keyword = obj
 
         if keyword.args_doc:
-            return ['args_table'] + self.readonly_fields
+            return ['args_table'] + self.get_readonly_fields(request, obj)
         
-        return self.readonly_fields
+        return self.get_readonly_fields(request, obj)
 
 
 @admin.register(KeywordDocumentation)
