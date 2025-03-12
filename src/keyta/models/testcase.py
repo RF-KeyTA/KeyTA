@@ -82,7 +82,7 @@ class AbstractTestCase(DocumentationMixin, CloneMixin, AbstractBaseModel):
             'steps': [
                 test_step.to_robot()
                 for test_step in self.steps.all()
-                if test_step.enabled
+                if test_step.enabled and test_step.to_keyword
             ]
         }
 

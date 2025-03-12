@@ -118,7 +118,7 @@ class Keyword(DocumentationMixin, AbstractBaseModel):
             'steps': [
                 step.to_robot()
                 for step in self.calls.all()
-                if step.enabled
+                if step.enabled and step.to_keyword
             ],
             'return_value': f'${{{return_value}}}' if return_value else None
         }
