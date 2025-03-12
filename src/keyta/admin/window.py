@@ -46,10 +46,12 @@ class QuickAddMixin:
         window_id = request.resolver_match.kwargs['object_id']
         window = Window.objects.get(pk=window_id)
         system_id = window.systems.first().pk
+        tab_url = window.get_tab_url(getattr(self, 'tab_name', None))
 
         return {
             'windows': window_id,
-            'systems': system_id
+            'systems': system_id,
+            'ref': request.path + tab_url
         }
 
     def wrap_related_field_widget(self, widget, quick_add_url, quick_add_url_params):
@@ -172,6 +174,7 @@ class Variables(QuickAddMixin, BaseTabularInline):
         window_id = request.resolver_match.kwargs['object_id']
         window = Window.objects.get(pk=window_id)
         system_id = window.systems.first().pk
+        tab_url = window.get_tab_url(getattr(self, 'tab_name', None))
 
         query_params = {
             'windows': window_id,
@@ -179,9 +182,11 @@ class Variables(QuickAddMixin, BaseTabularInline):
         }
 
         if schema := window.schemas.first():
-            return query_params | {'schema': schema.pk}
+            query_params |= {'schema': schema.pk}
 
-        return  query_params
+        # ref has to be the last key in the dictionary in order for the form
+        # fields to be automatically filled with the values in the query params
+        return query_params | {'ref': request.path + tab_url}
 
     @admin.display(description=_('Systeme'))
     def systems(self, obj):
