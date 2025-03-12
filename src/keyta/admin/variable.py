@@ -102,14 +102,6 @@ class Values(TabularInlineWithDelete):
     extra = 0
     min_num = 1
 
-    def formfield_for_dbfield(self, db_field, request, **kwargs):
-        field = super().formfield_for_dbfield(db_field, request, **kwargs)
-
-        if db_field.name == 'value':
-            field.required = False
-
-        return field
-
     def get_fields(self, request, obj=None):
         variable: Variable = obj
 
