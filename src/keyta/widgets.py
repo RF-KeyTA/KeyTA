@@ -6,6 +6,7 @@ from django.conf import settings
 from django.contrib.admin.widgets import RelatedFieldWidgetWrapper, get_select2_language
 from django.forms.models import ModelChoiceIterator
 from django.utils.safestring import mark_safe
+from django.utils.translation import gettext as _
 
 from django_select2.forms import ModelSelect2Widget
 
@@ -279,3 +280,18 @@ def quick_change_widget(widget, url_params=None):
         None,
         {'quick_change': 1} | (url_params or {})
     )
+
+
+def quick_add_widget(widget, url, url_params):
+    wrapped_widget = CustomRelatedFieldWidgetWrapper(
+        widget,
+        url,
+        url_params
+    )
+    wrapped_widget.attrs.update({
+        'data-placeholder': _('Klicke auf das Plus-Symbol'),
+        'data-width': '95%',
+        'disabled': True,
+    })
+
+    return wrapped_widget

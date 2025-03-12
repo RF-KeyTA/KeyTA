@@ -15,7 +15,7 @@ from keyta.apps.resources.admin import ResourceImportsInline
 from keyta.apps.resources.models import Resource, ResourceImport
 from keyta.apps.sequences.models import SequenceQuickAdd
 from keyta.forms.baseform import form_with_select
-from keyta.widgets import CustomRelatedFieldWidgetWrapper, Icon, open_link_in_modal
+from keyta.widgets import Icon, open_link_in_modal, quick_add_widget
 
 from apps.variables.models import (
     VariableQuickAdd,
@@ -34,7 +34,7 @@ class QuickAddMixin:
             model = self.quick_add_model._meta.model_name
             quick_add_url = reverse('admin:%s_%s_add' % (app, model))   
 
-            field.widget = self.wrap_related_field_widget(
+            field.widget = quick_add_widget(
                 field.widget,
                 quick_add_url,
                 self.quick_add_url_params(request)
@@ -53,20 +53,6 @@ class QuickAddMixin:
             'systems': system_id,
             'ref': request.path + tab_url
         }
-
-    def wrap_related_field_widget(self, widget, quick_add_url, quick_add_url_params):
-        wrapped_widget = CustomRelatedFieldWidgetWrapper(
-            widget,
-            quick_add_url,
-            quick_add_url_params
-        )
-        wrapped_widget.attrs.update({
-            'data-placeholder': _('Klicke auf das Plus-Symbol'),
-            'data-width': '95%',
-            'disabled': True,
-        })
-
-        return wrapped_widget
 
 
 class WindowKeywordInline(BaseTabularInline):
