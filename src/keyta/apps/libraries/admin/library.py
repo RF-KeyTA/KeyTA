@@ -18,7 +18,7 @@ from ..models import (
     Library,
     LibraryInitDocumentation
 )
-from .init_parameters_inline import InitArguments
+from .library_parameters_inline import InitArguments
 
 
 @admin.register(Library)
