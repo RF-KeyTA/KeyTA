@@ -232,6 +232,10 @@
                 django.jQuery('.form-row.has_original input[type=checkbox]').on('change', function() {
                     $.post(url, $('form').serialize() + "&_continue=")
                 })
+                
+                django.jQuery('.form-group input[type=checkbox]').on('change', function() {
+                    $.post(url, $('form').serialize() + "&_continue=")
+                })
 
                 document.addEventListener('formset:added', function(event) {
                     const row = $(event.target)
