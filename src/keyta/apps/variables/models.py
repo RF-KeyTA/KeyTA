@@ -23,7 +23,8 @@ class VariableDocumentation(Variable):
 
 
 class VariableInList(AbstractVariableInList):
-    pass
+    class Meta(AbstractVariableInList.Meta):
+        pass
 
 
 class VariableQuickAdd(Variable):

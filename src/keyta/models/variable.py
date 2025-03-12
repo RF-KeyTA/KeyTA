@@ -121,7 +121,8 @@ class AbstractVariableInList(AbstractBaseModel):
         'variables.Variable',
         on_delete=models.CASCADE,
         related_name='in_list',
-        verbose_name=_('Referenzwert')
+        verbose_name=_('Referenzwert'),
+        verbose_name_plural = _('Referenzwerte')
     )
 
     def __str__(self):

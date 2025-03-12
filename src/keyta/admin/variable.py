@@ -58,8 +58,6 @@ class ListElements(QuickAddMixin, SortableTabularInlineWithDelete):
     fields = ['variable', 'edit']
     quick_add_field = 'variable'
     quick_add_model = VariableQuickAdd
-    verbose_name = _('Referenzwert')
-    verbose_name_plural = _('Referenzwerte')
 
     @admin.display(description='')
     def edit(self, obj: VariableInList):
