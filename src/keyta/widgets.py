@@ -250,13 +250,13 @@ class GroupedByResource(GroupedChoiceIterator):
 
 
 class CustomRelatedFieldWidgetWrapper(RelatedFieldWidgetWrapper):
-    def __init__(self, widget, related_url, url_params, **kwargs) -> None:
-            self.related_url = related_url
-            if url_params:
-                self.url_params = '&'.join([
-                    f'{name}={value}'
-                    for name, value in url_params.items()
-                ])
+    def __init__(self, widget, url, url_params: dict, **kwargs) -> None:
+            self.related_url = url
+            self.url_params = '&'.join([
+                f'{name}={value}'
+                for name, value in url_params.items()
+            ])
+
             super().__init__(
                 widget.widget,
                 widget.rel, 
@@ -266,8 +266,9 @@ class CustomRelatedFieldWidgetWrapper(RelatedFieldWidgetWrapper):
     def get_context(self, name, value, attrs):
             context = super().get_context(name, value, attrs)
             context['url_params'] = self.url_params
+
             return context
-    
+
     def get_related_url(self, info, action, *args):
         return self.related_url or super().get_related_url(info, action, *args)
 
