@@ -169,7 +169,6 @@ class BaseVariableAdmin(SortableAdminBase, BaseAdmin):
         ('systems', SystemListFilter),
         ('windows', WindowListFilter)
     ]
-    ordering = [Lower('name')]
     search_fields = ['name']
     search_help_text = _('Name')
 
