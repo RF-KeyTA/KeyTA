@@ -4,11 +4,11 @@ from django.contrib import admin
 from django.http import HttpRequest, HttpResponseRedirect
 from django.utils.translation import gettext as _
 
-from admin.list_filters import SystemListFilter
-from keyta.admin.base_admin import BaseAdmin, QuickAddMixin
+from keyta.admin.base_admin import BaseAdmin, BaseQuickAddAdmin, QuickAddMixin
 from keyta.admin.base_inline import BaseTabularInline
 from keyta.admin.field_delete_related_instance import DeleteRelatedField
 from keyta.admin.field_documentation import DocumentationField
+from keyta.admin.list_filters import SystemListFilter
 from keyta.apps.actions.models import ActionQuickAdd
 from keyta.apps.keywords.models import KeywordWindowRelation
 from keyta.apps.resources.admin import ResourceImportsInline
@@ -222,7 +222,9 @@ class BaseWindowAdmin(BaseAdmin):
             return [Schemas] + self.inlines
 
 
-class BaseWindowQuickAddAdmin(BaseWindowAdmin):
+class BaseWindowQuickAddAdmin(BaseQuickAddAdmin):
+    fields = ['systems', 'name']
+
     def formfield_for_dbfield(self, db_field, request, **kwargs):
         field = super().formfield_for_dbfield(db_field, request, **kwargs)
 

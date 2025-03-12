@@ -9,6 +9,7 @@ from django.utils.translation import gettext as _
 from keyta.models.system import AbstractSystem
 from keyta.widgets import ModelSelect2AdminWidget, link, BaseSelect
 
+from apps.systems.models import System
 from apps.windows.models import WindowQuickAdd, WindowSystemRelation
 
 from .base_admin import BaseAdmin
@@ -36,11 +37,14 @@ class Windows(QuickAddMixin, BaseTabularInline):
     def has_change_permission(self, request, obj=None):
         return False
 
-    def quick_add_url_params(self, request):
+    def quick_add_url_params(self, request: HttpRequest, url_params: dict):
         system_id = request.resolver_match.kwargs['object_id']
+        system = System.objects.get(pk=system_id)
+        tab_url = system.get_tab_url(getattr(self, 'tab_name', None))
 
         return {
-            'systems': system_id
+            'systems': system_id,
+            'ref': request.path + tab_url
         }
 
 
