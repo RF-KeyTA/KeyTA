@@ -202,7 +202,6 @@ class Schemas(QuickAddMixin, BaseTabularInline):
             'variableschema': _('Vorlage')
         }
     )
-
     quick_add_field = 'variableschema'
     quick_add_model = VariableSchemaQuickAdd
 
@@ -211,9 +210,12 @@ class Schemas(QuickAddMixin, BaseTabularInline):
 
     def quick_add_url_params(self, request: HttpRequest):
         window_id = request.resolver_match.kwargs['object_id']
+        window = Window.objects.get(pk=window_id)
+        tab_url = window.get_tab_url(getattr(self, 'tab_name', None))
 
         return {
             'windows': window_id,
+            'ref': request.path + tab_url
         }
 
 

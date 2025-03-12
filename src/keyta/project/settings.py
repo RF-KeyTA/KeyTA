@@ -204,7 +204,8 @@ JAZZMIN_SETTINGS = {
         'libraries.libraryimport': 'single',
         'sequences.actioncall': 'single',
         'variables.variablequickadd': 'single',
-        'variables.variableschema': 'single'
+        'variables.variableschema': 'single',
+        'variables.variableschemaquickadd': 'single',
     },
     "copyright": 'imbus',
     "hide_models": [
