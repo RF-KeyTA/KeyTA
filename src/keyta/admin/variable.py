@@ -28,7 +28,11 @@ from apps.variables.models import (
 from apps.windows.models import Window
 
 from .base_admin import BaseAdmin, BaseQuickAddAdmin
-from .base_inline import TabularInlineWithDelete, SortableTabularInlineWithDelete, BaseTabularInline
+from .base_inline import (
+    BaseTabularInline,
+    SortableTabularInlineWithDelete,
+    TabularInlineWithDelete,
+)
 from .window import QuickAddMixin
 
 
