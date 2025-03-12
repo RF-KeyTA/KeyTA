@@ -29,9 +29,6 @@ def call_keyword(keyword_call: RFKeywordCall):
             dict_as_kwargs(keyword_call['kwargs'])
     )
 
-    if return_values := keyword_call['return_values']:
-        return rf_join(return_values + kw_call)
-
     return rf_join(kw_call)
 
 
