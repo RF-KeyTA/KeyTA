@@ -5,21 +5,13 @@ from keyta.admin.field_delete_related_instance import DeleteRelatedField
 from keyta.apps.keywords.models import Keyword
 from keyta.apps.resources.models import ResourceImport
 from keyta.models.testcase import AbstractTestCase
-from keyta.widgets import CustomRelatedFieldWidgetWrapper
+from keyta.widgets import quick_change_widget
 
 from apps.windows.models import Window
 
 from ..forms import TestStepsForm
 from ..models import TestStep
 from .field_keywordcall_args import KeywordCallArgsField
-
-
-def quick_change_widget(widget):
-    return CustomRelatedFieldWidgetWrapper(
-        widget,
-        '',
-        {'quick_change': 1}
-    )
 
 
 class TestStepsFormset(CustomInlineFormSet):

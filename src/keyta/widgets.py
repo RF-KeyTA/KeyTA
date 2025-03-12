@@ -270,3 +270,11 @@ class CustomRelatedFieldWidgetWrapper(RelatedFieldWidgetWrapper):
     
     def get_related_url(self, info, action, *args):
         return self.related_url or super().get_related_url(info, action, *args)
+
+
+def quick_change_widget(widget, url_params=None):
+    return CustomRelatedFieldWidgetWrapper(
+        widget,
+        None,
+        {'quick_change': 1} | (url_params or {})
+    )
