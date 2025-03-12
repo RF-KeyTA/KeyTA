@@ -105,6 +105,7 @@ class Values(TabularInlineWithDelete):
     def get_fields(self, request, obj=None):
         variable: Variable = obj
 
+        # If the variable has a schema, the values cannot be deleted
         if variable and variable.schema:
             return self.fields
 
