@@ -336,10 +336,11 @@ class BaseVariableQuickAddAdmin(BaseQuickAddAdmin):
 class DictionaryValues(BaseTabularInline):
     fk_name = 'variable'
     model = VariableValue
-    fields = ['name', 'current_value']
-    readonly_fields = ['name', 'current_value']
+    fields = ['name', 'value']
+    readonly_fields = ['name']
     verbose_name = ''
     verbose_name_plural = ''
+    max_num = 0
 
     @admin.display(description=_('Wert'))
     def current_value(self, variable_value: VariableValue):
@@ -350,7 +351,8 @@ class ListValues(BaseTabularInline):
     fk_name = 'list_variable'
     model = VariableValue
     fields = ['name', 'value']
-    readonly_fields = ['name', 'value']
+    readonly_fields = ['name']
+    max_num = 0
 
     def get_queryset(self, request):
         return super().get_queryset(request).filter(variable=self.variable_pk)
