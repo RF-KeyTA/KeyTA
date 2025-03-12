@@ -188,8 +188,20 @@
                 $(document).on('click', 'button.close', function() {
                     $('body.popup .button-save').click()
 
-                    if (sessionStorage.getItem('empty_args') !== null && $('.modal-dialog').length === 1) {
-                        $(save_button).click()
+                    if (sessionStorage.getItem('empty_args') !== null) {
+                        const modals = $('.modal-dialog')
+
+                        // Reloading the whole window can be avoided using HTMX
+                        // with server-sent events (sse) to swap the args icon
+
+                        if (modals.length === 2) {
+                            $('#related-modal-iframe').get(0).contentWindow.location.reload()
+                        }
+
+                        if (modals.length === 1) {
+                            window.location.reload()
+                        }
+
                         sessionStorage.clear()
                     }
                 })
