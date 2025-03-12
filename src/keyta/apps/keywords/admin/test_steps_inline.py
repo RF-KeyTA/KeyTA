@@ -1,3 +1,5 @@
+from adminsortable2.admin import CustomInlineFormSet
+
 from keyta.admin.base_inline import SortableTabularInline
 from keyta.admin.field_delete_related_instance import DeleteRelatedField
 from keyta.apps.keywords.models import Keyword
@@ -9,10 +11,10 @@ from apps.windows.models import Window
 from ..forms import TestStepsForm
 from ..models import TestStep
 from .field_keywordcall_args import KeywordCallArgsField
-from .steps_inline import StepsFormset
 
 
-class TestStepsFormset(StepsFormset):
+
+class TestStepsFormset(CustomInlineFormSet):
     def add_fields(self, form, index):
         super().add_fields(form, index)
 
@@ -20,8 +22,10 @@ class TestStepsFormset(StepsFormset):
 
         # The index of an extra form is None
         if index is not None and test_step.pk:
+            if not test_step.to_keyword:
+                form.fields['to_keyword'].widget.can_change_related = False
+
             if not test_step.variable:
-                form.fields['variable'].widget.can_view_related = False
                 form.fields['variable'].widget.can_change_related = False
 
 
