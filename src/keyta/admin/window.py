@@ -239,7 +239,6 @@ class BaseWindowAdmin(BaseAdmin):
         Actions,
         Sequences,
         Variables,
-        Schemas
     ]
 
     def change_view(self, request: HttpRequest, object_id, form_url="", extra_context=None):
@@ -257,12 +256,10 @@ class BaseWindowAdmin(BaseAdmin):
         if not obj:
             return []
 
-        inlines = self.inlines
-
         if Resource.objects.count():
-            inlines = [Resources] + self.inlines
-
-        return inlines
+            return [Schemas, Resources] + self.inlines
+        else:
+            return [Schemas] + self.inlines
 
 
 class BaseWindowQuickAddAdmin(BaseWindowAdmin):
