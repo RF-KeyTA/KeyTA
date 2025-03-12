@@ -66,6 +66,8 @@ class RobotKeywordCallAdmin(
                 attrs={
                     # Allow manual input
                     'data-tags': 'true',
+                    # Allow clearing the field
+                    'data-allow-clear': 'true',
                 }
             )
 
