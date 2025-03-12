@@ -257,13 +257,20 @@
                 }
                 else {
                     selects.on('change', function(event) {
-                        const select_id = $(event.target).attr('id')
+                        const url = window.location.href
 
-                        if (select_values[select_id] === '') {
-                            $(save_button).click()
+                        // Reloading the whole window can be avoided using HTMX
+                        // with server-sent events (sse) to swap the args icon
+
+                        if (url.includes('_modal')) {
+                            $.post(
+                                url, 
+                                $('form').serialize() + "&_continue=", 
+                                function() { window.location.reload()}
+                            )
                         }
                         else {
-                            $.post(url, $('form').serialize() + "&_continue=")
+                            $(save_button).click()
                         }
                     })
                 }
