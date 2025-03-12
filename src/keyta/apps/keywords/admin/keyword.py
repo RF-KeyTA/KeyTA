@@ -30,6 +30,10 @@ class KeywordAdmin(SortableAdminBase, BaseAdmin):
     def change_view(self, request, object_id, form_url="", extra_context=None):
         keyword = Keyword.objects.get(pk=object_id)
 
+        if keyword.resource:
+            kw_doc = KeywordDocumentation.objects.get(pk=object_id)
+            return HttpResponseRedirect(kw_doc.get_admin_url())
+
         if keyword.type == KeywordType.ACTION:
             action = Action.objects.get(pk=object_id)
             return HttpResponseRedirect(action.get_admin_url())
