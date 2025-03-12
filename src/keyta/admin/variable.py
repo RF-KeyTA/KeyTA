@@ -20,6 +20,7 @@ from apps.variables.models import (
     VariableInList,
     VariableQuickAdd,
     VariableQuickChange,
+    VariableSchema,
     VariableSchemaField,
     VariableValue,
     VariableWindowRelation,
@@ -279,6 +280,31 @@ class SchemaFields(TabularInlineWithDelete):
 class BaseVariableSchemaAdmin(BaseAdmin):
     fields = ['name']
     inlines = [SchemaFields]
+
+    def get_fields(self, request, obj=None):
+        schema: VariableSchema = obj
+
+        if schema:
+            return ['window'] + self.fields
+
+        return self.fields
+
+    def get_readonly_fields(self, request, obj=None):
+        schema: VariableSchema = obj
+
+        if schema:
+            return ['window'] + super().get_readonly_fields(request, obj)
+
+        return super().get_readonly_fields(request, obj)
+
+    @admin.display(description=_('Maske'))
+    def window(self, schema: VariableSchema):
+        window = schema.windows.first()
+
+        return link(
+            window.get_admin_url(),
+            window.name
+        )
 
 
 class BaseVariableSchemaQuickAddAdmin(BaseQuickAddAdmin):
