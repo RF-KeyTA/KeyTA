@@ -193,7 +193,6 @@ class BaseWindowAdmin(BaseAdmin):
     list_display_links = ['name']
     list_filter = ['systems']
     list_per_page = 10
-    ordering = ['name']
     search_fields = ['name']
     search_help_text = _('Name')
 
