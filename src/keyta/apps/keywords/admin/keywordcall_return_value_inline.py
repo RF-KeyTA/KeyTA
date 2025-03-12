@@ -11,5 +11,5 @@ class KeywordCallReturnValueInline(DeleteRelatedField, BaseTabularInline):
     fields = ['name']
     extra = 0
     verbose_name = _('Rückgabewert')
-    verbose_name_plural = _('Rückgabewert')
+    verbose_name_plural = _('Rückgabewerte')
     can_delete = False
