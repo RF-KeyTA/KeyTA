@@ -7,12 +7,12 @@ from django.utils.translation import gettext as _
 
 from keyta.admin.base_admin import BaseAdmin
 from keyta.admin.field_documentation import DocumentationField
+from keyta.admin.keywords_inline import Keywords
 from keyta.rf_import.import_resource import import_resource
 from keyta.widgets import Icon, link
 
 from ..forms import ResourceForm
 from ..models import Resource
-from .keywords_inline import Keywords
 
 
 @admin.register(Resource)

@@ -9,6 +9,7 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import gettext as _
 
 from keyta.admin.base_admin import BaseAdmin
+from keyta.admin.keywords_inline import Keywords
 from keyta.rf_import.import_library import import_library
 from keyta.widgets import link, Icon
 
@@ -18,7 +19,6 @@ from ..models import (
     LibraryInitDocumentation
 )
 from .init_parameters_inline import InitArguments
-from .keywords_inline import Keywords
 
 
 @admin.register(Library)

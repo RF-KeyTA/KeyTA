@@ -2,13 +2,12 @@ from django.contrib import admin
 from django.utils.translation import gettext as _
 
 from keyta.admin.base_inline import BaseTabularInline
-from keyta.widgets import link
-
-from ..models import LibraryKeyword
+from keyta.apps.keywords.models import KeywordDocumentation
+from keyta.widgets import open_link_in_modal
 
 
 class Keywords(BaseTabularInline):
-    model = LibraryKeyword
+    model = KeywordDocumentation
     fields = ['name_link', 'short_doc']
     readonly_fields = ['name_link', 'short_doc']
     extra = 0
@@ -22,8 +21,8 @@ class Keywords(BaseTabularInline):
         return False
 
     @admin.display(description=_('Name'))
-    def name_link(self, keyword: LibraryKeyword):
-        return link(
+    def name_link(self, keyword: KeywordDocumentation):
+        return open_link_in_modal(
             keyword.get_admin_url(),
             keyword.name
         )
