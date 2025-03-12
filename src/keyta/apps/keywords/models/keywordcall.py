@@ -199,7 +199,6 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
         parameters = self.parameters.filter(user=user)
         args = parameters.args()
         kwargs = parameters.kwargs()
-        return_value: KeywordCallReturnValue = self.return_value.first()
 
         rf_args = [arg.to_robot() for arg in args]
         list_var = None
@@ -217,11 +216,11 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
             'keyword': self.to_keyword.unique_name,
             'args': rf_args,
             'kwargs': {kwarg.name: kwarg.to_robot() for kwarg in kwargs},
-            'return_value': (
+            'return_values': [
                 '${' + str(return_value) + '}'
+                for return_value in self.return_value.all()
                 if return_value and return_value.is_set
-                else None
-            ),
+            ],
             'list_var': list_var
         }
 

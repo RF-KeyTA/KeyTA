@@ -6,7 +6,7 @@ class RFKeywordCall(TypedDict):
     keyword: str
     args: list[str]
     kwargs: dict[str, str]
-    return_value: Optional[str]
+    return_values: list[str]
     list_var: Optional[str]
 
 
