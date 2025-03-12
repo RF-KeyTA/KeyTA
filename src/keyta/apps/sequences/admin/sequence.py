@@ -1,10 +1,12 @@
 from django import forms
 from django.contrib import admin
+from django.http import HttpResponseRedirect
 from django.utils.translation import gettext as _
 
 from model_clone import CloneModelAdminMixin
 
 from keyta.admin.base_admin import BaseQuickAddAdmin
+from keyta.admin.field_documentation import DocumentationField
 from keyta.apps.executions.admin import KeywordExecutionInline
 from keyta.apps.keywords.admin import (
     ParametersInline,
@@ -17,7 +19,8 @@ from keyta.widgets import ModelSelect2MultipleAdminWidget, Select2MultipleWidget
 
 from ..models import (
     Sequence,
-    SequenceQuickAdd
+    SequenceQuickAdd,
+    SequenceQuickChange
 )
 from .steps_inline import SequenceSteps
 
@@ -50,8 +53,12 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
         SequenceSteps
     ]
 
-    def has_add_permission(self, request, obj=None):
-        return False
+    def change_view(self, request, object_id, form_url="", extra_context=None):
+        if 'quick_change' in request.GET:
+            sequence = SequenceQuickChange.objects.get(pk=object_id)
+            return HttpResponseRedirect(sequence.get_admin_url())
+
+        return super().change_view(request, object_id, form_url=form_url, extra_context=extra_context)
 
     def get_fields(self, request, obj=None):
         return ['systems', 'windows'] + super().get_fields(request, obj)
@@ -72,3 +79,17 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
 @admin.register(SequenceQuickAdd)
 class SequenceQuickAddAdmin(WindowKeywordAdminMixin, BaseQuickAddAdmin):
     pass
+
+
+@admin.register(SequenceQuickChange)
+class SequenceQuickChangeAdmin(DocumentationField, WindowKeywordAdmin):
+    inlines = [ParametersInline, SequenceSteps, ReturnValueInline]
+
+    def get_fields(self, request, obj=None):
+        return ['readonly_documentation']
+
+    def get_readonly_fields(self, request, obj=None):
+        return ['readonly_documentation']
+
+    def has_delete_permission(self, request, obj=None):
+        return False

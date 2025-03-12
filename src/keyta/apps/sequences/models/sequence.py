@@ -46,3 +46,10 @@ class SequenceQuickAdd(Sequence):
         proxy = True
         verbose_name = _('Sequenz')
         verbose_name_plural = _('Sequenzen')
+
+
+class SequenceQuickChange(Sequence):
+    class Meta:
+        proxy = True
+        verbose_name = _('Sequenz')
+        verbose_name_plural = _('Sequenzen')
