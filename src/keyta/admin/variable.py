@@ -1,9 +1,6 @@
 import json
 
-from django import forms
-from django.conf import settings
 from django.contrib import admin
-from django.db.models.functions import Lower
 from django.forms import HiddenInput
 from django.http import HttpRequest, HttpResponseRedirect
 from django.utils.translation import gettext as _
@@ -41,39 +38,30 @@ class ListElementsFormset(CustomInlineFormSet):
     def add_fields(self, form, index):
         super().add_fields(form, index)
 
-        variable_field = form.fields['variable']
-
         # Extra forms have index None
         if index is not None:
-            form.fields['variable'] = forms.ModelChoiceField(
-                variable_field.queryset,
-                disabled=True,
-                widget=BaseSelect('')
-            )
+            form.fields['variable'].widget = HiddenInput()
 
 
 class ListElements(QuickAddMixin, SortableTabularInlineWithDelete):
     model = VariableInList
     fk_name = 'list_variable'
     formset = ListElementsFormset
-    fields = ['variable', 'edit']
+    fields = ['variable', 'variable_link']
     quick_add_field = 'variable'
     quick_add_model = VariableQuickAdd
     verbose_name = _('Referenzwert')
     verbose_name_plural = _('Referenzwerte')
 
     @admin.display(description='')
-    def edit(self, obj: VariableInList):
+    def variable_link(self, obj: VariableInList):
         return link(
             obj.variable.get_admin_url(),
-            str(Icon(
-                settings.FA_ICONS.edit,
-                {'font-size': '18px', 'margin-top': '10px'}
-            ))
+            obj.variable.name
         )
 
     def get_readonly_fields(self, request: HttpRequest, obj=None):
-        return super().get_readonly_fields(request, obj) + ['edit']
+        return super().get_readonly_fields(request, obj) + ['variable_link']
 
     # Sortable inlines need change permission
     def has_change_permission(self, request, obj=None) -> bool:
