@@ -4,6 +4,7 @@ from django.utils.translation import gettext as _
 
 from model_clone import CloneMixin
 
+from . import KeywordCall
 from .execution_keywordcall import ExecutionKeywordCall
 from .keyword import Keyword
 from .keyword_return_value import KeywordReturnValue
@@ -12,6 +13,7 @@ from .keyword_return_value import KeywordReturnValue
 class WindowKeyword(CloneMixin, Keyword):
     _clone_linked_m2m_fields = ['systems', 'windows']
     _clone_m2o_or_o2m_fields = ['calls', 'parameters', 'return_value']
+    _clone_o2o_fields = ['execution']
 
     def create_execution(self, user: AbstractUser):
         Execution = apps.get_model('executions', 'Execution')
@@ -43,6 +45,13 @@ class WindowKeyword(CloneMixin, Keyword):
         if return_value:
             return_value.kw_call_return_value = clone.calls.get(index=return_value.kw_call_index).return_value.first()
             return_value.save()
+
+        execution_kw_call: KeywordCall = clone.execution.keyword_calls.first()
+
+        # Delete the parameters of the execution keyword call
+        # so that they get updated in the ExecutionKeywordCallAdmin
+        for param in execution_kw_call.parameters.all():
+            param.delete()
 
         return clone
 
