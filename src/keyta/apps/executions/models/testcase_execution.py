@@ -5,7 +5,6 @@ from django.utils.translation import gettext as _
 
 from keyta.apps.keywords.models import Keyword, KeywordCall, TestStep
 from keyta.apps.libraries.models import LibraryImport
-from keyta.apps.resources.models import Resource, ResourceImport
 from keyta.models.variable import AbstractVariable, AbstractVariableInList
 from keyta.rf_export.testsuite import RFTestSuite
 
@@ -59,14 +58,13 @@ class TestCaseExecution(Execution):
         )
 
     def get_resource_dependencies(self) -> list[int]:
-        if Resource.objects.count():
-            return list(
-                ResourceImport.objects
-                .filter(window__id__in=self.window_ids)
-                .resource_ids()
-            )
-
-        return []
+        return list(
+            KeywordCall.objects
+            .filter(testcase_id=self.testcase.pk)
+            .filter(to_keyword__resource__isnull=False)
+            .values_list('to_keyword__resource__id', flat=True)
+            .distinct()
+        )
 
     def get_rf_testsuite(self, user: AbstractUser) -> RFTestSuite:
         keywords = {
