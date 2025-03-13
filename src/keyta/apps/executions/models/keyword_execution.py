@@ -10,7 +10,6 @@ from keyta.apps.keywords.models import (
 )
 from keyta.apps.keywords.models.keywordcall import KeywordCallType
 from keyta.apps.libraries.models import LibraryImport
-from keyta.apps.resources.models import Resource, ResourceImport
 from keyta.rf_export.testsuite import RFTestSuite
 
 from ..errors import ValidationError
@@ -72,11 +71,12 @@ class KeywordExecution(Execution):
         return list(LibraryImport.objects.filter(keyword__id__in=action_ids).library_ids())
 
     def get_resource_dependencies(self) -> list[int]:
-        if self.keyword.is_sequence and Resource.objects.count():
+        if self.keyword.is_sequence:
             return list(
-                ResourceImport.objects
-                .filter(window=self.keyword.windows.first())
-                .resource_ids()
+                self.keyword.calls
+                .filter(to_keyword__resource__isnull=False)
+                .values_list('to_keyword__resource__id', flat=True)
+                .distinct()
             )
 
         return []
