@@ -1,7 +1,7 @@
 import json
 
 from django.contrib import admin
-from django.forms import HiddenInput
+from django.forms import HiddenInput, MultipleHiddenInput
 from django.http import HttpRequest, HttpResponseRedirect
 from django.utils.translation import gettext as _
 
@@ -336,6 +336,10 @@ class BaseVariableQuickAddAdmin(BaseQuickAddAdmin):
                 
                 if 'windows' in request.GET:
                     field.queryset = field.queryset.filter(windows__in=request.GET['windows'])
+
+        if db_field.name == 'systems':
+            if 'list_id' in request.GET:
+                field.widget = MultipleHiddenInput()
 
         if db_field.name == 'type':
             if 'list_id' in request.GET:
