@@ -127,6 +127,10 @@ class AbstractVariableInList(AbstractBaseModel):
     def __str__(self):
         return f'{self.list_variable.name}[{self.index}] = {self.variable.name}'
 
+    def delete(self, using=None, keep_parents=False):
+        self.variable.delete()
+        return super().delete(using, keep_parents)
+
     class Meta:
         abstract = True
         ordering = ['index']
