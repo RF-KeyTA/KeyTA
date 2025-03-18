@@ -233,10 +233,6 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
         for param in self.to_keyword.parameters.all():
             self.add_parameter(param, user)
 
-    def update_return_value(self):
-        if not self.return_value.exists():
-            self.add_return_value()
-
     class Manager(models.Manager):
         def get_queryset(self):
             return super().get_queryset()

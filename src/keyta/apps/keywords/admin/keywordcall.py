@@ -66,7 +66,6 @@ class KeywordCallAdmin(BaseAdmin):
         kw_call = KeywordCall.objects.get(pk=object_id)
         kw_call.update_parameters()
         kw_call.update_parameter_values()
-        kw_call.update_return_value()
 
         return super().change_view(request, object_id, form_url, extra_context)
 
