@@ -42,7 +42,7 @@ class KeywordAdmin(SortableAdminBase, BaseAdmin):
 
         if keyword.type == KeywordType.ACTION:
             action = Action.objects.get(pk=object_id)
-            return HttpResponseRedirect(action.get_admin_url())
+            return HttpResponseRedirect(action.get_admin_url() + '?' + url_params(request.GET))
         
         if keyword.type == KeywordType.SEQUENCE:
             sequence = Sequence.objects.get(pk=object_id)
