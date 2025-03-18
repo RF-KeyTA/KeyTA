@@ -61,7 +61,7 @@ class SequenceSteps(StepsInline):
                 (action.pk, action.name)
                 for action in Action.objects
                 .filter(windows=window)
-            ]
+            ] or [(None, _('Keine Aktionen vorhanden'))]
         ]]
 
         groups = groupby(resource_kws, key=lambda x: getattr(x, 'resource'))
