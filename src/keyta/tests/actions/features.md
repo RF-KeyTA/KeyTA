@@ -24,6 +24,7 @@
 ### Windows
 
 - An action can be (un)linked with a Window
+- The only choices are windows that have not been associated with the Action
 
 ### Libraries
 
