@@ -26,10 +26,20 @@ class Windows(TabularInlineWithDelete):
     def get_formset(self, request, obj=None, **kwargs):
         action: Action = obj
         systems = action.systems.all()
-        
+        linked_windows = (
+            self.get_queryset(request)
+            .filter(keyword_id=action.pk)
+            .values_list('window_id', flat=True)
+        )
+
         formset = super().get_formset(request, obj, **kwargs)
-        windows_queryset: QuerySet = formset.form.base_fields['window'].queryset
-        windows_queryset = windows_queryset.filter(systems__in=systems).distinct()
+        window_field = formset.form.base_fields['window']
+        window_field.queryset = (
+            window_field.queryset
+            .exclude(id__in=linked_windows)
+            .filter(systems__in=systems)
+            .distinct()
+        )
 
         return formset
 
