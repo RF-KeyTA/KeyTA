@@ -1,1 +1,1 @@
-from .action import ActionAdmin, ActionQuickAddAdmin
+from .action import ActionAdmin, ActionQuickAddAdmin, ActionQuickChangeAdmin

@@ -1,12 +1,13 @@
 import json
 
 from django.contrib import admin
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponseRedirect
 from django.utils.translation import gettext as _
 
 from model_clone import CloneModelAdminMixin
 
 from keyta.admin.base_admin import BaseAdmin, BaseQuickAddAdmin
+from keyta.admin.field_documentation import DocumentationField
 from keyta.apps.executions.admin import KeywordExecutionInline
 from keyta.apps.keywords.admin import (
     ParametersInline,
@@ -20,7 +21,8 @@ from keyta.forms.baseform import form_with_select
 from ..models import (
     Action,
     ActionWindowRelation,
-    ActionQuickAdd
+    ActionQuickAdd,
+    ActionQuickChange
 )
 from .libraries_inline import Libraries
 from .steps_inline import ActionSteps
@@ -71,6 +73,13 @@ class ActionAdmin(ActionAdminMixin, CloneModelAdminMixin, WindowKeywordAdmin):
 
         return json.dumps(names)
 
+    def change_view(self, request, object_id, form_url="", extra_context=None):
+        if 'quick_change' in request.GET:
+            action = ActionQuickChange.objects.get(pk=object_id)
+            return HttpResponseRedirect(action.get_admin_url())
+
+        return super().change_view(request, object_id, form_url=form_url, extra_context=extra_context)
+
     def get_fields(self, request, obj=None):
         action: Action = obj
         fields =  super().get_fields(request, action)
@@ -94,6 +103,14 @@ class ActionAdmin(ActionAdminMixin, CloneModelAdminMixin, WindowKeywordAdmin):
 @admin.register(ActionQuickAdd)
 class ActionQuickAddAdmin(ActionAdminMixin, BaseQuickAddAdmin):
     pass
+
+
+@admin.register(ActionQuickChange)
+class ActionQuickChangeAdmin(DocumentationField, WindowKeywordAdmin):
+    inlines = [ParametersInline, ActionSteps, ReturnValueInline]
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 
 @admin.register(ActionWindowRelation)

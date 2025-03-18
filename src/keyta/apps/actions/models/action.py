@@ -45,6 +45,13 @@ class ActionQuickAdd(Action):
         verbose_name_plural = _('Aktionen')
 
 
+class ActionQuickChange(Action):
+    class Meta:
+        proxy = True
+        verbose_name = _('Aktion')
+        verbose_name_plural = _('Aktionen')
+
+
 class ActionWindowRelation(AbstractBaseModel, Action.windows.through):
     def __str__(self):
         return str(self.window)

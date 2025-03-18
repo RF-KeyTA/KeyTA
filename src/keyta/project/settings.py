@@ -214,6 +214,7 @@ JAZZMIN_SETTINGS = {
         'actions.actionwindowrelation',
         'actions.actionlibraryimport',
         'actions.actionquickadd',
+        'actions.actionquickchange',
         'executions.keywordexecution',
         'executions.testcaseexecution',
         'executions.setup',
