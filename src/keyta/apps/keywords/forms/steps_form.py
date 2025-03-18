@@ -17,7 +17,7 @@ class StepsForm(BaseForm):
                 for param in kw_call.parameters.all():
                     param.delete()
 
-                if return_value := kw_call.return_value.first():
+                for return_value in kw_call.return_values.all():
                     return_value.delete()
 
         return kw_call

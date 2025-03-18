@@ -106,7 +106,7 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
         verbose_name=_('Maske')
     )
 
-    _clone_m2o_or_o2m_fields = ['parameters', 'return_value']
+    _clone_m2o_or_o2m_fields = ['parameters', 'return_values']
 
     def __str__(self):
         return str(self.caller) + ' → ' + str(self.to_keyword)
@@ -218,7 +218,7 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
             'kwargs': {kwarg.name: kwarg.to_robot() for kwarg in kwargs},
             'return_values': [
                 '${' + str(return_value) + '}'
-                for return_value in self.return_value.all()
+                for return_value in self.return_values.all()
                 if return_value and return_value.is_set
             ],
             'list_var': list_var
