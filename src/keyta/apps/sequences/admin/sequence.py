@@ -35,7 +35,7 @@ class WindowListFilter(admin.RelatedFieldListFilter):
 @admin.register(Sequence)
 class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
     list_filter = [
-        ('system', SystemListFilter),
+        ('systems', SystemListFilter),
         ('windows', WindowListFilter)
     ]
 

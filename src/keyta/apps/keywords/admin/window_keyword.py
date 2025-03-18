@@ -21,7 +21,7 @@ class WindowKeywordAdminMixin:
 class WindowKeywordAdmin(WindowKeywordAdminMixin, KeywordAdmin):
     list_display = ['name', 'short_doc']
     list_filter = [
-        ('system', SystemListFilter),
+        ('systems', SystemListFilter),
         ('windows', WindowListFilter)
     ]
 
