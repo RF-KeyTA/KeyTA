@@ -3,7 +3,7 @@ from itertools import groupby
 import django
 from django import forms
 from django.conf import settings
-from django.contrib.admin.widgets import RelatedFieldWidgetWrapper, get_select2_language
+from django.contrib.admin.widgets import RelatedFieldWidgetWrapper
 from django.forms.models import ModelChoiceIterator
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext as _
