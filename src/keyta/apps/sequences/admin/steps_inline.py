@@ -6,13 +6,13 @@ from django.utils.translation import gettext as _
 from keyta.apps.actions.models import Action
 from keyta.apps.keywords.admin import StepsInline
 from keyta.apps.keywords.forms import StepsForm
-from keyta.apps.keywords.models import Keyword
+from keyta.apps.keywords.models import Keyword, KeywordCall
 from keyta.forms import form_with_select
 from keyta.widgets import quick_change_widget
 
 from apps.windows.models import Window
 
-from ..models import ActionCall, Sequence
+from ..models import Sequence
 
 
 def global_actions(systems: QuerySet):
@@ -36,9 +36,9 @@ def global_actions(systems: QuerySet):
 
 
 class SequenceSteps(StepsInline):
-    model = ActionCall
+    model = KeywordCall
     form = form_with_select(
-        ActionCall,
+        KeywordCall,
         'to_keyword',
         _('Aktion auswählen'),
         labels={
