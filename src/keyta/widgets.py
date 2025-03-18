@@ -140,7 +140,7 @@ class BaseSelectMultiple(BaseSelect):
         return False
 
 
-class KeywordCallSelect(BaseSelect):
+class KeywordCallParameterSelect(BaseSelect):
     template_name = 'admin/keywordcall/select.html'
 
     def create_option(

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.translation import gettext as _
 
-from keyta.widgets import KeywordCallSelect
+from keyta.widgets import KeywordCallParameterSelect
 
 from ..models import RobotKeywordCall
 from .keywordcall import KeywordCallAdmin, KeywordDocField
@@ -55,7 +55,7 @@ class RobotKeywordCallAdmin(
                 ]
             ]]
 
-            field.widget = KeywordCallSelect(
+            field.widget = KeywordCallParameterSelect(
                 _('Bedingung eintragen'),
                 choices=(
                     [(None, '')] +

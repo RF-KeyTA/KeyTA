@@ -6,7 +6,7 @@ from django.core.exceptions import ValidationError
 from django.db.models import QuerySet
 from django.utils.translation import gettext as _
 
-from keyta.widgets import KeywordCallSelect
+from keyta.widgets import KeywordCallParameterSelect
 
 from ..models.keywordcall_parameters import JSONValue
 from ..models import (
@@ -124,7 +124,7 @@ class KeywordCallParameterFormset(forms.BaseInlineFormSet):
             )
 
             form.fields['value'] = DynamicChoiceField(
-                widget=KeywordCallSelect(
+                widget=KeywordCallParameterSelect(
                     _('Wert auswählen oder eintragen'),
                     choices=choices,
                     attrs={
