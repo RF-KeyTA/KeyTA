@@ -18,7 +18,12 @@ class BaseKeywordCallArgs:
         )
 
     def get_icon(self, kw_call: KeywordCall, user: Optional[AbstractUser]=None):
-        if not kw_call.pk or not kw_call.to_keyword:
+        if any([
+            not kw_call.pk,
+            not kw_call.to_keyword,
+            not kw_call.to_keyword.parameters.exists() and
+            any([kw_call.to_keyword.is_action, kw_call.to_keyword.is_sequence]),
+        ]):
             return '-'
 
         if self.invalid_keyword_call_args(kw_call, user):
