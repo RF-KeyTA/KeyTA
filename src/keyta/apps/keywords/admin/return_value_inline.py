@@ -1,8 +1,7 @@
-from django.db.models import Q
 from django.utils.translation import gettext as _
 
 from keyta.admin.base_inline import TabularInlineWithDelete
-from keyta.widgets import BaseSelect
+from keyta.widgets import ModelSelect2AdminWidget
 
 from ..models import KeywordReturnValue, Keyword
 
@@ -20,21 +19,12 @@ class ReturnValueInline(TabularInlineWithDelete):
         return_values = (
             kw_call_return_value_field.queryset
             .filter(keyword_call__in=keyword.calls.all())
-            .exclude(Q(name__isnull=True) & Q(return_value__isnull=True))
         )
         kw_call_return_value_field.queryset = return_values
-
-        if return_values.exists():
-            kw_call_return_value_field.widget = BaseSelect(
-                _('Rückgabewert auswählen')
-            )
-        else:
-            if return_value := keyword.return_value.first():
-                return_value.delete()
-
-            kw_call_return_value_field.disabled = True
-            kw_call_return_value_field.widget = BaseSelect(
-                _('Keine Rückgabewerte aus den Schritten')
-            )
+        kw_call_return_value_field.widget = ModelSelect2AdminWidget(
+            model=KeywordReturnValue,
+            placeholder=_('Rückgabewert auswählen'),
+            search_fields=['name__icontains'],
+        )
 
         return formset
