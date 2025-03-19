@@ -25,11 +25,26 @@ class KeywordReturnValue(CloneMixin, AbstractBaseModel):
 
         return ''
 
+    def delete(self, using=None, keep_parents=False):
+        # Exclude keyword execution calls
+        for kw_call in self.keyword.uses.all().exclude(execution__isnull=False):
+            kw_call.delete_return_value(self)
+
+        super().delete(using, keep_parents)
+
     def save(
         self, force_insert=False, force_update=False, using=None, update_fields=None
     ):
         self.kw_call_index = self.kw_call_return_value.keyword_call.index
-        super().save(force_insert, force_update, using, update_fields)
+
+        if not self.pk:
+            super().save(force_insert, force_update, using, update_fields)
+
+            # Exclude keyword execution calls
+            for kw_call in self.keyword.uses.all().exclude(execution__isnull=False):
+                kw_call.add_return_value(self)
+        else:
+            super().save(force_insert, force_update, using, update_fields)
 
     class Meta:
         verbose_name = _('Rückgabewert')

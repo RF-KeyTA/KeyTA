@@ -130,15 +130,14 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
             }
         )
 
-    def add_return_value(self):
-        if self.type in {KeywordCallType.KEYWORD_CALL, KeywordCallType.TEST_STEP}:
-            return_value: KeywordReturnValue = self.to_keyword.return_value.first()
+    def add_return_value(self, return_value: KeywordReturnValue):
+        KeywordCallReturnValue.objects.get_or_create(
+            keyword_call=self,
+            return_value=return_value.kw_call_return_value
+        )
 
-            if return_value:
-                KeywordCallReturnValue.objects.create(
-                    keyword_call=self,
-                    return_value=return_value.kw_call_return_value
-                )
+    def delete_return_value(self, return_value: KeywordReturnValue):
+        self.return_values.get(return_value__id=return_value.kw_call_return_value.pk).delete()
 
     @property
     def caller(self):
@@ -187,11 +186,14 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
 
         if not self.pk:
             super().save(force_insert, force_update, using, update_fields)
-           
+
             if not hasattr(self, 'clone'):
                 if self.to_keyword:
                     self.update_parameters()
-                    self.add_return_value()
+
+                    if return_value := self.to_keyword.return_value.first():
+                        self.add_return_value(return_value)
+
         else:
             super().save(force_insert, force_update, using, update_fields)
 
