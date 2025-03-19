@@ -1,7 +1,6 @@
 import re
 
 from django.db import models
-from django.db.models import Q
 from django.utils.translation import gettext as _
 
 from model_clone import CloneMixin
@@ -28,7 +27,6 @@ class KeywordParameter(CloneMixin, AbstractBaseModel):
         verbose_name=_('Name')
     )
     position = models.PositiveIntegerField(
-        null=True,
         default=0
     )
     default_value = models.CharField(
@@ -74,13 +72,13 @@ class KeywordParameter(CloneMixin, AbstractBaseModel):
         )
 
     @classmethod
-    def create_kwarg(cls, keyword: Keyword, name: str, default_value: str):
+    def create_kwarg(cls, keyword: Keyword, name: str, default_value: str, position: int):
         KeywordParameter.objects.update_or_create(
             keyword=keyword,
             name=name,
             defaults={
                 'default_value': default_value,
-                'position': None,
+                'position': position,
                 'type': KeywordParameterType.KWARG
             }
         )
@@ -113,16 +111,6 @@ class KeywordParameter(CloneMixin, AbstractBaseModel):
             models.UniqueConstraint(
                 fields=['keyword', 'name'],
                 name='unique_keyword_parameter'
-            ),
-            models.CheckConstraint(
-                name='keyword_parameter_sum_type',
-                check=
-                (Q(type=KeywordParameterType.ARG) &
-                 Q(position__isnull=False))
-                |
-                (Q(type=KeywordParameterType.KWARG) &
-                 Q(position__isnull=True) &
-                 Q(default_value__isnull=False))
             )
         ]
         verbose_name = _('Parameter')

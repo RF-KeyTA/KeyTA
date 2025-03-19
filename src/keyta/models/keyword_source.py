@@ -85,7 +85,8 @@ class KeywordSource(AbstractBaseModel):
                         KeywordParameter.create_kwarg(
                             keyword=kw,
                             name=name,
-                            default_value=default_value
+                            default_value=default_value,
+                            position=idx
                         )
 
             for kwarg in kw.parameters.kwargs():
