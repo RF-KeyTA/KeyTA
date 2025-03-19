@@ -13,11 +13,14 @@ class StepsForm(BaseForm):
                 kw_call.variable = None
                 kw_call.save()
 
-            if 'to_keyword' in self.changed_data:
+            if self.initial['to_keyword'] and 'to_keyword' in self.changed_data:
                 for param in kw_call.parameters.all():
                     param.delete()
 
                 for return_value in kw_call.return_values.all():
                     return_value.delete()
+
+                if return_value := kw_call.to_keyword.return_value.first():
+                    kw_call.add_return_value(return_value)
 
         return kw_call
