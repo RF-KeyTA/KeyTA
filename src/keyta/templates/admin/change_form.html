@@ -283,32 +283,23 @@
 
                 // A select in a formset
                 const selects = django.jQuery('.form-row.has_original select')
-                select_values = {}
-                selects.each((index, select) => select_values[$(select).attr('id')] = $(select).val())
 
-                if (selects.length > 1 && Object.values(select_values).every(value => value === '')) {
-                    selects.last().on('change', function () {
-                        $.post(url, $('form').serialize() + "&_continue=")
-                    })
-                }
-                else {
-                    selects.on('change', function(event) {
-                        const url = window.location.href
+                selects.on('change', function(event) {
+                    const url = window.location.href
 
-                        // Reloading the whole window can be avoided using HTMX
-                        // to swap the row
-                        if (url.includes('_modal')) {
-                            $.post(
-                                url, 
-                                $('form').serialize() + "&_continue=", 
-                                function() { window.location.reload() }
-                            )
-                        }
-                        else {
-                            $(save_button).click()
-                        }
-                    })
-                }
+                    // Reloading the whole window can be avoided using HTMX
+                    // to swap the row
+                    if (url.includes('_modal')) {
+                        $.post(
+                            url,
+                            $('form').serialize() + "&_continue=",
+                            function() { window.location.reload() }
+                        )
+                    }
+                    else {
+                        $(save_button).click()
+                    }
+                })
 
                 // A select in a form
                 django.jQuery('.form-group select').on('change', function() {
