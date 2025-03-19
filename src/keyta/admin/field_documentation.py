@@ -10,6 +10,6 @@ class DocumentationField:
     def get_readonly_fields(self, request, obj=None):
         return ['readonly_documentation']
 
-    @admin.display(description=_('Documentation'))
+    @admin.display(description=_('Dokumentation'))
     def readonly_documentation(self, obj):
         return mark_safe(obj.documentation)
