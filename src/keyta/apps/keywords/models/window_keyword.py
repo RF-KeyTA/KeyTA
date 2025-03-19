@@ -40,10 +40,10 @@ class WindowKeyword(CloneMixin, Keyword):
     def make_clone(self, attrs=None, sub_clone=False, using=None, parent=None) -> Keyword:
         attrs = attrs or {'name': self.name + _(' Kopie')}
         clone: WindowKeyword = super().make_clone(attrs=attrs, sub_clone=sub_clone, using=using, parent=parent)
-        return_value: KeywordReturnValue = clone.return_value.first()
 
-        if return_value:
-            return_value.kw_call_return_value = clone.calls.get(index=return_value.kw_call_index).return_value.first()
+        return_value: KeywordReturnValue
+        if return_value := clone.return_value.first():
+            return_value.kw_call_return_value = clone.calls.get(index=return_value.kw_call_index).return_values.first()
             return_value.save()
 
         execution_kw_call: KeywordCall = clone.execution.keyword_calls.first()
