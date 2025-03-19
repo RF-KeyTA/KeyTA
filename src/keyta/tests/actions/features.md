@@ -41,7 +41,7 @@
 
 - Steps can be:
   - Added: saved automatically
-  - Deleted: redirect to the Parameters tab
+  - Deleted: redirect to the Steps tab
   - Sorted: saved automatically
 
 - Only keywords from the imported libraries can be chosen
