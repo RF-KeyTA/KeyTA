@@ -2,8 +2,8 @@ import re
 from collections import defaultdict
 
 from django import forms
-from django.core.exceptions import ValidationError
 from django.db.models import QuerySet
+from django.forms.utils import ErrorDict, ErrorList
 from django.utils.translation import gettext as _
 
 from keyta.widgets import KeywordCallParameterSelect
@@ -82,9 +82,6 @@ def show_value(json_value: JSONValue) -> tuple:
 
 class DynamicChoiceField(forms.CharField):
     def to_python(self, value: str):
-        if not value:
-            raise ValidationError(_('Das Feld darf nicht leer sein'))
-
         if value.startswith('{') and value.endswith('}'):
             return value
 
@@ -134,8 +131,14 @@ class KeywordCallParameterFormset(forms.BaseInlineFormSet):
                 )
             )
 
-            if kw_call_parameter.parameter.is_list:
-                form.fields['value'].help_text = _('Wert 1, Wert 2, ...')
+            if not json_value.user_input and not json_value.pk:
+                form._errors = ErrorDict()
+                form._errors['value'] = ErrorList([
+                    form.fields['value'].default_error_messages['required']
+                ])
 
     def get_choices(self, kw_call: KeywordCall):
         return get_keyword_parameters(kw_call) + get_prev_return_values(kw_call)
+
+    def is_valid(self):
+        return True

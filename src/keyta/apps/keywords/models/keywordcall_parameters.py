@@ -66,7 +66,7 @@ class KeywordCallParameter(CloneMixin, models.Model):
     def is_empty(self):
         return (
             not self.value_ref and 
-            JSONValue.from_json(self.value).user_input is None
+            JSONValue.from_json(self.value).user_input in {None, ''}
         )
 
     @property
