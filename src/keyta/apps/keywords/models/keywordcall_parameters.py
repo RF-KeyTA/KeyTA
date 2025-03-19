@@ -130,6 +130,6 @@ class KeywordCallParameter(CloneMixin, models.Model):
             self.save()
 
     class Meta:
-        ordering = ['parameter__type', 'parameter__position']
+        ordering = ['parameter__position']
         verbose_name = _('Parameter')
         verbose_name_plural = _('Parameters')
