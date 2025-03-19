@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 from django.utils.translation import gettext as _
 
 from model_clone import CloneMixin
@@ -59,3 +60,14 @@ class KeywordCallReturnValue(CloneMixin, AbstractBaseModel):
 
     class Meta:
         verbose_name = _('Rückgabewert')
+        constraints = [
+            models.CheckConstraint(
+                name='has_name_or_return_value',
+                check=
+                (Q(name__isnull=False) &
+                 Q(return_value__isnull=True))
+                |
+                (Q(name__isnull=True) &
+                 Q(return_value__isnull=False))
+            )
+        ]
