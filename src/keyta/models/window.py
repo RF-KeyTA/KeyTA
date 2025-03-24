@@ -3,6 +3,8 @@ import re
 from django.db import models
 from django.utils.translation import gettext as _
 
+from keyta.apps.keywords.models import KeywordCall
+from keyta.apps.resources.models import ResourceImport
 from keyta.models.base_model import AbstractBaseModel
 
 
@@ -26,6 +28,18 @@ class AbstractWindow(AbstractBaseModel):
     @property
     def actions(self):
         return self.keywords.actions()
+
+    def depends_on_resource(self, resource_pk: int):
+        return (
+            KeywordCall.objects.filter(from_keyword__id__in=self.sequences) |
+            KeywordCall.objects.filter(window=self)
+        ).filter(to_keyword__resource__id=resource_pk).exists()
+
+    def depends_on(self, obj):
+        if isinstance(obj, ResourceImport):
+            return self.depends_on_resource(obj.resource.pk)
+
+        return False
 
     @property
     def library_ids(self):
