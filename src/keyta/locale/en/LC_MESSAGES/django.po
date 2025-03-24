@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-19 11:17+0100\n"
+"POT-Creation-Date: 2025-03-24 09:23+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,7 +24,7 @@ msgstr "Select a System"
 #: .\admin\field_documentation.py:13 .\apps\keywords\admin\keywordcall.py:17
 #: .\apps\keywords\models\keyword.py:51 .\apps\libraries\admin\library.py:53
 #: .\apps\libraries\admin\library_import.py:19 .\models\keyword_source.py:22
-#: .\models\testcase.py:17 .\models\window.py:21
+#: .\models\testcase.py:17 .\models\window.py:23
 msgid "Dokumentation"
 msgstr "Documentation"
 
@@ -38,7 +38,7 @@ msgstr "Keywords"
 #: .\apps\keywords\models\keyword_parameters.py:27
 #: .\apps\libraries\models\library_parameter.py:18
 #: .\models\keyword_source.py:19 .\models\system.py:11 .\models\testcase.py:16
-#: .\models\variable.py:18 .\models\variable.py:158 .\models\window.py:15
+#: .\models\variable.py:18 .\models\variable.py:158 .\models\window.py:17
 msgid "Name"
 msgstr "Name"
 
@@ -123,7 +123,7 @@ msgstr "Value"
 #: .\admin\window.py:61 .\admin\window.py:156
 #: .\apps\keywords\models\keyword.py:71 .\apps\sequences\admin\sequence.py:47
 #: .\apps\systems\apps.py:8 .\apps\systems\models.py:9 .\models\testcase.py:28
-#: .\models\variable.py:36 .\models\window.py:13
+#: .\models\variable.py:36 .\models\window.py:15
 msgid "Systeme"
 msgstr "Systems"
 
@@ -132,8 +132,8 @@ msgid "Ressource auswählen"
 msgstr "Select a Resource"
 
 #: .\admin\window.py:98 .\admin\window.py:103
-#: .\apps\actions\models\action.py:37 .\apps\actions\models\action.py:44
-#: .\apps\actions\models\action.py:51
+#: .\apps\actions\models\action.py:47 .\apps\actions\models\action.py:54
+#: .\apps\actions\models\action.py:61
 #: .\apps\executions\admin\setup_teardown_inline.py:46
 #: .\apps\keywords\models\keyword.py:17
 #: .\apps\sequences\admin\steps_inline.py:45
@@ -141,8 +141,8 @@ msgid "Aktion"
 msgstr "Action"
 
 #: .\admin\window.py:104 .\apps\actions\apps.py:8
-#: .\apps\actions\models\action.py:38 .\apps\actions\models\action.py:45
-#: .\apps\actions\models\action.py:52
+#: .\apps\actions\models\action.py:48 .\apps\actions\models\action.py:55
+#: .\apps\actions\models\action.py:62
 msgid "Aktionen"
 msgstr "Actions"
 
@@ -178,11 +178,11 @@ msgstr "Select a Keyword"
 msgid "Schlüsselwort"
 msgstr "Keyword"
 
-#: .\apps\actions\models\action.py:62
+#: .\apps\actions\models\action.py:72
 msgid "Beziehung zu Maske"
 msgstr "Relationship to Window"
 
-#: .\apps\actions\models\action.py:63
+#: .\apps\actions\models\action.py:73
 msgid "Beziehungen zu Masken"
 msgstr "Relationships to Windows"
 
@@ -370,7 +370,7 @@ msgid "Rückgabewert auswählen"
 msgstr "Select a Return Value"
 
 #: .\apps\keywords\admin\robot_keywordcall.py:52
-#: .\apps\keywords\forms\keywordcall_parameter_formset.py:122
+#: .\apps\keywords\forms\keywordcall_parameter_formset.py:119
 msgid "Eingabe"
 msgstr "Input"
 
@@ -387,17 +387,9 @@ msgstr "Enter a condition"
 msgid "Vorherige Rückgabewerte"
 msgstr "Previous Return Values"
 
-#: .\apps\keywords\forms\keywordcall_parameter_formset.py:86
-msgid "Das Feld darf nicht leer sein"
-msgstr "The field must not be empty"
-
-#: .\apps\keywords\forms\keywordcall_parameter_formset.py:128
+#: .\apps\keywords\forms\keywordcall_parameter_formset.py:125
 msgid "Wert auswählen oder eintragen"
 msgstr "Select or enter a Value"
-
-#: .\apps\keywords\forms\keywordcall_parameter_formset.py:138
-msgid "Wert 1, Wert 2, ..."
-msgstr "Value 1, value 2, ..."
 
 #: .\apps\keywords\forms\test_steps_form.py:41
 msgid "Sequenz auswählen"
@@ -434,7 +426,7 @@ msgid "Ressource"
 msgstr "Resource"
 
 #: .\apps\keywords\models\keyword.py:43 .\models\system.py:15
-#: .\models\testcase.py:23 .\models\variable.py:24 .\models\window.py:19
+#: .\models\testcase.py:23 .\models\variable.py:24 .\models\window.py:21
 msgid "Beschreibung"
 msgstr "Description"
 
@@ -628,7 +620,7 @@ msgstr "Resource Imports"
 msgid "Globale Aktionen"
 msgstr "Global Actions"
 
-#: .\apps\sequences\admin\steps_inline.py:64
+#: .\apps\sequences\admin\steps_inline.py:65
 msgid "Keine Aktionen vorhanden"
 msgstr "No Actions available"
 
