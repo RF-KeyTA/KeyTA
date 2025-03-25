@@ -15,8 +15,9 @@ class BaseKeywordCallArgs:
         if any([
             not kw_call.pk,
             not kw_call.to_keyword,
+            # For a Library/Resource keyword without parameters the icon is necessary to set the return value
             not kw_call.to_keyword.parameters.exists() and
-            any([kw_call.to_keyword.is_action, kw_call.to_keyword.is_sequence]),
+            not any([kw_call.to_keyword.library, kw_call.to_keyword.resource]),
         ]):
             return '-'
 
