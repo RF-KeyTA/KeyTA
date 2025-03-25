@@ -27,7 +27,7 @@ def get_global_variables(system_ids: list[int]):
 
 
 def get_keyword_parameters(kw_call: KeywordCall):
-    if not kw_call.from_keyword.parameters.exists():
+    if not kw_call.from_keyword or not kw_call.from_keyword.parameters.exists():
         return []
 
     return [[
