@@ -1,7 +1,4 @@
-from typing import Optional
-
 from django.contrib import admin
-from django.contrib.auth.models import AbstractUser
 from django.db.models import QuerySet
 from django.http import HttpRequest
 from django.utils.translation import gettext as _
@@ -15,27 +12,20 @@ from keyta.forms.baseform import form_with_select
 from ..models import Execution, Setup, Teardown
 
 
-class KeywordCallUserArgsField(BaseKeywordCallArgs):
-    def invalid_keyword_call_args(self, kw_call: Setup, user: Optional[AbstractUser]=None) -> bool:
-        return not kw_call.parameters.exists() or kw_call.has_empty_arg(user)
-
+class KeywordCallArgsField(BaseKeywordCallArgs):
     def get_fields(self, request, obj=None):
         return super().get_fields(request, obj) + ['args']
 
     def get_readonly_fields(self, request: HttpRequest, obj=None):
         @admin.display(description=_('Werte'))
-        def args(self, kw_call: Setup):
-            if kw_call.to_keyword.parameters.exists():
-                return self.get_icon(kw_call, request.user)
-            else:
-                return '-'
+        def args(self, kw_call):
+            return self.get_icon(kw_call, request.user)
 
-        KeywordCallUserArgsField.args = args
-
+        KeywordCallArgsField.args = args
         return super().get_readonly_fields(request, obj) + ['args']
 
 
-class SetupInline(KeywordCallUserArgsField, BaseTabularInline):
+class SetupInline(KeywordCallArgsField, BaseTabularInline):
     model = Setup
     fields = ['enabled', 'to_keyword']
     form = form_with_select(
