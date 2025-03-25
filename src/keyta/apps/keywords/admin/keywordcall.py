@@ -64,7 +64,6 @@ class KeywordCallAdmin(BaseAdmin):
 
     def change_view(self, request, object_id, form_url="", extra_context=None):
         kw_call = KeywordCall.objects.get(pk=object_id)
-        kw_call.update_parameters()
         kw_call.update_parameter_values()
 
         return super().change_view(request, object_id, form_url, extra_context)
