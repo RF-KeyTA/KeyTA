@@ -123,13 +123,7 @@ class KeywordExecution(Execution):
                 )
 
     def validate_keyword_call(self, user: AbstractUser) -> Optional[dict]:
-        keyword_parameters = self.keyword.parameters
-        keyword_call = self.execution_keyword_call
-        keyword_call_parameters = keyword_call.parameters.filter(user=user)
-
-        if ((keyword_parameters.count() != keyword_call_parameters.count()) or
-                keyword_call.has_empty_arg(user)
-        ):
+        if self.execution_keyword_call.has_empty_arg(user):
             return ValidationError.INCOMPLETE_CALL_PARAMS
 
         return None
