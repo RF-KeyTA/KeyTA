@@ -41,12 +41,14 @@ def get_keyword_parameters(kw_call: KeywordCall):
 
 
 def get_prev_return_values(kw_call: KeywordCall):
-    sources = KeywordCallParameterSource.objects.filter(
-        kw_call_ret_val__in=kw_call.get_previous_return_values()
-    )
+    prev_return_values = kw_call.get_previous_return_values()
 
-    if not sources.exists():
+    if not prev_return_values.exists():
         return []
+
+    sources = KeywordCallParameterSource.objects.filter(
+        kw_call_ret_val__in=prev_return_values
+    )
 
     return [[
         _('Vorherige Rückgabewerte'),
