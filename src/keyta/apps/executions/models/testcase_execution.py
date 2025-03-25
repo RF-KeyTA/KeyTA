@@ -117,10 +117,10 @@ class TestCaseExecution(Execution):
         test_setup: KeywordCall = self.test_setup()
         test_teardown: KeywordCall = self.test_teardown()
 
-        if test_setup and (not test_setup.parameters.exists() or test_setup.has_empty_arg(user)):
+        if test_setup and test_setup.has_empty_arg(user):
            return ValidationError.INCOMPLETE_TEST_SETUP_PARAMS
 
-        if test_teardown and (not test_teardown.parameters.exists() or test_teardown.has_empty_arg(user)):
+        if test_teardown and test_teardown.has_empty_arg(user):
             return ValidationError.INCOMPLETE_TEST_TEARDOWN_PARAMS
 
         return None

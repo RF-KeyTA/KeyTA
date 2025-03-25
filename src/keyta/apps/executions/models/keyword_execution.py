@@ -146,7 +146,7 @@ class KeywordExecution(Execution):
         if not test_setup:
             self.add_attach_to_system(user)
 
-        if not test_setup.parameters.exists() or test_setup.has_empty_arg(user):
+        if test_setup.has_empty_arg(user):
             return ValidationError.INCOMPLETE_ATTACH_TO_SYSTEM_PARAMS
 
         return None
