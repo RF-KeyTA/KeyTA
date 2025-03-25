@@ -11,12 +11,6 @@ from ..models import KeywordCall
 
 
 class BaseKeywordCallArgs:
-    def invalid_keyword_call_args(self, kw_call: KeywordCall, user: Optional[AbstractUser]=None) -> bool:
-        return (
-            kw_call.parameters.count() != kw_call.to_keyword.parameters.count() or
-            kw_call.has_empty_arg()
-        )
-
     def get_icon(self, kw_call: KeywordCall, user: Optional[AbstractUser]=None):
         if any([
             not kw_call.pk,
@@ -45,6 +39,12 @@ class BaseKeywordCallArgs:
                 kw_call.get_admin_url(),
                 str(icon)
             )
+
+    def invalid_keyword_call_args(self, kw_call: KeywordCall, user: Optional[AbstractUser]=None) -> bool:
+        if kw_call.parameters.count() != kw_call.to_keyword.parameters.count():
+            kw_call.update_parameters(user)
+        
+        return kw_call.has_empty_arg(user)
 
 
 class KeywordCallArgsField(BaseKeywordCallArgs):
