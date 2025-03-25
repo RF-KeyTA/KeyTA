@@ -82,8 +82,11 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
         if not sequence:
             return [ParametersInline]
 
+        if sequence.calls.filter(return_values__isnull=False).exists():
+            inlines += [ReturnValueInline]
+
         if not sequence.has_empty_sequence:
-            return inlines + [ReturnValueInline, KeywordExecutionInline]
+            return inlines + [KeywordExecutionInline]
 
         return inlines
 

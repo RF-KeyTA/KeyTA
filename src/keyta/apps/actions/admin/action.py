@@ -88,14 +88,16 @@ class ActionAdmin(ActionAdminMixin, CloneModelAdminMixin, WindowKeywordAdmin):
 
     def get_inlines(self, request, obj):
         action: Action = obj
+        inlines = [Windows] + self.inlines
 
         if not action:
             return [ParametersInline]
 
-        inlines = [Windows] + self.inlines
+        if action.calls.filter(return_values__isnull=False).exists():
+            inlines += [ReturnValueInline]
 
         if not action.has_empty_sequence:
-            return inlines + [ReturnValueInline, KeywordExecutionInline]
+            return inlines + [KeywordExecutionInline]
 
         return inlines
 
