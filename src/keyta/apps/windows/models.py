@@ -35,7 +35,7 @@ class WindowQuickChange(Window):
 
 class WindowSystemRelation(AbstractBaseModel, Window.systems.through):
     def __str__(self):
-        return str(self.window)
+        return f'{self.window} -> {self.system}'
 
     class Meta:
         auto_created = True
@@ -46,7 +46,7 @@ class WindowSystemRelation(AbstractBaseModel, Window.systems.through):
 
 class WindowSchemaRelation(AbstractBaseModel, VariableSchema.windows.through):
     def __str__(self):
-        return str(self.window)
+        return f'{self.schema} -> {self.window}'
 
     class Meta:
         auto_created = True
