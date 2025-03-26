@@ -36,7 +36,7 @@ class ResourceImport(AbstractBaseModel):
     )
     resource = models.ForeignKey(
         'resources.Resource',
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         verbose_name=_('Ressource')
     )
     type = models.CharField(max_length=255, choices=ResourceImportType.choices)

@@ -71,9 +71,6 @@ class ResourceAdmin(DocumentationField, BaseAdmin):
 
         return super().get_readonly_fields(request, obj)
 
-    def has_delete_permission(self, request: HttpRequest, obj=None) -> bool:
-        return True
-
     def save_form(self, request, form, change):
         if change:
             return super().save_form(request, form, change)

@@ -36,7 +36,7 @@ class LibraryImport(AbstractBaseModel):
     )
     library = models.ForeignKey(
         'libraries.Library',
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         verbose_name=_('Bibliothek')
     )
     type = models.CharField(max_length=255, choices=LibraryImportType.choices)
