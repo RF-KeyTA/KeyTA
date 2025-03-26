@@ -42,7 +42,10 @@ class LibraryImport(AbstractBaseModel):
     type = models.CharField(max_length=255, choices=LibraryImportType.choices)
 
     def __str__(self):
-        return f'{self.execution or self.keyword} -> {self.library}'
+        if self.execution:
+            return _('Ausführung') + f' {self.execution} -> {self.library}'
+
+        return f'{self.keyword} -> {self.library}'
 
     def add_parameters(self, user: Optional[AbstractUser]=None):
         for kwarg in self.library.kwargs.all():

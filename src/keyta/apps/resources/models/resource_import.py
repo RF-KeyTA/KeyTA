@@ -42,7 +42,10 @@ class ResourceImport(AbstractBaseModel):
     type = models.CharField(max_length=255, choices=ResourceImportType.choices)
 
     def __str__(self):
-        return f'{self.execution or self.window} -> {self.resource}'
+        if self.execution:
+            return _('Ausführung') + f' {self.execution} -> {self.resource}'
+
+        return f'{self.window} -> {self.resource}'
 
     def save(
         self, force_insert=False, force_update=False, using=None,
