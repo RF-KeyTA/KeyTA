@@ -16,7 +16,12 @@ from keyta.apps.keywords.admin import (
     WindowKeywordAdminMixin,
 )
 from keyta.forms.baseform import BaseForm
-from keyta.widgets import ModelSelect2MultipleAdminWidget, Select2MultipleWidget
+from keyta.models.window import AbstractWindow
+from keyta.widgets import (
+    ModelSelect2MultipleAdminWidget, 
+    Select2MultipleWidget, 
+    link
+)
 
 from ..models import (
     Sequence,
@@ -73,7 +78,14 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
         return super().change_view(request, object_id, form_url=form_url, extra_context=extra_context)
 
     def get_fields(self, request, obj=None):
-        return ['systems', 'windows'] + super().get_fields(request, obj)
+        sequence: Sequence = obj
+
+        fields = ['systems'] 
+
+        if sequence and sequence.calls.exists():
+            return fields + ['window'] + super().get_fields(request, obj)
+
+        return fields + ['windows'] + super().get_fields(request, obj)
 
     def get_inlines(self, request, obj):
         sequence: Sequence = obj
@@ -94,9 +106,18 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
         sequence: Sequence = obj
 
         if sequence and sequence.calls.exists():
-            return ['windows']
+            return ['window']
         
         return super().get_readonly_fields(request, obj)
+
+    @admin.display(description=_('Maske'))
+    def window(self, sequence: Sequence):
+        window: AbstractWindow = sequence.windows.first()
+
+        return link(
+            window.get_admin_url(),
+            window.name
+        )
 
 
 @admin.register(SequenceQuickAdd)
