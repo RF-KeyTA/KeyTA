@@ -1,5 +1,4 @@
 from django.contrib import admin
-from django.db.models.functions import Lower
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext as _
 from django.http import HttpRequest, HttpResponseRedirect
