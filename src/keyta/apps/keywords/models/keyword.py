@@ -2,6 +2,7 @@ import re
 
 from django.db import models
 from django.db.models import Q
+from django.db.models.functions import Lower
 from django.utils.translation import gettext as _
 
 from keyta.models.base_model import AbstractBaseModel
@@ -144,7 +145,7 @@ class Keyword(DocumentationMixin, AbstractBaseModel):
     objects = QuerySet.as_manager()
 
     class Meta:
-        ordering = ['name']
+        ordering = [Lower('name')]
         constraints = [
             models.UniqueConstraint(
                 fields=["library", "name"],
