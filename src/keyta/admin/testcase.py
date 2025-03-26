@@ -1,4 +1,3 @@
-from django.db.models.functions import Lower
 from django.utils.translation import gettext as _
 
 from adminsortable2.admin import SortableAdminBase
