@@ -5,7 +5,7 @@ from .keyword import Keyword, KeywordType
 
 class KeywordWindowRelation(Keyword.windows.through):
     def __str__(self):
-        return f'{self.window} -> {self.keyword}'
+        return f'{self.keyword} -> {self.window}'
 
     class QuerySet(models.QuerySet):
         def actions(self):
