@@ -90,6 +90,14 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
 
         return inlines
 
+    def get_readonly_fields(self, request, obj):
+        sequence: Sequence = obj
+
+        if sequence and sequence.calls.exists():
+            return ['windows']
+        
+        return super().get_readonly_fields(request, obj)
+
 
 @admin.register(SequenceQuickAdd)
 class SequenceQuickAddAdmin(WindowKeywordAdminMixin, BaseQuickAddAdmin):
