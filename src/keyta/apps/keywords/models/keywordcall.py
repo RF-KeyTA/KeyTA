@@ -145,6 +145,20 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
             return self.from_keyword or self.testcase or self.execution
         return None
 
+    def delete(self, using=None, keep_parents=False):
+        if resource := self.to_keyword.resource:
+            if self.from_keyword:
+                self.from_keyword.execution.delete_resource_dependency(resource.pk, self.pk)
+
+                test_step: KeywordCall
+                for test_step in self.from_keyword.uses.test_steps():
+                    test_step.testcase.execution.delete_resource_dependency(resource.pk, test_step.pk)
+
+            if self.testcase:
+                self.testcase.execution.delete_resource_dependency(resource.pk, self.pk)
+
+        return super().delete(using, keep_parents)
+
     def get_previous_return_values(self) -> QuerySet:
         previous_kw_calls = []
 

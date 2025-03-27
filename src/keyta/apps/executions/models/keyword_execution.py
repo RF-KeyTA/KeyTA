@@ -70,10 +70,11 @@ class KeywordExecution(Execution):
 
         return list(LibraryImport.objects.filter(keyword__id__in=action_ids).library_ids())
 
-    def get_resource_dependencies(self) -> list[int]:
+    def get_resource_dependencies(self, except_call_pk: Optional[int]=None) -> list[int]:
         if self.keyword.is_sequence:
             return list(
                 self.keyword.calls
+                .exclude(pk=except_call_pk)
                 .filter(to_keyword__resource__isnull=False)
                 .values_list('to_keyword__resource__id', flat=True)
                 .distinct()

@@ -1,5 +1,6 @@
 from typing import Optional
 
+from django.apps import apps
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models import Q
@@ -45,11 +46,21 @@ class Execution(CloneMixin, AbstractBaseModel):
     def __str__(self):
         return str(self.keyword or self.testcase)
 
+    def delete_resource_dependency(self, resource_pk: int, kw_call_pk: int):
+        if resource_pk not in set(self.get_resource_dependencies(except_call_pk=kw_call_pk)):
+            self.resource_imports.get(resource_id=resource_pk).delete()
+
     def get_library_dependencies(self) -> list[int]:
         pass
 
-    def get_resource_dependencies(self) -> list[int]:
-        pass
+    def get_resource_dependencies(self, except_call_pk: Optional[int]=None) -> list[int]:
+        if self.keyword:
+            KeywordExecution = apps.get_model('executions', 'KeywordExecution')
+            return KeywordExecution.objects.get(id=self.pk).get_resource_dependencies(except_call_pk=except_call_pk)
+        
+        if self.testcase:
+            TestCaseExecution = apps.get_model('executions', 'TestCaseExecution')
+            return TestCaseExecution.objects.get(id=self.pk).get_resource_dependencies(except_call_pk=except_call_pk)
 
     def get_rf_settings(self, user: AbstractUser) -> RFSettings:
         def maybe_to_robot(keyword_call, user: AbstractUser):
@@ -155,9 +166,6 @@ class Execution(CloneMixin, AbstractBaseModel):
                         execution=self,
                         resource=resource
                     )
-
-                for resource_import in self.resource_imports.exclude(resource_id__in=resource_ids):
-                    resource_import.delete()
 
     def validate(self, user: AbstractUser) -> Optional[dict]:
         pass

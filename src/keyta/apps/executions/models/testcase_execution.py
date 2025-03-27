@@ -57,12 +57,25 @@ class TestCaseExecution(Execution):
             .library_ids()
         )
 
-    def get_resource_dependencies(self) -> list[int]:
-        return list(
-            KeywordCall.objects
+    def get_resource_dependencies(self, except_call_pk: Optional[int]=None) -> list[int]:
+        kw_calls = KeywordCall.objects.exclude(pk=except_call_pk)
+        resource_test_steps = (
+            kw_calls
             .filter(testcase_id=self.testcase.pk)
             .filter(to_keyword__resource__isnull=False)
-            .values_list('to_keyword__resource__id', flat=True)
+        )
+        sequence_pks = (
+            kw_calls
+            .filter(testcase_id=self.testcase.pk)
+            .filter(to_keyword__resource__isnull=True)
+            .values_list('to_keyword', flat=True)
+        )
+        sequence_steps = KeywordCall.objects.filter(from_keyword__in=sequence_pks)
+
+        return list(
+            (resource_test_steps | sequence_steps)
+            .filter(to_keyword__resource__isnull=False)
+            .values_list('to_keyword__resource_id', flat=True)
             .distinct()
         )
 
