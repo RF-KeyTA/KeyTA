@@ -258,7 +258,7 @@ class BaseVariableAdmin(SortableAdminBase, BaseAdmin):
         )
 
 
-class SchemaFields(TabularInlineWithDelete):
+class SchemaFields(SortableTabularInlineWithDelete):
     model = VariableSchemaField
     fields = ['name']
     min_num = 1
@@ -272,7 +272,7 @@ class SchemaFields(TabularInlineWithDelete):
         return field
 
 
-class BaseVariableSchemaAdmin(BaseAdmin):
+class BaseVariableSchemaAdmin(SortableAdminBase, BaseAdmin):
     fields = ['name']
     inlines = [SchemaFields]
 
@@ -302,7 +302,7 @@ class BaseVariableSchemaAdmin(BaseAdmin):
         )
 
 
-class BaseVariableSchemaQuickAddAdmin(BaseQuickAddAdmin):
+class BaseVariableSchemaQuickAddAdmin(SortableAdminBase, BaseQuickAddAdmin):
     fields = ['windows', 'name']
     inlines = [SchemaFields]
 

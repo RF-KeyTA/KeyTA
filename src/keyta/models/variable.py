@@ -205,6 +205,10 @@ class AbstractVariableSchema(AbstractBaseModel):
 
 
 class AbstractVariableSchemaField(AbstractBaseModel):
+    index = models.PositiveSmallIntegerField(
+        default=0,
+        db_index=True
+    )
     schema = models.ForeignKey(
         'variables.VariableSchema',
         on_delete=models.CASCADE,
@@ -237,5 +241,6 @@ class AbstractVariableSchemaField(AbstractBaseModel):
 
     class Meta:
         abstract = True
+        ordering = ['index']
         verbose_name = _('Feld')
         verbose_name_plural = _('Felder')
