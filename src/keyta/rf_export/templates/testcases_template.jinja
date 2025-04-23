@@ -9,7 +9,7 @@
     {%- for step in testcase.steps %}
     {%- if step.list_var %}
     FOR   ${row}   IN   {{ step.list_var }}
-        {{ rf_join(step.return_values) }}    {{ call_keyword(step) }}
+        {{ call_keyword(step) }}
     END
     {%- else %}
     {{ call_keyword(step) }}
