@@ -93,6 +93,9 @@ class Values(TabularInlineWithDelete):
     extra = 0
     min_num = 1
 
+    def get_queryset(self, request):
+        return super().get_queryset(request).order_by('schema_field__index')
+
     def get_fields(self, request, obj=None):
         variable: Variable = obj
 
@@ -390,8 +393,7 @@ class ListValues(BaseTabularInline):
     max_num = 0
 
     def get_queryset(self, request):
-        return super().get_queryset(request).filter(variable=self.variable_pk)
-
+        return super().get_queryset(request).filter(variable=self.variable_pk).order_by('schema_field__index')
 
 class BaseVariableQuickChangeAdmin(BaseAdmin):
     def get_fields(self, request, obj=None):
