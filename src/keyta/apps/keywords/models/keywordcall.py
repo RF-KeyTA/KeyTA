@@ -221,11 +221,16 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
 
         if self.variable and self.variable.is_list():
             list_var = '@{%s}' % self.variable.name
-            arg: KeywordCallParameter
-            rf_args = [
-                '${row}[%s]' % str(arg.value_ref)
-                for arg in args
-            ]
+            rf_args = []
+
+            arg: KeywordCallParameter            
+            for arg in args:
+                if arg.value_ref:
+                    rf_args.append('${row}[%s]' % str(arg.value_ref))
+                else:
+                    user_input = JSONValue.from_json(arg.value).user_input
+                    if user_input:
+                        rf_args.append(user_input)
 
         return {
             'condition': self.condition,
