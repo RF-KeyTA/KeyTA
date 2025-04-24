@@ -1,6 +1,6 @@
 from keyta.forms import BaseForm
 
-from ..models import KeywordCall
+from ..models import KeywordCall, KeywordCallParameter, KeywordReturnValue
 
 
 class StepsForm(BaseForm):
@@ -14,13 +14,22 @@ class StepsForm(BaseForm):
                 kw_call.save()
 
             if self.initial['to_keyword'] and 'to_keyword' in self.changed_data:
+                param: KeywordCallParameter
                 for param in kw_call.parameters.all():
                     param.delete()
 
+                return_value: KeywordReturnValue
                 for return_value in kw_call.return_values.all():
                     return_value.delete()
 
                 if return_value := kw_call.to_keyword.return_value.first():
                     kw_call.add_return_value(return_value)
+
+            if self.initial['variable'] and 'variable' in self.changed_data:
+                param: KeywordCallParameter
+                for param in kw_call.parameters.all():
+                    if param.value_ref:
+                        param.reset_value()
+                        param.save()
 
         return kw_call

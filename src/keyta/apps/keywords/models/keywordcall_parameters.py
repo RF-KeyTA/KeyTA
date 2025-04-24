@@ -105,6 +105,9 @@ class KeywordCallParameter(CloneMixin, models.Model):
     def name(self):
         return self.parameter.name
 
+    def reset_value(self):
+        self.value = JSONValue(None, None, None, None).jsonify()
+
     def save(
         self, force_insert=False, force_update=False, using=None,
         update_fields=None
