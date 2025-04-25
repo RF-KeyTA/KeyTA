@@ -13,7 +13,7 @@ class StepsForm(BaseForm):
                 kw_call.variable = None
                 kw_call.save()
 
-            if self.initial['to_keyword'] and 'to_keyword' in self.changed_data:
+            if self.initial.get('to_keyword', None) and 'to_keyword' in self.changed_data:
                 param: KeywordCallParameter
                 for param in kw_call.parameters.all():
                     param.delete()
@@ -25,7 +25,7 @@ class StepsForm(BaseForm):
                 if return_value := kw_call.to_keyword.return_value.first():
                     kw_call.add_return_value(return_value)
 
-            if self.initial['variable'] and 'variable' in self.changed_data:
+            if self.initial.get('variable', None) and 'variable' in self.changed_data:
                 param: KeywordCallParameter
                 for param in kw_call.parameters.all():
                     if param.value_ref:
