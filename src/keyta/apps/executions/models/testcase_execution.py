@@ -124,8 +124,13 @@ class TestCaseExecution(Execution):
         super().save(force_insert, force_update, using, update_fields)
 
     def validate(self, user: AbstractUser) -> Optional[ValidationError]:
-        if any(step.has_empty_arg() for step in self.testcase.steps.all()):
-            return ValidationError.INCOMPLETE_STEP_PARAMS
+        step: TestStep
+        for step in self.testcase.steps.all():
+            if step.has_no_kw_call():
+                return ValidationError.INCOMPLETE_STEP
+
+            if step.has_empty_arg():
+                return ValidationError.INCOMPLETE_STEP_PARAMS
 
         test_setup: KeywordCall = self.test_setup()
         test_teardown: KeywordCall = self.test_teardown()

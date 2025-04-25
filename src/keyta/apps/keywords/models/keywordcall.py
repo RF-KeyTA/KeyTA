@@ -187,6 +187,9 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
             if arg.is_empty():
                 return True
 
+    def has_no_kw_call(self):
+        return not self.to_keyword
+
     def make_clone(self, attrs=None, sub_clone=False, using=None, parent=None):
         attrs = (attrs or {}) | {'clone': True}
         return super().make_clone(attrs, sub_clone, using, parent)

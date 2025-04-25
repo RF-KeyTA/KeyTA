@@ -15,6 +15,11 @@ class ValidationError(dict, enum.Enum):
         'error': _('Die Aufrufparameter sind unvollständig'),
         'type': ErrorType.CALL_PARAMS
     }
+    INCOMPLETE_STEP = {
+        'error': _('Die Schritte sind unvollständig'),
+        'type': ErrorType.STEPS
+    }
+
     INCOMPLETE_STEP_PARAMS = {
         'error': _('Die Parameter der Schritte sind unvollständig'),
         'type': ErrorType.STEPS

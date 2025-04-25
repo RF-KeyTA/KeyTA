@@ -5,9 +5,20 @@
 {% block page_actions %}
     {% if not add %}
     <div class="col-12 col-md-auto d-flex align-items-center justify-content-end page-actions">
-        <a href="{% add_preserved_filters add_url is_popup to_field %}?export" class="btn {{ jazzmin_ui.button_classes.success }} float-right">
+        <a id="export-button" href="{% add_preserved_filters add_url is_popup to_field %}?export" class="btn {{ jazzmin_ui.button_classes.success }} float-right">
             <i class="fa-solid fa-file-export"></i> &nbsp; Export .robot 
         </a>
     </div>
     {% endif %}
 {% endblock %}
+
+{% block extrajs %}
+{{ block.super }}
+<script>
+    const $tabs = $('#content-main form #jazzy-tabs')
+    $('a', $tabs).on('shown.bs.tab', function (e) {
+        location.hash = e.target.hash;
+        $("#export-button").attr("href", "{% add_preserved_filters add_url is_popup to_field %}?export&ref=" + e.target.hash)
+    });
+</script>
+{% endblock extrajs %}

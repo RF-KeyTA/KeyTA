@@ -1,5 +1,5 @@
-from django.contrib import admin
-from django.http import HttpRequest, HttpResponse
+from django.contrib import admin, messages
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 
 from keyta.admin.testcase import BaseTestCaseAdmin
 from keyta.apps.executions.models import TestCaseExecution
@@ -14,18 +14,23 @@ class TestCaseAdmin(BaseTestCaseAdmin):
 
     def change_view(self, request: HttpRequest, object_id, form_url="", extra_context=None):
         if 'export' in request.GET:
-            testcase_exec = TestCaseExecution.objects.get(testcase_id=object_id)
-            testcase_exec.update_library_imports(request.user)
-            testcase_exec.update_resource_imports()
-            testsuite = testcase_exec.get_rf_testsuite(request.user)
-            robot_file = testsuite['name'] + '.robot'
+            execution = TestCaseExecution.objects.get(testcase_id=object_id)
 
-            return HttpResponse(
-                gen_testsuite(testsuite),
-                headers={
-                    'Content-Type': 'text/plain',
-                    'Content-Disposition': f'attachment; filename="{robot_file}"'
-                }
-            )
+            if err := execution.validate(request.user):
+                messages.warning(request, err['error'])
+                return HttpResponseRedirect(request.path)
+            else:
+                execution.update_library_imports(request.user)
+                execution.update_resource_imports()
+                testsuite = execution.get_rf_testsuite(request.user)
+                robot_file = testsuite['name'] + '.robot'
 
+                return HttpResponse(
+                    gen_testsuite(testsuite),
+                    headers={
+                        'Content-Type': 'text/plain',
+                        'Content-Disposition': f'attachment; filename="{robot_file}"'
+                    }
+                )
+        
         return super().change_view(request, object_id, form_url, extra_context)
