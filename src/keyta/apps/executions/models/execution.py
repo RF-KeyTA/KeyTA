@@ -11,8 +11,9 @@ from model_clone import CloneMixin
 from keyta.apps.libraries.models import Library, LibraryImport
 from keyta.apps.resources.models import Resource, ResourceImport
 from keyta.models.base_model import AbstractBaseModel
-from keyta.rf_export.testsuite import RFTestSuite
+from keyta.rf_export.rfgenerator import gen_testsuite
 from keyta.rf_export.settings import RFSettings
+from keyta.rf_export.testsuite import RFTestSuite
 
 from .user_execution import UserExecution
 
@@ -138,6 +139,17 @@ class Execution(CloneMixin, AbstractBaseModel):
             .test_teardown()
             .first()
         )
+
+    def to_robot(self, user: AbstractUser) -> dict:
+        testsuite = self.get_rf_testsuite(user)
+
+        return {
+            'testsuite_name': testsuite['name'],
+            'testsuite': gen_testsuite(testsuite),
+            'robot_args': {
+                'listener': 'keyta.Listener'
+            }
+        }
 
     def update_library_imports(self, user: AbstractUser):
         library_ids = self.get_library_dependencies()

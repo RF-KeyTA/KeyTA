@@ -1,12 +1,10 @@
 import json
 
-from django.contrib.auth.models import AbstractUser
 from django.http import HttpRequest, JsonResponse, HttpResponse
 
 from keyta.admin.base_admin import BaseAdmin
 from keyta.apps.libraries.admin import LibraryImportInline
 from keyta.apps.resources.admin import ResourceImportsInline
-from keyta.rf_export.rfgenerator import gen_testsuite
 
 from ..models import Execution
 from .setup_teardown_inline import SetupInline, TeardownInline
@@ -32,7 +30,10 @@ class ExecutionAdmin(BaseAdmin):
                 return super().change_view(request, object_id, form_url, extra_context)
 
             if 'to_robot' in request.GET:
-                return JsonResponse(self.to_robot(execution, request.user))
+                if err := execution.validate(request.user):
+                    return JsonResponse(err)
+
+                return JsonResponse(execution.to_robot(request.user))
 
         if request.method == 'PUT':
             result = json.loads(request.body.decode('utf-8'))
@@ -55,17 +56,3 @@ class ExecutionAdmin(BaseAdmin):
 
     def has_delete_permission(self, request, obj=None):
         return False
-
-    def to_robot(self, execution: Execution, user: AbstractUser) -> dict:
-        err = execution.validate(user)
-        if err:
-            return err
-
-        testsuite = execution.get_rf_testsuite(user)
-        return {
-            'testsuite_name': testsuite['name'],
-            'testsuite': gen_testsuite(testsuite),
-            'robot_args': {
-                'listener': 'keyta.Listener'
-            }
-        }
