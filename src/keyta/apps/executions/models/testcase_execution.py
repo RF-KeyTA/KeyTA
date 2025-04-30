@@ -143,6 +143,16 @@ class TestCaseExecution(Execution):
 
         return None
 
+    class Manager(models.Manager):
+        def get_queryset(self):
+            return (
+                super()
+                .get_queryset()
+                .filter(type=ExecutionType.TESTCASE)
+            )
+
+    objects = Manager()
+
     class Meta:
         proxy = True
         verbose_name = _('Ausführung')
