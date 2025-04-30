@@ -146,6 +146,16 @@ class KeywordExecution(Execution):
 
         return None
 
+    class Manager(models.Manager):
+        def get_queryset(self):
+            return (
+                super()
+                .get_queryset()
+                .filter(type=ExecutionType.KEYWORD)
+            )
+
+    objects = Manager()
+
     class Meta:
         proxy = True
         verbose_name = _('Ausführung')
