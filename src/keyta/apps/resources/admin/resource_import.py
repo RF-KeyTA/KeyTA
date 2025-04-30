@@ -3,6 +3,8 @@ from django.contrib import admin
 from django.utils.translation import gettext as _
 
 from keyta.admin.base_admin import BaseAdmin
+from keyta.models.base_model import AbstractBaseModel
+from keyta.widgets import link
 
 from ..models import ResourceImport
 
@@ -27,4 +29,27 @@ class ResourceImportAdmin(BaseAdmin):
         if resource_import.window:
             return ['window']
         
+        if execution := resource_import.execution:
+            if execution.keyword:
+                return ['from_sequence']
+
+            if execution.testcase:
+                return ['from_testcase']
+        
         return []
+
+    @admin.display(description=_('Sequenz'))
+    def from_sequence(self, obj):
+        resource_import: ResourceImport = obj
+        execution = resource_import.execution
+        entity: AbstractBaseModel = execution.keyword
+
+        return link(entity.get_admin_url(), str(entity))
+
+    @admin.display(description=_(message='Testfall'))
+    def from_testcase(self, obj):
+        resource_import: ResourceImport = obj
+        execution = resource_import.execution
+        entity: AbstractBaseModel = execution.testcase
+
+        return link(entity.get_admin_url(), str(entity))
