@@ -18,6 +18,9 @@ class StepsForm(BaseForm):
                 for param in kw_call.parameters.all():
                     param.delete()
 
+                kw_call.variable = None
+                kw_call.save()
+
                 return_value: KeywordReturnValue
                 for return_value in kw_call.return_values.all():
                     return_value.delete()
