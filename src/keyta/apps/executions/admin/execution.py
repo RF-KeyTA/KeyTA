@@ -6,7 +6,7 @@ from keyta.admin.base_admin import BaseAdmin
 from keyta.apps.libraries.admin import LibraryImportInline
 from keyta.apps.resources.admin import ResourceImportsInline
 
-from ..models import Execution
+from ..models.execution import Execution, Dependencies
 from .setup_teardown_inline import SetupInline, TeardownInline
 
 
@@ -16,15 +16,15 @@ class ExecutionAdmin(BaseAdmin):
         TeardownInline
     ]
 
-    def get_fields(self, request, obj=None):
-        return []
+    def get_dependencies(self, execution: Execution):
+        return execution.get_keyword_dependencies()
 
     def change_view(self, request: HttpRequest, object_id, form_url="", extra_context=None):
         execution: Execution = self.model.objects.get(id=object_id)
 
         if request.method == 'GET':
-            execution.update_library_imports(request.user)
-            execution.update_resource_imports()
+            dependencies = self.get_dependencies(execution)
+            execution.update_imports(dependencies, request.user)
 
             if 'settings' in request.GET:
                 return super().change_view(request, object_id, form_url, extra_context)
@@ -42,14 +42,18 @@ class ExecutionAdmin(BaseAdmin):
 
         return super().change_view(request, object_id, form_url, extra_context)
 
+    def get_fields(self, request, obj=None):
+        return []
+
     def get_inlines(self, request, obj):
         execution: Execution = obj
+        dependencies: Dependencies = self.get_dependencies(execution)
         inlines = []
 
-        if execution.get_library_dependencies():
+        if dependencies.libraries:
             inlines += [LibraryImportInline]
 
-        if execution.get_resource_dependencies():
+        if dependencies.resources:
             inlines += [ResourceImportsInline]
 
         return inlines + self.inlines

@@ -1,6 +1,6 @@
+from dataclasses import dataclass
 from typing import Optional
 
-from django.apps import apps
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models import Q
@@ -8,6 +8,8 @@ from django.utils.translation import gettext as _
 
 from model_clone import CloneMixin
 
+from keyta.apps.keywords.models import KeywordCall
+from keyta.apps.keywords.models.keyword import KeywordType
 from keyta.apps.libraries.models import Library, LibraryImport
 from keyta.apps.resources.models import Resource, ResourceImport
 from keyta.models.base_model import AbstractBaseModel
@@ -16,6 +18,12 @@ from keyta.rf_export.settings import RFSettings
 from keyta.rf_export.testsuite import RFTestSuite
 
 from .user_execution import UserExecution
+
+
+@dataclass
+class Dependencies:
+    libraries: set[int]
+    resources: set[int]
 
 
 class ExecutionType(models.TextChoices):
@@ -47,21 +55,28 @@ class Execution(CloneMixin, AbstractBaseModel):
     def __str__(self):
         return str(self.keyword or self.testcase)
 
-    def delete_resource_dependency(self, resource_pk: int, kw_call_pk: int):
-        if resource_pk not in set(self.get_resource_dependencies(except_call_pk=kw_call_pk)):
-            self.resource_imports.get(resource_id=resource_pk).delete()
+    def get_keyword_calls(self) -> models.QuerySet:
+        return models.QuerySet().none()
 
-    def get_library_dependencies(self) -> list[int]:
-        pass
+    def get_keyword_dependencies(self) -> Dependencies:
+        dependencies = Dependencies(
+            libraries = set(),
+            resources = set(),
+        )
+        lib_res = (
+            self.get_keyword_calls()
+            .filter(to_keyword__type__in=[KeywordType.LIBRARY, KeywordType.RESOURCE])
+            .values_list('to_keyword__library', 'to_keyword__resource')
+        )
 
-    def get_resource_dependencies(self, except_call_pk: Optional[int]=None) -> list[int]:
-        if self.keyword:
-            KeywordExecution = apps.get_model('executions', 'KeywordExecution')
-            return KeywordExecution.objects.get(id=self.pk).get_resource_dependencies(except_call_pk=except_call_pk)
-        
-        if self.testcase:
-            TestCaseExecution = apps.get_model('executions', 'TestCaseExecution')
-            return TestCaseExecution.objects.get(id=self.pk).get_resource_dependencies(except_call_pk=except_call_pk)
+        for library, resource in lib_res:
+            if library:
+                dependencies.libraries.add(library)
+            
+            if resource:
+                dependencies.resources.add(resource)
+
+        return dependencies
 
     def get_rf_settings(self, user: AbstractUser) -> RFSettings:
         def maybe_to_robot(keyword_call, user: AbstractUser):
@@ -126,14 +141,14 @@ class Execution(CloneMixin, AbstractBaseModel):
             .first()
         )
 
-    def test_setup(self):
+    def test_setup(self) -> KeywordCall:
         return (
             self.keyword_calls
             .test_setup()
             .first()
         )
 
-    def test_teardown(self):
+    def test_teardown(self) -> KeywordCall:
         return (
             self.keyword_calls
             .test_teardown()
@@ -151,33 +166,25 @@ class Execution(CloneMixin, AbstractBaseModel):
             }
         }
 
-    def update_library_imports(self, user: AbstractUser):
-        library_ids = self.get_library_dependencies()
-
-        if test_setup := self.test_setup():
-            library_ids += LibraryImport.objects.filter(keyword=test_setup.to_keyword).library_ids()
-
-        if test_teardown := self.test_teardown():
-            library_ids += LibraryImport.objects.filter(keyword=test_teardown.to_keyword).library_ids()
-
-        for library in Library.objects.filter(id__in=library_ids):
+    def update_imports(self, dependencies: Dependencies, user: AbstractUser):
+        for library in Library.objects.filter(id__in=dependencies.libraries):
             lib_import, created = LibraryImport.objects.get_or_create(
                 execution=self,
                 library=library
             )
             lib_import.add_parameters(user)
 
-        for lib_import in self.library_imports.exclude(library_id__in=library_ids):
+        for lib_import in self.library_imports.exclude(library_id__in=dependencies.libraries):
             lib_import.delete()
 
-    def update_resource_imports(self):
-        if Resource.objects.count():
-            if resource_ids := self.get_resource_dependencies():
-                for resource in Resource.objects.filter(id__in=resource_ids):
-                    ResourceImport.objects.get_or_create(
-                        execution=self,
-                        resource=resource
-                    )
+        for resource in Resource.objects.filter(id__in=dependencies.resources):
+            ResourceImport.objects.get_or_create(
+                execution=self,
+                resource=resource
+            )
+
+        for resource_import in self.resource_imports.exclude(resource_id__in=dependencies.resources):
+            resource_import.delete()
 
     def validate(self, user: AbstractUser) -> Optional[dict]:
         pass

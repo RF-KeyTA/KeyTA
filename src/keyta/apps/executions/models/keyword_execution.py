@@ -1,5 +1,6 @@
 from typing import Optional
 
+from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext as _
 
@@ -8,8 +9,8 @@ from keyta.apps.keywords.models import (
     KeywordCall,
     TestSetupTeardown
 )
+from keyta.apps.keywords.models.keyword import KeywordType
 from keyta.apps.keywords.models.keywordcall import KeywordCallType
-from keyta.apps.libraries.models import LibraryImport
 from keyta.rf_export.testsuite import RFTestSuite
 
 from ..errors import ValidationError
@@ -57,30 +58,18 @@ class KeywordExecution(Execution):
             .first()
         )
 
-    def get_library_dependencies(self) -> list[int]:
-        action_ids = self.action_ids
-        keyword = self.keyword
-
-        if (test_setup := self.test_setup()) and test_setup.enabled:
-            if to_keyword := test_setup.to_keyword:
-                action_ids.append(to_keyword.pk)
-
-        if keyword.is_action:
-            action_ids.append(keyword.pk)
-
-        return list(LibraryImport.objects.filter(keyword__id__in=action_ids).library_ids())
-
-    def get_resource_dependencies(self, except_call_pk: Optional[int]=None) -> list[int]:
-        if self.keyword.is_sequence:
-            return list(
-                self.keyword.calls
-                .exclude(pk=except_call_pk)
-                .filter(to_keyword__resource__isnull=False)
-                .values_list('to_keyword__resource__id', flat=True)
-                .distinct()
-            )
-
-        return []
+    def get_keyword_calls(self) -> models.QuerySet:
+        if self.keyword.type == KeywordType.SEQUENCE:
+            sequence_calls = KeywordCall.unsorted().filter(from_keyword=self.keyword)
+            action_calls = KeywordCall.get_substeps(sequence_calls)
+        
+        if self.keyword.type == KeywordType.ACTION:
+            sequence_calls = models.QuerySet().none()
+            action_calls = KeywordCall.unsorted().filter(from_keyword=self.keyword)
+        
+        setup_teardown_calls = KeywordCall.get_substeps(self.keyword_calls)
+        
+        return sequence_calls | action_calls | setup_teardown_calls
 
     def get_rf_testsuite(self, user: AbstractUser) -> RFTestSuite:
         keyword = self.keyword

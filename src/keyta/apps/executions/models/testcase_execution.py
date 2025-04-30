@@ -1,10 +1,10 @@
 from typing import Optional
 
 from django.contrib.auth.models import AbstractUser
+from django.db import models
 from django.utils.translation import gettext as _
 
 from keyta.apps.keywords.models import Keyword, KeywordCall, TestStep
-from keyta.apps.libraries.models import LibraryImport
 from keyta.models.variable import AbstractVariable, AbstractVariableInList
 from keyta.rf_export.testsuite import RFTestSuite
 
@@ -40,44 +40,13 @@ class TestCaseExecution(Execution):
             .distinct()
         )
 
-    def get_library_dependencies(self) -> list[int]:
-        action_ids = list(self.action_ids)
-
-        if (test_setup := self.test_setup()) and test_setup.enabled:
-            if to_keyword := test_setup.to_keyword:
-                action_ids.append(to_keyword.pk)
-
-        if (test_teardown := self.test_teardown()) and test_teardown.enabled:
-            if to_keyword := test_teardown.to_keyword:
-                action_ids.append(to_keyword.pk)
+    def get_keyword_calls(self) -> models.QuerySet:
+        setup_teardown_calls = KeywordCall.get_substeps(self.keyword_calls)
+        test_calls = KeywordCall.unsorted().filter(testcase=self.testcase)
+        sequence_calls = KeywordCall.get_substeps(test_calls)
+        action_calls = KeywordCall.get_substeps(sequence_calls)
         
-        return list(
-            LibraryImport.objects
-            .filter(keyword__id__in=action_ids)
-            .library_ids()
-        )
-
-    def get_resource_dependencies(self, except_call_pk: Optional[int]=None) -> list[int]:
-        kw_calls = KeywordCall.objects.exclude(pk=except_call_pk)
-        resource_test_steps = (
-            kw_calls
-            .filter(testcase_id=self.testcase.pk)
-            .filter(to_keyword__resource__isnull=False)
-        )
-        sequence_pks = (
-            kw_calls
-            .filter(testcase_id=self.testcase.pk)
-            .filter(to_keyword__resource__isnull=True)
-            .values_list('to_keyword', flat=True)
-        )
-        sequence_steps = KeywordCall.objects.filter(from_keyword__in=sequence_pks)
-
-        return list(
-            (resource_test_steps | sequence_steps)
-            .filter(to_keyword__resource__isnull=False)
-            .values_list('to_keyword__resource_id', flat=True)
-            .distinct()
-        )
+        return setup_teardown_calls | test_calls | sequence_calls | action_calls
 
     def get_rf_testsuite(self, user: AbstractUser) -> RFTestSuite:
         keywords = {
