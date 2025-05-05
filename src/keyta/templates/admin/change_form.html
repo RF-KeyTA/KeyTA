@@ -209,7 +209,7 @@
                     $.post(url, $('form').serialize() + "&_continue=")
                 })
 
-                $('input[type=text]').on('blur', function() {
+                $('.form-group input[type=text]').on('blur', function() {
                     const input = $(this)
                     
                     // Reload the page when the name changes in order to update the title
