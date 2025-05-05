@@ -94,7 +94,7 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
         null=True,
         default=None,
         blank=True,
-        verbose_name=_('Referenzwerte (optional)')
+        verbose_name=_('Referenzwert (optional)')
     )
     # In a TestCase keyword calls depend on the selected Window
     window = models.ForeignKey(
