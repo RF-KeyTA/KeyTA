@@ -9,7 +9,7 @@ from adminsortable2.admin import SortableAdminBase, CustomInlineFormSet
 
 from keyta.forms import form_with_select
 from keyta.models.variable import AbstractVariable, VariableType
-from keyta.widgets import BaseSelect, link, Icon
+from keyta.widgets import BaseSelect, link
 
 from apps.variables.models import (
     Variable,
