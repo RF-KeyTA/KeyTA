@@ -93,6 +93,9 @@ class TestCaseExecution(Execution):
         super().save(force_insert, force_update, using, update_fields)
 
     def validate(self, user: AbstractUser) -> Optional[ValidationError]:
+        if not self.testcase.steps.count():
+            return ValidationError.NO_STEPS
+
         step: TestStep
         for step in self.testcase.steps.all():
             if step.has_no_kw_call():

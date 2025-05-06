@@ -19,7 +19,6 @@ class ValidationError(dict, enum.Enum):
         'error': _('Die Schritte sind unvollständig'),
         'type': ErrorType.STEPS
     }
-
     INCOMPLETE_STEP_PARAMS = {
         'error': _('Die Parameter der Schritte sind unvollständig'),
         'type': ErrorType.STEPS
@@ -39,4 +38,8 @@ class ValidationError(dict, enum.Enum):
     NO_ATTACH_TO_SYSTEM = {
         'error': _('Die Anbindung ans laufende System muss gepflegt werden'),
         'type': ErrorType.SYSTEM
+    }
+    NO_STEPS = {
+        'error': _('Die Schritte sind leer'),
+        'type': ErrorType.STEPS
     }

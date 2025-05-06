@@ -107,24 +107,15 @@ class KeywordExecution(Execution):
         super().save(force_insert, force_update, using, update_fields)
 
     def validate(self, user: AbstractUser) -> Optional[dict]:
-        return (self.validate_keyword_call(user) or
-                self.validate_test_setup(user) or
-                self.validate_steps()
-                )
+        if not self.keyword.calls.count():
+            return ValidationError.NO_STEPS
 
-    def validate_keyword_call(self, user: AbstractUser) -> Optional[dict]:
         if self.execution_keyword_call.has_empty_arg(user):
             return ValidationError.INCOMPLETE_CALL_PARAMS
 
-        return None
-
-    def validate_steps(self) -> Optional[dict]:
         if any(call.has_empty_arg() for call in self.keyword.calls.all()):
             return ValidationError.INCOMPLETE_STEP_PARAMS
 
-        return None
-
-    def validate_test_setup(self, user: AbstractUser) -> Optional[dict]:
         test_setup: KeywordCall = self.test_setup()
 
         if not test_setup:
