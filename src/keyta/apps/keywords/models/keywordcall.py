@@ -136,8 +136,22 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
             return_value=return_value.kw_call_return_value
         )
 
+    def delete_parameters(self):
+        param: KeywordCallParameter
+        for param in self.parameters.all():
+            param.delete()
+
     def delete_return_value(self, return_value: KeywordReturnValue):
         self.return_values.get(return_value__id=return_value.kw_call_return_value.pk).delete()
+
+    def delete_return_values(self):
+        return_value: KeywordReturnValue
+        for return_value in self.return_values.all():
+            return_value.delete()
+
+    def delete_variable(self):
+        self.variable = None
+        self.save()
 
     @property
     def caller(self):
@@ -186,6 +200,13 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
     def make_clone(self, attrs=None, sub_clone=False, using=None, parent=None):
         attrs = (attrs or {}) | {'clone': True}
         return super().make_clone(attrs, sub_clone, using, parent)
+
+    def reset_parameters(self):
+        param: KeywordCallParameter
+        for param in self.parameters.all():
+            if param.value_ref:
+                param.reset_value()
+                param.save()
 
     def save(
         self, force_insert=False, force_update=False,
