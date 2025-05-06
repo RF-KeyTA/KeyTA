@@ -28,6 +28,8 @@
 
 - When a field is added/deleted it is added/deleted to/from all the Reference Values that use the template
 
+- Field names must be unique
+
 - When the fields are reordered the form is automatically saved. The current order is reflected in all the Reference Values that use the template
 
 - When renaming a field the form is automatically saved. The current field names are reflected in all the Reference Values that use the template

@@ -247,6 +247,12 @@ class AbstractVariableSchemaField(AbstractBaseModel):
 
     class Meta:
         abstract = True
+        constraints = [
+            models.UniqueConstraint(
+                fields=['schema', 'name'],
+                name='unique_field_per_schema'
+            )
+        ]
         ordering = ['index']
         verbose_name = _('Feld')
         verbose_name_plural = _('Felder')
