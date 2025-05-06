@@ -16,15 +16,11 @@ class ExecutionAdmin(BaseAdmin):
         TeardownInline
     ]
 
-    def get_dependencies(self, execution: Execution):
-        return execution.get_keyword_dependencies()
-
     def change_view(self, request: HttpRequest, object_id, form_url="", extra_context=None):
         execution: Execution = self.model.objects.get(id=object_id)
 
         if request.method == 'GET':
-            dependencies = self.get_dependencies(execution)
-            execution.update_imports(dependencies, request.user)
+            execution.update_imports(request.user)
 
             if 'settings' in request.GET:
                 return super().change_view(request, object_id, form_url, extra_context)

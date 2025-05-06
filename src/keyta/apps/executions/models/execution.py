@@ -166,7 +166,9 @@ class Execution(CloneMixin, AbstractBaseModel):
             }
         }
 
-    def update_imports(self, dependencies: Dependencies, user: AbstractUser):
+    def update_imports(self, user: AbstractUser):
+        dependencies = self.get_keyword_dependencies()
+        
         for library in Library.objects.filter(id__in=dependencies.libraries):
             lib_import, created = LibraryImport.objects.get_or_create(
                 execution=self,

@@ -20,8 +20,7 @@ class TestCaseAdmin(BaseTestCaseAdmin):
                 messages.warning(request, err['error'])
                 return HttpResponseRedirect(request.path)
             else:
-                execution.update_library_imports(request.user)
-                execution.update_resource_imports()
+                execution.update_imports(request.user)
                 testsuite = execution.get_rf_testsuite(request.user)
                 robot_file = testsuite['name'] + '.robot'
 
