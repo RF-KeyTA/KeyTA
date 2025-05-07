@@ -6,7 +6,7 @@ from keyta.admin.base_admin import BaseAdmin
 from keyta.apps.libraries.admin import LibraryImportInline
 from keyta.apps.resources.admin import ResourceImportsInline
 
-from ..models.execution import Execution, Dependencies
+from ..models.execution import Execution
 from .setup_teardown_inline import SetupInline, TeardownInline
 
 
@@ -43,7 +43,7 @@ class ExecutionAdmin(BaseAdmin):
 
     def get_inlines(self, request, obj):
         execution: Execution = obj
-        dependencies: Dependencies = self.get_dependencies(execution)
+        dependencies = execution.get_keyword_dependencies()
         inlines = []
 
         if dependencies.libraries:
