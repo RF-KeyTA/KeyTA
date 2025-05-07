@@ -217,9 +217,9 @@ class BaseWindowAdmin(BaseAdmin):
             return []
 
         if Resource.objects.count():
-            return [Schemas, Resources] + self.inlines
+            return [Resources] + self.inlines + [Schemas]
         else:
-            return [Schemas] + self.inlines
+            return self.inlines + [Schemas]
 
 
 class BaseWindowQuickAddAdmin(BaseQuickAddAdmin):
