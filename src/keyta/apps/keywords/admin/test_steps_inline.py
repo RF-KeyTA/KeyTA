@@ -7,7 +7,7 @@ from keyta.apps.resources.models import ResourceImport
 from keyta.models.testcase import AbstractTestCase
 from keyta.widgets import quick_change_widget
 
-from apps.windows.models import Window
+from keyta.apps.windows.models import Window
 
 from ..forms import TestStepsForm
 from ..models import TestStep

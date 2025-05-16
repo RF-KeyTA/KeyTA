@@ -17,12 +17,12 @@ from keyta.apps.sequences.models import SequenceQuickAdd
 from keyta.forms.baseform import form_with_select
 from keyta.widgets import Icon, open_link_in_modal
 
-from apps.variables.models import (
+from keyta.apps.variables.models import (
     VariableQuickAdd,
     VariableSchemaQuickAdd,
     VariableWindowRelation
 )
-from apps.windows.models import (
+from keyta.apps.windows.models import (
     Window,
     WindowDocumentation,
     WindowQuickChange,

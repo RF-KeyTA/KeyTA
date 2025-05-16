@@ -10,7 +10,7 @@ from keyta.apps.keywords.models import Keyword, KeywordCall
 from keyta.forms import form_with_select
 from keyta.widgets import quick_change_widget
 
-from apps.windows.models import Window
+from keyta.apps.windows.models import Window
 
 from ..models import Sequence
 

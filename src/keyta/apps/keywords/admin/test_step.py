@@ -3,7 +3,7 @@ from django.utils.translation import gettext as _
 
 from keyta.widgets import open_link_in_modal
 
-from apps.variables.models import VariableDocumentation
+from keyta.apps.variables.models import VariableDocumentation
 
 from ..forms import KeywordCallParameterFormset
 from ..forms.keywordcall_parameter_formset import get_prev_return_values

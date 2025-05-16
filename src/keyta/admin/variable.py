@@ -11,7 +11,7 @@ from keyta.forms import form_with_select
 from keyta.models.variable import AbstractVariable, VariableType
 from keyta.widgets import BaseSelect, link
 
-from apps.variables.models import (
+from keyta.apps.variables.models import (
     Variable,
     VariableDocumentation,
     VariableInList,
@@ -22,7 +22,7 @@ from apps.variables.models import (
     VariableValue,
     VariableWindowRelation,
 )
-from apps.windows.models import Window
+from keyta.apps.windows.models import Window
 
 from .base_admin import BaseAdmin, BaseQuickAddAdmin
 from .base_inline import (

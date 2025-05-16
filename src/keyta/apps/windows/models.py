@@ -1,9 +1,8 @@
 from django.utils.translation import gettext as _
 
+from keyta.apps.variables.models import VariableSchema
 from keyta.models.base_model import AbstractBaseModel
 from keyta.models.window import AbstractWindow
-
-from apps.variables.models import VariableSchema
 
 
 class Window(AbstractWindow):

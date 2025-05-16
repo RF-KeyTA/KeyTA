@@ -82,16 +82,16 @@ THIRD_PARTY_APPS = [
 ]
 
 KEYTA_APPS = [
-    'apps.actions',
-    'apps.executions',
-    'apps.keywords',
-    'apps.libraries',
-    'apps.resources',
-    'apps.sequences',
-    'apps.systems',
-    'apps.testcases',
-    'apps.variables',
-    'apps.windows'
+    'keyta.apps.actions',
+    'keyta.apps.executions',
+    'keyta.apps.keywords',
+    'keyta.apps.libraries',
+    'keyta.apps.resources',
+    'keyta.apps.sequences',
+    'keyta.apps.systems',
+    'keyta.apps.testcases',
+    'keyta.apps.variables',
+    'keyta.apps.windows'
 ]
 
 INSTALLED_APPS = ADMIN_APP + DEFAULT_APPS + THIRD_PARTY_APPS + KEYTA_APPS + ['media']

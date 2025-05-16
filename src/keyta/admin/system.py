@@ -9,8 +9,8 @@ from django.utils.translation import gettext as _
 from keyta.models.system import AbstractSystem
 from keyta.widgets import ModelSelect2AdminWidget, link, BaseSelect
 
-from apps.systems.models import System
-from apps.windows.models import WindowQuickAdd, WindowSystemRelation
+from keyta.apps.systems.models import System
+from keyta.apps.windows.models import WindowQuickAdd, WindowSystemRelation
 
 from .base_admin import BaseAdmin
 from .base_inline import BaseTabularInline
