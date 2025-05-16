@@ -60,14 +60,3 @@ class KeywordCallReturnValue(CloneMixin, AbstractBaseModel):
 
     class Meta:
         verbose_name = _('Rückgabewert')
-        constraints = [
-            models.CheckConstraint(
-                name='has_name_or_return_value',
-                check=
-                (Q(name__isnull=False) &
-                 Q(return_value__isnull=True))
-                |
-                (Q(name__isnull=True) &
-                 Q(return_value__isnull=False))
-            )
-        ]

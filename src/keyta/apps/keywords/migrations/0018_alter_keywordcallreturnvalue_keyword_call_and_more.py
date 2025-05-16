@@ -16,8 +16,4 @@ class Migration(migrations.Migration):
             name='keyword_call',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='return_values', to='keywords.keywordcall'),
         ),
-        migrations.AddConstraint(
-            model_name='keywordcallreturnvalue',
-            constraint=models.CheckConstraint(check=models.Q(models.Q(('name__isnull', False), ('return_value__isnull', True)), models.Q(('name__isnull', True), ('return_value__isnull', False)), _connector='OR'), name='has_name_or_return_value'),
-        ),
     ]
