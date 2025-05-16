@@ -1,7 +1,7 @@
 from typing import Any
 
 from django.core.management.base import BaseCommand
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from keyta.rf_import.import_library import import_library
 

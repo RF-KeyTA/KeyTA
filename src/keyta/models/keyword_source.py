@@ -4,7 +4,7 @@ import xml.dom.minidom
 from abc import abstractmethod
 
 from django.db import models
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from keyta.apps.keywords.models import Keyword, KeywordParameter, KeywordDocumentation
 from keyta.rf_import.import_keywords import args_table, get_default_value

@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.http import HttpRequest
 from django.urls import get_script_prefix
 from django.utils.safestring import mark_safe
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from keyta.admin.base_inline import BaseTabularInline
 from keyta.widgets import open_link_in_modal, link, Icon

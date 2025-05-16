@@ -1,4 +1,4 @@
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from keyta.admin.field_delete_related_instance import DeleteRelatedField
 from keyta.apps.libraries.admin import LibraryImportInline

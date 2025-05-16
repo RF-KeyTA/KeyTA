@@ -1,7 +1,7 @@
 from itertools import groupby
 
 from django.db.models import QuerySet
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from keyta.apps.actions.models import Action
 from keyta.apps.keywords.admin import StepsInline

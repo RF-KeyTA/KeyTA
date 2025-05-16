@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from keyta.apps.executions.admin.execution import ExecutionAdmin
 

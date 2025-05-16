@@ -6,7 +6,7 @@ from django.contrib import admin, messages
 from django.http import HttpRequest
 from django.urls import reverse
 from django.utils.safestring import mark_safe
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from keyta.admin.base_admin import BaseAdmin
 from keyta.admin.keywords_inline import Keywords

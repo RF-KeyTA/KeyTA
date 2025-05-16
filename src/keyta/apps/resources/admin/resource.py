@@ -3,7 +3,7 @@ from django.conf import settings
 from django.contrib import admin, messages
 from django.http import HttpRequest
 from django.urls import reverse
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from keyta.admin.base_admin import BaseAdmin
 from keyta.admin.field_documentation import DocumentationField

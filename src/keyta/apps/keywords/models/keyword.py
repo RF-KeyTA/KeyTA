@@ -3,7 +3,7 @@ import re
 from django.db import models
 from django.db.models import Q
 from django.db.models.functions import Lower
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from keyta.models.base_model import AbstractBaseModel
 from keyta.models.documentation_mixin import DocumentationMixin

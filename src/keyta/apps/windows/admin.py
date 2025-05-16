@@ -2,7 +2,7 @@ from django import forms
 from django.conf import settings
 from django.contrib import admin
 from django.http import HttpRequest, HttpResponseRedirect
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from keyta.admin.base_admin import BaseAdmin, BaseQuickAddAdmin, QuickAddMixin, BaseDocumentationAdmin
 from keyta.admin.base_inline import BaseTabularInline

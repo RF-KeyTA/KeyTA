@@ -1,6 +1,6 @@
 from django.db.models import QuerySet
 from django.http import HttpRequest
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from keyta.admin.base_inline import TabularInlineWithDelete
 from keyta.forms.baseform import form_with_select

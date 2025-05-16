@@ -6,7 +6,7 @@ from django.conf import settings
 from django.contrib.admin.widgets import RelatedFieldWidgetWrapper
 from django.forms.models import ModelChoiceIterator
 from django.utils.safestring import mark_safe
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from django_select2.forms import ModelSelect2Widget
 

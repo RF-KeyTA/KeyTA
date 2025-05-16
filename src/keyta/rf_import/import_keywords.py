@@ -3,7 +3,7 @@ import os
 import tempfile
 from pathlib import Path
 
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 
 def args_table(args):

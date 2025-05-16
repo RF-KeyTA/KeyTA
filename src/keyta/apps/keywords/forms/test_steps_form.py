@@ -1,6 +1,6 @@
 from django import forms
 from django.db.models import QuerySet
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from keyta.apps.keywords.models.keyword import Keyword
 from keyta.apps.resources.models.resource_import import ResourceImport

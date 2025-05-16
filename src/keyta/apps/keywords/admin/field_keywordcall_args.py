@@ -3,7 +3,7 @@ from typing import Optional
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth.models import AbstractUser
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from keyta.widgets import Icon, open_link_in_modal
 

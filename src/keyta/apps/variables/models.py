@@ -2,7 +2,7 @@ from typing import Optional
 
 from django.apps import apps
 from django.db import models
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from keyta.apps.keywords.models import KeywordCallParameterSource
 from keyta.models.base_model import AbstractBaseModel

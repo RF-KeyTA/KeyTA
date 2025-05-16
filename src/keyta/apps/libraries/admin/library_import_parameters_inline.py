@@ -1,5 +1,5 @@
 from django.db.models import QuerySet
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from keyta.admin.base_inline import BaseTabularInline
 from keyta.apps.libraries.models import LibraryImportParameter

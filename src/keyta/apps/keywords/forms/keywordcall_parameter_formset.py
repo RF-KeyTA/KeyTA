@@ -4,7 +4,7 @@ from collections import defaultdict
 from django import forms
 from django.db.models import QuerySet
 from django.forms.utils import ErrorDict, ErrorList
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from keyta.widgets import KeywordCallParameterSelect
 

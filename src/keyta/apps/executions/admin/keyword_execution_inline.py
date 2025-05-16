@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.http import HttpRequest
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from keyta.apps.keywords.admin.field_keywordcall_args import BaseKeywordCallArgs
 from keyta.apps.keywords.models import Keyword

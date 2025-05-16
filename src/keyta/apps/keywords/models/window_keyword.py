@@ -1,6 +1,6 @@
 from django.apps import apps
 from django.contrib.auth.models import AbstractUser
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from model_clone import CloneMixin
 

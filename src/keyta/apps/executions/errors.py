@@ -1,6 +1,6 @@
 import enum
 
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 
 class ErrorType(str, enum.Enum):

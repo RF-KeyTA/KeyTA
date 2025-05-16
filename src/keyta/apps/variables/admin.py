@@ -3,7 +3,7 @@ import json
 from django.contrib import admin
 from django.forms import HiddenInput, MultipleHiddenInput
 from django.http import HttpRequest, HttpResponseRedirect
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from adminsortable2.admin import SortableAdminBase, CustomInlineFormSet
 
