@@ -4,7 +4,7 @@ from keyta.admin.base_inline import SortableTabularInline
 from keyta.admin.field_delete_related_instance import DeleteRelatedField
 from keyta.apps.keywords.models import Keyword
 from keyta.apps.resources.models import ResourceImport
-from keyta.models.testcase import AbstractTestCase
+from keyta.apps.testcases.models import TestCase
 from keyta.widgets import quick_change_widget
 
 from keyta.apps.windows.models import Window
@@ -46,7 +46,7 @@ class TestStepsInline(
         return [*fields, 'variable', delete]
 
     def get_formset(self, request, obj=None, **kwargs):
-        testcase: AbstractTestCase = obj
+        testcase: TestCase = obj
         systems = testcase.systems.all()
         windows = (
             Window.objects

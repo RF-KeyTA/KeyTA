@@ -16,7 +16,7 @@ from keyta.apps.keywords.admin import (
     WindowKeywordAdminMixin,
 )
 from keyta.forms.baseform import BaseForm
-from keyta.models.window import AbstractWindow
+from keyta.apps.windows.models import Window
 from keyta.widgets import (
     ModelSelect2MultipleAdminWidget, 
     Select2MultipleWidget, 
@@ -112,7 +112,7 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
 
     @admin.display(description=_('Maske'))
     def window(self, sequence: Sequence):
-        window: AbstractWindow = sequence.windows.first()
+        window: Window = sequence.windows.first()
 
         return link(
             window.get_admin_url(),

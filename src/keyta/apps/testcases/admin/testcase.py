@@ -1,11 +1,11 @@
 from django.contrib import admin, messages
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 
-from keyta.admin.testcase import BaseTestCaseAdmin
 from keyta.apps.executions.models import TestCaseExecution
 from keyta.rf_export.rfgenerator import gen_testsuite
 
-from .models import TestCase
+from ..models import TestCase
+from .base_testcase_admin import BaseTestCaseAdmin
 
 
 @admin.register(TestCase)

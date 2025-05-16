@@ -5,7 +5,7 @@ from django.db import models
 from django.utils.translation import gettext as _
 
 from keyta.apps.keywords.models import Keyword, KeywordCall, TestStep
-from keyta.models.variable import AbstractVariable, AbstractVariableInList
+from keyta.apps.variables.models import Variable, VariableInList
 from keyta.rf_export.testsuite import RFTestSuite
 
 from ..errors import ValidationError
@@ -68,11 +68,11 @@ class TestCaseExecution(Execution):
 
         step: TestStep
         for step in self.testcase.steps.all():
-            variable: AbstractVariable = step.variable
+            variable: Variable = step.variable
             if variable and variable.is_list():
                     list_variables.append(variable.to_robot())
 
-                    element: AbstractVariableInList
+                    element: VariableInList
                     for element in variable.elements.all():
                         dict_variables.append(element.variable.to_robot())
 

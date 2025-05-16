@@ -6,11 +6,12 @@ from model_clone import CloneModelAdminMixin
 from keyta.apps.executions.admin import ExecutionInline
 from keyta.apps.executions.models import TestCaseExecution
 from keyta.apps.keywords.admin import TestStepsInline
-from keyta.models.testcase import AbstractTestCase
 from keyta.widgets import BaseSelectMultiple
 
-from .base_admin import BaseAdmin
-from .list_filters import SystemListFilter
+from keyta.admin.base_admin import BaseAdmin
+from keyta.admin.list_filters import SystemListFilter
+
+from ..models import TestCase
 
 
 class LocalExecution(ExecutionInline):
@@ -46,7 +47,7 @@ class BaseTestCaseAdmin(CloneModelAdminMixin, SortableAdminBase, BaseAdmin):
         return field
 
     def get_inlines(self, request, obj):
-        testcase: AbstractTestCase = obj
+        testcase: TestCase = obj
 
         if not testcase:
             return []
@@ -58,7 +59,7 @@ class BaseTestCaseAdmin(CloneModelAdminMixin, SortableAdminBase, BaseAdmin):
 
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
-        testcase: AbstractTestCase = obj
+        testcase: TestCase = obj
 
         if not change:
             form.save_m2m()
