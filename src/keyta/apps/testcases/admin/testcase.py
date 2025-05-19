@@ -10,7 +10,7 @@ from .base_testcase_admin import BaseTestCaseAdmin
 
 @admin.register(TestCase)
 class TestCaseAdmin(BaseTestCaseAdmin):
-    change_form_template = 'change_form.html'
+    change_form_template = 'testcase_change_form.html'
 
     def change_view(self, request: HttpRequest, object_id, form_url="", extra_context=None):
         if 'export' in request.GET:
