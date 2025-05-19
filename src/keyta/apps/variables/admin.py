@@ -341,7 +341,7 @@ class VariableQuickAddAdmin(BaseQuickAddAdmin):
                 field.widget = BaseSelect('')
                 
                 if 'windows' in request.GET:
-                    field.queryset = field.queryset.filter(windows__in=request.GET['windows'])
+                    field.queryset = field.queryset.filter(windows__in=[request.GET['windows']])
 
         if db_field.name == 'systems':
             if 'list_id' in request.GET:
