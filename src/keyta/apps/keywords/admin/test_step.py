@@ -1,9 +1,8 @@
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 
-from keyta.widgets import open_link_in_modal
-
 from keyta.apps.variables.models import VariableDocumentation
+from keyta.widgets import open_link_in_modal
 
 from ..forms import KeywordCallParameterFormset
 from ..forms.keywordcall_parameter_formset import get_prev_return_values
@@ -94,3 +93,6 @@ class TestStepAdmin(
     KeywordCallAdmin
 ):
     parameters_inline = TestStepParametersInline
+
+    def change_view(self, request, object_id, form_url="", extra_context=None):
+        return self.changeform_view(request, object_id, form_url, extra_context)

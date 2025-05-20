@@ -4,10 +4,9 @@ from django.utils.translation import gettext_lazy as _
 
 from keyta.apps.keywords.models.keyword import Keyword
 from keyta.apps.resources.models.resource_import import ResourceImport
-from keyta.widgets import ModelSelect2AdminWidget
-
 from keyta.apps.variables.models import Variable
 from keyta.apps.windows.models import Window
+from keyta.widgets import ModelSelect2AdminWidget
 
 from ..models import KeywordCall
 from .steps_form import StepsForm

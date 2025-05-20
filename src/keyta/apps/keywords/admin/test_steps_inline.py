@@ -5,9 +5,8 @@ from keyta.admin.field_delete_related_instance import DeleteRelatedField
 from keyta.apps.keywords.models import Keyword
 from keyta.apps.resources.models import ResourceImport
 from keyta.apps.testcases.models import TestCase
-from keyta.widgets import quick_change_widget
-
 from keyta.apps.windows.models import Window
+from keyta.widgets import quick_change_widget
 
 from ..forms import TestStepsForm
 from ..models import TestStep
