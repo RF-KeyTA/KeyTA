@@ -21,6 +21,7 @@ def get_global_variables(system_ids: list[int]):
         KeywordCallParameterSource.objects
         .filter(variable_value__variable__systems__in=system_ids)
         .filter(variable_value__variable__windows__isnull=True)
+        .distinct()
     )
 
     return get_variables_choices(sources)
