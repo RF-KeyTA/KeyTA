@@ -9,7 +9,8 @@ from keyta.widgets import open_link_in_modal
 from ..models import (
     KeywordCall,
     KeywordCallReturnValue,
-    LibraryKeywordCall
+    LibraryKeywordCall,
+    TestStep
 )
 from .keywordcall_parameters_inline import KeywordCallParametersInline
 from .keywordcall_return_value_inline import KeywordCallReturnValueInline
@@ -68,9 +69,14 @@ class KeywordCallAdmin(BaseAdmin):
         kw_call = KeywordCall.objects.get(pk=object_id)
         kw_call.update_parameter_values()
 
-        if kw_call.from_keyword.is_action:
-            library_kw_call = LibraryKeywordCall.objects.get(id=kw_call.pk)
-            return HttpResponseRedirect(library_kw_call.get_admin_url())
+        if kw_call.from_keyword:
+            if kw_call.from_keyword.is_action:
+                library_kw_call = LibraryKeywordCall.objects.get(id=kw_call.pk)
+                return HttpResponseRedirect(library_kw_call.get_admin_url())
+
+        if kw_call.testcase:
+            test_step = TestStep.objects.get(pk=kw_call.pk)
+            return HttpResponseRedirect(test_step.get_admin_url())
 
         return super().change_view(request, object_id, form_url, extra_context)
 

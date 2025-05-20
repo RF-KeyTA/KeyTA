@@ -9,7 +9,7 @@ from keyta.apps.windows.models import Window
 from keyta.widgets import quick_change_widget
 
 from ..forms import TestStepsForm
-from ..models import TestStep
+from ..models import KeywordCall
 from .field_keywordcall_args import KeywordCallArgsField
 
 
@@ -17,7 +17,7 @@ class TestStepsFormset(CustomInlineFormSet):
     def add_fields(self, form, index):
         super().add_fields(form, index)
 
-        test_step: TestStep = form.instance
+        test_step: KeywordCall = form.instance
 
         # The index of an extra form is None
         if index is not None and test_step.pk:
@@ -33,7 +33,7 @@ class TestStepsInline(
     KeywordCallArgsField, 
     SortableTabularInline
 ):
-    model = TestStep
+    model = KeywordCall
     fk_name = 'testcase'
     fields = ['window', 'to_keyword']
     extra = 0 # necessary for saving, since to_keyword is not nullable and is null in an extra
