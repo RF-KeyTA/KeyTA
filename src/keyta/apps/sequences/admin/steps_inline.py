@@ -7,10 +7,9 @@ from keyta.apps.actions.models import Action
 from keyta.apps.keywords.admin import StepsInline
 from keyta.apps.keywords.forms import StepsForm
 from keyta.apps.keywords.models import Keyword, KeywordCall
+from keyta.apps.windows.models import Window
 from keyta.forms import form_with_select
 from keyta.widgets import quick_change_widget
-
-from keyta.apps.windows.models import Window
 
 from ..models import Sequence
 
