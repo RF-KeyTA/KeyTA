@@ -3,7 +3,7 @@ from django.utils.translation import gettext_lazy as _
 
 from keyta.apps.keywords.admin import StepsInline
 from keyta.apps.keywords.forms import StepsForm
-from keyta.apps.keywords.models import Keyword, RobotKeywordCall
+from keyta.apps.keywords.models import Keyword, KeywordCall
 from keyta.forms.baseform import form_with_select
 from keyta.widgets import GroupedByLibrary
 
@@ -15,9 +15,9 @@ class GroupedChoiceField(forms.ModelChoiceField):
 
 
 class ActionSteps(StepsInline):
-    model = RobotKeywordCall
+    model = KeywordCall
     form = form_with_select(
-        RobotKeywordCall,
+        KeywordCall,
         'to_keyword',
         _('Schlüsselwort auswählen'),
         labels={

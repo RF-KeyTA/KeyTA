@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.http import HttpResponseRedirect
 from django.utils.translation import gettext_lazy as _
 
 from keyta.admin.base_admin import BaseAdmin
@@ -7,7 +8,8 @@ from keyta.widgets import open_link_in_modal
 
 from ..models import (
     KeywordCall,
-    KeywordCallReturnValue
+    KeywordCallReturnValue,
+    LibraryKeywordCall
 )
 from .keywordcall_parameters_inline import KeywordCallParametersInline
 from .keywordcall_return_value_inline import KeywordCallReturnValueInline
@@ -65,6 +67,10 @@ class KeywordCallAdmin(BaseAdmin):
     def change_view(self, request, object_id, form_url="", extra_context=None):
         kw_call = KeywordCall.objects.get(pk=object_id)
         kw_call.update_parameter_values()
+
+        if kw_call.from_keyword.is_action:
+            library_kw_call = LibraryKeywordCall.objects.get(id=kw_call.pk)
+            return HttpResponseRedirect(library_kw_call.get_admin_url())
 
         return super().change_view(request, object_id, form_url, extra_context)
 

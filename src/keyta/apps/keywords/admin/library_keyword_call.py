@@ -5,12 +5,12 @@ from keyta.widgets import KeywordCallParameterSelect
 
 from ..forms import KeywordCallParameterFormset
 from ..forms.keywordcall_parameter_formset import get_global_variables
-from ..models import RobotKeywordCall, KeywordCall
+from ..models import LibraryKeywordCall, KeywordCall
 from .keywordcall import KeywordCallAdmin, KeywordDocField
 from .keywordcall_parameters_inline import KeywordCallParametersInline
 
 
-class RobotKeywordCallParameterFormset(KeywordCallParameterFormset):
+class LibraryKeywordCallParameterFormset(KeywordCallParameterFormset):
     def get_choices(self, kw_call: KeywordCall):
         if not kw_call.from_keyword.windows.count():
             system_ids = list(kw_call.from_keyword.systems.values_list('id', flat=True))
@@ -18,16 +18,20 @@ class RobotKeywordCallParameterFormset(KeywordCallParameterFormset):
 
         return super().get_choices(kw_call)
 
-class RobotKeywordCallParametersInline(KeywordCallParametersInline):
-    formset = RobotKeywordCallParameterFormset
+
+class LibraryKeywordCallParametersInline(KeywordCallParametersInline):
+    formset = LibraryKeywordCallParameterFormset
 
 
-@admin.register(RobotKeywordCall)
-class RobotKeywordCallAdmin(
+@admin.register(LibraryKeywordCall)
+class LibraryKeywordCallAdmin(
     KeywordDocField,
     KeywordCallAdmin
 ):
-    parameters_inline = RobotKeywordCallParametersInline
+    parameters_inline = LibraryKeywordCallParametersInline
+
+    def change_view(self, request, object_id, form_url="", extra_context=None):
+        return self.changeform_view(request, object_id, form_url=form_url, extra_context=extra_context)
 
     def get_fields(self, request, obj=None):
         return super().get_fields(request, obj) + ['condition']
@@ -37,7 +41,7 @@ class RobotKeywordCallAdmin(
 
         if db_field.name == 'condition':
             kw_call_id = request.resolver_match.kwargs['object_id']
-            kw_call: RobotKeywordCall = RobotKeywordCall.objects.get(pk=kw_call_id)
+            kw_call: LibraryKeywordCall = LibraryKeywordCall.objects.get(pk=kw_call_id)
             keyword_params = list(kw_call.from_keyword.parameters.values_list('name', flat=True))
             return_values = list(kw_call.get_previous_return_values().values_list('name', flat=True))
 

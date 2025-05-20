@@ -2,10 +2,10 @@ from django.db import models
 from django.db.models import QuerySet
 from django.utils.translation import gettext_lazy as _
 
-from keyta.apps.keywords.models import KeywordCall, KeywordType
+from ..models import KeywordCall, KeywordType
 
 
-class RobotKeywordCall(KeywordCall):
+class LibraryKeywordCall(KeywordCall):
     class Manager(models.Manager):
         def get_queryset(self):
             return (
