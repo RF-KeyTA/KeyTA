@@ -61,6 +61,7 @@ class SequenceSteps(StepsInline):
                 for action in Action.objects
                 .filter(windows=window)
                 .filter(systems__in=sequence.systems.values_list('id', flat=True))
+                .distinct()
             ] or [(None, _('Keine Aktionen vorhanden'))]
         ]]
 
