@@ -3,8 +3,23 @@ from django.utils.translation import gettext_lazy as _
 
 from keyta.widgets import KeywordCallParameterSelect
 
-from ..models import RobotKeywordCall
+from ..forms import KeywordCallParameterFormset
+from ..forms.keywordcall_parameter_formset import get_global_variables
+from ..models import RobotKeywordCall, KeywordCall
 from .keywordcall import KeywordCallAdmin, KeywordDocField
+from .keywordcall_parameters_inline import KeywordCallParametersInline
+
+
+class RobotKeywordCallParameterFormset(KeywordCallParameterFormset):
+    def get_choices(self, kw_call: KeywordCall):
+        if not kw_call.from_keyword.windows.count():
+            system_ids = list(kw_call.from_keyword.systems.values_list('id', flat=True))
+            return super().get_choices(kw_call) + get_global_variables(system_ids)
+
+        return super().get_choices(kw_call)
+
+class RobotKeywordCallParametersInline(KeywordCallParametersInline):
+    formset = RobotKeywordCallParameterFormset
 
 
 @admin.register(RobotKeywordCall)
@@ -12,6 +27,8 @@ class RobotKeywordCallAdmin(
     KeywordDocField,
     KeywordCallAdmin
 ):
+    parameters_inline = RobotKeywordCallParametersInline
+
     def get_fields(self, request, obj=None):
         return super().get_fields(request, obj) + ['condition']
 
