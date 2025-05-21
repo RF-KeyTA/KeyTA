@@ -7,6 +7,7 @@ from keyta.apps.keywords.models import KeywordDocumentation
 from keyta.widgets import open_link_in_modal
 
 from ..models import (
+    ExecutionKeywordCall,
     KeywordCall,
     KeywordCallReturnValue,
     LibraryKeywordCall,
@@ -68,6 +69,10 @@ class KeywordCallAdmin(BaseAdmin):
     def change_view(self, request, object_id, form_url="", extra_context=None):
         kw_call = KeywordCall.objects.get(pk=object_id)
         kw_call.update_parameter_values()
+
+        if kw_call.execution:
+            execution_kwcall = ExecutionKeywordCall.objects.get(id=kw_call.pk)
+            return HttpResponseRedirect(execution_kwcall.get_admin_url())
 
         if kw_call.from_keyword:
             if kw_call.from_keyword.is_action:
