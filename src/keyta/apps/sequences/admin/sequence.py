@@ -89,7 +89,7 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
 
     def get_inlines(self, request, obj):
         sequence: Sequence = obj
-        inlines = self.inlines
+        inlines = [*self.inlines]
 
         if not sequence:
             return [ParametersInline]
