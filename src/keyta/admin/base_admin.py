@@ -30,6 +30,7 @@ class BaseAdmin(admin.ModelAdmin):
     # By default, inlines and readonly_fields are tuples, which cannot be combined with a list
     inlines = []
     readonly_fields = []
+    sortable_by = []
 
     def add_view(self, request: HttpRequest, form_url="", extra_context=None):
         if 'autocomplete' in request.GET:
