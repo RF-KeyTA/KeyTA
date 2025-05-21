@@ -65,7 +65,6 @@ class Variable(AbstractBaseModel):
     def delete(self, using=None, keep_parents=False):
         if self.is_list():
             for element in self.elements.all():
-                element.variable.delete()
                 element.delete()
 
         super().delete(using, keep_parents)
