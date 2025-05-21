@@ -244,7 +244,12 @@ class WindowQuickAddAdmin(BaseQuickAddAdmin):
 @admin.register(WindowQuickChange)
 class WindowQuickChangeAdmin(DocumentationField, WindowAdmin):
     def get_inlines(self, request, obj):
-        return [Resources, Sequences, Variables, Schemas]
+        inlines = [Sequences, Variables, Schemas]
+
+        if Resource.objects.count():
+            return [Resources] + inlines
+
+        return inlines
 
     def has_delete_permission(self, request, obj=None):
         return False
