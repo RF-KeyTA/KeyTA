@@ -213,7 +213,10 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
         using=None, update_fields=None
     ):
         if not self.type:
-            self.type = KeywordCallType.KEYWORD_CALL
+            if self.testcase:
+                self.type = KeywordCallType.TEST_STEP
+            else:
+                self.type = KeywordCallType.KEYWORD_CALL
 
         if not self.pk:
             super().save(force_insert, force_update, using, update_fields)
