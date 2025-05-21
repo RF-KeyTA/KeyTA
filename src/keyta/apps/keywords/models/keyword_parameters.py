@@ -63,10 +63,10 @@ class KeywordParameter(CloneMixin, AbstractBaseModel):
         KeywordParameter.objects.update_or_create(
             keyword=keyword,
             position=position,
+            type=KeywordParameterType.ARG,
             defaults={
                 'default_value': '@{EMPTY}' if is_list else None,
                 'name': name,
-                'type': KeywordParameterType.ARG,
                 'is_list': is_list
             }
         )
@@ -76,10 +76,10 @@ class KeywordParameter(CloneMixin, AbstractBaseModel):
         KeywordParameter.objects.update_or_create(
             keyword=keyword,
             name=name,
+            type=KeywordParameterType.KWARG,
             defaults={
                 'default_value': default_value,
                 'position': position,
-                'type': KeywordParameterType.KWARG
             }
         )
 
