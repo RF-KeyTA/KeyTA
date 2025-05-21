@@ -12,7 +12,7 @@
         {{ call_keyword(step) }}
     END
     {%- else %}
-    {{ call_keyword(step) }}
+    {% if step.return_values %}{{ rf_join(step.return_values) }}    {% endif %}{{ call_keyword(step) }}
     {%- endif %}
     {%- endfor %}
 {%- endfor %}
