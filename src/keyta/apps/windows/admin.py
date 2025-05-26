@@ -160,12 +160,14 @@ class Variables(WindowQuickAddMixin, BaseTabularInline):
 
 class Schemas(WindowQuickAddMixin, BaseTabularInline):
     model = WindowSchemaRelation
-    form = forms.modelform_factory(
+    form = form_with_select(
         WindowSchemaRelation,
-        fields=['variableschema'],
+        'variableschema',
+        'Placeholder',
         labels={
             'variableschema': _('Vorlage')
-        }
+        },
+        can_add_related=True
     )
     quick_add_field = 'variableschema'
     quick_add_model = VariableSchemaQuickAdd
