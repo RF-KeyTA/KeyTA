@@ -3,6 +3,7 @@ from collections import defaultdict
 
 from django import forms
 from django.contrib import admin, messages
+from django.contrib.admin.views.main import ChangeList
 from django.contrib.admin.widgets import AutocompleteSelectMultiple
 from django.db import models
 from django.forms import SelectMultiple, CheckboxSelectMultiple
@@ -15,6 +16,29 @@ from tinymce.widgets import AdminTinyMCE
 from keyta.widgets import BaseSelectMultiple, quick_add_widget
 
 from .field_documentation import DocumentationField
+
+
+class ListView(ChangeList):
+    def __init__(
+        self,
+        request,
+        model,
+        list_display,
+        list_display_links,
+        list_filter,
+        date_hierarchy,
+        search_fields,
+        list_select_related,
+        list_per_page,
+        list_max_show_all,
+        list_editable,
+        model_admin,
+        sortable_by,
+        search_help_text,
+    ):
+        super().__init__(request, model, list_display, list_display_links, list_filter, date_hierarchy, search_fields, list_select_related, list_per_page, list_max_show_all, list_editable, model_admin, sortable_by, search_help_text)
+
+        self.title = model._meta.verbose_name_plural
 
 
 class BaseAdmin(admin.ModelAdmin):
@@ -90,6 +114,9 @@ class BaseAdmin(admin.ModelAdmin):
             field.help_text = ''
 
         return field
+
+    def get_changelist(self, request, **kwargs):
+        return ListView
 
     def save_form(self, request, form, change):
         messages.set_level(request, messages.WARNING)
