@@ -39,11 +39,16 @@ class LibraryAdmin(BaseAdmin):
     def get_changelist(self, request: HttpRequest, **kwargs):
         if 'update' in request.GET:
             library = Library.objects.get(id=int(request.GET['lib_id']))
-            import_library(library.name)
-            messages.info(
-                request,
-                _('Die Bibliothek "{library_name}" wurde erfolgreich aktualisiert').format(library_name=library.name)
-            )
+            try:
+                import_library(library.name)
+                messages.info(
+                    request,
+                    _('Die Bibliothek "{library_name}" wurde erfolgreich aktualisiert').format(library_name=library.name)
+                )
+            except:
+                self.errors.add(
+                    _('Die Bibliothek "{library_name}" konnte nicht importiert werden').format(library_name=library.name)
+                )
 
         for error in self.errors:
             messages.warning(request, error)
