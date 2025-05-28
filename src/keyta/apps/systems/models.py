@@ -28,3 +28,8 @@ class System(AbstractBaseModel):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        ordering = ['name']
+        verbose_name = _('System')
+        verbose_name_plural = _('Systeme')
