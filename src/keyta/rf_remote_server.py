@@ -1,11 +1,9 @@
 import json
 import tempfile
+import subprocess
 from http import HTTPStatus
 from http.server import HTTPServer, BaseHTTPRequestHandler
-from io import StringIO
 from pathlib import Path
-
-from robot.run import run # type: ignore
 
 from .IProcess import IProcess
 
@@ -37,6 +35,11 @@ def write_file_to_disk(path, file_contents: str):
     with open(path, 'w', encoding='utf-8') as file_handle:
         file_handle.write(file_contents)
 
+def to_cli_kwargs(kwargs: dict[str, str]):
+    return [
+        f'--{key}={value}'
+        for key, value in kwargs.items()
+    ]
 
 def robot_run(
         testsuite_name: str,
@@ -49,19 +52,19 @@ def robot_run(
     robot_file = tmp_dir / 'Testsuite.robot'
     write_file_to_disk(robot_file, testsuite)
 
-    stdout = StringIO()
-    stderr = StringIO()
-    ret_code = run(
-        robot_file,
-        stdout=stdout,
-        stderr=stderr,
-        outputdir=str(output_dir),
-        **robot_args
+    result = subprocess.run(
+        ' '.join(
+            ['robot', f'--outputdir="{output_dir}"'] + 
+            to_cli_kwargs(robot_args) +
+            [f'"{robot_file}"']
+        ),
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE
     )
 
     return {
         'log': read_file_from_disk(output_dir / 'log.html'),
-        'result': 'PASS' if ret_code == 0 else 'FAIL'
+        'result': 'PASS' if result.returncode == 0 else 'FAIL'
     }
 
 
