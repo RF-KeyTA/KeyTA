@@ -17,6 +17,7 @@ class System(AbstractBaseModel):
     attach_to_system = models.ForeignKey(
         'keywords.Keyword',
         on_delete=models.SET_NULL,
+        blank=True,
         null=True,
         verbose_name=_('Anbindung an laufendes System')
     )
