@@ -14,6 +14,8 @@ class ExecutionKeywordCallParameterFormset(KeywordCallParameterFormset):
 
 
 class ExecutionKeywordCallParametersInline(KeywordCallParametersInline):
+    fields = ['name', 'value']
+    readonly_fields = ['name']
     formset = ExecutionKeywordCallParameterFormset
     verbose_name_plural = ''
 

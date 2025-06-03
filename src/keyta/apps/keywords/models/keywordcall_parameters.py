@@ -128,7 +128,12 @@ class KeywordCallParameter(CloneMixin, models.Model):
         if value_ref := self.value_ref:
             return value_ref.to_robot()
         else:
-            return JSONValue.from_json(self.value).user_input
+            user_input = JSONValue.from_json(self.value).user_input
+
+            if self.robot_variable:
+                return '${' + user_input +'}'
+
+            return user_input
 
     def update_value(self):
         if self.value_ref:

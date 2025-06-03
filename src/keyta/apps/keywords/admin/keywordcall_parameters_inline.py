@@ -1,4 +1,5 @@
 from django import forms
+from django.utils.safestring import mark_safe
 
 from keyta.admin.base_inline import BaseTabularInline
 
@@ -14,13 +15,21 @@ class KeywordCallParametersForm(forms.ModelForm):
 
 class KeywordCallParametersInline(BaseTabularInline):
     model = KeywordCallParameter
-    fields = ['name', 'value']
+    fields = ['robot_variable', 'name', 'value']
     readonly_fields = ['name']
     form = KeywordCallParametersForm
     formset = KeywordCallParameterFormset
     extra = 0
     max_num = 0
     can_delete = False
+
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        field = super().formfield_for_dbfield(db_field, request, **kwargs)
+
+        if db_field.name == 'robot_variable':
+            field.label = mark_safe('<i class="fa-solid fa-robot"></i>')
+
+        return field
 
     def name(self, kw_call_param: KeywordCallParameter):
         name = kw_call_param.name

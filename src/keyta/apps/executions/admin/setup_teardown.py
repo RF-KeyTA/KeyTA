@@ -10,6 +10,7 @@ from ..models import Setup, Teardown
 
 
 class SetupTeardownParametersInline(KeywordCallParametersInline):
+    fields = ['name', 'value']
     formset = SetupTeardownParametersFormset
 
     def get_queryset(self, request: HttpRequest):
