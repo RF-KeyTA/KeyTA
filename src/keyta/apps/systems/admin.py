@@ -4,7 +4,7 @@ from django import forms
 from django.contrib import messages, admin
 from django.http import HttpRequest
 from django.utils.safestring import mark_safe
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext as _
 
 from keyta.admin.base_admin import BaseAdmin
 from keyta.admin.base_inline import BaseTabularInline
