@@ -23,6 +23,9 @@ class KeywordCallParameter(CloneMixin, models.Model):
         on_delete=models.CASCADE,
         related_name='uses'
     )
+    robot_variable = models.BooleanField(
+        default=False
+    )
     # JSON representation of keyta.select_value.SelectValue
     value = models.CharField(
         max_length=255,
