@@ -131,7 +131,8 @@ class KeywordCallParameter(CloneMixin, models.Model):
             user_input = JSONValue.from_json(self.value).user_input
 
             if self.robot_variable:
-                return '${' + user_input +'}'
+                name, value = user_input.split('.')
+                return '${' + name +'}' + '[' + value + ']'
 
             return user_input
 
