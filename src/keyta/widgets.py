@@ -21,7 +21,7 @@ def link(url: str, title: str, new_page: bool = False, query_parameters: dict[st
 
     if new_page:
         return mark_safe(
-            '<a href="%s" target="_blank">%s</a>'
+            '<a href="%s" target="_blank" style="color: white !important">%s</a>'
             % (url, title)
         )
     else:

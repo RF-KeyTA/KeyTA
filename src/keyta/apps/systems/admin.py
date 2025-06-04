@@ -107,7 +107,7 @@ class SystemAdmin(BaseAdmin):
 
         add_attach_to_running_system = link(
             '/actions/action/add/',
-            _('add'),
+            _('erstelle'),
             new_page=True,
             query_parameters={
                 'setup_teardown': True,
@@ -116,7 +116,12 @@ class SystemAdmin(BaseAdmin):
         )
 
         if not change:
-            messages.warning(
+            message_level = messages.get_level(request)
+            messages.set_level(request, messages.INFO)
+            messages.info(
                 request,
-                mark_safe(add_attach_to_running_system + _(' die Aktion zur Anbindung an das System'))
+                mark_safe(
+                    _('Falls zutreffend, ') + add_attach_to_running_system + _(' die Aktion zur Anbindung an das System')
+                )
             )
+            messages.set_level(request, message_level)

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-28 14:40+0200\n"
+"POT-Creation-Date: 2025-06-04 15:59+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,7 +21,7 @@ msgstr ""
 msgid "System auswählen"
 msgstr "Select a System"
 
-#: .\admin\field_documentation.py:13 .\apps\keywords\admin\keywordcall.py:21
+#: .\admin\field_documentation.py:13 .\apps\keywords\admin\keywordcall.py:37
 #: .\apps\keywords\models\keyword.py:52 .\apps\libraries\admin\library.py:58
 #: .\apps\libraries\admin\library_import.py:42 .\apps\testcases\models.py:17
 #: .\apps\windows\models.py:24 .\models\keyword_source.py:22
@@ -33,7 +33,7 @@ msgid "Schlüsselwörter"
 msgstr "Keywords"
 
 #: .\admin\keywords_inline.py:23 .\apps\keywords\admin\keyword.py:31
-#: .\apps\keywords\models\keyword.py:39
+#: .\apps\keywords\admin\keywordcall.py:31 .\apps\keywords\models\keyword.py:39
 #: .\apps\keywords\models\keyword_parameters.py:27
 #: .\apps\libraries\models\library_parameter.py:18 .\apps\systems\models.py:11
 #: .\apps\testcases\admin\base_testcase_admin.py:28
@@ -44,7 +44,7 @@ msgstr "Keywords"
 msgid "Name"
 msgstr "Name"
 
-#: .\admin\list_filters.py:9 .\apps\systems\models.py:34
+#: .\admin\list_filters.py:9 .\apps\systems\models.py:35
 msgid "System"
 msgstr "System"
 
@@ -276,34 +276,34 @@ msgid "1. Parameter"
 msgstr "1. Parameter"
 
 #: .\apps\keywords\admin\keyword.py:54
-#: .\apps\keywords\admin\keyword_parameters_inline.py:13
+#: .\apps\keywords\admin\keyword_parameters_inline.py:25
 #: .\apps\keywords\admin\library_keyword_call.py:52
 #: .\apps\keywords\forms\keywordcall_parameter_formset.py:35
 #: .\apps\keywords\models\keyword.py:48
 #: .\apps\keywords\models\keyword_parameters.py:117
-#: .\apps\keywords\models\keywordcall_parameters.py:138
+#: .\apps\keywords\models\keywordcall_parameters.py:147
 #: .\apps\libraries\models\library_import_parameter.py:32
 msgid "Parameters"
 msgstr "Parameters"
 
-#: .\apps\keywords\admin\keyword_parameters_inline.py:12
+#: .\apps\keywords\admin\keyword_parameters_inline.py:24
 #: .\apps\keywords\models\keyword_parameters.py:116
-#: .\apps\keywords\models\keywordcall_parameters.py:137
+#: .\apps\keywords\models\keywordcall_parameters.py:146
 #: .\apps\libraries\models\library_import_parameter.py:31
 msgid "Parameter"
 msgstr "Parameter"
 
-#: .\apps\keywords\admin\keywordcall.py:38
+#: .\apps\keywords\admin\keywordcall.py:54
 #: .\apps\keywords\admin\keywordcall_return_value_inline.py:13
 #: .\apps\keywords\models\keyword_return_value.py:18
 #: .\apps\keywords\models\keyword_return_value.py:50
 #: .\apps\keywords\models\keyword_return_value.py:51
-#: .\apps\keywords\models\keywordcall_return_value.py:62
+#: .\apps\keywords\models\keywordcall_return_value.py:61
 msgid "Rückgabewert"
 msgstr "Return Value"
 
-#: .\apps\keywords\admin\keywordcall.py:46
-#: .\apps\keywords\models\keywordcall_return_value.py:42
+#: .\apps\keywords\admin\keywordcall.py:62
+#: .\apps\keywords\models\keywordcall_return_value.py:41
 msgid "Kein Rückgabewert"
 msgstr "No return value"
 
@@ -326,7 +326,7 @@ msgstr "No Value"
 msgid "Bedingung eintragen"
 msgstr "Enter a condition"
 
-#: .\apps\keywords\admin\return_value_inline.py:26
+#: .\apps\keywords\admin\return_value_inline.py:25
 msgid "Rückgabewert auswählen"
 msgstr "Select a Return Value"
 
@@ -400,7 +400,7 @@ msgid "Vor-/Nachbereitung"
 msgstr "Setup/Teardown"
 
 #: .\apps\keywords\models\keyword.py:72 .\apps\sequences\admin\sequence.py:52
-#: .\apps\systems\apps.py:8 .\apps\systems\models.py:35
+#: .\apps\systems\apps.py:8 .\apps\systems\models.py:36
 #: .\apps\testcases\models.py:28 .\apps\variables\models.py:35
 #: .\apps\windows\admin.py:61 .\apps\windows\admin.py:156
 #: .\apps\windows\models.py:16
@@ -444,13 +444,13 @@ msgstr "Condition (optional)"
 msgid "Referenzwert (optional)"
 msgstr "Reference Value (optional)"
 
-#: .\apps\keywords\models\keywordcall.py:339
+#: .\apps\keywords\models\keywordcall.py:342
 #: .\apps\keywords\models\library_keyword_call.py:29
 #: .\apps\keywords\models\test_step.py:28
 msgid "Schritt"
 msgstr "Step"
 
-#: .\apps\keywords\models\keywordcall.py:340
+#: .\apps\keywords\models\keywordcall.py:343
 #: .\apps\keywords\models\library_keyword_call.py:30
 #: .\apps\keywords\models\test_step.py:29
 msgid "Schritte"
@@ -484,7 +484,7 @@ msgstr "Parameter reference"
 msgid "Parameter-Referenzen"
 msgstr "Parameter references"
 
-#: .\apps\keywords\models\keywordcall_parameters.py:29
+#: .\apps\keywords\models\keywordcall_parameters.py:32
 #: .\apps\libraries\models\library_import_parameter.py:21
 #: .\apps\variables\admin.py:386 .\apps\variables\models.py:159
 #: .\apps\variables\models.py:185
@@ -626,18 +626,22 @@ msgid "Sequenzen"
 msgstr "Sequences"
 
 #: .\apps\systems\admin.py:110
-msgid "add"
-msgstr "Create"
+msgid "erstelle"
+msgstr "add"
 
-#: .\apps\systems\admin.py:121
+#: .\apps\systems\admin.py:124
+msgid "Falls zutreffend, "
+msgstr "If applicable, "
+
+#: .\apps\systems\admin.py:124
 msgid " die Aktion zur Anbindung an das System"
 msgstr " the action used for attaching to a running system"
 
-#: .\apps\systems\models.py:21
+#: .\apps\systems\models.py:22
 msgid "Anbindung an laufendes System"
 msgstr "Attach to a running system"
 
-#: .\apps\systems\models.py:26
+#: .\apps\systems\models.py:27
 msgid "Automatisierung"
 msgstr "Automation"
 
@@ -858,3 +862,6 @@ msgstr ""
 #: .\widgets.py:265
 msgid "Klicke auf das Plus-Symbol"
 msgstr "Click the plus icon"
+
+#~ msgid "add"
+#~ msgstr "Create"
