@@ -27,3 +27,6 @@ class ReturnValueInline(TabularInlineWithDelete):
         )
 
         return formset
+
+    def has_change_permission(self, request, obj=None):
+        return False
