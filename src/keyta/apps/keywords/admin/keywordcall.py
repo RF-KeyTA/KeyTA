@@ -112,7 +112,7 @@ class KeywordCallAdmin(BaseAdmin):
         if kw_call.parameters.exists():
             inlines.append(self.parameters_inline)
 
-        if kw_call.return_values.exists():
+        if kw_call.return_values.exists() and (kw_call.to_keyword.is_action or kw_call.to_keyword.is_sequence):
             inlines.append(ReadOnlyReturnValuesInline)
 
         if kw_call.to_keyword.resource or kw_call.to_keyword.library:
