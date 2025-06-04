@@ -16,8 +16,9 @@ class BaseKeywordCallArgs:
             not kw_call.pk,
             not kw_call.to_keyword,
             # For a Library/Resource keyword without parameters the icon is necessary to set the return value
-            not kw_call.to_keyword.parameters.exists() and
-            not any([kw_call.to_keyword.library, kw_call.to_keyword.resource]),
+            not kw_call.to_keyword.parameters.exists()
+            and not kw_call.to_keyword.return_values.exists()
+            and not any([kw_call.to_keyword.library, kw_call.to_keyword.resource]),
         ]):
             return '-'
 
