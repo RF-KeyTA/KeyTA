@@ -225,10 +225,13 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
                 if self.to_keyword:
                     self.update_parameters()
 
-                    if return_value := self.to_keyword.return_value.first():
+                    for return_value in self.to_keyword.return_values.all():
                         self.add_return_value(return_value)
-
         else:
+            if not self.return_values.count() and self.to_keyword:
+                for return_value in self.to_keyword.return_values.all():
+                    self.add_return_value(return_value)
+
             super().save(force_insert, force_update, using, update_fields)
 
     def to_robot(self, user: Optional[AbstractUser]=None) -> RFKeywordCall:

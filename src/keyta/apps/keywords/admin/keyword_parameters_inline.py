@@ -13,6 +13,8 @@ class ParameterForm(forms.ModelForm):
         if ':' in name:
             raise forms.ValidationError("Doppelpunkt ist im Parameternamen nicht zulässig")
 
+        return name
+
 
 class ParametersInline(SortableTabularInlineWithDelete):
     model = KeywordParameter

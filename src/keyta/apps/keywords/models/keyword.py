@@ -109,7 +109,7 @@ class Keyword(DocumentationMixin, AbstractBaseModel):
     def to_robot(self) -> RFKeyword:
         args = self.parameters.args()
         kwargs = self.parameters.kwargs()
-        return_value = self.return_value.first()
+        return_values = self.return_values.all()
 
         return {
             'name': self.id_name,
@@ -121,7 +121,7 @@ class Keyword(DocumentationMixin, AbstractBaseModel):
                 for step in self.calls.all()
                 if step.enabled and step.to_keyword
             ],
-            'return_value': f'${{{return_value}}}' if return_value else None
+            'return_values': [f'${{{return_value}}}' for return_value in return_values]
         }
 
     @property

@@ -22,10 +22,6 @@ class StepsForm(BaseForm):
                 kw_call.delete_return_values()
                 kw_call.delete_variable()
 
-                if to_keyword := kw_call.to_keyword:
-                    if return_value := to_keyword.return_value.first():
-                        kw_call.add_return_value(return_value)
-
             if all([
                 self.initial.get('variable', None),
                 'variable' in self.changed_data

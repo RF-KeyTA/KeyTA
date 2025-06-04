@@ -10,7 +10,7 @@ class KeywordReturnValue(CloneMixin, AbstractBaseModel):
     keyword = models.ForeignKey(
         'keywords.Keyword',
         on_delete=models.CASCADE,
-        related_name='return_value'
+        related_name='return_values'
     )
     kw_call_return_value = models.ForeignKey(
         'keywords.KeywordCallReturnValue',
