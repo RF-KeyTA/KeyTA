@@ -31,5 +31,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(extend_json_schema),
+        # migrations.RunPython(extend_json_schema),
     ]
