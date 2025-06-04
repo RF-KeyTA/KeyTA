@@ -17,6 +17,22 @@ from .keywordcall_parameters_inline import KeywordCallParametersInline
 from .keywordcall_return_value_inline import KeywordCallReturnValueInline
 
 
+class ReadOnlyReturnValuesInline(KeywordCallReturnValueInline):
+    fields = ['return_value_name']
+    readonly_fields = ['return_value_name']
+    max_num = 0
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    @admin.display(description=_('Name'))
+    def return_value_name(self, return_value: KeywordCallReturnValue):
+        return str(return_value)
+
+
 class KeywordDocField:
     @admin.display(description=_(message='Dokumentation'))
     def to_keyword_doc(self, kw_call: KeywordCall):
@@ -95,7 +111,10 @@ class KeywordCallAdmin(BaseAdmin):
 
         if kw_call.parameters.exists():
             inlines.append(self.parameters_inline)
-        
+
+        if kw_call.return_values.exists():
+            inlines.append(ReadOnlyReturnValuesInline)
+
         if kw_call.to_keyword.resource or kw_call.to_keyword.library:
             inlines.append(KeywordCallReturnValueInline)
 

@@ -1,6 +1,5 @@
 from django.db import models
-from django.db.models import Q
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext, gettext_lazy as _
 
 from model_clone import CloneMixin
 
@@ -39,7 +38,7 @@ class KeywordCallReturnValue(CloneMixin, AbstractBaseModel):
         if self.return_value:
             return str(self.return_value)
 
-        return _('Kein Rückgabewert')
+        return gettext('Kein Rückgabewert')
 
     @property
     def is_set(self):
