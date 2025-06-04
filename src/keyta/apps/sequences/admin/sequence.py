@@ -82,7 +82,7 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
 
         fields = ['systems'] 
 
-        if sequence and sequence.calls.exists():
+        if sequence and (sequence.calls.exists() or sequence.uses.filter(testcase__isnull=False).exists()):
             return fields + ['window'] + super().get_fields(request, obj)
 
         return fields + ['windows'] + super().get_fields(request, obj)
@@ -105,7 +105,7 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
     def get_readonly_fields(self, request, obj):
         sequence: Sequence = obj
 
-        if sequence and sequence.calls.exists():
+        if sequence and (sequence.calls.exists() or sequence.uses.filter(testcase__isnull=False).exists()):
             return ['window']
         
         return super().get_readonly_fields(request, obj)
