@@ -1,3 +1,4 @@
+from django import forms
 from django.utils.translation import gettext_lazy as _
 
 from keyta.admin.base_inline import SortableTabularInlineWithDelete
@@ -5,9 +6,18 @@ from keyta.admin.base_inline import SortableTabularInlineWithDelete
 from ..models import KeywordParameter
 
 
+class ParameterForm(forms.ModelForm):
+    def clean_name(self):
+        name = self.cleaned_data.get('name')
+
+        if ':' in name:
+            raise forms.ValidationError("Doppelpunkt ist im Parameternamen nicht zulässig")
+
+
 class ParametersInline(SortableTabularInlineWithDelete):
     model = KeywordParameter
     fields = ['position', 'name']
+    form = ParameterForm
     extra = 0
     verbose_name = _('Parameter')
     verbose_name_plural = _('Parameters')
