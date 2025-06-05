@@ -12,7 +12,7 @@ from .keyword_return_value import KeywordReturnValue
 
 class WindowKeyword(CloneMixin, Keyword):
     _clone_linked_m2m_fields = ['systems', 'windows']
-    _clone_m2o_or_o2m_fields = ['calls', 'parameters', 'return_value']
+    _clone_m2o_or_o2m_fields = ['calls', 'parameters', 'return_values']
     _clone_o2o_fields = ['execution']
 
     def create_execution(self, user: AbstractUser):
@@ -40,11 +40,20 @@ class WindowKeyword(CloneMixin, Keyword):
     def make_clone(self, attrs=None, sub_clone=False, using=None, parent=None) -> Keyword:
         attrs = attrs or {'name': self.name + _(' Kopie')}
         clone: WindowKeyword = super().make_clone(attrs=attrs, sub_clone=sub_clone, using=using, parent=parent)
+        clone_return_values: list[KeywordReturnValue] = list(clone.return_values.all())
+        kw_call_indices = [return_value.kw_call_index for return_value in clone_return_values]
+        clone_kw_call_return_values = {
+            index: {
+                str(kw_call_return_value): kw_call_return_value
+                for kw_call_return_value in clone.calls.get(index=index).return_values.all()
+            }
+            for index in kw_call_indices
+        }
 
-        return_value: KeywordReturnValue
-        if return_value := clone.return_value.first():
-            return_value.kw_call_return_value = clone.calls.get(index=return_value.kw_call_index).return_values.first()
-            return_value.save()
+        clone_return_value: KeywordReturnValue
+        for clone_return_value in clone_return_values:
+            clone_return_value.kw_call_return_value = clone_kw_call_return_values[clone_return_value.kw_call_index][str(clone_return_value.kw_call_return_value)]
+            clone_return_value.save()
 
         execution_kw_call: KeywordCall = clone.execution.keyword_calls.first()
 
