@@ -112,6 +112,9 @@ class SystemAdmin(BaseAdmin):
             query_parameters={
                 'setup_teardown': True,
                 'systems': system.pk
+            },
+            styles={
+                'color': 'white !important'
             }
         )
 

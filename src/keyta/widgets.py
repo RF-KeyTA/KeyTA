@@ -11,7 +11,27 @@ from django.utils.translation import gettext_lazy as _
 from django_select2.forms import ModelSelect2Widget
 
 
-def link(url: str, title: str, new_page: bool = False, query_parameters: dict[str, str]={}):
+def style_to_css(style: dict):
+            return '; '.join([
+                f'{name}: {value}'
+                for name, value
+                in style.items()
+            ])
+
+
+def attrs_to_string(attrs: dict) -> str:
+    return ' '.join([
+        f'{name}="{value}"'
+        for name, value
+        in attrs.items()
+    ])
+
+
+def html_to_string(tag, attrs, body) -> str:
+    return f'<{tag} {attrs}>{body}</{tag}>'
+
+
+def link(url: str, title: str, new_page: bool = False, query_parameters: dict[str, str]=None, styles: dict[str, str]=None):
     if query_parameters:
         url = url + '?' + '&'.join(
                 f'{key}={value}' 
@@ -19,55 +39,28 @@ def link(url: str, title: str, new_page: bool = False, query_parameters: dict[st
                 in query_parameters.items()
             )
 
+    attrs = {
+        'href': url,
+        'style': style_to_css(styles or {})
+    }
+
     if new_page:
-        return mark_safe(
-            '<a href="%s" target="_blank" style="color: white !important">%s</a>'
-            % (url, title)
-        )
-    else:
-        return mark_safe(
-            '<a href="%s">%s</a>'
-            % (url, title)
-        )
+        attrs.update({'target': '_blank'})
+
+    return mark_safe(html_to_string('a', attrs_to_string(attrs), title))
 
 
 class Icon:
     def __init__(self, css_class: str, styles: dict[str, str]=None):
         self.tag = 'i'
-        self.attrs =  {
+        self.attrs =  attrs_to_string({
             'class': css_class,
-            'style': {'font-size': '36px'} | (styles or {})
-        }
-        self.body = []
+            'style': style_to_css({'font-size': '36px'} | (styles or {}))
+        })
+        self.body = ''
 
     def __str__(self):
-        def style_to_css(style: dict):
-            return '; '.join([
-                f'{name}: {value}'
-                for name, value
-                in style.items()
-            ])
-
-        def attrs_to_string(attrs: dict) -> str:
-            return ' '.join([
-                f'{name}="{value}"'
-                for name, value
-                in attrs.items()
-            ])
-
-        def html_to_string(html: list) -> str:
-            if not html:
-                return ''
-
-            tag, attrs, body = html
-            return f'<{tag} {attrs}>{html_to_string(body)}</{tag}>'
-
-        attrs = attrs_to_string({
-            **self.attrs,
-            'style': style_to_css(self.attrs['style'])
-        })
-
-        return html_to_string([self.tag, attrs, self.body])
+        return html_to_string(self.tag, self.attrs, self.body)
 
 
 def bold(text: str):
