@@ -107,6 +107,23 @@ class Actions(WindowQuickAddMixin, WindowKeywordInline):
         return super().get_queryset(request).actions()
 
 
+class Actions(WindowQuickAddMixin, WindowKeywordInline):
+    form = forms.modelform_factory(
+        KeywordWindowRelation,
+        fields=['keyword'],
+        labels={
+            'keyword': _('Aktion')
+        }
+    )
+    quick_add_field = 'keyword'
+    quick_add_model = ActionQuickAdd
+    verbose_name = _('Aktion')
+    verbose_name_plural = _('Aktionen')
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).actions()
+
+
 class Sequences(WindowQuickAddMixin, WindowKeywordInline):
     form = forms.modelform_factory(
         KeywordWindowRelation,
@@ -246,7 +263,7 @@ class WindowQuickAddAdmin(BaseQuickAddAdmin):
 @admin.register(WindowQuickChange)
 class WindowQuickChangeAdmin(DocumentationField, WindowAdmin):
     def get_inlines(self, request, obj):
-        inlines = [Sequences, Variables, Schemas]
+        inlines = [Actions, Sequences, Variables, Schemas]
 
         if Resource.objects.count():
             return [Resources] + inlines
