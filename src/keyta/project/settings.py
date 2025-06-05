@@ -138,7 +138,7 @@ SQLITE_DB = KEYTA_DIR / 'db.sqlite3'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
+        'ENGINE': 'project.sqlite3',
         'NAME': SQLITE_DB
     }
 }
