@@ -51,7 +51,7 @@ class ExecutionInline(BaseTabularInline):
                 return link(
                     get_script_prefix() + user_exec.log,
                     str(Icon(settings.FA_ICONS.exec_log)),
-                    True
+                    new_page=True
                 )
 
             return '-'
