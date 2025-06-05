@@ -69,7 +69,7 @@ class TestStepsInline(
         to_keyword_field.queryset = (
             Keyword.objects.sequences().filter(systems__in=systems) |
             Keyword.objects.filter(resource__in=resource_ids)
-        ).order_by('name')
+        ).distinct().order_by('name')
         to_keyword_field.widget = quick_change_widget(to_keyword_field.widget)
 
         variable_field = formset.form.base_fields['variable']
