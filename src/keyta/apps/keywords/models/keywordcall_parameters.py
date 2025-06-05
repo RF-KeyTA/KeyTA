@@ -78,28 +78,38 @@ class KeywordCallParameter(CloneMixin, models.Model):
 
     def make_clone(self, attrs=None, sub_clone=False, using=None, parent=None):
         clone: KeywordCallParameter = super().make_clone(attrs=attrs, sub_clone=sub_clone, using=using, parent=parent)
-        select_value = JSONValue.from_json(clone.value)
+        clone_value = JSONValue.from_json(clone.value)
 
         if value_ref := clone.value_ref:
-            keyword = clone.keyword_call.from_keyword
+            clone_keyword = clone.keyword_call.from_keyword
 
             if value_ref.type == KeywordCallParameterSourceType.KEYWORD_PARAMETER:
-                select_value.pk = KeywordCallParameterSource.objects.get(
-                    kw_param=keyword.parameters.get(name=select_value.arg_name)
+                clone_value.pk = KeywordCallParameterSource.objects.get(
+                    kw_param=clone_keyword.parameters.get(name=clone_value.arg_name)
                 ).pk
 
             if value_ref.type == KeywordCallParameterSourceType.KW_CALL_RETURN_VALUE:
-                if keyword:
-                    select_value.pk = KeywordCallParameterSource.objects.get(
-                        kw_call_ret_val=keyword.calls.get(index=select_value.kw_call_index).return_value.first()
+                if clone_keyword:
+                    clone_kwcall = clone_keyword.calls.get(index=clone_value.kw_call_index)
+                    clone_kw_call_return_values = {
+                        str(kw_call_return_value): kw_call_return_value
+                        for kw_call_return_value in clone_kwcall.return_values.all()
+                    }
+                    clone_value.pk = KeywordCallParameterSource.objects.get(
+                        kw_call_ret_val=clone_kw_call_return_values[str(self.value_ref.kw_call_ret_val)]
                     ).pk
 
                 if testcase := clone.keyword_call.testcase:
-                    select_value.pk = KeywordCallParameterSource.objects.get(
-                        kw_call_ret_val=testcase.steps.get(index=select_value.kw_call_index).return_value.first()
+                    clone_test_step = testcase.steps.get(index=clone_value.kw_call_index)
+                    clone_test_step_return_values = {
+                        str(test_step_return_value): test_step_return_value
+                        for test_step_return_value in clone_test_step.return_values.all()
+                    }
+                    clone_value.pk = KeywordCallParameterSource.objects.get(
+                        kw_call_ret_val=clone_test_step_return_values[str(self.value_ref.kw_call_ret_val)]
                     ).pk
 
-            clone.value = select_value.jsonify()
+            clone.value = clone_value.jsonify()
             clone.save()
 
         return clone
