@@ -20,7 +20,7 @@ def global_actions(systems: QuerySet):
         .filter(systems__in=systems)
         .filter(windows__isnull=True)
         .filter(setup_teardown=False)
-    )
+    ).distinct()
 
     if not global_actions.exists():
         return []
@@ -51,16 +51,16 @@ class SequenceSteps(StepsInline):
         formset = super().get_formset(request, obj, **kwargs)
         sequence: Sequence = obj
         window: Window = sequence.windows.first()
-
         resource_ids = window.resource_imports.values_list('resource_id')
         resource_kws = Keyword.objects.filter(resource__in=resource_ids)
+        systems = sequence.systems.all()
 
         window_actions = [[
             window.name, [
                 (action.pk, action.name)
                 for action in Action.objects
                 .filter(windows=window)
-                .filter(systems__in=sequence.systems.values_list('id', flat=True))
+                .filter(systems__in=systems)
                 .distinct()
             ] or [(None, _('Keine Aktionen vorhanden'))]
         ]]
