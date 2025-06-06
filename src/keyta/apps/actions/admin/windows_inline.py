@@ -23,27 +23,21 @@ class Windows(TabularInlineWithDelete):
     verbose_name = _('Maske')
     verbose_name_plural = _('Masken')
 
-    def get_windows(self, request, obj):
+    def get_formset(self, request, obj=None, **kwargs):
+        formset = super().get_formset(request, obj, **kwargs)
         action: Action = obj
-
-        return (
+        systems = action.systems.all()
+        windows = (
             self.get_queryset(request)
             .filter(keyword_id=action.pk)
             .values_list('window_id', flat=True)
         )
 
-    def get_systems(self, obj):
-        action: Action = obj
-
-        return action.systems.all()
-
-    def get_formset(self, request, obj=None, **kwargs):
-        formset = super().get_formset(request, obj, **kwargs)
         window_field = formset.form.base_fields['window']
         window_field.queryset = (
             window_field.queryset
-            .exclude(id__in=self.get_windows(request, obj))
-            .filter(systems__in=self.get_systems(obj))
+            .exclude(id__in=windows)
+            .filter(systems__in=systems)
             .distinct()
         )
 
