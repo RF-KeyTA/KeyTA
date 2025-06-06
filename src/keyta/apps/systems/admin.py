@@ -49,7 +49,6 @@ class Windows(QuickAddMixin, BaseTabularInline):
 @admin.register(System)
 class SystemAdmin(BaseAdmin):
     list_display = ['name', 'description']
-    ordering = ['name']
 
     fields = ['name', 'description', 'library']
     inlines = [Windows]

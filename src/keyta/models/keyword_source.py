@@ -4,6 +4,7 @@ import xml.dom.minidom
 from abc import abstractmethod
 
 from django.db import models
+from django.db.models.functions import Lower
 from django.utils.translation import gettext_lazy as _
 
 from keyta.apps.keywords.models import Keyword, KeywordParameter, KeywordDocumentation
@@ -145,4 +146,4 @@ class KeywordSource(AbstractBaseModel):
 
     class Meta:
         abstract = True
-        ordering = ['name']
+        ordering = [Lower('name')]

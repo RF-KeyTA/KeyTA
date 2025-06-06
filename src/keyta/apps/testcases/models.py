@@ -1,6 +1,7 @@
 import re
 
 from django.db import models
+from django.db.models.functions import Lower
 from django.utils.translation import gettext_lazy as _
 
 from model_clone import CloneMixin
@@ -90,6 +91,6 @@ class TestCase(DocumentationMixin, CloneMixin, AbstractBaseModel):
         }
 
     class Meta:
-        ordering = ['name']
+        ordering = [Lower('name')]
         verbose_name = _('Testfall')
         verbose_name_plural = _('Testfälle')

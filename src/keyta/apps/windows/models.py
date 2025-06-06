@@ -1,6 +1,7 @@
 import re
 
 from django.db import models
+from django.db.models.functions import Lower
 from django.utils.translation import gettext_lazy as _
 
 from keyta.apps.keywords.models import KeywordCall
@@ -58,7 +59,7 @@ class Window(AbstractBaseModel):
         return self.keywords.sequences()
 
     class Meta:
-        ordering = ['name']
+        ordering = [Lower('name')]
         # constraints = [
         #     models.UniqueConstraint(
         #         fields=['system', 'name'],

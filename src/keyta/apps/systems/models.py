@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.functions import Lower
 from django.utils.translation import gettext_lazy as _
 
 from keyta.models.base_model import AbstractBaseModel
@@ -31,6 +32,6 @@ class System(AbstractBaseModel):
         return self.name
 
     class Meta:
-        ordering = ['name']
+        ordering = [Lower('name')]
         verbose_name = _('System')
         verbose_name_plural = _('Systeme')
