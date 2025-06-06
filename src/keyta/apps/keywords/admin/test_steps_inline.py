@@ -67,7 +67,7 @@ class TestStepsInline(
 
         to_keyword_field = formset.form.base_fields['to_keyword']
         to_keyword_field.queryset = (
-            Keyword.objects.sequences().filter(systems__in=systems).distinct() |
+            Keyword.objects.sequences().filter(systems__in=systems) |
             Keyword.objects.filter(resource__in=resource_ids)
         ).distinct().order_by('name')
         to_keyword_field.widget = quick_change_widget(to_keyword_field.widget)
