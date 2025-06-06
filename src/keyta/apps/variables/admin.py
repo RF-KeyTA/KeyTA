@@ -140,8 +140,8 @@ class Windows(TabularInlineWithDelete):
 
     def get_formset(self, request, obj=None, **kwargs):
         variable: Variable = obj
-        variable_systems = variable.systems.all()
-        windows = Window.objects.filter(systems__in=variable_systems).distinct()
+        systems = variable.systems.all()
+        windows = Window.objects.filter(systems__in=systems).distinct()
         
         formset = super().get_formset(request, obj, **kwargs)
         formset.form.base_fields['window'].queryset = windows
