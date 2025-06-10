@@ -49,7 +49,7 @@ class TestCase(DocumentationMixin, CloneMixin, AbstractBaseModel):
 
     @property
     def has_empty_sequence(self):
-        return not self.steps.exists()
+        return not self.steps.exists() or not self.steps.first().to_keyword
 
     @property
     def libraries(self):

@@ -179,6 +179,8 @@ class Keyword(DocumentationMixin, AbstractBaseModel):
                  Q(resource__isnull=True))
             )
         ]
+        verbose_name = _('Schlüsselwort')
+        verbose_name_plural = _('Schlüsselwörter')
 
 
 class KeywordDocumentation(Keyword):

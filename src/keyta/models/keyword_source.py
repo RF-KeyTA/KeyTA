@@ -124,6 +124,11 @@ class KeywordSource(AbstractBaseModel):
                 link.attributes['target'] = '_blank'
                 return link.toxml()
 
+            if href == '#Keywords':
+                tab_name =  self.get_tab_url(Keyword._meta.verbose_name_plural).removeprefix('#')
+                link.attributes['onclick'] = f"document.querySelector('a[aria-controls={tab_name}]').click()"
+                return link.toxml()
+
             if href.startswith('#'):
                 if keyword_doc := (
                     KeywordDocumentation.objects.filter(library__name=self.name, name__iexact=text).first() or
