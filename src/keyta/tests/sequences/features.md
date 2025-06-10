@@ -31,20 +31,15 @@
 
 - Steps can be:
   - Added: saved automatically
-  - Deleted: redirect to the Parameters tab
+  - Deleted: redirect to the Steps tab
   - Sorted: saved automatically
 
-- Only keywords from the imported libraries can be chosen
+- Only actions from the window can be called
 
 - If a step has no parameters the Values icon is shown in order to define a return value
 - If a step has missing parameters the Values icon is pink
 
-### Keyword Call
-
-Fields: Documentation, Condition (optional)
-
-- The link to the documentation works
-- The condition can be set and unset
+#### Keyword Call
 
 Inlines: Parameters (if applicable), Return values
 

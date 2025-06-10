@@ -13,6 +13,7 @@
 
 - A Window has the tabs:
 
+  - General
   - Templates
   - Resources
   - Actions
@@ -22,7 +23,7 @@
 
 ## Templates
 
-- In the Templates tab a template can be created by clicking on the plus icon 
+- In the Templates tab a template can be created by adding another template and clicking on the plus icon
 
     - A template must define at least one field
 
@@ -51,17 +52,17 @@
 
 ## Actions
 
-- In the Actions tab an Action can be added to the window by clicking on the plus icon
+- In the Actions tab an Action can be added to the window by adding another action and clicking on the plus icon
 
 
 ## Sequences
 
-- In the Sequences tab a Sequence can be added to the window by clicking on the plus icon
+- In the Sequences tab a Sequence can be added to the window by adding another sequence and clicking on the plus icon
 
 
 ## Reference Values
 
-- In the Reference Values tab a Reference Value can be added to the window by clicking on the plus icon
+- In the Reference Values tab a Reference Value can be added to the window by adding another reference value and clicking on the plus icon
 
    - The available templates are the ones associated with the Window
    

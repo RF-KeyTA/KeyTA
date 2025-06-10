@@ -49,7 +49,7 @@
 - If a step has no parameters the Values icon is shown in order to define a return value
 - If a step has missing parameters the Values icon is pink
 
-### Keyword Call
+#### Keyword Call
 
 Fields: Documentation, Condition (optional)
 
@@ -67,7 +67,7 @@ Inlines: Parameters (if applicable), Return values
 
 ### Return Value
 
-- If any step has a return value it can be chosen as the return value of the Action
+- If any step has a return value it can be chosen as the return value of the action
 
 
 ### Execution

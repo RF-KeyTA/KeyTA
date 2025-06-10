@@ -24,6 +24,7 @@
     - The Execution result is not set
     - There is no Execution log
 
+- A Test Case can be deleted
 
 ## Steps
 
@@ -50,6 +51,7 @@
 - Next to the Window there is an arrow icon that when clicked shows a modal with the following tabs:
     - General: shows the documentation
     - Resources: add/remove Resources
+    - Actions: quickly add a new action
     - Sequences: quickly add a new sequence
     - Reference Values: quickly add a reference value
     - Templates: quickly add a Template for use in a Reference Value
@@ -72,7 +74,7 @@
 - Clicking the Settings button shows a modal with the following inlines:
 
 
-### Library Imports
+### Libraries
 
 - Lists the Libraries used in the test
 - Allows configuring the init parameters of each library used
