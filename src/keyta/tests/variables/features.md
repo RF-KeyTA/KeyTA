@@ -17,6 +17,8 @@
 
 - A change to the name or the systems is saved automatically
 
+- A variable can be deleted
+
 
 ## Values
 

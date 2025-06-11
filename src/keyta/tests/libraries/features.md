@@ -10,6 +10,8 @@
 
 Tabs: General, Keywords, Settings (if applicable)
 
+- A library can be deleted
+
 ## General
 
 - Anchor links work

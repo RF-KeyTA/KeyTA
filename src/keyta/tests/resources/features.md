@@ -12,6 +12,8 @@
 
 Tabs: General, Keywords
 
+- A resource can be deleted
+
 ## General
 
 - A resource may be renamed,  as long as the new path can be found in PYTHONPATH

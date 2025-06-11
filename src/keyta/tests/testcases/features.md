@@ -34,9 +34,9 @@
 
 - If the step has parameters the icon Values allows setting their values and also the return value
 
-- When the parameters are not set the icon Values is pink
+- If the parameters are not set the Values icon is pink
 
-- When the parameters are set the icon Values is blue
+- If the parameters are set the Values icon is blue
 
 - If the parameters are set and the called keyword changes, the current parameters and return value are deleted
 

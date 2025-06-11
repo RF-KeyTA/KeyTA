@@ -15,6 +15,8 @@
 
 # Change view
 
+- An action can be deleted
+
 ## Tabs: General, Windows, Libraries, Parameters, Steps, Return Value, Execution
 
 ### General
@@ -48,6 +50,7 @@
 
 - If a step has no parameters the Values icon is shown in order to define a return value
 - If a step has missing parameters the Values icon is pink
+- If the parameters are set the Values icon is blue
 
 #### Keyword Call
 
@@ -75,6 +78,7 @@ Inlines: Parameters (if applicable), Return values
 - If the keyword has parameters:
   - they can be configured in the execution
   - if they are incomplete the icon for the Values is pink
+  - If the parameters are set the Values icon is blue
 
 - In the settings:
   - The libraries imported by the action are included
@@ -82,6 +86,7 @@ Inlines: Parameters (if applicable), Return values
   - The action for attaching to a system can be selected and (de)activated
   - If the setup action has parameters:
     - If they are incomplete the icon for the Values is pink
+    - If the parameters are set the Values icon is blue
   - In the setup call:
     - The link to the documentation of the keyword works
     - There are no fields, only the Parameters inline
