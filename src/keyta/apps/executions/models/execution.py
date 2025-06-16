@@ -160,10 +160,7 @@ class Execution(CloneMixin, AbstractBaseModel):
 
         return {
             'testsuite_name': testsuite['name'],
-            'testsuite': gen_testsuite(testsuite),
-            'robot_args': {
-                'listener': 'keyta.Listener'
-            }
+            'testsuite': gen_testsuite(testsuite)
         }
 
     def update_imports(self, user: AbstractUser):

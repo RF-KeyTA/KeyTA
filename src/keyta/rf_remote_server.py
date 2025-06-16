@@ -42,9 +42,8 @@ def to_cli_kwargs(kwargs: dict[str, str]):
     ]
 
 def robot_run(
-        testsuite_name: str,
-        testsuite: str,
-        robot_args: dict[str, str]
+    testsuite_name: str,
+    testsuite: str
 ):
     tmp_dir = Path(tempfile.gettempdir()) / 'KeyTA' / valid_dirname(testsuite_name)
     tmp_dir.mkdir(parents=True, exist_ok=True)
@@ -52,12 +51,13 @@ def robot_run(
     robot_file = tmp_dir / 'Testsuite.robot'
     write_file_to_disk(robot_file, testsuite)
 
+    robot_kwargs = {
+        'outputdir': output_dir,
+        'output': 'output.json'
+    }
+
     result = subprocess.run(
-        ' '.join(
-            ['robot', f'--outputdir="{output_dir}"'] + 
-            to_cli_kwargs(robot_args) +
-            [f'"{robot_file}"']
-        ),
+        ' '.join(['robot', *to_cli_kwargs(robot_kwargs), str(robot_file)]),
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE
     )
