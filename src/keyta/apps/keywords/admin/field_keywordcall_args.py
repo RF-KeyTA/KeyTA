@@ -43,7 +43,7 @@ class BaseKeywordCallArgs:
             )
 
     def invalid_keyword_call_args(self, kw_call: KeywordCall, user: Optional[AbstractUser]=None) -> bool:
-        if kw_call.parameters.count() != kw_call.to_keyword.parameters.count():
+        if kw_call.parameters.filter(user=user).count() != kw_call.to_keyword.parameters.count():
             kw_call.update_parameters(user)
         
         return kw_call.has_empty_arg(user)
