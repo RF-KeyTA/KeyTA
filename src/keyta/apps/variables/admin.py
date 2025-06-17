@@ -387,6 +387,9 @@ class DictionaryValues(BaseTabularInline):
     def current_value(self, variable_value: VariableValue):
         return variable_value.current_value()
 
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        return queryset.order_by('schema_field__index')
 
 class ListValues(BaseTabularInline):
     fk_name = 'list_variable'
