@@ -17,6 +17,7 @@ def get_schema_fields(schema_pk, variable_name):
     sources = (
         KeywordCallParameterSource.objects
         .filter(variable_schema_field__schema_id=schema_pk)
+        .order_by('variable_schema_field__index')
     )
 
     return [[
