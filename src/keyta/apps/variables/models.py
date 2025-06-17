@@ -52,8 +52,8 @@ class Variable(AbstractBaseModel):
 
     def add_value(
             self,
-            schema_field: 'AbstractVariableSchemaField',
-            list_variable: Optional['AbstractVariable']=None
+            schema_field: 'VariableSchemaField',
+            list_variable: Optional['Variable']=None
     ):
         VariableValue = apps.get_model('variables', 'VariableValue')
         VariableValue.objects.get_or_create(
