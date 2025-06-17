@@ -55,6 +55,7 @@ def robot_run(
     write_file_to_disk(robot_file, testsuite)
 
     robot_kwargs = {
+        'listener': 'keyta.Listener',
         'outputdir': output_dir,
         'output': 'output.json'
     }
