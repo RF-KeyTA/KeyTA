@@ -32,6 +32,7 @@ def get_variable_values(variable_pk, variable_name):
     sources = (
         KeywordCallParameterSource.objects
         .filter(variable_value__variable_id=variable_pk)
+        .order_by('variable_value__schema_field__index')
     )
 
     return [[
