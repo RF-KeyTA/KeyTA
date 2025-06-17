@@ -1,6 +1,8 @@
 import json
+import re
 import tempfile
 import subprocess
+import unicodedata
 from http import HTTPStatus
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from pathlib import Path
@@ -8,22 +10,21 @@ from pathlib import Path
 from .IProcess import IProcess
 
 
-def valid_dirname(dirname: str):
-    subs = {
-        ":": " -",
-        "\"": "",
-        "/": "",
-        "\\": "",
-        "?": "",
-        "*": "",
-        "|": "",
-        "<": "",
-        ">": ""
-    }
-
-    return ''.join([
-        subs.get(c,c ) for c in dirname
-    ])
+def slugify(value, allow_unicode=False):
+    """
+    Taken from https://github.com/django/django/blob/master/django/utils/text.py
+    Convert to ASCII if 'allow_unicode' is False. Convert spaces or repeated
+    dashes to single dashes. Remove characters that aren't alphanumerics,
+    underscores, or hyphens. Convert to lowercase. Also strip leading and
+    trailing whitespace, dashes, and underscores.
+    """
+    value = str(value)
+    if allow_unicode:
+        value = unicodedata.normalize('NFKC', value)
+    else:
+        value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode('ascii')
+    value = re.sub(r'[^\w\s-]', '', value.lower())
+    return re.sub(r'[-\s]+', '_', value).strip('-_')
 
 
 def read_file_from_disk(path):
@@ -35,17 +36,19 @@ def write_file_to_disk(path, file_contents: str):
     with open(path, 'w', encoding='utf-8') as file_handle:
         file_handle.write(file_contents)
 
+
 def to_cli_kwargs(kwargs: dict[str, str]):
     return [
         f'--{key}={value}'
         for key, value in kwargs.items()
     ]
 
+
 def robot_run(
     testsuite_name: str,
     testsuite: str
 ):
-    tmp_dir = Path(tempfile.gettempdir()) / 'KeyTA' / valid_dirname(testsuite_name)
+    tmp_dir = Path(tempfile.gettempdir()) / 'KeyTA' / slugify(testsuite_name)
     tmp_dir.mkdir(parents=True, exist_ok=True)
     output_dir = tmp_dir / 'output'
     robot_file = tmp_dir / 'Testsuite.robot'
