@@ -43,7 +43,7 @@ class UserExecution(AbstractBaseModel):
         return str(self.execution)
 
     def save_execution_result(self, robot_result: dict):
-        directory = Path('static') / 'user_executions' / str(self.id)
+        directory = Path('static') / 'execution_logs' / str(self.id)
         directory.mkdir(parents=True, exist_ok=True)
         log_html = directory / 'log.html'
 
