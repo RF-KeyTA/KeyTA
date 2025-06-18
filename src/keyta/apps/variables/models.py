@@ -27,12 +27,17 @@ class Variable(AbstractBaseModel):
         null=True,
         on_delete=models.CASCADE,
         related_name='instances',
-        verbose_name=_('Vorlage')
+        verbose_name=_('Datenvorlage')
     )
     systems = models.ManyToManyField(
         'systems.System',
         related_name='variables',
         verbose_name=_('Systeme')
+    )
+    template = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name=_('Vorlage')
     )
     type = models.CharField(
         max_length=255,
@@ -199,8 +204,8 @@ class VariableSchema(AbstractBaseModel):
         return self.name
 
     class Meta:
-        verbose_name = _('Vorlage')
-        verbose_name_plural = _('Vorlagen')
+        verbose_name = _('Datenvorlage')
+        verbose_name_plural = _('Datenvorlagen')
 
 
 class VariableSchemaField(AbstractBaseModel):
@@ -274,8 +279,8 @@ class VariableQuickChange(Variable):
 class VariableSchemaQuickAdd(VariableSchema):
     class Meta:
         proxy = True
-        verbose_name = _('Vorlage')
-        verbose_name_plural = _('Vorlagen')
+        verbose_name = _('Datenvorlage')
+        verbose_name_plural = _('Datenvorlagen')
 
 
 class VariableWindowRelation(AbstractBaseModel, Variable.windows.through):

@@ -23,6 +23,11 @@ class KeywordSelectWidget(ModelSelect2AdminWidget):
         return sequences | Keyword.objects.filter(resource__in=resource_ids).distinct()
 
 
+class VariableSelectWidget(ModelSelect2AdminWidget):
+    def filter_queryset(self, request, term, queryset=None, **dependent_fields):
+        return super().filter_queryset(request, term, queryset, **dependent_fields).filter(template='')
+
+
 TestStepsForm = forms.modelform_factory(
     KeywordCall,
     StepsForm,
@@ -42,7 +47,7 @@ TestStepsForm = forms.modelform_factory(
             search_fields=['name__icontains'],
             dependent_fields={'window': 'windows'},
         ),
-        'variable': ModelSelect2AdminWidget(
+        'variable': VariableSelectWidget(
             placeholder=_('Referenzwert auswählen'),
             model=Variable,
             search_fields=['name__icontains'],

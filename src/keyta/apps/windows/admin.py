@@ -182,7 +182,7 @@ class Schemas(WindowQuickAddMixin, BaseTabularInline):
         'variableschema',
         'Placeholder',
         labels={
-            'variableschema': _('Vorlage')
+            'variableschema': _('Datenvorlage')
         },
         can_add_related=True
     )

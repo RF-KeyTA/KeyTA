@@ -109,5 +109,5 @@ class WindowSchemaRelation(AbstractBaseModel, VariableSchema.windows.through):
     class Meta:
         auto_created = True
         proxy = True
-        verbose_name = _('Vorlage')
-        verbose_name_plural = _('Vorlagen')
+        verbose_name = _('Datenvorlage')
+        verbose_name_plural = _('Datenvorlagen')

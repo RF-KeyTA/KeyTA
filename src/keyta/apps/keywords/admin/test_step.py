@@ -5,7 +5,7 @@ from keyta.apps.variables.models import VariableDocumentation
 from keyta.widgets import open_link_in_modal
 
 from ..forms import KeywordCallParameterFormset
-from ..forms.keywordcall_parameter_formset import get_prev_return_values
+from ..forms.keywordcall_parameter_formset import get_prev_return_values, get_variables_choices
 from ..models import TestStep, KeywordCall, KeywordCallParameterSource
 from .keywordcall import (
     KeywordCallParametersInline, 
@@ -45,6 +45,15 @@ def get_variable_values(variable_pk, variable_name):
     ]]
 
 
+def get_window_variables(kw_call: KeywordCall):
+    variable_values = kw_call.window.variables.exclude(template='').values_list('values', flat=True)
+    sources = KeywordCallParameterSource.objects.filter(
+        variable_value__in=variable_values
+    )
+
+    return get_variables_choices(sources)
+
+
 class TestStepParameterFormset(KeywordCallParameterFormset):
     def get_choices(self, kw_call: KeywordCall):
         choices = get_prev_return_values(kw_call)
@@ -55,7 +64,7 @@ class TestStepParameterFormset(KeywordCallParameterFormset):
             else:
                 choices += get_variable_values(variable.pk, variable.name)
 
-        return choices
+        return choices + get_window_variables(kw_call)
 
 
 class TestStepParametersInline(KeywordCallParametersInline):
