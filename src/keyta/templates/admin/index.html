@@ -21,24 +21,12 @@
                 <div class="col-md-6 col-sm-12">
                     <div class="card">
                         <div class="card-body">
-                            <table class="table table-sm">
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <div class="icon-and-text">
-                                                {% with model=app.models|first %}
-                                                    <div class="icon-item">
-                                                        <a href="{{ model.url }}">
-                                                            <i class="app-icon {{ model.icon }}"></i>
-                                                        </a>
-                                                    </div>
-                                                    <a href="{{ model.url }}" style="font-size: 28px;">{{ model.name }}</a>
-                                                {% endwith %}
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            {% with model=app.models|first %}
+                            <a href="{{ model.url }}" style="font-size: 28px; width: 100%; display: block">
+                                <i class="app-icon {{ model.icon }}"></i>
+                                {{ model.name }}
+                            </a>
+                            {% endwith %}
                         </div>
                     </div>
                 </div>
