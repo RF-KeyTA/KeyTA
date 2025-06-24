@@ -149,10 +149,12 @@ class Keyword(DocumentationMixin, AbstractBaseModel):
         constraints = [
             models.UniqueConstraint(
                 fields=["library", "name"],
+                condition=Q(library__isnull=False),
                 name="unique_keyword_per_library"
             ),
             models.UniqueConstraint(
                 fields=["resource", "name"],
+                condition=Q(resource__isnull=False),
                 name="unique_keyword_per_resource"
             ),
 

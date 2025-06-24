@@ -388,7 +388,8 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
                  Q(window__isnull=True))
             ),
             UniqueConstraint(
-                'execution', 'type',
+                fields=['execution', 'type'],
+                condition=Q(execution__isnull=False),
                 name='unique_keyword_call_type_per_execution'
             )
         ]
