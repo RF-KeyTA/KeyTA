@@ -197,7 +197,7 @@ class VariableAdmin(SortableAdminBase, BaseAdmin):
 
         fields = ['systems']
 
-        if variable and variable.windows.count() == 1:
+        if variable and variable.windows.count() == 1 and not variable.template:
             fields += ['window']
 
         fields += ['name', 'description']
