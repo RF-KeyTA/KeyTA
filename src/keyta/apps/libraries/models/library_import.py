@@ -94,17 +94,6 @@ class LibraryImport(AbstractBaseModel):
         verbose_name = _('Bibliothek-Import')
         verbose_name_plural = _('Bibliothek-Imports')
         constraints = [
-            models.CheckConstraint(
-                name='library_import_sum_type',
-                check=
-                (Q(type=LibraryImportType.FROM_EXECUTION) &
-                 Q(execution__isnull=False) &
-                 Q(keyword__isnull=True))
-                |
-                (Q(type=LibraryImportType.FROM_ACTION) &
-                 Q(execution__isnull=True) &
-                 Q(keyword__isnull=False))
-            ),
             models.UniqueConstraint(
                 name='unique_execution_library_import',
                 condition=Q(execution__isnull=False),

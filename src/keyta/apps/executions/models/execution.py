@@ -3,7 +3,6 @@ from typing import Optional
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 
 from model_clone import CloneMixin
@@ -189,18 +188,5 @@ class Execution(CloneMixin, AbstractBaseModel):
         pass
 
     class Meta:
-        constraints = [
-            models.CheckConstraint(
-                name='execution_sum_type',
-                check=
-                (Q(type=ExecutionType.KEYWORD) &
-                 Q(keyword__isnull=False) &
-                 Q(testcase__isnull=True))
-                |
-                (Q(type=ExecutionType.TESTCASE) &
-                 Q(keyword__isnull=True) &
-                 Q(testcase__isnull=False))
-            )
-        ]
         verbose_name = _('Ausführung')
         verbose_name_plural = _('Ausführung')

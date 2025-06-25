@@ -77,17 +77,6 @@ class ResourceImport(AbstractBaseModel):
         verbose_name = _('Ressource-Import')
         verbose_name_plural = _('Ressource-Imports')
         constraints = [
-            models.CheckConstraint(
-                name='resource_import_sum_type',
-                check=
-                (Q(type=ResourceImportType.FROM_EXECUTION) &
-                 Q(execution__isnull=False) &
-                 Q(window__isnull=True))
-                |
-                (Q(type=ResourceImportType.FROM_WINDOW) &
-                 Q(execution__isnull=True) &
-                 Q(window__isnull=False))
-            ),
             models.UniqueConstraint(
                 name='unique_execution_resource_import',
                 condition=Q(execution__isnull=False),

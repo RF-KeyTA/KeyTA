@@ -1,5 +1,4 @@
 from django.db import models
-from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 
 from model_clone import CloneMixin
@@ -103,34 +102,5 @@ class KeywordCallParameterSource(CloneMixin, models.Model):
             return '${' + str(self) + '}'
 
     class Meta:
-        constraints = [
-            models.CheckConstraint(
-                name='kw_call_parameter_source_sum_type',
-                check=
-                (Q(type=KeywordCallParameterSourceType.KEYWORD_PARAMETER) &
-                 Q(kw_param__isnull=False) &
-                 Q(kw_call_ret_val__isnull=True) &
-                 Q(variable_schema_field__isnull=True) &
-                 Q(variable_value__isnull=True))
-                |
-                (Q(type=KeywordCallParameterSourceType.KW_CALL_RETURN_VALUE) &
-                 Q(kw_param__isnull=True) &
-                 Q(kw_call_ret_val__isnull=False) &
-                 Q(variable_schema_field__isnull=True) &
-                 Q(variable_value__isnull=True))
-                |
-                (Q(type=KeywordCallParameterSourceType.VARIABLE_SCHEMA_FIELD) &
-                 Q(kw_param__isnull=True) &
-                 Q(kw_call_ret_val__isnull=True) &
-                 Q(variable_schema_field__isnull=False) &
-                 Q(variable_value__isnull=True))
-                |
-                (Q(type=KeywordCallParameterSourceType.VARIABLE_VALUE) &
-                 Q(kw_param__isnull=True) &
-                 Q(kw_call_ret_val__isnull=True) &
-                 Q(variable_schema_field__isnull=True) &
-                 Q(variable_value__isnull=False))
-            )
-        ]
         verbose_name = _('Parameter-Referenz')
         verbose_name_plural = _('Parameter-Referenzen')

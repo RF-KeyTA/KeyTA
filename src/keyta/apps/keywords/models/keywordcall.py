@@ -342,51 +342,6 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
         verbose_name = _('Schritt')
         verbose_name_plural = _('Schritte')
         constraints = [
-            models.CheckConstraint(
-                name='keyword_call_sum_type',
-                check=
-                (Q(type=KeywordCallType.KEYWORD_CALL) &
-                 Q(from_keyword__isnull=False) &
-                 Q(execution__isnull=True) &
-                 Q(testcase__isnull=True) &
-                 Q(window__isnull=True))
-                |
-                (Q(type=KeywordCallType.TEST_STEP) &
-                 Q(testcase__isnull=False) &
-                 Q(window__isnull=False) &
-                 Q(execution__isnull=True) &
-                 Q(from_keyword__isnull=True))
-                |
-                (Q(type=KeywordCallType.KEYWORD_EXECUTION) &
-                 Q(execution__isnull=False) &
-                 Q(from_keyword__isnull=True) &
-                 Q(testcase__isnull=True) &
-                 Q(window__isnull=True))
-                |
-                (Q(type=TestSetupTeardown.TEST_SETUP) &
-                 Q(execution__isnull=False) &
-                 Q(from_keyword__isnull=True) &
-                 Q(testcase__isnull=True) &
-                 Q(window__isnull=True))
-                |
-                (Q(type=TestSetupTeardown.TEST_TEARDOWN) &
-                 Q(execution__isnull=False) &
-                 Q(from_keyword__isnull=True) &
-                 Q(testcase__isnull=True) &
-                 Q(window__isnull=True))
-                |
-                (Q(type=SuiteSetupTeardown.SUITE_SETUP) &
-                 Q(execution__isnull=False) &
-                 Q(from_keyword__isnull=True) &
-                 Q(testcase__isnull=True) &
-                 Q(window__isnull=True))
-                |
-                (Q(type=SuiteSetupTeardown.SUITE_TEARDOWN) &
-                 Q(execution__isnull=False) &
-                 Q(from_keyword__isnull=True) &
-                 Q(testcase__isnull=True) &
-                 Q(window__isnull=True))
-            ),
             UniqueConstraint(
                 fields=['execution', 'type'],
                 condition=Q(execution__isnull=False),

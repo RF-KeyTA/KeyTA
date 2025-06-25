@@ -156,29 +156,6 @@ class Keyword(DocumentationMixin, AbstractBaseModel):
                 fields=["resource", "name"],
                 condition=Q(resource__isnull=False),
                 name="unique_keyword_per_resource"
-            ),
-
-            # Customization #
-            models.CheckConstraint(
-                name='keyword_sum_type',
-                check=
-                (Q(type=KeywordType.LIBRARY) &
-                 Q(library__isnull=False) &
-                 Q(resource__isnull=True))
-                |
-                (Q(type=KeywordType.RESOURCE) &
-                 Q(resource__isnull=False) &
-                 Q(library__isnull=True))
-
-                # Customization #
-                |
-                (Q(type=KeywordType.ACTION) &
-                 Q(library__isnull=True) &
-                 Q(resource__isnull=True))
-                |
-                (Q(type=KeywordType.SEQUENCE) &
-                 Q(library__isnull=True) &
-                 Q(resource__isnull=True))
             )
         ]
         verbose_name = _('Schlüsselwort')
