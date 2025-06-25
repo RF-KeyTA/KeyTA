@@ -39,10 +39,10 @@ class ActionAdminMixin(WindowKeywordAdminMixin):
             action: Action = obj
             library_ids = action.systems.values_list('library', flat=True).distinct()
             
-            for library_id in library_ids:
+            for library in Library.objects.filter(id__in=library_ids):
                 LibraryImport.objects.create(
                     keyword=action,
-                    library=Library.objects.get(id=library_id),
+                    library=library,
                 )
 
 
