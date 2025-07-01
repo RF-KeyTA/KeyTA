@@ -1,13 +1,19 @@
 import json
+import os
+import posixpath
 import re
 import tempfile
 import subprocess
+import urllib
 import unicodedata
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 from .IProcess import IProcess
+
+
+tmp_dir = Path(tempfile.gettempdir()) / 'KeyTA'
 
 
 def slugify(value, allow_unicode=False):
@@ -49,10 +55,10 @@ def robot_run(
     testsuite_name: str,
     testsuite: str
 ):
-    tmp_dir = Path(tempfile.gettempdir()) / 'KeyTA' / slugify(testsuite_name)
-    tmp_dir.mkdir(parents=True, exist_ok=True)
-    output_dir = tmp_dir / 'output'
-    robot_file = tmp_dir / 'Testsuite.robot'
+    base_dir = tmp_dir / slugify(testsuite_name)
+    base_dir.mkdir(parents=True, exist_ok=True)
+    output_dir = base_dir / 'output'
+    robot_file = base_dir / 'Testsuite.robot'
     write_file_to_disk(robot_file, testsuite)
 
     robot_kwargs = {
@@ -81,9 +87,19 @@ class RequestHandler(BaseHTTPRequestHandler):
         super().__init__(request, client_address, server_class)
 
     def do_GET(self):
-        self.send_response(HTTPStatus.OK)
-        self.send_header("Access-Control-Allow-Origin", '*')
-        self.end_headers()
+        if self.path.endswith('.html'):
+            path = tmp_dir / self.translate_path(self.path)
+            self.send_response(HTTPStatus.OK)
+            self.send_header("Content-type", 'text/html')
+            self.send_header("Content-Length", str(os.stat(path).st_size))
+            self.end_headers()
+
+            with open(path, 'rb') as file:
+                self.wfile.write(file.read())
+        else:
+            self.send_response(HTTPStatus.OK)
+            self.send_header("Access-Control-Allow-Origin", '*')
+            self.end_headers()
 
     def do_OPTIONS(self):
         self.send_response(HTTPStatus.NO_CONTENT)
@@ -106,6 +122,42 @@ class RequestHandler(BaseHTTPRequestHandler):
         self.send_header('Content-Length', str(len(response)))
         self.end_headers()
         self.wfile.write(response)
+
+    def translate_path(self, path):
+        """Translate a /-separated PATH to the local filename syntax.
+
+        Components that mean special things to the local file system
+        (e.g. drive or directory names) are ignored.  (XXX They should
+        probably be diagnosed.)
+
+        source: http.server.SimpleHTTPRequestHandler
+        """
+        # abandon query parameters
+        path = path.split('?',1)[0]
+        path = path.split('#',1)[0]
+        # Don't forget explicit trailing slash when normalizing. Issue17324
+        trailing_slash = path.rstrip().endswith('/')
+
+        try:
+            path = urllib.parse.unquote(path, errors='surrogatepass')
+        except UnicodeDecodeError:
+            path = urllib.parse.unquote(path)
+
+        path = posixpath.normpath(path)
+        words = path.split('/')
+        words = filter(None, words)
+        path = ''
+
+        for word in words:
+            if os.path.dirname(word) or word in (os.curdir, os.pardir):
+                # Ignore components that are not a simple file/directory name
+                continue
+            path = os.path.join(path, word)
+
+        if trailing_slash:
+            path += '/'
+
+        return path
 
 
 class RobotRemoteServer(IProcess, ThreadingHTTPServer):
