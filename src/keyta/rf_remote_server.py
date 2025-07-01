@@ -85,6 +85,13 @@ class RequestHandler(BaseHTTPRequestHandler):
         self.send_header("Access-Control-Allow-Origin", '*')
         self.end_headers()
 
+    def do_OPTIONS(self):
+        self.send_response(HTTPStatus.NO_CONTENT)
+        self.send_header('Access-Control-Allow-Methods', self.headers.get('Access-Control-Request-Method'))
+        self.send_header('Access-Control-Allow-Origin', self.headers.get('Origin'))
+        self.send_header('Access-Control-Max-Age', '3600')
+        self.end_headers()
+
     def do_POST(self):
         function = self.path.lstrip('/')
         content_len = int(self.headers.get('content-length'))
