@@ -4,7 +4,7 @@ import tempfile
 import subprocess
 import unicodedata
 from http import HTTPStatus
-from http.server import HTTPServer, BaseHTTPRequestHandler
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 from .IProcess import IProcess
@@ -101,7 +101,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         self.wfile.write(response)
 
 
-class RobotRemoteServer(IProcess, HTTPServer):
+class RobotRemoteServer(IProcess, ThreadingHTTPServer):
     def __init__(self, host: str, port: int):
         super().__init__((host, port), RequestHandler)
 
