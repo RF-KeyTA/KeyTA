@@ -73,8 +73,10 @@ def robot_run(
         stderr=subprocess.PIPE
     )
 
+    log_path = output_dir / 'log.html'
+
     return {
-        'log': read_file_from_disk(output_dir / 'log.html'),
+        'log': os.path.relpath(log_path, tmp_dir).replace('\\', '/'),
         'result': 'PASS' if result.returncode == 0 else 'FAIL'
     }
 
