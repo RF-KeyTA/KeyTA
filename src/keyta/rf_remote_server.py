@@ -12,11 +12,12 @@ from .IProcess import IProcess
 
 def slugify(value, allow_unicode=False):
     """
-    Taken from https://github.com/django/django/blob/master/django/utils/text.py
     Convert to ASCII if 'allow_unicode' is False. Convert spaces or repeated
     dashes to single dashes. Remove characters that aren't alphanumerics,
     underscores, or hyphens. Convert to lowercase. Also strip leading and
     trailing whitespace, dashes, and underscores.
+
+    source: django.utils.text.slugify
     """
     value = str(value)
     if allow_unicode:
