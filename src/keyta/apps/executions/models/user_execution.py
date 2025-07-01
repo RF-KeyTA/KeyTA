@@ -1,5 +1,3 @@
-from pathlib import Path
-
 from django.conf import settings
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -43,14 +41,7 @@ class UserExecution(AbstractBaseModel):
         return str(self.execution)
 
     def save_execution_result(self, robot_result: dict):
-        directory = Path('static') / 'execution_logs' / str(self.id)
-        directory.mkdir(parents=True, exist_ok=True)
-        log_html = directory / 'log.html'
-
-        with open(log_html, 'w', encoding='utf-8') as file:
-            file.write(robot_result['log'])
-
-        self.log = str(log_html)
+        self.log = robot_result['log']
         self.result = robot_result['result']
         self.save()
 
