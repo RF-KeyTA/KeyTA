@@ -49,7 +49,7 @@ class ExecutionInline(BaseTabularInline):
 
             if user_exec.result and not user_exec.running:
                 return link(
-                    get_script_prefix() + user_exec.log,
+                    'http://localhost:1471/' + user_exec.log,
                     str(Icon(settings.FA_ICONS.exec_log)),
                     new_page=True
                 )
