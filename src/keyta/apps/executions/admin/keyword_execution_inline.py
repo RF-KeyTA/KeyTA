@@ -15,7 +15,7 @@ class KeywordCallArgsField(BaseKeywordCallArgs):
 
         @admin.display(description=_('Werte'))
         def args(self, kw_execution: KeywordExecution):
-            return self.get_icon(kw_execution.keyword_calls.first(), request.user)
+            return self.get_icon(kw_execution.execution_keyword_call, request.user)
 
         if keyword.parameters.exists():
             KeywordCallArgsField.args = args
