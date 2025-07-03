@@ -1,12 +1,11 @@
 from django.conf import settings
 from django.contrib import admin
 from django.http import HttpRequest
-from django.urls import get_script_prefix
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 
 from keyta.admin.base_inline import BaseTabularInline
-from keyta.widgets import open_link_in_modal, link, Icon
+from keyta.widgets import open_link_in_modal, Icon
 
 from ..models import Execution
 
@@ -48,11 +47,9 @@ class ExecutionInline(BaseTabularInline):
             user_exec = execution.user_execs.get(user=request.user)
 
             if user_exec.result and not user_exec.running:
-                return link(
-                    'http://localhost:1471/' + user_exec.log,
-                    str(Icon(settings.FA_ICONS.exec_log)),
-                    new_page=True
-                )
+                url = 'http://localhost:1471/' + user_exec.log
+                title = str(Icon(settings.FA_ICONS.exec_log))
+                return mark_safe('<a href="%s" id="log-btn" target="_blank">%s</a>' % (url, title))
 
             return '-'
 

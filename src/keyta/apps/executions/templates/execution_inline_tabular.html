@@ -104,13 +104,15 @@
 <script>
     const robot_server = "http://localhost:1471"
     const errors = {
-        NO_ROBOT: "{% translate 'Die Ausführung ist nur möglich, wenn das KeyTA-Symbol in der Taskleiste angezeigt wird.' %}",
+        EXEC_NO_KEYTA: "{% translate 'Die Ausführung ist nur möglich, wenn das KeyTA-Symbol in der Taskleiste angezeigt wird.' %}",
+        LOG_NO_KEYTA: "{% translate 'Das Protokoll ist nur verfügbar, wenn das KeyTA-Symbol in der Taskleiste angezeigt wird.' %}",
         ROBOT_ERROR: "{% translate 'Robot Framework konnte nicht ausgeführt werden.' %}"
     }
     
     const start_button = document.getElementById("exec-btn")
     const start_icon = start_button.querySelector("i")
     const result_icon = document.querySelector(".field-result_icon > p")
+    const log_button = document.getElementById("log-btn")
     const log_icon = document.querySelector(".field-log_icon > p")
 
     const csrf_token_url = window.location.origin + "/csrf_token"
@@ -140,7 +142,7 @@
     const start = () => fetch(robot_server)
         .then(_ => get_csrf_token())
         .then(csrf_token => to_robot(csrf_token))
-        .catch(_ => error(errors.NO_ROBOT))
+        .catch(_ => error(errors.EXEC_NO_KEYTA))
     
     const to_robot = (csrf_token) => fetch(to_robot_url)
         .then(res => res.json())
@@ -181,5 +183,13 @@
     start_button.addEventListener('click', function(event) {
         event.preventDefault();
         start()
+    });
+
+    log_button.addEventListener('click', function(event) {
+        event.preventDefault();
+
+        fetch(robot_server)
+        .then(_ => window.open(log_button.getAttribute("href"), '_blank'))
+        .catch(_ => error(errors.LOG_NO_KEYTA))
     });
 </script>
