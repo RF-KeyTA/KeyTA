@@ -91,13 +91,22 @@ class RequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         if self.path.endswith('.html'):
             path = tmp_dir / self.translate_path(self.path)
-            self.send_response(HTTPStatus.OK)
-            self.send_header("Content-type", 'text/html')
-            self.send_header("Content-Length", str(os.stat(path).st_size))
-            self.end_headers()
 
-            with open(path, 'rb') as file:
-                self.wfile.write(file.read())
+            if path.exists():
+                self.send_response(HTTPStatus.OK)
+                self.send_header("Content-type", 'text/html')
+                self.send_header("Content-Length", str(os.stat(path).st_size))
+                self.end_headers()
+
+                with open(path, 'rb') as file:
+                    self.wfile.write(file.read())
+            else:
+                message = f"The file '{path}' does not exist.".encode('utf-8')
+                self.send_response(HTTPStatus.NOT_FOUND)
+                self.send_header("Content-type", 'text/plain')
+                self.send_header("Content-Length", str(len(message)))
+                self.end_headers()
+                self.wfile.write(message)
         else:
             self.send_response(HTTPStatus.OK)
             self.send_header("Access-Control-Allow-Origin", '*')
