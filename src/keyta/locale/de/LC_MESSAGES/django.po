@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-18 17:52+0200\n"
+"POT-Creation-Date: 2025-07-03 14:26+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -29,7 +29,7 @@ msgstr ""
 msgid "Dokumentation"
 msgstr ""
 
-#: .\admin\keywords_inline.py:15 .\apps\keywords\models\keyword.py:183
+#: .\admin\keywords_inline.py:15 .\apps\keywords\models\keyword.py:162
 msgid "Schlüsselwörter"
 msgstr ""
 
@@ -75,7 +75,7 @@ msgid "Schlüsselwort auswählen"
 msgstr ""
 
 #: .\apps\actions\admin\steps_inline.py:24
-#: .\apps\keywords\models\keyword.py:182
+#: .\apps\keywords\models\keyword.py:161
 msgid "Schlüsselwort"
 msgstr ""
 
@@ -118,24 +118,24 @@ msgstr ""
 msgid "Beziehungen zu Masken"
 msgstr ""
 
-#: .\apps\executions\admin\execution_inline.py:25
-#: .\apps\executions\models\user_execution.py:33
+#: .\apps\executions\admin\execution_inline.py:24
+#: .\apps\executions\models\user_execution.py:31
 msgid "Ergebnis"
 msgstr ""
 
-#: .\apps\executions\admin\execution_inline.py:46
-#: .\apps\executions\models\user_execution.py:25
+#: .\apps\executions\admin\execution_inline.py:45
+#: .\apps\executions\models\user_execution.py:23
 msgid "Protokoll"
 msgstr ""
 
-#: .\apps\executions\admin\execution_inline.py:64
+#: .\apps\executions\admin\execution_inline.py:61
 #: .\apps\libraries\admin\library_import_inline.py:21
 #: .\apps\libraries\admin\library_import_parameters_inline.py:16
 #: .\apps\libraries\models\library_parameter.py:52
 msgid "Einstellungen"
 msgstr ""
 
-#: .\apps\executions\admin\execution_inline.py:71
+#: .\apps\executions\admin\execution_inline.py:68
 msgid "Ausf."
 msgstr ""
 
@@ -203,17 +203,17 @@ msgstr ""
 msgid "Die Schritte sind leer"
 msgstr ""
 
-#: .\apps\executions\models\execution.py:30
+#: .\apps\executions\models\execution.py:29
 #: .\apps\keywords\models\keywordcall.py:32
 msgid "Schlüsselwort Ausführung"
 msgstr ""
 
-#: .\apps\executions\models\execution.py:31
+#: .\apps\executions\models\execution.py:30
 msgid "Testfall Ausführung"
 msgstr ""
 
-#: .\apps\executions\models\execution.py:205
-#: .\apps\executions\models\execution.py:206
+#: .\apps\executions\models\execution.py:191
+#: .\apps\executions\models\execution.py:192
 #: .\apps\executions\models\keyword_execution.py:141
 #: .\apps\executions\models\keyword_execution.py:142
 #: .\apps\executions\models\testcase_execution.py:130
@@ -232,23 +232,23 @@ msgstr ""
 msgid "Vorbereitung"
 msgstr ""
 
-#: .\apps\executions\models\user_execution.py:12
+#: .\apps\executions\models\user_execution.py:10
 msgid "Erfolgreich"
 msgstr ""
 
-#: .\apps\executions\models\user_execution.py:13
+#: .\apps\executions\models\user_execution.py:11
 msgid "Fehlgeschlagen"
 msgstr ""
 
-#: .\apps\executions\models\user_execution.py:39
+#: .\apps\executions\models\user_execution.py:37
 msgid "Benutzer"
 msgstr ""
 
-#: .\apps\executions\models\user_execution.py:58
+#: .\apps\executions\models\user_execution.py:49
 msgid "Benutzer-bezogene Ausführung"
 msgstr ""
 
-#: .\apps\executions\models\user_execution.py:59
+#: .\apps\executions\models\user_execution.py:50
 msgid "Benutzer-bezogene Ausführungen"
 msgstr ""
 
@@ -264,10 +264,16 @@ msgid ""
 msgstr ""
 
 #: .\apps\executions\templates\execution_inline_tabular.html:108
+msgid ""
+"Das Protokoll ist nur verfügbar, wenn das KeyTA-Symbol in der Taskleiste "
+"angezeigt wird."
+msgstr ""
+
+#: .\apps\executions\templates\execution_inline_tabular.html:109
 msgid "Robot Framework konnte nicht ausgeführt werden."
 msgstr ""
 
-#: .\apps\executions\templates\execution_inline_tabular.html:156
+#: .\apps\executions\templates\execution_inline_tabular.html:158
 msgid "Robot Framework wird ausgeführt"
 msgstr ""
 
@@ -460,15 +466,15 @@ msgstr ""
 msgid "Schritte"
 msgstr ""
 
-#: .\apps\keywords\models\keywordcall_parameter_source.py:11
+#: .\apps\keywords\models\keywordcall_parameter_source.py:10
 msgid "Schlüsselwort-Parameter"
 msgstr ""
 
-#: .\apps\keywords\models\keywordcall_parameter_source.py:12
+#: .\apps\keywords\models\keywordcall_parameter_source.py:11
 msgid "Aufrufs-Rückgabewert"
 msgstr ""
 
-#: .\apps\keywords\models\keywordcall_parameter_source.py:13
+#: .\apps\keywords\models\keywordcall_parameter_source.py:12
 #: .\apps\variables\admin.py:52 .\apps\variables\models.py:103
 #: .\apps\variables\models.py:125 .\apps\variables\models.py:261
 #: .\apps\variables\models.py:268 .\apps\variables\models.py:275
@@ -476,15 +482,15 @@ msgstr ""
 msgid "Referenzwert"
 msgstr ""
 
-#: .\apps\keywords\models\keywordcall_parameter_source.py:14
+#: .\apps\keywords\models\keywordcall_parameter_source.py:13
 msgid "Schemafeld"
 msgstr ""
 
-#: .\apps\keywords\models\keywordcall_parameter_source.py:135
+#: .\apps\keywords\models\keywordcall_parameter_source.py:105
 msgid "Parameter-Referenz"
 msgstr ""
 
-#: .\apps\keywords\models\keywordcall_parameter_source.py:136
+#: .\apps\keywords\models\keywordcall_parameter_source.py:106
 msgid "Parameter-Referenzen"
 msgstr ""
 
@@ -745,7 +751,7 @@ msgstr ""
 msgid "Clear selection"
 msgstr ""
 
-#: .\templates\admin\base_orig.html:100 .\templates\admin\search_form.html:23
+#: .\templates\admin\base_orig.html:100 .\templates\admin\search_form.html:21
 msgid "Search"
 msgstr ""
 
@@ -850,19 +856,14 @@ msgstr ""
 msgid "No"
 msgstr ""
 
-#: .\templates\admin\search_form.html:34
+#: .\templates\admin\search_form.html:28
 #, python-format
 msgid "%(counter)s result"
 msgid_plural "%(counter)s results"
 msgstr[0] ""
 msgstr[1] ""
 
-#: .\templates\admin\search_form.html:37
-#, python-format
-msgid "%(full_result_count)s total"
-msgstr ""
-
-#: .\templates\admin\search_form.html:39
+#: .\templates\admin\search_form.html:30
 msgid "Show all"
 msgstr ""
 

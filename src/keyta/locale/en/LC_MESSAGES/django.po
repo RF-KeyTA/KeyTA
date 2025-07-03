@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-18 17:52+0200\n"
+"POT-Creation-Date: 2025-07-03 14:26+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -28,7 +28,7 @@ msgstr "Select a System"
 msgid "Dokumentation"
 msgstr "Documentation"
 
-#: .\admin\keywords_inline.py:15 .\apps\keywords\models\keyword.py:183
+#: .\admin\keywords_inline.py:15 .\apps\keywords\models\keyword.py:162
 msgid "Schlüsselwörter"
 msgstr "Keywords"
 
@@ -74,7 +74,7 @@ msgid "Schlüsselwort auswählen"
 msgstr "Select a Keyword"
 
 #: .\apps\actions\admin\steps_inline.py:24
-#: .\apps\keywords\models\keyword.py:182
+#: .\apps\keywords\models\keyword.py:161
 msgid "Schlüsselwort"
 msgstr "Keyword"
 
@@ -117,24 +117,24 @@ msgstr "Relationship to Window"
 msgid "Beziehungen zu Masken"
 msgstr "Relationships to Windows"
 
-#: .\apps\executions\admin\execution_inline.py:25
-#: .\apps\executions\models\user_execution.py:33
+#: .\apps\executions\admin\execution_inline.py:24
+#: .\apps\executions\models\user_execution.py:31
 msgid "Ergebnis"
 msgstr "Result"
 
-#: .\apps\executions\admin\execution_inline.py:46
-#: .\apps\executions\models\user_execution.py:25
+#: .\apps\executions\admin\execution_inline.py:45
+#: .\apps\executions\models\user_execution.py:23
 msgid "Protokoll"
 msgstr "Log"
 
-#: .\apps\executions\admin\execution_inline.py:64
+#: .\apps\executions\admin\execution_inline.py:61
 #: .\apps\libraries\admin\library_import_inline.py:21
 #: .\apps\libraries\admin\library_import_parameters_inline.py:16
 #: .\apps\libraries\models\library_parameter.py:52
 msgid "Einstellungen"
 msgstr "Settings"
 
-#: .\apps\executions\admin\execution_inline.py:71
+#: .\apps\executions\admin\execution_inline.py:68
 msgid "Ausf."
 msgstr "Exec."
 
@@ -204,17 +204,17 @@ msgstr "The connection to the current system must be maintained"
 msgid "Die Schritte sind leer"
 msgstr "The steps are incomplete"
 
-#: .\apps\executions\models\execution.py:30
+#: .\apps\executions\models\execution.py:29
 #: .\apps\keywords\models\keywordcall.py:32
 msgid "Schlüsselwort Ausführung"
 msgstr "Keyword Execution"
 
-#: .\apps\executions\models\execution.py:31
+#: .\apps\executions\models\execution.py:30
 msgid "Testfall Ausführung"
 msgstr "Test Case Execution"
 
-#: .\apps\executions\models\execution.py:205
-#: .\apps\executions\models\execution.py:206
+#: .\apps\executions\models\execution.py:191
+#: .\apps\executions\models\execution.py:192
 #: .\apps\executions\models\keyword_execution.py:141
 #: .\apps\executions\models\keyword_execution.py:142
 #: .\apps\executions\models\testcase_execution.py:130
@@ -233,23 +233,23 @@ msgstr "Test"
 msgid "Vorbereitung"
 msgstr "Setup"
 
-#: .\apps\executions\models\user_execution.py:12
+#: .\apps\executions\models\user_execution.py:10
 msgid "Erfolgreich"
 msgstr "Successful"
 
-#: .\apps\executions\models\user_execution.py:13
+#: .\apps\executions\models\user_execution.py:11
 msgid "Fehlgeschlagen"
 msgstr "Failed"
 
-#: .\apps\executions\models\user_execution.py:39
+#: .\apps\executions\models\user_execution.py:37
 msgid "Benutzer"
 msgstr "Users"
 
-#: .\apps\executions\models\user_execution.py:58
+#: .\apps\executions\models\user_execution.py:49
 msgid "Benutzer-bezogene Ausführung"
 msgstr "User-related execution"
 
-#: .\apps\executions\models\user_execution.py:59
+#: .\apps\executions\models\user_execution.py:50
 msgid "Benutzer-bezogene Ausführungen"
 msgstr "User-related executions"
 
@@ -266,10 +266,17 @@ msgstr ""
 "The execution can only start when the KeyTA icon is shown in the taskbar."
 
 #: .\apps\executions\templates\execution_inline_tabular.html:108
+msgid ""
+"Das Protokoll ist nur verfügbar, wenn das KeyTA-Symbol in der Taskleiste "
+"angezeigt wird."
+msgstr ""
+"The log can only be opened when the KeyTA icon is shown in the taskbar."
+
+#: .\apps\executions\templates\execution_inline_tabular.html:109
 msgid "Robot Framework konnte nicht ausgeführt werden."
 msgstr "Robot Framework could not be executed."
 
-#: .\apps\executions\templates\execution_inline_tabular.html:156
+#: .\apps\executions\templates\execution_inline_tabular.html:158
 msgid "Robot Framework wird ausgeführt"
 msgstr "Robot Framework is running."
 
@@ -462,15 +469,15 @@ msgstr "Step"
 msgid "Schritte"
 msgstr "Steps"
 
-#: .\apps\keywords\models\keywordcall_parameter_source.py:11
+#: .\apps\keywords\models\keywordcall_parameter_source.py:10
 msgid "Schlüsselwort-Parameter"
 msgstr "Keyword Parameters"
 
-#: .\apps\keywords\models\keywordcall_parameter_source.py:12
+#: .\apps\keywords\models\keywordcall_parameter_source.py:11
 msgid "Aufrufs-Rückgabewert"
 msgstr "Call Return Value"
 
-#: .\apps\keywords\models\keywordcall_parameter_source.py:13
+#: .\apps\keywords\models\keywordcall_parameter_source.py:12
 #: .\apps\variables\admin.py:52 .\apps\variables\models.py:103
 #: .\apps\variables\models.py:125 .\apps\variables\models.py:261
 #: .\apps\variables\models.py:268 .\apps\variables\models.py:275
@@ -478,15 +485,15 @@ msgstr "Call Return Value"
 msgid "Referenzwert"
 msgstr "Reference Value"
 
-#: .\apps\keywords\models\keywordcall_parameter_source.py:14
+#: .\apps\keywords\models\keywordcall_parameter_source.py:13
 msgid "Schemafeld"
 msgstr "Template Field"
 
-#: .\apps\keywords\models\keywordcall_parameter_source.py:135
+#: .\apps\keywords\models\keywordcall_parameter_source.py:105
 msgid "Parameter-Referenz"
 msgstr "Parameter reference"
 
-#: .\apps\keywords\models\keywordcall_parameter_source.py:136
+#: .\apps\keywords\models\keywordcall_parameter_source.py:106
 msgid "Parameter-Referenzen"
 msgstr "Parameter references"
 
@@ -674,7 +681,6 @@ msgstr "Several instances"
 #: .\apps\variables\models.py:30 .\apps\variables\models.py:207
 #: .\apps\variables\models.py:282 .\apps\windows\admin.py:185
 #: .\apps\windows\models.py:112
-#| msgid "Vorlage"
 msgid "Datenvorlage"
 msgstr "Data Template"
 
@@ -688,7 +694,6 @@ msgstr "Quantity"
 
 #: .\apps\variables\models.py:208 .\apps\variables\models.py:283
 #: .\apps\windows\models.py:113
-#| msgid "Vorlagen"
 msgid "Datenvorlagen"
 msgstr "Data Templates"
 
@@ -749,7 +754,7 @@ msgstr ""
 msgid "Clear selection"
 msgstr ""
 
-#: .\templates\admin\base_orig.html:100 .\templates\admin\search_form.html:23
+#: .\templates\admin\base_orig.html:100 .\templates\admin\search_form.html:21
 msgid "Search"
 msgstr ""
 
@@ -851,19 +856,14 @@ msgstr ""
 msgid "No"
 msgstr ""
 
-#: .\templates\admin\search_form.html:34
+#: .\templates\admin\search_form.html:28
 #, python-format
 msgid "%(counter)s result"
 msgid_plural "%(counter)s results"
 msgstr[0] ""
 msgstr[1] ""
 
-#: .\templates\admin\search_form.html:37
-#, python-format
-msgid "%(full_result_count)s total"
-msgstr ""
-
-#: .\templates\admin\search_form.html:39
+#: .\templates\admin\search_form.html:30
 msgid "Show all"
 msgstr ""
 
