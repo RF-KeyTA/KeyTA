@@ -70,11 +70,11 @@ class TestCaseExecution(Execution):
         for step in self.testcase.steps.all():
             variable: Variable = step.variable
             if variable and variable.is_list():
-                    list_variables.append(variable.to_robot())
+                list_variables.append(variable.to_robot())
 
-                    element: VariableInList
-                    for element in variable.elements.all():
-                        dict_variables.append(element.variable.to_robot())
+                element: VariableInList
+                for element in variable.elements.all():
+                    dict_variables.append(element.variable.to_robot())
 
         return {
             'name': self.testcase.name,
