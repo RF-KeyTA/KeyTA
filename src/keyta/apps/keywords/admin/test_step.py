@@ -68,6 +68,7 @@ class TestStepParameterFormset(KeywordCallParameterFormset):
 
 
 class TestStepParametersInline(KeywordCallParametersInline):
+    fields = ['name', 'value']
     formset = TestStepParameterFormset
 
 
