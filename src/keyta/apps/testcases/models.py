@@ -85,8 +85,7 @@ class TestCase(DocumentationMixin, CloneMixin, AbstractBaseModel):
             'doc': self.robot_documentation(),
             'steps': [
                 test_step.to_robot()
-                for test_step in self.steps.all()
-                if test_step.enabled and test_step.to_keyword
+                for test_step in self.steps.filter(enabled=True).filter(to_keyword__isnull=False)
             ]
         }
 
