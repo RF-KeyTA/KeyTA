@@ -263,7 +263,7 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
             'return_values': [
                 '${' + str(return_value) + '}'
                 for return_value in self.return_values.all()
-                if return_value and return_value.is_set
+                if return_value.is_set
             ],
             'list_var': list_var
         }
