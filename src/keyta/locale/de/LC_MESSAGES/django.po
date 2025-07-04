@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-03 14:26+0200\n"
+"POT-Creation-Date: 2025-07-04 10:24+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -216,8 +216,8 @@ msgstr ""
 #: .\apps\executions\models\execution.py:192
 #: .\apps\executions\models\keyword_execution.py:141
 #: .\apps\executions\models\keyword_execution.py:142
+#: .\apps\executions\models\testcase_execution.py:129
 #: .\apps\executions\models\testcase_execution.py:130
-#: .\apps\executions\models\testcase_execution.py:131
 #: .\apps\libraries\models\library_import.py:46
 #: .\apps\resources\models\resource_import.py:46
 msgid "Ausführung"
@@ -287,14 +287,14 @@ msgstr ""
 #: .\apps\keywords\forms\keywordcall_parameter_formset.py:35
 #: .\apps\keywords\models\keyword.py:48
 #: .\apps\keywords\models\keyword_parameters.py:117
-#: .\apps\keywords\models\keywordcall_parameters.py:157
+#: .\apps\keywords\models\keywordcall_parameters.py:164
 #: .\apps\libraries\models\library_import_parameter.py:32
 msgid "Parameters"
 msgstr "Parameter"
 
 #: .\apps\keywords\admin\keyword_parameters_inline.py:24
 #: .\apps\keywords\models\keyword_parameters.py:116
-#: .\apps\keywords\models\keywordcall_parameters.py:156
+#: .\apps\keywords\models\keywordcall_parameters.py:163
 #: .\apps\libraries\models\library_import_parameter.py:31
 msgid "Parameter"
 msgstr ""
@@ -313,8 +313,8 @@ msgstr ""
 msgid "Kein Rückgabewert"
 msgstr ""
 
-#: .\apps\keywords\admin\keywordcall_parameters_inline.py:31
-msgid "Eingabe als RF Variable formatieren"
+#: .\apps\keywords\admin\keywordcall_parameters_inline.py:30
+msgid "Format auswählen"
 msgstr ""
 
 #: .\apps\keywords\admin\keywordcall_return_value_inline.py:14
@@ -494,7 +494,16 @@ msgstr ""
 msgid "Parameter-Referenzen"
 msgstr ""
 
-#: .\apps\keywords\models\keywordcall_parameters.py:32
+#: .\apps\keywords\models\keywordcall_parameters.py:16
+#, python-brace-format
+msgid "dict.item -> ${dict}[item]"
+msgstr ""
+
+#: .\apps\keywords\models\keywordcall_parameters.py:34
+msgid "Format (optional)"
+msgstr ""
+
+#: .\apps\keywords\models\keywordcall_parameters.py:39
 #: .\apps\libraries\models\library_import_parameter.py:21
 #: .\apps\variables\admin.py:386 .\apps\variables\models.py:163
 #: .\apps\variables\models.py:189
@@ -581,7 +590,7 @@ msgstr ""
 msgid "Dateipfad wie beim Importieren einer Ressource in einer .robot Datei"
 msgstr ""
 
-#: .\apps\resources\admin\resource_import.py:49 .\apps\testcases\models.py:95
+#: .\apps\resources\admin\resource_import.py:49 .\apps\testcases\models.py:94
 msgid "Testfall"
 msgstr ""
 
@@ -659,7 +668,7 @@ msgstr ""
 msgid "Systeme hinzufügen"
 msgstr ""
 
-#: .\apps\testcases\apps.py:8 .\apps\testcases\models.py:96
+#: .\apps\testcases\apps.py:8 .\apps\testcases\models.py:95
 msgid "Testfälle"
 msgstr ""
 

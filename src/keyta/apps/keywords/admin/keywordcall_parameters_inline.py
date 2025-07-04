@@ -1,5 +1,4 @@
 from django import forms
-from django.utils.safestring import mark_safe
 from django.utils.translation import gettext as _
 
 from keyta.admin.base_inline import BaseTabularInline
@@ -28,8 +27,9 @@ class KeywordCallParametersInline(BaseTabularInline):
         field = super().formfield_for_dbfield(db_field, request, **kwargs)
 
         if db_field.name == 'robot_variable':
-            tooltip = _("Eingabe als RF Variable formatieren")
-            field.label = mark_safe(f'<a href="#" title="{tooltip}"><i class="fa-solid fa-robot"></i>')
+            field.widget.attrs['data-placeholder'] = _('Format auswählen')
+            field.widget.attrs['data-width'] = '100%'
+            field.widget.attrs['data-allow-clear'] = 'true'
 
         return field
 
