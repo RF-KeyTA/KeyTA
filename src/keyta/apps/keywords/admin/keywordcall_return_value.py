@@ -9,7 +9,6 @@ from ..models import KeywordCallReturnValue
 @admin.register(KeywordCallReturnValue)
 class KeywordCallReturnValueAdmin(BaseAdmin):
     fields = ['return_value_name']
-    fields = ['return_value_name']
 
     def has_change_permission(self, request, obj=None):
         return False
