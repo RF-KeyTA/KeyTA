@@ -87,6 +87,9 @@ class LibraryAdmin(BaseAdmin):
 
         return ['name', 'version', 'dokumentation']
 
+    def has_delete_permission(self, request, obj=None):
+        return request.user.is_superuser
+
     def save_form(self, request, form, change):
         library_name = form.cleaned_data.get('name', None)
 
