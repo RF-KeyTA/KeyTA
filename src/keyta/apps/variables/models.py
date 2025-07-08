@@ -186,6 +186,7 @@ class VariableValue(AbstractBaseModel):
                 name='unique_variable_value_name'
             )
         ]
+        ordering = ['schema_field__index']
         verbose_name = _('Wert')
         verbose_name_plural = _('Werte')
 
