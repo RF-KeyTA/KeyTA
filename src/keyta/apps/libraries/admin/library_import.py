@@ -42,6 +42,6 @@ class LibraryImportAdmin(BaseAdmin):
     @admin.display(description=_('Dokumentation'))
     def library_init_doc(self, obj: LibraryImport):
         return open_link_in_modal(
-            obj.library.get_admin_url('libraryinitdocumentation'),
+            obj.library.get_admin_url(model='libraryinitdocumentation'),
             obj.library.name + _(' Einstellungen')
         )
