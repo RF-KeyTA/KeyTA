@@ -71,22 +71,21 @@ class KeywordExecution(Execution):
         
         return sequence_calls | action_calls | setup_teardown_calls
 
-    def get_rf_testsuite(self, user: AbstractUser) -> RFTestSuite:
+    def get_rf_testsuite(self, get_variable_value, user: AbstractUser) -> RFTestSuite:
         keyword = self.keyword
-        keywords = {keyword.pk: keyword.to_robot()}
+        keywords = {keyword.pk: keyword.to_robot(get_variable_value)}
 
         if keyword.is_sequence:
             for keyword in Keyword.objects.filter(pk__in=self.action_ids):
-                keywords[keyword.pk] = keyword.to_robot()
+                keywords[keyword.pk] = keyword.to_robot(get_variable_value)
 
         if (test_setup := self.test_setup()) and test_setup.enabled:
             if to_keyword := test_setup.to_keyword:
-                action = Keyword.objects.get(id=to_keyword.id)
-                keywords[action.id] = action.to_robot()
+                keywords[to_keyword.id] = to_keyword.to_robot(get_variable_value)
 
         return {
             'name': self.keyword.name,
-            'settings': self.get_rf_settings(user),
+            'settings': self.get_rf_settings(get_variable_value, user),
             'dict_variables': [],
             'list_variables': [],
             'keywords': list(keywords.values()),
@@ -94,7 +93,7 @@ class KeywordExecution(Execution):
                 'name': _('Test'),
                 'doc': None,
                 'steps': [
-                    self.execution_keyword_call.to_robot(user)
+                    self.execution_keyword_call.to_robot(get_variable_value, user)
                 ]
             }]
         }

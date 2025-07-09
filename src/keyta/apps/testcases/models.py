@@ -79,12 +79,12 @@ class TestCase(DocumentationMixin, CloneMixin, AbstractBaseModel):
         self.name = re.sub(r"\s{2,}", ' ', self.name)
         super().save(force_insert, force_update, using, update_fields)
 
-    def to_robot(self) -> RFTestCase:
+    def to_robot(self, get_variable_value) -> RFTestCase:
         return {
             'name': self.name,
             'doc': self.robot_documentation(),
             'steps': [
-                test_step.to_robot()
+                test_step.to_robot(get_variable_value)
                 for test_step in self.steps.filter(enabled=True).filter(to_keyword__isnull=False)
             ]
         }

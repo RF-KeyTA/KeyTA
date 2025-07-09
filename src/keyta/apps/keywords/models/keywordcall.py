@@ -234,12 +234,12 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
 
             super().save(force_insert, force_update, using, update_fields)
 
-    def to_robot(self, user: Optional[AbstractUser]=None) -> RFKeywordCall:
+    def to_robot(self, get_variable_value, user: Optional[AbstractUser]=None) -> RFKeywordCall:
         parameters = self.parameters.filter(user=user)
         args = parameters.args()
         kwargs = parameters.kwargs()
 
-        rf_args = [arg.to_robot() for arg in args]
+        rf_args = [arg.to_robot(get_variable_value) for arg in args]
         list_var = None
 
         if self.variable and self.variable.is_list():
@@ -259,7 +259,7 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
             'condition': self.condition,
             'keyword': self.to_keyword.unique_name,
             'args': rf_args,
-            'kwargs': {kwarg.name: kwarg.to_robot() for kwarg in kwargs},
+            'kwargs': {kwarg.name: kwarg.to_robot(get_variable_value) for kwarg in kwargs},
             'return_values': [
                 '${' + str(return_value) + '}'
                 for return_value in self.return_values.all()

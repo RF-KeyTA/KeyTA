@@ -5,6 +5,7 @@ from django.http import HttpRequest, JsonResponse, HttpResponse
 from keyta.admin.base_admin import BaseAdmin
 from keyta.apps.libraries.admin import LibraryImportInline
 from keyta.apps.resources.admin import ResourceImportsInline
+from keyta.apps.variables.models import VariableValue
 
 from ..models.execution import Execution
 from .setup_teardown_inline import SetupInline, TeardownInline
@@ -29,7 +30,7 @@ class ExecutionAdmin(BaseAdmin):
                 if err := execution.validate(request.user):
                     return JsonResponse(err)
 
-                return JsonResponse(execution.to_robot(request.user))
+                return JsonResponse(self.to_robot(request, execution))
 
         if request.method == 'PUT':
             result = json.loads(request.body.decode('utf-8'))
@@ -56,3 +57,8 @@ class ExecutionAdmin(BaseAdmin):
 
     def has_delete_permission(self, request, obj=None):
         return False
+
+    def to_robot(self, request: HttpRequest, execution: Execution):
+        get_variable_value = lambda pk: VariableValue.objects.get(pk=pk)
+
+        return execution.to_robot(get_variable_value, request.user)

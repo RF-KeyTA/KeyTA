@@ -48,20 +48,20 @@ class TestCaseExecution(Execution):
         
         return setup_teardown_calls | test_calls | sequence_calls | action_calls
 
-    def get_rf_testsuite(self, user: AbstractUser) -> RFTestSuite:
+    def get_rf_testsuite(self, get_variable_value, user: AbstractUser) -> RFTestSuite:
         keywords = {
-            keyword.pk: keyword.to_robot()
+            keyword.pk: keyword.to_robot(get_variable_value)
             for keyword in
             Keyword.objects.filter(pk__in=self.sequence_ids|self.action_ids)
         }
 
         if (test_setup := self.test_setup()) and test_setup.enabled:
             if to_keyword := test_setup.to_keyword:
-                keywords[to_keyword.id] = to_keyword.to_robot()
+                keywords[to_keyword.id] = to_keyword.to_robot(get_variable_value)
 
         if (test_teardown := self.test_teardown()) and test_teardown.enabled:
             if to_keyword := test_teardown.to_keyword:
-                keywords[to_keyword.id] = to_keyword.to_robot()
+                keywords[to_keyword.id] = to_keyword.to_robot(get_variable_value)
 
         dict_variables = []
         list_variables = []
@@ -69,19 +69,19 @@ class TestCaseExecution(Execution):
         step: TestStep
         for step in self.testcase.steps.filter(variable__isnull=False).filter(variable__type=VariableType.LIST):
             variable: Variable = step.variable
-            list_variables.append(variable.to_robot())
+            list_variables.append(variable.to_robot(get_variable_value))
 
             element: VariableInList
             for element in variable.elements.all():
-                dict_variables.append(element.variable.to_robot())
+                dict_variables.append(element.variable.to_robot(get_variable_value))
 
         return {
             'name': self.testcase.name,
-            'settings': self.get_rf_settings(user),
+            'settings': self.get_rf_settings(get_variable_value, user),
             'dict_variables': dict_variables,
             'list_variables': list_variables,
             'keywords': list(keywords.values()),
-            'testcases': [self.testcase.to_robot()]
+            'testcases': [self.testcase.to_robot(get_variable_value)]
         }
 
     def save(

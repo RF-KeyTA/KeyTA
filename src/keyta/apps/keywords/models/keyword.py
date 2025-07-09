@@ -106,7 +106,7 @@ class Keyword(DocumentationMixin, AbstractBaseModel):
 
         super().save(force_insert, force_update, using, update_fields)
 
-    def to_robot(self) -> RFKeyword:
+    def to_robot(self, get_variable_value) -> RFKeyword:
         args = self.parameters.args()
         kwargs = self.parameters.kwargs()
         return_values = self.return_values.all()
@@ -117,7 +117,7 @@ class Keyword(DocumentationMixin, AbstractBaseModel):
             'args': [arg.name for arg in args],
             'kwargs': {kwarg.name: kwarg.default_value for kwarg in kwargs},
             'steps': [
-                step.to_robot()
+                step.to_robot(get_variable_value)
                 for step in self.calls.all()
                 if step.enabled and step.to_keyword
             ],

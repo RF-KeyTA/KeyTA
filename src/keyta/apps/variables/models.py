@@ -79,12 +79,12 @@ class Variable(AbstractBaseModel):
     def is_list(self):
         return self.type == VariableType.LIST
 
-    def to_robot(self):
+    def to_robot(self, get_variable_value):
         if self.is_dict():
             return (
                 '&{%s}' % self.name,
                 {
-                    value.name: value.value
+                    value.name: get_variable_value(value.pk)
                     for value in self.values.all()
                 }
             )
