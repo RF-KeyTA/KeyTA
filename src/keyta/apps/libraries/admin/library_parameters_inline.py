@@ -15,12 +15,24 @@ class LibraryParameterFormSet(OptionalArgumentFormSet):
 
 class InitArguments(BaseTabularInline):
     model = LibraryParameter
-    fields = ['name', 'default_value', 'reset']
-    readonly_fields = ['name', 'reset']
+    fields = ['name', 'default_value']
+    readonly_fields = ['name']
     formset = LibraryParameterFormSet
     extra = 0
     max_num = 0
     can_delete = False
+
+    def get_fields(self, request, obj=None):
+        if self.has_change_permission(request, obj):
+            return self.fields + ['reset']
+
+        return super().get_fields(request, obj)
+
+    def get_readonly_fields(self, request, obj=None):
+        if self.has_change_permission(request, obj):
+            return self.readonly_fields + ['reset']
+
+        return super().get_readonly_fields(request, obj)
 
     def get_queryset(self, request):
         return super().get_queryset(request).prefetch_related('library')
