@@ -7,7 +7,7 @@ from keyta.apps.keywords.models import Keyword, KeywordCall
 from keyta.forms.baseform import form_with_select
 from keyta.widgets import GroupedByLibrary
 
-from ..models import Action
+from ..models import Action, ActionStep
 
 
 class GroupedChoiceField(forms.ModelChoiceField):
@@ -15,7 +15,7 @@ class GroupedChoiceField(forms.ModelChoiceField):
 
 
 class ActionSteps(StepsInline):
-    model = KeywordCall
+    model = ActionStep
     form = form_with_select(
         KeywordCall,
         'to_keyword',

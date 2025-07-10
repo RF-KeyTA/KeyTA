@@ -216,6 +216,7 @@ JAZZMIN_SETTINGS = {
         'actions.actionlibraryimport',
         'actions.actionquickadd',
         'actions.actionquickchange',
+        'actions.actionstep',
         'executions.keywordexecution',
         'executions.testcaseexecution',
         'executions.setup',
