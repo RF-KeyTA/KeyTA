@@ -3,13 +3,13 @@ from django.utils.translation import gettext_lazy as _
 from adminsortable2.admin import SortableAdminBase
 from model_clone import CloneModelAdminMixin
 
+from keyta.admin.base_admin import BaseAdmin
+from keyta.admin.field_documentation import DocumentationField
+from keyta.admin.list_filters import SystemListFilter
 from keyta.apps.executions.admin import ExecutionInline
 from keyta.apps.executions.models import TestCaseExecution
 from keyta.apps.keywords.admin import TestStepsInline
 from keyta.widgets import BaseSelectMultiple
-
-from keyta.admin.base_admin import BaseAdmin
-from keyta.admin.list_filters import SystemListFilter
 
 from ..models import TestCase
 
@@ -18,7 +18,7 @@ class LocalExecution(ExecutionInline):
     model = TestCaseExecution
 
 
-class BaseTestCaseAdmin(CloneModelAdminMixin, SortableAdminBase, BaseAdmin):
+class BaseTestCaseAdmin(DocumentationField, CloneModelAdminMixin, SortableAdminBase, BaseAdmin):
     list_display = ['name', 'description']
     list_display_links = ['name']
     list_filter = [
@@ -31,7 +31,6 @@ class BaseTestCaseAdmin(CloneModelAdminMixin, SortableAdminBase, BaseAdmin):
         'systems',
         'name',
         'description',
-        'documentation'
     ]
     inlines = [
         TestStepsInline,

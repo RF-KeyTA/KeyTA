@@ -9,6 +9,7 @@ from keyta.admin.base_admin import (
     BaseAdmin,
     BaseDocumentationAdmin
 )
+from keyta.admin.field_documentation import DocumentationField
 from keyta.apps.actions.models import Action
 from keyta.apps.sequences.models import Sequence
 
@@ -24,13 +25,13 @@ def url_params(params: dict):
 
 
 @admin.register(Keyword)
-class KeywordAdmin(SortableAdminBase, BaseAdmin):
+class KeywordAdmin(DocumentationField, SortableAdminBase, BaseAdmin):
     list_display = ['name', 'short_doc']
     list_display_links = ['name']
     search_fields = ['name']
     search_help_text = _('Name')
 
-    fields = ['name', 'short_doc', 'documentation']
+    fields = ['name', 'short_doc']
 
     def change_view(self, request, object_id, form_url="", extra_context=None):
         keyword = Keyword.objects.get(pk=object_id)

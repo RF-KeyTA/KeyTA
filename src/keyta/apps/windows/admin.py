@@ -191,7 +191,7 @@ class Schemas(WindowQuickAddMixin, BaseTabularInline):
 
 
 @admin.register(Window)
-class WindowAdmin(BaseAdmin):
+class WindowAdmin(DocumentationField, BaseAdmin):
     list_display = ['name', 'preview']
     list_display_links = ['name']
     list_filter = [
@@ -208,7 +208,7 @@ class WindowAdmin(BaseAdmin):
             str(Icon(settings.FA_ICONS.preview, {'font-size': '18px'}))
         )
 
-    fields = ['systems', 'name', 'description', 'documentation']
+    fields = ['systems', 'name', 'description']
     form = form_with_select(
         Window,
         'systems',
@@ -244,7 +244,7 @@ class WindowAdmin(BaseAdmin):
 
 @admin.register(WindowDocumentation)
 class WindowDocumentationAdmin(BaseDocumentationAdmin):
-    pass
+    fields = []
 
 
 @admin.register(WindowQuickAdd)
@@ -261,7 +261,7 @@ class WindowQuickAddAdmin(BaseQuickAddAdmin):
 
 
 @admin.register(WindowQuickChange)
-class WindowQuickChangeAdmin(DocumentationField, WindowAdmin):
+class WindowQuickChangeAdmin(WindowAdmin):
     def get_inlines(self, request, obj):
         inlines = [Actions, Sequences, Variables, Schemas]
 
@@ -269,6 +269,12 @@ class WindowQuickChangeAdmin(DocumentationField, WindowAdmin):
             return [Resources] + inlines
 
         return inlines
+
+    def get_fields(self, request, obj=None):
+        return self.get_readonly_fields(request, obj)
+
+    def get_readonly_fields(self, request, obj=None):
+        return ['readonly_documentation']
 
     def has_delete_permission(self, request, obj=None):
         return False
