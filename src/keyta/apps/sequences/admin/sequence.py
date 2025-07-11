@@ -6,7 +6,6 @@ from django.utils.translation import gettext_lazy as _
 from model_clone import CloneModelAdminMixin
 
 from keyta.admin.base_admin import BaseQuickAddAdmin
-from keyta.admin.field_documentation import DocumentationField
 from keyta.admin.list_filters import SystemListFilter
 from keyta.apps.executions.admin import KeywordExecutionInline
 from keyta.apps.keywords.admin import (
@@ -127,13 +126,9 @@ class SequenceQuickAddAdmin(WindowKeywordAdminMixin, BaseQuickAddAdmin):
 
 @admin.register(SequenceQuickChange)
 class SequenceQuickChangeAdmin(WindowKeywordAdmin):
+    fields = []
+    readonly_fields = ['documentation']
     inlines = [ParametersInline, SequenceSteps, ReturnValueInline]
-
-    def get_fields(self, request, obj=None):
-        return self.get_readonly_fields(request, obj)
-
-    def get_readonly_fields(self, request, obj=None):
-        return ['readonly_documentation']
 
     def has_delete_permission(self, request, obj=None):
         return False
