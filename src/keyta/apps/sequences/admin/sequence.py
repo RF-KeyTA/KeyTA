@@ -6,7 +6,6 @@ from django.utils.translation import gettext_lazy as _
 from model_clone import CloneModelAdminMixin
 
 from keyta.admin.base_admin import BaseQuickAddAdmin
-from keyta.admin.field_documentation import DocumentationField
 from keyta.admin.list_filters import SystemListFilter
 from keyta.apps.executions.admin import KeywordExecutionInline
 from keyta.apps.keywords.admin import (
