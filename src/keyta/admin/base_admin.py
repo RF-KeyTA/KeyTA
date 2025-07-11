@@ -5,13 +5,11 @@ from django import forms
 from django.contrib import admin, messages
 from django.contrib.admin.views.main import ChangeList
 from django.contrib.admin.widgets import AutocompleteSelectMultiple
-from django.db import models
 from django.forms import SelectMultiple, CheckboxSelectMultiple
 from django.http import HttpRequest, HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
-from tinymce.widgets import AdminTinyMCE
 
 from keyta.widgets import BaseSelectMultiple, quick_add_widget
 
@@ -43,11 +41,6 @@ class ListView(ChangeList):
 
 class BaseAdmin(admin.ModelAdmin):
     actions = None
-    formfield_overrides = {
-        models.TextField: {
-            'widget': AdminTinyMCE
-        }
-    }
     list_max_show_all = 50
     list_per_page = 50
     preserve_filters = False

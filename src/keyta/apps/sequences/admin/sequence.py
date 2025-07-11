@@ -126,13 +126,9 @@ class SequenceQuickAddAdmin(WindowKeywordAdminMixin, BaseQuickAddAdmin):
 
 @admin.register(SequenceQuickChange)
 class SequenceQuickChangeAdmin(WindowKeywordAdmin):
+    fields = []
+    readonly_fields = ['documentation']
     inlines = [ParametersInline, SequenceSteps, ReturnValueInline]
-
-    def get_fields(self, request, obj=None):
-        return self.get_readonly_fields(request, obj)
-
-    def get_readonly_fields(self, request, obj=None):
-        return ['readonly_documentation']
 
     def has_delete_permission(self, request, obj=None):
         return False
