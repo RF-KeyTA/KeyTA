@@ -32,7 +32,7 @@
                             id="{{ inline_admin_formset.formset.prefix }}-{% if forloop.last and inline_admin_formset.has_add_permission %}empty{% else %}{{ forloop.counter0 }}{% endif %}">
                             <td class="original">
                                 <p style="font-size: 28px; background-image: none">
-                                    {% if inline_admin_form.original and not forloop.last %}
+                                    {% if inline_admin_form.original and not forloop.last and inline_admin_formset.has_change_permission %}
                                          <i class="{{ kw_call_drag_handle_icon }}"></i>
                                     {% endif %}
                                 </p>
