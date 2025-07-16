@@ -28,5 +28,21 @@ class ReturnValueInline(TabularInlineWithDelete):
 
         return formset
 
+    def has_add_permission(self, request, obj):
+        keyword: Keyword = obj
+
+        if keyword and keyword.in_use:
+            return False
+
+        super().has_add_permission(request, obj)
+
     def has_change_permission(self, request, obj=None):
         return False
+
+    def has_delete_permission(self, request, obj=None):
+        keyword: Keyword = obj
+
+        if keyword and keyword.in_use:
+            return False
+
+        super().has_delete_permission(request, obj)
