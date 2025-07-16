@@ -26,10 +26,16 @@ def url_params(params: dict):
 
 @admin.register(Keyword)
 class KeywordAdmin(DocumentationField, SortableAdminBase, BaseAdmin):
-    list_display = ['name', 'short_doc']
+    list_display = ['name', 'window_list']
     list_display_links = ['name']
     search_fields = ['name']
     search_help_text = _('Name')
+
+    @admin.display(description=_('Masken'))
+    def window_list(self, obj):
+        keyword: Keyword = obj
+
+        return ', '.join(keyword.windows.values_list('name', flat=True))
 
     fields = ['name', 'short_doc']
 
