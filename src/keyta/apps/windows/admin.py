@@ -241,6 +241,14 @@ class WindowAdmin(DocumentationField, BaseAdmin):
         else:
             return self.inlines + [Schemas]
 
+    def has_delete_permission(self, request, obj=None):
+        window: Window = obj
+
+        if window and window.sequences.exists():
+            return False
+
+        return super().has_delete_permission(request, obj)
+
 
 @admin.register(WindowDocumentation)
 class WindowDocumentationAdmin(BaseDocumentationAdmin):
