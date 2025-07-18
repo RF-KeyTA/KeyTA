@@ -40,6 +40,21 @@ class TestCaseExecution(Execution):
             .distinct()
         )
 
+    def get_dict_list_variables(self, get_variable_value):
+        dict_variables = []
+        list_variables = []
+
+        step: TestStep
+        for step in self.testcase.steps.filter(variable__isnull=False).filter(variable__type=VariableType.LIST):
+            variable: Variable = step.variable
+            list_variables.append(variable.to_robot(get_variable_value))
+
+            element: VariableInList
+            for element in variable.elements.all():
+                dict_variables.append(element.variable.to_robot(get_variable_value))
+
+        return dict_variables, list_variables
+
     def get_keyword_calls(self) -> models.QuerySet:
         setup_teardown_calls = KeywordCall.get_substeps(self.keyword_calls)
         test_calls = KeywordCall.unsorted().filter(testcase=self.testcase)
@@ -63,17 +78,7 @@ class TestCaseExecution(Execution):
             if to_keyword := test_teardown.to_keyword:
                 keywords[to_keyword.id] = to_keyword.to_robot(get_variable_value)
 
-        dict_variables = []
-        list_variables = []
-
-        step: TestStep
-        for step in self.testcase.steps.filter(variable__isnull=False).filter(variable__type=VariableType.LIST):
-            variable: Variable = step.variable
-            list_variables.append(variable.to_robot(get_variable_value))
-
-            element: VariableInList
-            for element in variable.elements.all():
-                dict_variables.append(element.variable.to_robot(get_variable_value))
+        dict_variables, list_variables = self.get_dict_list_variables(get_variable_value)
 
         return {
             'name': self.testcase.name,
