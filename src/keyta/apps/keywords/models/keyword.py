@@ -84,10 +84,6 @@ class Keyword(DocumentationMixin, AbstractBaseModel):
         return f'{self.type[0]}{self.id}::{self.name}'
 
     @property
-    def in_use(self):
-        return self.uses.exclude(execution__isnull=False).exists()
-
-    @property
     def is_action(self):
         return self.type == KeywordType.ACTION
 

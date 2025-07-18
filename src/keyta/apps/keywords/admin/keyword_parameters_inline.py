@@ -3,7 +3,7 @@ from django.utils.translation import gettext_lazy as _
 
 from keyta.admin.base_inline import SortableTabularInlineWithDelete
 
-from ..models import Keyword, KeywordParameter
+from ..models import KeywordParameter
 
 
 class ParameterForm(forms.ModelForm):
@@ -31,19 +31,3 @@ class ParametersInline(SortableTabularInlineWithDelete):
             field.widget.attrs.update({'style': 'width: 100%'})
 
         return field
-
-    def has_add_permission(self, request, obj):
-        keyword: Keyword = obj
-
-        if keyword and keyword.in_use:
-            return False
-
-        return super().has_add_permission(request, obj)
-
-    def has_delete_permission(self, request, obj=None):
-        keyword: Keyword = obj
-
-        if keyword and keyword.in_use:
-            return False
-
-        return super().has_delete_permission(request, obj)
