@@ -7,7 +7,7 @@
     {%- endfor %}
 
     {%- for step in keyword.steps %}
-    {% if step.return_values %}{{ rf_join(step.return_values) }}    {% endif %}{% if step.condition %}Run Keyword If    {{ step.condition }}    {% endif %}{{ call_keyword(step) }}
+    {% if step.return_values %}{{ rf_join(step.return_values) }}    {% endif %}{% if step.condition %}IF   {{ step.condition }}    {% endif %}{{ call_keyword(step) }}
     {%- endfor %}
     {%- if keyword.return_values %}
     RETURN      {{ rf_join(keyword.return_values) }}
