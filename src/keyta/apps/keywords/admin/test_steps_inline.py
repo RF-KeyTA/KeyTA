@@ -1,4 +1,5 @@
 from adminsortable2.admin import CustomInlineFormSet
+from django.forms.widgets import Widget
 
 from keyta.admin.base_inline import SortableTabularInline
 from keyta.admin.field_delete_related_instance import DeleteRelatedField
@@ -11,6 +12,11 @@ from keyta.widgets import quick_change_widget
 from ..forms import TestStepsForm
 from ..models import KeywordCall
 from .field_keywordcall_args import KeywordCallArgsField
+
+
+class LabelWidget(Widget):
+    def render(self, name, value, attrs=None, renderer=None):
+        return '<p>-</p>'
 
 
 class TestStepsFormset(CustomInlineFormSet):
@@ -26,6 +32,9 @@ class TestStepsFormset(CustomInlineFormSet):
 
             if not test_step.variable:
                 form.fields['variable'].widget.can_change_related = False
+
+            if not test_step.window.variables.exists():
+                form.fields['variable'].widget = LabelWidget()
 
 
 class TestStepsInline(   
