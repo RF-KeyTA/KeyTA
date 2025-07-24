@@ -65,12 +65,6 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
         blank=True,
         related_name='uses'
     )
-    condition = models.CharField(
-        max_length=255,
-        default='',
-        blank=True,
-        verbose_name=_('Bedingung (optional)')
-    )
     enabled = models.BooleanField(
         default=True,
         verbose_name=''
