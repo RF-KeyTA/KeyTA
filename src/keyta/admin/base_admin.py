@@ -131,7 +131,7 @@ class BaseReadOnlyAdmin(admin.ModelAdmin):
 
 
 class BaseDocumentationAdmin(DocumentationField, BaseReadOnlyAdmin):
-    pass
+    fields = []
 
 
 class BaseQuickAddAdmin(BaseAdmin):
