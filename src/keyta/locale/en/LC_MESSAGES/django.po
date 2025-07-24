@@ -466,7 +466,7 @@ msgstr "Equal"
 
 #: .\apps\keywords\models\keywordcall_condition.py:7
 msgid "Ungleich"
-msgstr "Unequal"
+msgstr "Not equal"
 
 #: .\apps\keywords\models\keywordcall_condition.py:8
 msgid "Nicht leer"
