@@ -1,5 +1,6 @@
 import json
 
+from django.conf import settings
 from django.contrib import admin
 from django.forms import HiddenInput, MultipleHiddenInput
 from django.http import HttpRequest, HttpResponseRedirect
@@ -250,10 +251,10 @@ class VariableAdmin(SortableAdminBase, BaseAdmin):
 
     @admin.display(description=_('Maske'))
     def window(self, variable: Variable):
-        window = variable.windows.first()
+        window: Window = variable.windows.first()
 
         return link(
-            window.get_admin_url(),
+            window.get_admin_url(app=settings.WINDOWS_APP),
             window.name
         )
 
