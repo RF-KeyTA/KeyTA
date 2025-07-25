@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-24 09:52+0200\n"
+"POT-Creation-Date: 2025-07-25 11:36+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -301,6 +301,7 @@ msgstr "Parameter"
 
 #: .\apps\keywords\admin\keyword_parameters_inline.py:24
 #: .\apps\keywords\models\keyword_parameters.py:116
+#: .\apps\keywords\models\keywordcall_condition.py:14
 #: .\apps\keywords\models\keywordcall_parameters.py:163
 #: .\apps\libraries\models\library_import_parameter.py:31
 msgid "Parameter"
@@ -333,6 +334,14 @@ msgstr ""
 
 #: .\apps\keywords\admin\keywordcall_return_value_inline.py:14
 msgid "Rückgabewerte"
+msgstr ""
+
+#: .\apps\keywords\admin\library_keyword_call.py:37
+msgid "Parameter auswählen"
+msgstr ""
+
+#: .\apps\keywords\admin\library_keyword_call.py:42
+msgid "Bedingung auswählen"
 msgstr ""
 
 #: .\apps\keywords\admin\return_value_inline.py:25
@@ -458,38 +467,23 @@ msgid "Referenzwert (optional)"
 msgstr ""
 
 #: .\apps\keywords\models\keywordcall_condition.py:6
-msgid "Gleich"
+msgid "Ist"
 msgstr ""
 
 #: .\apps\keywords\models\keywordcall_condition.py:7
-msgid "Ungleich"
+msgid "Ist nicht"
 msgstr ""
-
-#: .\apps\keywords\models\keywordcall_condition.py:8
-msgid "Nicht leer"
-msgstr ""
-
-#: .\apps\keywords\models\keywordcall_condition.py:14
-#, fuzzy
-#| msgid "Parameters"
-msgid "Erster Parameter"
-msgstr "Parameter"
 
 #: .\apps\keywords\models\keywordcall_condition.py:19
-msgid "Operator"
-msgstr ""
-
-#: .\apps\keywords\models\keywordcall_condition.py:23
-#, fuzzy
-#| msgid "Parameters"
-msgid "Zweiter Parameter"
-msgstr "Parameter"
-
-#: .\apps\keywords\models\keywordcall_condition.py:35
+#: .\apps\keywords\models\keywordcall_condition.py:33
 msgid "Bedingung"
 msgstr ""
 
-#: .\apps\keywords\models\keywordcall_condition.py:36
+#: .\apps\keywords\models\keywordcall_condition.py:24
+msgid "Soll Wert"
+msgstr ""
+
+#: .\apps\keywords\models\keywordcall_condition.py:34
 msgid "Bedingungen"
 msgstr ""
 
@@ -910,6 +904,3 @@ msgstr "Allgemein"
 #: .\widgets.py:258
 msgid "Klicke auf das Plus-Symbol"
 msgstr ""
-
-#~ msgid "add"
-#~ msgstr "Erstelle"

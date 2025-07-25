@@ -1,10 +1,12 @@
 from django.contrib import admin
+from django.utils.translation import gettext_lazy as _
 
 from keyta.admin.base_inline import TabularInlineWithDelete
+from keyta.widgets import BaseSelect, ModelSelect2AdminWidget
 
 from ..forms import KeywordCallParameterFormset
 from ..forms.keywordcall_parameter_formset import get_global_variables
-from ..models import LibraryKeywordCall, KeywordCall, KeywordCallCondition
+from ..models import LibraryKeywordCall, KeywordCall, KeywordCallCondition, KeywordParameter
 from .keywordcall import KeywordCallAdmin, KeywordDocField
 from .keywordcall_parameters_inline import KeywordCallParametersInline
 
@@ -25,6 +27,25 @@ class LibraryKeywordCallParametersInline(KeywordCallParametersInline):
 class ConditionsInline(TabularInlineWithDelete):
     model = KeywordCallCondition
 
+    def get_formset(self, request, obj=None, **kwargs):
+        formset = super().get_formset(request, obj, **kwargs)
+        kw_call: KeywordCall = obj
+        kw_parameters = kw_call.from_keyword.parameters.all()
+
+        formset.form.base_fields['keyword_parameter'].queryset = kw_parameters
+        formset.form.base_fields['keyword_parameter'].widget = ModelSelect2AdminWidget(
+            placeholder=_('Parameter auswählen'),
+            model=KeywordParameter,
+            search_fields=['name__icontains'],
+        )
+        formset.form.base_fields['condition'].widget = BaseSelect(
+            _('Bedingung auswählen'),
+            choices=formset.form.base_fields['condition'].widget.choices
+        )
+        formset.form.base_fields['expected_value'].help_text = _('Leeres Feld bedeutet Leerzeichen')
+
+        return formset
+
 
 @admin.register(LibraryKeywordCall)
 class LibraryKeywordCallAdmin(
@@ -37,4 +58,4 @@ class LibraryKeywordCallAdmin(
         return self.changeform_view(request, object_id, form_url=form_url, extra_context=extra_context)
 
     def get_inlines(self, request, obj):
-        return super().get_inlines(request, obj) + [ConditionsInline]
+        return [ConditionsInline] + super().get_inlines(request, obj)

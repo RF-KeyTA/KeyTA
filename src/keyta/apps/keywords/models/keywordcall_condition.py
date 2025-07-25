@@ -1,26 +1,29 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-
-class OperatorChoices(models.TextChoices):
-    IS_EQUAL = 'IS_EQUAL', _('Gleich')
-    NOT_EQUAL = 'NOT_EQUAL', _('Ungleich')
-    NOT_EMPTY = 'NOT_EMPTY', _('Nicht leer')
+from keyta.models.base_model import AbstractBaseModel
 
 
-class KeywordCallCondition(models.Model):
-    left_operand = models.CharField(
-        max_length=255,
-        verbose_name=_('Erster Parameter')
+class ConditionChoices(models.TextChoices):
+    IS_EQUAL = '=', _('Ist')
+    NOT_EQUAL = '!=', _('Ist nicht')
+
+
+class KeywordCallCondition(AbstractBaseModel):
+    keyword_parameter = models.ForeignKey(
+        'keywords.KeywordParameter',
+        on_delete=models.CASCADE,
+        verbose_name=_('Parameter'),
     )
-    operator = models.CharField(
-        choices=OperatorChoices.choices,
+    condition = models.CharField(
+        choices=ConditionChoices.choices,
         max_length=255,
-        verbose_name=_('Operator')
+        verbose_name=_('Bedingung'),
     )
-    right_operand = models.CharField(
+    expected_value = models.CharField(
         max_length=255,
-        verbose_name=_('Zweiter Parameter')
+        blank=True,
+        verbose_name=_('Soll Wert')
     )
     keyword_call = models.ForeignKey(
         'keywords.KeywordCall',
@@ -29,7 +32,7 @@ class KeywordCallCondition(models.Model):
     )
 
     def __str__(self):
-        return self.value
+        return '"${' + str(self.keyword_parameter) + '}"' + f' {self.condition} "{self.expected_value}"'
 
     class Meta:
         verbose_name=_('Bedingung')
