@@ -65,12 +65,6 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
         blank=True,
         related_name='uses'
     )
-    condition = models.CharField(
-        max_length=255,
-        default='',
-        blank=True,
-        verbose_name=_('Bedingung (optional)')
-    )
     enabled = models.BooleanField(
         default=True,
         verbose_name=''
@@ -256,7 +250,7 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
                         rf_args.append(user_input)
 
         return {
-            'condition': self.condition,
+            'condition': ' and '.join([str(condition)for condition in self.conditions.all()]),
             'keyword': self.to_keyword.unique_name,
             'args': rf_args,
             'kwargs': {kwarg.name: kwarg.to_robot(get_variable_value) for kwarg in kwargs},

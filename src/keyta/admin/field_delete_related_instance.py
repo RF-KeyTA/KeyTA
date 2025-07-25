@@ -8,10 +8,12 @@ from keyta.widgets import link, Icon
 
 class DeleteRelatedField:
     def get_fields(self, request, obj=None):
-        if self.has_delete_permission(request, obj):
-            return super().get_fields(request, obj) + ['delete']
+        fields = super().get_fields(request, obj)
 
-        return super().get_fields(request, obj)
+        if self.has_delete_permission(request, obj) and not 'delete' in fields:
+            return fields + ['delete']
+
+        return fields
 
     def get_readonly_fields(self, request: HttpRequest, obj=None):
         @admin.display(description='')
