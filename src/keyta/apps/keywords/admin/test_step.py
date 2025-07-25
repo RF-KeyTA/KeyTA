@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 
-from keyta.apps.variables.models import VariableDocumentation
+from keyta.apps.variables.models import Variable, VariableDocumentation
 from keyta.widgets import open_link_in_modal
 
 from ..forms import KeywordCallParameterFormset
@@ -13,31 +13,14 @@ from .keywordcall import (
 )
 
 
-def get_schema_fields(schema_pk, variable_name):
+def get_variable_values(variable: Variable):
     sources = (
         KeywordCallParameterSource.objects
-        .filter(variable_schema_field__schema_id=schema_pk)
-        .order_by('variable_schema_field__index')
+        .filter(variable_value__variable_id=variable.pk)
     )
 
     return [[
-        variable_name,
-        [
-            (source.get_value().jsonify(), str(source))
-            for source in sources
-        ]
-    ]]
-
-
-def get_variable_values(variable_pk, variable_name):
-    sources = (
-        KeywordCallParameterSource.objects
-        .filter(variable_value__variable_id=variable_pk)
-        .order_by('variable_value__schema_field__index')
-    )
-
-    return [[
-        variable_name,
+        variable.name,
         [
             (source.get_value().jsonify(), str(source))
             for source in sources
@@ -59,10 +42,7 @@ class TestStepParameterFormset(KeywordCallParameterFormset):
         choices = get_prev_return_values(kw_call)
 
         if variable := kw_call.variable:
-            if variable.is_list():
-                choices += get_schema_fields(variable.schema.pk, variable.name)
-            else:
-                choices += get_variable_values(variable.pk, variable.name)
+            choices += get_variable_values(variable)
 
         return choices + get_window_variables(kw_call)
 

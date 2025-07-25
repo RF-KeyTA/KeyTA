@@ -5,7 +5,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from keyta.apps.keywords.models import Keyword, KeywordCall, TestStep
-from keyta.apps.variables.models import Variable, VariableInList, VariableType
+from keyta.apps.variables.models import Variable
 from keyta.rf_export.testsuite import RFTestSuite
 
 from ..errors import ValidationError
@@ -45,13 +45,14 @@ class TestCaseExecution(Execution):
         list_variables = []
 
         step: TestStep
-        for step in self.testcase.steps.filter(variable__isnull=False).filter(variable__type=VariableType.LIST):
+        for step in self.testcase.steps.filter(variable__isnull=False):
             variable: Variable = step.variable
-            list_variables.append(variable.to_robot(get_variable_value))
 
-            element: VariableInList
-            for element in variable.elements.all():
-                dict_variables.append(element.variable.to_robot(get_variable_value))
+            if variable.is_dict():
+                dict_variables.append(variable.to_robot(get_variable_value))
+
+            if variable.is_list():
+                list_variables.append(variable.to_robot(get_variable_value))
 
         return dict_variables, list_variables
 

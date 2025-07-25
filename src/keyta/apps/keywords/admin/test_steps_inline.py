@@ -85,7 +85,6 @@ class TestStepsInline(
         variable_field.queryset = (
             variable_field.queryset
             .filter(systems__in=systems)
-            .filter(in_list__isnull=True)
         ).distinct().order_by('name')
         variable_field.widget = quick_change_widget(variable_field.widget)
 

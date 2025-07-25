@@ -6,7 +6,6 @@ from django.utils.translation import gettext_lazy as _
 
 from keyta.apps.keywords.models import KeywordCall
 from keyta.apps.resources.models import ResourceImport
-from keyta.apps.variables.models import VariableSchema
 from keyta.models.base_model import AbstractBaseModel
 
 
@@ -100,14 +99,3 @@ class WindowSystemRelation(AbstractBaseModel, Window.systems.through):
         proxy = True
         verbose_name = _('Beziehung zum System')
         verbose_name_plural = _('Beziehungen zu Systemen')
-
-
-class WindowSchemaRelation(AbstractBaseModel, VariableSchema.windows.through):
-    def __str__(self):
-        return f'{self.schema} -> {self.window}'
-
-    class Meta:
-        auto_created = True
-        proxy = True
-        verbose_name = _('Datenvorlage')
-        verbose_name_plural = _('Datenvorlagen')

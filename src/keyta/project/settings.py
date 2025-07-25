@@ -207,8 +207,6 @@ JAZZMIN_SETTINGS = {
         'libraries.libraryimport': 'single',
         'sequences.actioncall': 'single',
         'variables.variablequickadd': 'single',
-        'variables.variableschema': 'single',
-        'variables.variableschemaquickadd': 'single',
     },
     "copyright": 'imbus',
     "hide_models": [
@@ -252,9 +250,6 @@ JAZZMIN_SETTINGS = {
         'variables.variablewindowrelation',
         'variables.variablequickadd',
         'variables.variablequickchange',
-        'variables.variableschema',
-        'variables.variableschemafield',
-        'variables.variableschemaquickadd',
         'windows.windowquickadd',
         'windows.windowquickchange',
         'windows.windowdocumentation',

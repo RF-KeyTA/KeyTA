@@ -4,7 +4,12 @@ from django.contrib import admin
 from django.http import HttpRequest, HttpResponseRedirect
 from django.utils.translation import gettext_lazy as _
 
-from keyta.admin.base_admin import BaseAdmin, BaseQuickAddAdmin, QuickAddMixin, BaseDocumentationAdmin
+from keyta.admin.base_admin import (
+    BaseAdmin,
+    BaseDocumentationAdmin,
+    BaseQuickAddAdmin,
+    QuickAddMixin
+)
 from keyta.admin.base_inline import BaseTabularInline
 from keyta.admin.field_delete_related_instance import DeleteRelatedField
 from keyta.admin.field_documentation import DocumentationField
@@ -16,7 +21,6 @@ from keyta.apps.resources.models import Resource, ResourceImport
 from keyta.apps.sequences.models import SequenceQuickAdd
 from keyta.apps.variables.models import (
     VariableQuickAdd,
-    VariableSchemaQuickAdd,
     VariableWindowRelation
 )
 from keyta.forms.baseform import form_with_select, BaseForm
@@ -25,8 +29,8 @@ from keyta.widgets import Icon, open_link_in_modal
 from .models import (
     Window,
     WindowDocumentation,
-    WindowQuickChange,
-    WindowSchemaRelation, WindowQuickAdd,
+    WindowQuickAdd,
+    WindowQuickChange
 )
 
 
@@ -157,7 +161,6 @@ class Variables(WindowQuickAddMixin, BaseTabularInline):
     def get_queryset(self, request):
         return (
             super().get_queryset(request)
-            .exclude(variable__in_list__isnull=False)
             .order_by('variable__name')
     )
 
@@ -173,21 +176,6 @@ class Variables(WindowQuickAddMixin, BaseTabularInline):
     @admin.display(description=_('Systeme'))
     def systems(self, obj):
         return ', '.join(obj.variable.systems.values_list('name', flat=True))
-
-
-class Schemas(WindowQuickAddMixin, BaseTabularInline):
-    model = WindowSchemaRelation
-    form = form_with_select(
-        WindowSchemaRelation,
-        'variableschema',
-        'Placeholder',
-        labels={
-            'variableschema': _('Datenvorlage')
-        },
-        can_add_related=True
-    )
-    quick_add_field = 'variableschema'
-    quick_add_model = VariableSchemaQuickAdd
 
 
 class WindowForm(BaseForm):
@@ -237,7 +225,7 @@ class WindowAdmin(DocumentationField, BaseAdmin):
     inlines = [
         Actions,
         Sequences,
-        Variables,
+        Variables
     ]
 
     @admin.display(description=_('Systeme'))
@@ -262,9 +250,9 @@ class WindowAdmin(DocumentationField, BaseAdmin):
             return []
 
         if Resource.objects.count():
-            return [Resources] + self.inlines + [Schemas]
-        else:
-            return self.inlines + [Schemas]
+            return [Resources] + self.inlines
+
+        return self.inlines
 
     def has_delete_permission(self, request, obj=None):
         window: Window = obj
@@ -299,7 +287,7 @@ class WindowQuickChangeAdmin(WindowAdmin):
     readonly_fields = ['documentation']
 
     def get_inlines(self, request, obj):
-        inlines = [Actions, Sequences, Variables, Schemas]
+        inlines = [Actions, Sequences, Variables]
 
         if Resource.objects.count():
             return [Resources] + inlines
