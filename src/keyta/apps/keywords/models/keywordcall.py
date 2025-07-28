@@ -250,7 +250,7 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
                         rf_args.append(user_input)
 
         return {
-            'condition': ' and '.join([str(condition)for condition in self.conditions.all()]),
+            'condition': ' and '.join([str(condition) for condition in self.conditions.all()]),
             'keyword': self.to_keyword.unique_name,
             'args': rf_args,
             'kwargs': {kwarg.name: kwarg.to_robot(get_variable_value) for kwarg in kwargs},
