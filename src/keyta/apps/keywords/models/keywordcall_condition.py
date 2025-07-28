@@ -5,16 +5,16 @@ from keyta.models.base_model import AbstractBaseModel
 
 
 class ConditionChoices(models.TextChoices):
-    CONTAINS = 'in', _('ist Teil von')
+    CONTAINS = 'in', _('enthält')
     IS_EQUAL = '==', _('ist')
     NOT_EQUAL = '!=', _('ist nicht')
 
 
 class KeywordCallCondition(AbstractBaseModel):
-    keyword_parameter = models.ForeignKey(
-        'keywords.KeywordParameter',
-        on_delete=models.CASCADE,
-        verbose_name=_('Parameter'),
+    value_ref = models.ForeignKey(
+        'keywords.KeywordCallParameterSource',
+        on_delete=models.PROTECT,
+        verbose_name=_('Wert'),
     )
     condition = models.CharField(
         choices=ConditionChoices.choices,
@@ -33,7 +33,12 @@ class KeywordCallCondition(AbstractBaseModel):
     )
 
     def __str__(self):
-        return '"${' + str(self.keyword_parameter) + '}"' + f' {self.condition} "{self.expected_value}"'
+        if self.condition in {ConditionChoices.IS_EQUAL, ConditionChoices.NOT_EQUAL}:
+            return '"${' + str(self.value_ref) + '}"' + f' {self.condition} "{self.expected_value}"'
+
+        if self.condition == ConditionChoices.CONTAINS:
+            return f'"{self.expected_value}" {self.condition} ' + '"${' + str(self.value_ref) + '}"'
+
 
     class Meta:
         verbose_name=_('Bedingung')

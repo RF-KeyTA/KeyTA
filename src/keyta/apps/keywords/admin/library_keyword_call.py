@@ -2,11 +2,15 @@ from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 
 from keyta.admin.base_inline import TabularInlineWithDelete
-from keyta.widgets import BaseSelect, ModelSelect2AdminWidget
 
 from ..forms import KeywordCallParameterFormset
 from ..forms.keywordcall_parameter_formset import get_global_variables
-from ..models import LibraryKeywordCall, KeywordCall, KeywordCallCondition, KeywordParameter
+from ..models import (
+    KeywordCall,
+    KeywordCallCondition,
+    KeywordCallParameterSource,
+    LibraryKeywordCall
+)
 from .keywordcall import KeywordCallAdmin, KeywordDocField
 from .keywordcall_parameters_inline import KeywordCallParametersInline
 
@@ -30,18 +34,12 @@ class ConditionsInline(TabularInlineWithDelete):
     def get_formset(self, request, obj=None, **kwargs):
         formset = super().get_formset(request, obj, **kwargs)
         kw_call: KeywordCall = obj
-        kw_parameters = kw_call.from_keyword.parameters.all()
+        kw_parameters = KeywordCallParameterSource.objects.filter(kw_param__in=kw_call.from_keyword.parameters.all())
+        previous_return_values = KeywordCallParameterSource.objects.filter(kw_call_ret_val__in=kw_call.get_previous_return_values())
 
-        formset.form.base_fields['keyword_parameter'].queryset = kw_parameters
-        formset.form.base_fields['keyword_parameter'].widget = ModelSelect2AdminWidget(
-            placeholder=_('Parameter auswählen'),
-            model=KeywordParameter,
-            search_fields=['name__icontains'],
-        )
-        formset.form.base_fields['condition'].widget = BaseSelect(
-            _('Bedingung auswählen'),
-            choices=formset.form.base_fields['condition'].widget.choices
-        )
+        formset.form.base_fields['value_ref'].queryset = kw_parameters | previous_return_values
+        formset.form.base_fields['value_ref'].widget.attrs['data-placeholder'] = _('Wert auswählen')
+        formset.form.base_fields['condition'].widget.attrs['data-placeholder'] = _('Bedingung auswählen')
         formset.form.base_fields['expected_value'].help_text = _('Leeres Feld bedeutet Leerzeichen')
 
         return formset
@@ -58,4 +56,10 @@ class LibraryKeywordCallAdmin(
         return self.changeform_view(request, object_id, form_url=form_url, extra_context=extra_context)
 
     def get_inlines(self, request, obj):
-        return [ConditionsInline] + super().get_inlines(request, obj)
+        inlines = super().get_inlines(request, obj)
+        kw_call: KeywordCall = obj
+
+        if kw_call.from_keyword.parameters.exists() or kw_call.get_previous_return_values().exists():
+            return inlines + [ConditionsInline]
+
+        return inlines

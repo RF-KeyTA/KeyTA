@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-28 10:33+0200\n"
+"POT-Creation-Date: 2025-07-28 11:54+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -304,7 +304,6 @@ msgstr "Parameters"
 
 #: .\apps\keywords\admin\keyword_parameters_inline.py:24
 #: .\apps\keywords\models\keyword_parameters.py:116
-#: .\apps\keywords\models\keywordcall_condition.py:17
 #: .\apps\keywords\models\keywordcall_parameters.py:163
 #: .\apps\libraries\models\library_import_parameter.py:31
 msgid "Parameter"
@@ -339,15 +338,17 @@ msgstr "Select a format"
 msgid "Rückgabewerte"
 msgstr "Return Values"
 
-#: .\apps\keywords\admin\library_keyword_call.py:37
-msgid "Parameter auswählen"
-msgstr "Select a Parameter"
+#: .\apps\keywords\admin\library_keyword_call.py:41
+#, fuzzy
+#| msgid "Format auswählen"
+msgid "Wert auswählen"
+msgstr "Select a format"
 
 #: .\apps\keywords\admin\library_keyword_call.py:42
 msgid "Bedingung auswählen"
 msgstr "Select a Condition"
 
-#: .\apps\keywords\admin\library_keyword_call.py:45
+#: .\apps\keywords\admin\library_keyword_call.py:43
 msgid "Leeres Feld bedeutet Leerzeichen"
 msgstr "Empty field means empty string"
 
@@ -474,8 +475,8 @@ msgid "Referenzwert (optional)"
 msgstr "Reference Value (optional)"
 
 #: .\apps\keywords\models\keywordcall_condition.py:8
-msgid "ist Teil von"
-msgstr "is contained in"
+msgid "enthält"
+msgstr "contains"
 
 #: .\apps\keywords\models\keywordcall_condition.py:9
 msgid "ist"
@@ -485,8 +486,16 @@ msgstr "is"
 msgid "ist nicht"
 msgstr "is not"
 
+#: .\apps\keywords\models\keywordcall_condition.py:17
+#: .\apps\keywords\models\keywordcall_parameters.py:39
+#: .\apps\libraries\models\library_import_parameter.py:21
+#: .\apps\variables\admin.py:384 .\apps\variables\models.py:163
+#: .\apps\variables\models.py:190
+msgid "Wert"
+msgstr "Value"
+
 #: .\apps\keywords\models\keywordcall_condition.py:22
-#: .\apps\keywords\models\keywordcall_condition.py:39
+#: .\apps\keywords\models\keywordcall_condition.py:44
 msgid "Bedingung"
 msgstr "Condition"
 
@@ -494,7 +503,7 @@ msgstr "Condition"
 msgid "Soll Wert"
 msgstr "Expected Value"
 
-#: .\apps\keywords\models\keywordcall_condition.py:40
+#: .\apps\keywords\models\keywordcall_condition.py:45
 msgid "Bedingungen"
 msgstr "Conditions"
 
@@ -534,13 +543,6 @@ msgstr ""
 #: .\apps\keywords\models\keywordcall_parameters.py:34
 msgid "Format (optional)"
 msgstr ""
-
-#: .\apps\keywords\models\keywordcall_parameters.py:39
-#: .\apps\libraries\models\library_import_parameter.py:21
-#: .\apps\variables\admin.py:384 .\apps\variables\models.py:163
-#: .\apps\variables\models.py:190
-msgid "Wert"
-msgstr "Value"
 
 #: .\apps\keywords\models\window_keyword.py:41 .\apps\testcases\models.py:69
 msgid " Kopie"
