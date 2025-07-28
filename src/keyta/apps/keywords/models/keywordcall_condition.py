@@ -5,8 +5,9 @@ from keyta.models.base_model import AbstractBaseModel
 
 
 class ConditionChoices(models.TextChoices):
-    IS_EQUAL = '=', _('Ist')
-    NOT_EQUAL = '!=', _('Ist nicht')
+    CONTAINS = 'in', _('ist Teil von')
+    IS_EQUAL = '==', _('ist')
+    NOT_EQUAL = '!=', _('ist nicht')
 
 
 class KeywordCallCondition(AbstractBaseModel):
