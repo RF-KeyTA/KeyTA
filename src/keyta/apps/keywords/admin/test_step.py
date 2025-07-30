@@ -107,4 +107,4 @@ class TestStepAdmin(
     parameters_inline = TestStepParametersInline
 
     def change_view(self, request, object_id, form_url="", extra_context=None):
-        return self.changeform_view(request, object_id, form_url, extra_context)
+        return self.changeform_view(request, object_id, form_url, extra_context or {'show_delete': False})

@@ -53,7 +53,7 @@ class LibraryKeywordCallAdmin(
     parameters_inline = LibraryKeywordCallParametersInline
 
     def change_view(self, request, object_id, form_url="", extra_context=None):
-        return self.changeform_view(request, object_id, form_url=form_url, extra_context=extra_context)
+        return self.changeform_view(request, object_id, form_url, extra_context or {'show_delete': False})
 
     def get_inlines(self, request, obj):
         inlines = super().get_inlines(request, obj)
