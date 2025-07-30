@@ -3,6 +3,9 @@ from django.utils.translation import gettext_lazy as _
 
 from keyta.models.base_model import AbstractBaseModel
 
+from ..json_value import JSONValue
+from .keywordcall_parameter_source import KeywordCallParameterSource
+
 
 class ConditionChoices(models.TextChoices):
     CONTAINS = 'in', _('enthält')
@@ -23,8 +26,14 @@ class KeywordCallCondition(AbstractBaseModel):
     )
     expected_value = models.CharField(
         max_length=255,
-        blank=True,
         verbose_name=_('Soll Wert')
+    )
+    expected_value_ref = models.ForeignKey(
+        'keywords.KeywordCallParameterSource',
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name='expected_values'
     )
     keyword_call = models.ForeignKey(
         'keywords.KeywordCall',
@@ -33,13 +42,36 @@ class KeywordCallCondition(AbstractBaseModel):
     )
 
     def __str__(self):
-        if self.condition in {ConditionChoices.IS_EQUAL, ConditionChoices.NOT_EQUAL}:
-            return '"${' + str(self.value_ref) + '}"' + f' {self.condition} "{self.expected_value}"'
+        if self.expected_value:
+            expected_value = JSONValue.from_json(self.expected_value)
+            user_input = expected_value.user_input
 
-        if self.condition == ConditionChoices.CONTAINS:
-            return f'"{self.expected_value}" {self.condition} ' + '"${' + str(self.value_ref) + '}"'
+            if user_input is not None:
+                exp_value = user_input
+            else:
+                exp_value = '${' +  str(self.expected_value_ref) + '}'
 
+            if self.condition in {ConditionChoices.IS_EQUAL, ConditionChoices.NOT_EQUAL}:
+                return '"${' + str(self.value_ref) + '}"' + f' {self.condition} "{exp_value}"'
+
+            if self.condition == ConditionChoices.CONTAINS:
+                return f'"{exp_value}" {self.condition} ' + '"${' + str(self.value_ref) + '}"'
+
+        return super().__str__()
+
+    def save(
+        self, force_insert=False, force_update=False, using=None,
+        update_fields=None
+    ):
+        json_value = JSONValue.from_json(self.expected_value)
+
+        if pk := json_value.pk:
+            self.expected_value_ref = KeywordCallParameterSource.objects.get(id=pk)
+        else:
+            self.expected_value_ref = None
+
+        super().save(force_insert, force_update, using, update_fields)
 
     class Meta:
-        verbose_name=_('Bedingung')
-        verbose_name_plural=_('Bedingungen')
+        verbose_name=_('Vorbedingung')
+        verbose_name_plural=_('Vorbedingungen')
