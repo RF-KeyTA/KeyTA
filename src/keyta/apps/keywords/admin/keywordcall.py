@@ -4,6 +4,7 @@ from django.utils.translation import gettext_lazy as _
 
 from keyta.admin.base_admin import BaseAdmin
 from keyta.apps.keywords.models import KeywordDocumentation
+from keyta.apps.sequences.models import SequenceStep
 from keyta.widgets import open_link_in_modal
 
 from ..models import (
@@ -95,6 +96,10 @@ class KeywordCallAdmin(BaseAdmin):
             if kw_call.from_keyword.is_action:
                 library_kw_call = LibraryKeywordCall.objects.get(id=kw_call.pk)
                 return HttpResponseRedirect(library_kw_call.get_admin_url())
+
+            if kw_call.from_keyword.is_sequence:
+                sequence_step = SequenceStep.objects.get(pk=kw_call.pk)
+                return HttpResponseRedirect(sequence_step.get_admin_url())
 
         if kw_call.testcase:
             test_step = TestStep.objects.get(pk=kw_call.pk)

@@ -1,1 +1,2 @@
 from .sequence import SequenceAdmin, SequenceQuickAddAdmin, SequenceQuickChangeAdmin
+from .sequence_step import SequenceStepAdmin
