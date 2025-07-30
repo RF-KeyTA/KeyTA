@@ -9,6 +9,7 @@ from .keywordcall_parameter_source import KeywordCallParameterSource
 
 class ConditionChoices(models.TextChoices):
     CONTAINS = 'in', _('enthält')
+    NOT_CONTAINS = 'not in', _('enthält nicht')
     IS_EQUAL = '==', _('ist')
     NOT_EQUAL = '!=', _('ist nicht')
 
@@ -54,7 +55,7 @@ class KeywordCallCondition(AbstractBaseModel):
             if self.condition in {ConditionChoices.IS_EQUAL, ConditionChoices.NOT_EQUAL}:
                 return '"${' + str(self.value_ref) + '}"' + f' {self.condition} "{exp_value}"'
 
-            if self.condition == ConditionChoices.CONTAINS:
+            if self.condition in {ConditionChoices.CONTAINS, ConditionChoices.NOT_CONTAINS}:
                 return f'"{exp_value}" {self.condition} ' + '"${' + str(self.value_ref) + '}"'
 
         return super().__str__()

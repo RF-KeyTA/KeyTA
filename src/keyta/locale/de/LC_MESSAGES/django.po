@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-30 10:02+0200\n"
+"POT-Creation-Date: 2025-07-30 10:37+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -479,14 +479,18 @@ msgid "enthält"
 msgstr ""
 
 #: .\apps\keywords\models\keywordcall_condition.py:12
-msgid "ist"
+msgid "enthält nicht"
 msgstr ""
 
 #: .\apps\keywords\models\keywordcall_condition.py:13
+msgid "ist"
+msgstr ""
+
+#: .\apps\keywords\models\keywordcall_condition.py:14
 msgid "ist nicht"
 msgstr ""
 
-#: .\apps\keywords\models\keywordcall_condition.py:20
+#: .\apps\keywords\models\keywordcall_condition.py:21
 #: .\apps\keywords\models\keywordcall_parameters.py:39
 #: .\apps\libraries\models\library_import_parameter.py:21
 #: .\apps\variables\admin.py:384 .\apps\variables\models.py:163
@@ -494,19 +498,19 @@ msgstr ""
 msgid "Wert"
 msgstr ""
 
-#: .\apps\keywords\models\keywordcall_condition.py:25
+#: .\apps\keywords\models\keywordcall_condition.py:26
 msgid "Bedingung"
 msgstr ""
 
-#: .\apps\keywords\models\keywordcall_condition.py:29
+#: .\apps\keywords\models\keywordcall_condition.py:30
 msgid "Soll Wert"
 msgstr ""
 
-#: .\apps\keywords\models\keywordcall_condition.py:76
+#: .\apps\keywords\models\keywordcall_condition.py:77
 msgid "Vorbedingung"
 msgstr ""
 
-#: .\apps\keywords\models\keywordcall_condition.py:77
+#: .\apps\keywords\models\keywordcall_condition.py:78
 msgid "Vorbedingungen"
 msgstr ""
 
