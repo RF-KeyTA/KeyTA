@@ -4,7 +4,7 @@ from django.utils.translation import gettext_lazy as _
 
 from model_clone import CloneMixin
 
-from ..keywordcall_parameter_json_value import JSONValue
+from ..json_value import JSONValue
 from .keywordcall_parameter_source import (
     KeywordCallParameterSource,
     KeywordCallParameterSourceType

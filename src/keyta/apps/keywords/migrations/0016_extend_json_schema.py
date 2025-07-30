@@ -2,7 +2,7 @@ import json
 
 from django.db import migrations
 
-from keyta.apps.keywords.keywordcall_parameter_json_value import JSONValue
+from keyta.apps.keywords.json_value import JSONValue
 
 from ..models.keywordcall_parameters import KeywordCallParameter
 

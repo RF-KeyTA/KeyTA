@@ -1,19 +1,16 @@
-import re
 from collections import defaultdict
 
-from django import forms
 from django.db.models import QuerySet
 from django.forms.utils import ErrorDict, ErrorList
 from django.utils.translation import gettext_lazy as _
 
-from keyta.widgets import KeywordCallParameterSelect
-
-from ..models.keywordcall_parameters import JSONValue
+from ..json_value import JSONValue
 from ..models import (
     KeywordCall,
     KeywordCallParameterSource,
     KeywordCallParameter
 )
+from .user_input_formset import UserInputFormset
 
 
 def get_global_variables(system_ids: list[int]):
@@ -76,72 +73,27 @@ def get_variables_choices(kw_call_param_sources: QuerySet):
     ]
 
 
-def show_value(json_value: JSONValue) -> tuple:
-    if json_value.user_input:
-        return json_value.jsonify(), json_value.user_input
+class KeywordCallParameterFormset(UserInputFormset):
+    json_field_name = 'value'
 
-    return None, _('Kein Wert')
+    def form_errors(self, form):
+        if json_field := getattr(form.instance, self.json_field_name):
+            value = JSONValue.from_json(json_field)
 
-
-class DynamicChoiceField(forms.CharField):
-    def to_python(self, value: str):
-        if value.startswith('{') and value.endswith('}'):
-            return value
-
-        return JSONValue(
-            arg_name=None,
-            kw_call_index=None,
-            pk=None,
-            user_input=re.sub(r"\s{2,}", " ", value)
-        ).jsonify()
-
-
-class KeywordCallParameterFormset(forms.BaseInlineFormSet):
-    def __init__(
-        self,
-        data=None,
-        files=None,
-        instance=None,
-        save_as_new=False,
-        prefix=None,
-        queryset=None,
-        **kwargs,
-    ):
-        super().__init__(data, files, instance, save_as_new, prefix, queryset, **kwargs)
-        self.choices = self.get_choices(instance)
-
-    def add_fields(self, form, index):
-        super().add_fields(form, index)
-
-        # The index of an extra form is None
-        if index is not None:
-            kw_call_parameter: KeywordCallParameter = form.instance
-            json_value = kw_call_parameter.json_value
-            choices = (
-                    [(None, '')] +
-                    [[_('Eingabe'), [show_value(json_value)]]] +
-                    self.choices
-            )
-
-            form.fields['value'] = DynamicChoiceField(
-                widget=KeywordCallParameterSelect(
-                    _('Wert auswählen oder eintragen'),
-                    choices=choices,
-                    attrs={
-                        # Allow manual input
-                        'data-tags': 'true',
-                    }
-                )
-            )
-
-            if not json_value.user_input and not json_value.pk:
+            if not value.user_input and not value.pk:
                 form._errors = ErrorDict()
-                form._errors['value'] = ErrorList([
-                    form.fields['value'].default_error_messages['required']
+                form._errors[self.json_field_name] = ErrorList([
+                    form.fields[self.json_field_name].default_error_messages['required']
                 ])
 
     def get_choices(self, kw_call: KeywordCall):
         return get_keyword_parameters(kw_call) + get_prev_return_values(kw_call)
 
+    def get_json_value(self, form):
+        kw_call_parameter: KeywordCallParameter = form.instance
+        return kw_call_parameter.json_value
+
+    # This is necessary in order to be able to save the formset
+    # despite the errors that were added in form_errors
     def is_valid(self):
         return True

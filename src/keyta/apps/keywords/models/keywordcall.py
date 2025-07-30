@@ -10,7 +10,7 @@ from model_clone import CloneMixin
 from keyta.models.base_model import AbstractBaseModel
 from keyta.rf_export.keywords import RFKeywordCall
 
-from ..keywordcall_parameter_json_value import JSONValue
+from ..json_value import JSONValue
 from .keywordcall_parameters import KeywordCallParameter
 from .keywordcall_return_value import KeywordCallReturnValue
 from .keyword_parameters import KeywordParameter
