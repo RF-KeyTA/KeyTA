@@ -9,7 +9,6 @@ from keyta.apps.keywords.forms import StepsForm
 from keyta.apps.keywords.models import Keyword, KeywordCall
 from keyta.apps.windows.models import Window
 from keyta.forms import form_with_select
-from keyta.widgets import quick_change_widget
 
 from ..models import Sequence
 
@@ -76,13 +75,11 @@ class SequenceSteps(StepsInline):
             for resource, keywords in groups
         ]
 
-        to_keyword_field = formset.form.base_fields['to_keyword']
-        to_keyword_field.choices = (
-                [(None, None)] +
-                window_actions +
-                resource_kws +
-                global_actions(sequence.systems.all())
+        formset.form.base_fields['to_keyword'].choices = (
+            [(None, None)] +
+            window_actions +
+            resource_kws +
+            global_actions(sequence.systems.all())
         )
-        to_keyword_field.widget = quick_change_widget(to_keyword_field.widget)
 
         return formset
