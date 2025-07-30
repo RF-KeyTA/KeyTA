@@ -9,6 +9,8 @@ from ..models import KeywordCallParameter
 
 class KeywordCallParametersForm(forms.ModelForm):
     def save(self, commit=True):
+        # Remove the errors set in the method form_errors of UserInputFormset
+        # before saving
         self._errors = None
         return super().save(commit=commit)
 
