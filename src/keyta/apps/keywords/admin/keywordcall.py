@@ -81,6 +81,7 @@ class ReturnValueField:
 @admin.register(KeywordCall)
 class KeywordCallAdmin(BaseAdmin):
     parameters_inline = KeywordCallParametersInline
+    change_form_template = 'keywordcall_change_form.html'
 
     def change_view(self, request, object_id, form_url="", extra_context=None):
         kw_call = KeywordCall.objects.get(pk=object_id)

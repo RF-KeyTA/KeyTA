@@ -143,10 +143,6 @@ class BaseSelectMultiple(BaseSelect):
         return False
 
 
-class KeywordCallParameterSelect(BaseSelect):
-    template_name = 'admin/keywordcall/select.html'
-
-
 class ModelSelect2AdminWidget(ModelSelect2Widget):
     def __init__(self, attrs=None, **kwargs):
         super().__init__(
