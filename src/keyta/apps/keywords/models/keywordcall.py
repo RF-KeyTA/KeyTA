@@ -11,6 +11,7 @@ from keyta.models.base_model import AbstractBaseModel
 from keyta.rf_export.keywords import RFKeywordCall
 
 from ..json_value import JSONValue
+from .keywordcall_condition import KeywordCallCondition
 from .keywordcall_parameters import KeywordCallParameter
 from .keywordcall_return_value import KeywordCallReturnValue
 from .keyword_parameters import KeywordParameter
@@ -129,6 +130,11 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
             keyword_call=self,
             return_value=return_value.kw_call_return_value
         )
+
+    def delete_conditions(self):
+        condition: KeywordCallCondition
+        for condition in self.conditions.all():
+            condition.delete()
 
     def delete_parameters(self):
         param: KeywordCallParameter

@@ -18,6 +18,7 @@ class StepsForm(BaseForm):
                 self.initial.get('to_keyword', None),
                 'to_keyword' in self.changed_data
             ]):
+                kw_call.delete_conditions()
                 kw_call.delete_parameters()
                 kw_call.delete_return_values()
                 kw_call.delete_variable()
