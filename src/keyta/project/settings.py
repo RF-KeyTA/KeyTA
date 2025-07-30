@@ -244,6 +244,7 @@ JAZZMIN_SETTINGS = {
         'sequences.actioncall',
         'sequences.sequencequickadd',
         'sequences.sequencequickchange',
+        'sequences.sequencestep',
         'variables.variabledocumentation',
         'variables.variableinlist',
         'variables.variablevalue',
