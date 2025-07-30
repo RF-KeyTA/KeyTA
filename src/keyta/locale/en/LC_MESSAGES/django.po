@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-28 11:54+0200\n"
+"POT-Creation-Date: 2025-07-30 10:02+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,7 +26,7 @@ msgid "Schlüsselwörter"
 msgstr "Keywords"
 
 #: .\admin\keywords_inline.py:23 .\apps\keywords\admin\keyword.py:32
-#: .\apps\keywords\admin\keywordcall.py:31 .\apps\keywords\models\keyword.py:39
+#: .\apps\keywords\admin\keywordcall.py:32 .\apps\keywords\models\keyword.py:39
 #: .\apps\keywords\models\keyword_parameters.py:27
 #: .\apps\libraries\models\library_parameter.py:18 .\apps\systems\models.py:12
 #: .\apps\testcases\admin\base_testcase_admin.py:28
@@ -48,7 +48,7 @@ msgstr "Window-independent"
 #: .\admin\list_filters.py:43 .\apps\actions\admin\windows_inline.py:20
 #: .\apps\actions\admin\windows_inline.py:23
 #: .\apps\keywords\models\keyword.py:67
-#: .\apps\keywords\models\keywordcall.py:100
+#: .\apps\keywords\models\keywordcall.py:101
 #: .\apps\resources\admin\resource_import.py:19
 #: .\apps\sequences\admin\sequence.py:112 .\apps\systems\admin.py:24
 #: .\apps\systems\admin.py:29 .\apps\variables\admin.py:127
@@ -97,7 +97,7 @@ msgstr "Actions"
 #: .\apps\executions\admin\setup_teardown_inline.py:36
 #: .\apps\keywords\models\keyword.py:18
 #: .\apps\libraries\admin\library_import.py:22
-#: .\apps\sequences\admin\steps_inline.py:44 .\apps\windows\admin.py:98
+#: .\apps\sequences\admin\steps_inline.py:43 .\apps\windows\admin.py:98
 #: .\apps\windows\admin.py:103 .\apps\windows\admin.py:115
 #: .\apps\windows\admin.py:120
 msgid "Aktion"
@@ -112,16 +112,18 @@ msgid "Beziehungen zu Masken"
 msgstr "Relationships to Windows"
 
 #: .\apps\actions\models\action_step.py:9
-#: .\apps\keywords\models\keywordcall.py:336
+#: .\apps\keywords\models\keywordcall.py:342
 #: .\apps\keywords\models\library_keyword_call.py:29
 #: .\apps\keywords\models\test_step.py:28
+#: .\apps\sequences\models\sequence_step.py:9
 msgid "Schritt"
 msgstr "Step"
 
 #: .\apps\actions\models\action_step.py:10
-#: .\apps\keywords\models\keywordcall.py:337
+#: .\apps\keywords\models\keywordcall.py:343
 #: .\apps\keywords\models\library_keyword_call.py:30
 #: .\apps\keywords\models\test_step.py:29
+#: .\apps\sequences\models\sequence_step.py:10
 msgid "Schritte"
 msgstr "Steps"
 
@@ -158,7 +160,7 @@ msgid "Werte"
 msgstr "Values"
 
 #: .\apps\executions\admin\setup_teardown_inline.py:34
-#: .\apps\sequences\admin\steps_inline.py:42 .\apps\systems\admin.py:74
+#: .\apps\sequences\admin\steps_inline.py:41 .\apps\systems\admin.py:74
 msgid "Aktion auswählen"
 msgstr "Select an Action"
 
@@ -169,12 +171,12 @@ msgid "Nachbereitung"
 msgstr "Teardown"
 
 #: .\apps\executions\admin\testcase_execution.py:11
-#: .\apps\keywords\models\keywordcall.py:21
+#: .\apps\keywords\models\keywordcall.py:22
 msgid "Testvorbereitung"
 msgstr "Test Setup"
 
 #: .\apps\executions\admin\testcase_execution.py:15
-#: .\apps\keywords\models\keywordcall.py:22
+#: .\apps\keywords\models\keywordcall.py:23
 msgid "Testnachbereitung"
 msgstr "Test Teardown"
 
@@ -213,7 +215,7 @@ msgid "Die Schritte sind leer"
 msgstr "The steps are incomplete"
 
 #: .\apps\executions\models\execution.py:29
-#: .\apps\keywords\models\keywordcall.py:32
+#: .\apps\keywords\models\keywordcall.py:33
 msgid "Schlüsselwort Ausführung"
 msgstr "Keyword Execution"
 
@@ -294,7 +296,8 @@ msgstr "1. Parameter"
 
 #: .\apps\keywords\admin\keyword.py:61
 #: .\apps\keywords\admin\keyword_parameters_inline.py:25
-#: .\apps\keywords\forms\keywordcall_parameter_formset.py:35
+#: .\apps\keywords\forms\keywordcall_condition_formset.py:31
+#: .\apps\keywords\forms\keywordcall_parameter_formset.py:32
 #: .\apps\keywords\models\keyword.py:48
 #: .\apps\keywords\models\keyword_parameters.py:117
 #: .\apps\keywords\models\keywordcall_parameters.py:164
@@ -309,14 +312,14 @@ msgstr "Parameters"
 msgid "Parameter"
 msgstr "Parameter"
 
-#: .\apps\keywords\admin\keywordcall.py:37 .\apps\keywords\models\keyword.py:52
+#: .\apps\keywords\admin\keywordcall.py:38 .\apps\keywords\models\keyword.py:52
 #: .\apps\libraries\admin\library.py:58
 #: .\apps\libraries\admin\library_import.py:42 .\apps\testcases\models.py:18
 #: .\apps\windows\models.py:25 .\models\keyword_source.py:23
 msgid "Dokumentation"
 msgstr "Documentation"
 
-#: .\apps\keywords\admin\keywordcall.py:54
+#: .\apps\keywords\admin\keywordcall.py:55
 #: .\apps\keywords\admin\keywordcall_return_value_inline.py:13
 #: .\apps\keywords\models\keyword_return_value.py:18
 #: .\apps\keywords\models\keyword_return_value.py:50
@@ -325,32 +328,18 @@ msgstr "Documentation"
 msgid "Rückgabewert"
 msgstr "Return Value"
 
-#: .\apps\keywords\admin\keywordcall.py:62
+#: .\apps\keywords\admin\keywordcall.py:63
 #: .\apps\keywords\models\keywordcall_return_value.py:41
 msgid "Kein Rückgabewert"
 msgstr "No return value"
 
-#: .\apps\keywords\admin\keywordcall_parameters_inline.py:30
+#: .\apps\keywords\admin\keywordcall_parameters_inline.py:32
 msgid "Format auswählen"
 msgstr "Select a format"
 
 #: .\apps\keywords\admin\keywordcall_return_value_inline.py:14
 msgid "Rückgabewerte"
 msgstr "Return Values"
-
-#: .\apps\keywords\admin\library_keyword_call.py:41
-#, fuzzy
-#| msgid "Format auswählen"
-msgid "Wert auswählen"
-msgstr "Select a format"
-
-#: .\apps\keywords\admin\library_keyword_call.py:42
-msgid "Bedingung auswählen"
-msgstr "Select a Condition"
-
-#: .\apps\keywords\admin\library_keyword_call.py:43
-msgid "Leeres Feld bedeutet Leerzeichen"
-msgstr "Empty field means empty string"
 
 #: .\apps\keywords\admin\return_value_inline.py:25
 msgid "Rückgabewert auswählen"
@@ -363,21 +352,24 @@ msgstr "Select a Return Value"
 msgid "Referenzwerte"
 msgstr "Reference Values"
 
-#: .\apps\keywords\forms\keywordcall_parameter_formset.py:55
+#: .\apps\keywords\forms\keywordcall_condition_formset.py:17
+msgid "leer"
+msgstr "empty"
+
+#: .\apps\keywords\forms\keywordcall_condition_formset.py:28
+#, fuzzy
+#| msgid "Format auswählen"
+msgid "Wert auswählen"
+msgstr "Select a format"
+
+#: .\apps\keywords\forms\keywordcall_condition_formset.py:32
+#: .\apps\keywords\forms\keywordcall_parameter_formset.py:52
 msgid "Vorherige Rückgabewerte"
 msgstr "Previous Return Values"
 
-#: .\apps\keywords\forms\keywordcall_parameter_formset.py:83
-msgid "Kein Wert"
-msgstr "No Value"
-
-#: .\apps\keywords\forms\keywordcall_parameter_formset.py:122
-msgid "Eingabe"
-msgstr "Input"
-
-#: .\apps\keywords\forms\keywordcall_parameter_formset.py:128
-msgid "Wert auswählen oder eintragen"
-msgstr "Select or enter a Value"
+#: .\apps\keywords\forms\keywordcall_condition_formset.py:35
+msgid "Bedingung auswählen"
+msgstr "Select a Condition"
 
 #: .\apps\keywords\forms\test_steps_form.py:36
 #: .\apps\keywords\models\keyword.py:19
@@ -396,6 +388,19 @@ msgstr "Select a Sequence"
 #: .\apps\keywords\forms\test_steps_form.py:51
 msgid "Referenzwert auswählen"
 msgstr "Select a Reference Value"
+
+#: .\apps\keywords\forms\user_input_formset.py:35
+#: .\apps\keywords\forms\user_input_formset.py:57
+msgid "Kein Wert"
+msgstr "No Value"
+
+#: .\apps\keywords\forms\user_input_formset.py:58
+msgid "Eingabe"
+msgstr "Input"
+
+#: .\apps\keywords\forms\user_input_formset.py:66
+msgid "Wert auswählen oder eintragen"
+msgstr "Select or enter a Value"
 
 #: .\apps\keywords\models\execution_keywordcall.py:36
 msgid "Aufrufparameter"
@@ -454,39 +459,39 @@ msgstr "Optional Argument"
 msgid "Standardwert"
 msgstr "Default Value"
 
-#: .\apps\keywords\models\keywordcall.py:26
+#: .\apps\keywords\models\keywordcall.py:27
 msgid "Suitevorbereitung"
 msgstr "Suite Setup"
 
-#: .\apps\keywords\models\keywordcall.py:27
+#: .\apps\keywords\models\keywordcall.py:28
 msgid "Suitenachbereitung"
 msgstr "Suite Teardown"
 
-#: .\apps\keywords\models\keywordcall.py:31
+#: .\apps\keywords\models\keywordcall.py:32
 msgid "Schlüsselwort-Aufruf"
 msgstr "Keyword Call"
 
-#: .\apps\keywords\models\keywordcall.py:33
+#: .\apps\keywords\models\keywordcall.py:34
 msgid "Testschritt"
 msgstr "Test Step"
 
-#: .\apps\keywords\models\keywordcall.py:91
+#: .\apps\keywords\models\keywordcall.py:92
 msgid "Referenzwert (optional)"
 msgstr "Reference Value (optional)"
 
-#: .\apps\keywords\models\keywordcall_condition.py:8
+#: .\apps\keywords\models\keywordcall_condition.py:11
 msgid "enthält"
 msgstr "contains"
 
-#: .\apps\keywords\models\keywordcall_condition.py:9
+#: .\apps\keywords\models\keywordcall_condition.py:12
 msgid "ist"
 msgstr "is"
 
-#: .\apps\keywords\models\keywordcall_condition.py:10
+#: .\apps\keywords\models\keywordcall_condition.py:13
 msgid "ist nicht"
 msgstr "is not"
 
-#: .\apps\keywords\models\keywordcall_condition.py:17
+#: .\apps\keywords\models\keywordcall_condition.py:20
 #: .\apps\keywords\models\keywordcall_parameters.py:39
 #: .\apps\libraries\models\library_import_parameter.py:21
 #: .\apps\variables\admin.py:384 .\apps\variables\models.py:163
@@ -494,18 +499,21 @@ msgstr "is not"
 msgid "Wert"
 msgstr "Value"
 
-#: .\apps\keywords\models\keywordcall_condition.py:22
-#: .\apps\keywords\models\keywordcall_condition.py:44
+#: .\apps\keywords\models\keywordcall_condition.py:25
 msgid "Bedingung"
 msgstr "Condition"
 
-#: .\apps\keywords\models\keywordcall_condition.py:27
+#: .\apps\keywords\models\keywordcall_condition.py:29
 msgid "Soll Wert"
 msgstr "Expected Value"
 
-#: .\apps\keywords\models\keywordcall_condition.py:45
-msgid "Bedingungen"
-msgstr "Conditions"
+#: .\apps\keywords\models\keywordcall_condition.py:76
+msgid "Vorbedingung"
+msgstr "Precondition"
+
+#: .\apps\keywords\models\keywordcall_condition.py:77
+msgid "Vorbedingungen"
+msgstr "Preconditions"
 
 #: .\apps\keywords\models\keywordcall_parameter_source.py:10
 msgid "Schlüsselwort-Parameter"
@@ -664,11 +672,11 @@ msgstr "Resource Imports"
 msgid "System hinzufügen"
 msgstr "Add a System"
 
-#: .\apps\sequences\admin\steps_inline.py:29
+#: .\apps\sequences\admin\steps_inline.py:28
 msgid "Globale Aktionen"
 msgstr "Global Actions"
 
-#: .\apps\sequences\admin\steps_inline.py:65
+#: .\apps\sequences\admin\steps_inline.py:64
 msgid "Keine Aktionen vorhanden"
 msgstr "No Actions available"
 
@@ -911,6 +919,6 @@ msgstr ""
 msgid "General"
 msgstr ""
 
-#: .\widgets.py:258
+#: .\widgets.py:254
 msgid "Klicke auf das Plus-Symbol"
 msgstr "Click the plus icon"
