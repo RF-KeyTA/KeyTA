@@ -18,7 +18,7 @@ class DynamicChoiceField(forms.CharField):
 
     def to_python(self, value: str):
         if value is None:
-            raise ValidationError(_('This field is required'))
+            raise ValidationError(self.default_error_messages['required'])
 
         if value.startswith('{') and value.endswith('}'):
             return value
