@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from model_clone import CloneMixin
+
 from keyta.models.base_model import AbstractBaseModel
 
 from ..json_value import JSONValue
@@ -14,7 +16,7 @@ class ConditionChoices(models.TextChoices):
     NOT_EQUAL = '!=', _('ist nicht')
 
 
-class KeywordCallCondition(AbstractBaseModel):
+class KeywordCallCondition(CloneMixin, AbstractBaseModel):
     value_ref = models.ForeignKey(
         'keywords.KeywordCallParameterSource',
         on_delete=models.PROTECT,
@@ -25,6 +27,7 @@ class KeywordCallCondition(AbstractBaseModel):
         max_length=255,
         verbose_name=_('Bedingung'),
     )
+    # JSON representation of keyta.apps.keywords.json_value.JSONValue
     expected_value = models.CharField(
         max_length=255,
         verbose_name=_('Soll Wert')

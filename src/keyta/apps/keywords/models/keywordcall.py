@@ -101,7 +101,7 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
         verbose_name=_('Maske')
     )
 
-    _clone_m2o_or_o2m_fields = ['parameters', 'return_values']
+    _clone_m2o_or_o2m_fields = ['conditions', 'parameters', 'return_values']
 
     def __str__(self):
         return str(self.caller) + ' → ' + str(self.to_keyword)
