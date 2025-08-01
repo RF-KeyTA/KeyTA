@@ -28,8 +28,8 @@ class KeywordCallConditionFormset(UserInputFormset):
             _('Wert auswählen'),
             choices=(
                 [(None, '')] +
-                [[_('Parameters'), [(source.pk, str(source)) for source in kw_parameters]]] +
-                [[_('Vorherige Rückgabewerte'), [(source.pk, str(source)) for source in previous_return_values]]]
+                [[_('Parameters'), [(source.pk, str(source)) for source in kw_parameters]]] if kw_parameters.exists() else [] +
+                [[_('Vorherige Rückgabewerte'), [(source.pk, str(source)) for source in previous_return_values]]] if previous_return_values.exists() else []
             )
         )
         form.fields['condition'].widget.attrs['data-placeholder'] = _('Bedingung auswählen')
