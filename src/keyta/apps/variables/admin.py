@@ -383,7 +383,7 @@ class DictionaryValues(BaseTabularInline):
 
     @admin.display(description=_('Wert'))
     def current_value(self, variable_value: VariableValue):
-        return variable_value.current_value()
+        return variable_value.current_value
 
     def get_queryset(self, request):
         queryset = super().get_queryset(request)

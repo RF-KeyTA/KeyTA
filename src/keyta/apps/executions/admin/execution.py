@@ -59,6 +59,6 @@ class ExecutionAdmin(BaseAdmin):
         return False
 
     def to_robot(self, request: HttpRequest, execution: Execution):
-        get_variable_value = lambda pk: VariableValue.objects.get(pk=pk).value
+        get_variable_value = lambda pk: VariableValue.objects.get(pk=pk).current_value
 
         return execution.to_robot(get_variable_value, request.user)

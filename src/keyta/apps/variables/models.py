@@ -166,6 +166,7 @@ class VariableValue(AbstractBaseModel):
     def __str__(self):
         return self.name
 
+    @property
     def current_value(self):
         return self.value
 
