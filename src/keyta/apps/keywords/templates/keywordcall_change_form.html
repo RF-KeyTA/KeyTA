@@ -9,7 +9,7 @@
     }
 
     function formatState(state) {
-        const regex = /\$\{(\w+)\}\[(\w+)\]/
+        const regex = /\$\{(\w+|\p{L}+)\}\[(\w+|\p{L}+)\]/u
 
         if (state.text.match(regex))
             return state.text.replace('$', '').replace('{', '').replace('}[', '.').replace(']', '');
