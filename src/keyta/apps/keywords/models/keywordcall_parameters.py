@@ -12,10 +12,6 @@ from .keywordcall_parameter_source import (
 from .keyword_parameters import KeywordParameterType
 
 
-class RobotVariable(models.TextChoices):
-    DICTIONARY_ITEM = 'DICTIONARY_ITEM', _('dict.item -> ${dict}[item]')
-
-
 class KeywordCallParameter(CloneMixin, models.Model):
     keyword_call = models.ForeignKey(
         'keywords.KeywordCall',
@@ -27,13 +23,7 @@ class KeywordCallParameter(CloneMixin, models.Model):
         on_delete=models.CASCADE,
         related_name='uses'
     )
-    robot_variable = models.CharField(
-        max_length=255,
-        choices=RobotVariable.choices,
-        blank=True,
-        verbose_name=_('Format (optional)')
-    )
-    # JSON representation of keyta.select_value.SelectValue
+    # JSON representation of keyta.apps.keywords.json_value.JSONValue
     value = models.CharField(
         max_length=255,
         verbose_name=_('Wert')
@@ -145,13 +135,7 @@ class KeywordCallParameter(CloneMixin, models.Model):
         if value_ref := self.value_ref:
             return value_ref.to_robot(get_variable_value)
         else:
-            user_input = JSONValue.from_json(self.value).user_input
-
-            if self.robot_variable == RobotVariable.DICTIONARY_ITEM:
-                dict_, item = user_input.split('.')
-                return '${%s}[%s]' % (dict_, item)
-
-            return user_input
+            return JSONValue.from_json(self.value).user_input
 
     def update_value(self):
         if self.value_ref:
