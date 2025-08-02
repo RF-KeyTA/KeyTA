@@ -1,3 +1,4 @@
+import json
 from typing import Optional
 
 from django.db import models
@@ -126,10 +127,18 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
         )
 
     def add_return_value(self, return_value: KeywordReturnValue):
-        KeywordCallReturnValue.objects.get_or_create(
-            keyword_call=self,
-            return_value=return_value.kw_call_return_value
-        )
+        if typedoc := return_value.typedoc:
+            KeywordCallReturnValue.objects.get_or_create(
+                keyword_call=self,
+                kw_call_return_value=return_value.kw_call_return_value,
+                name=json.loads(typedoc)['name'],
+                return_value=return_value
+            )
+        else:
+            KeywordCallReturnValue.objects.get_or_create(
+                keyword_call=self,
+                kw_call_return_value=return_value.kw_call_return_value
+            )
 
     def delete_conditions(self):
         condition: KeywordCallCondition
@@ -142,7 +151,7 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
             param.delete()
 
     def delete_return_value(self, return_value: KeywordReturnValue):
-        self.return_values.get(return_value__id=return_value.kw_call_return_value.pk).delete()
+        self.return_values.get(kw_call_return_value__id=return_value.kw_call_return_value.pk).delete()
 
     def delete_return_values(self):
         return_value: KeywordReturnValue
@@ -183,7 +192,7 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
             KeywordCallReturnValue.objects
             .filter(keyword_call__in=previous_kw_calls)
             .exclude(
-                Q(return_value__isnull=True) & Q(name__isnull=True)
+                Q(kw_call_return_value__isnull=True) & Q(name__isnull=True)
             )
         )
 

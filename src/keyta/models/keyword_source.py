@@ -1,3 +1,4 @@
+import json
 import re
 import urllib.parse
 import xml.dom.minidom
@@ -7,7 +8,12 @@ from django.db import models
 from django.db.models.functions import Lower
 from django.utils.translation import gettext_lazy as _
 
-from keyta.apps.keywords.models import Keyword, KeywordParameter, KeywordDocumentation
+from keyta.apps.keywords.models import (
+    Keyword,
+    KeywordDocumentation,
+    KeywordParameter,
+    KeywordReturnValue
+)
 from keyta.rf_import.import_keywords import args_table, get_default_value
 from keyta.widgets import open_link_in_modal
 
@@ -93,6 +99,24 @@ class KeywordSource(AbstractBaseModel):
             for kwarg in kw.parameters.kwargs():
                 if kwarg.name not in kwarg_names:
                     kwarg.delete()
+
+            if keyword.get('returnType'):
+                for typedoc in libdoc_json['typedocs']:
+                    if (
+                        typedoc['name'] == keyword['returnType']['typedoc'] and
+                        typedoc['type'] == 'TypedDict'
+                    ):
+                        KeywordReturnValue.objects.update_or_create(
+                            keyword=kw,
+                            typedoc=json.dumps({
+                                'name': typedoc['name'],
+                                'type': 'dict',
+                                'keys': [
+                                    item['key']
+                                    for item in typedoc['items']
+                                ]
+                            })
+                        )
 
         self.documentation = self.replace_links(self.documentation, heading_links=False)
         self.save()

@@ -1,3 +1,4 @@
+import json
 from collections import defaultdict
 
 from django.db.models import QuerySet
@@ -8,7 +9,8 @@ from ..json_value import JSONValue
 from ..models import (
     KeywordCall,
     KeywordCallParameterSource,
-    KeywordCallParameter
+    KeywordCallParameter,
+    KeywordCallReturnValue
 )
 from .user_input_formset import UserInputFormset
 
@@ -44,13 +46,33 @@ def get_prev_return_values(kw_call: KeywordCall):
     if not prev_return_values.exists():
         return []
 
+    return_value_keys = []
+    return_value_refs = []
+
+    return_value: KeywordCallReturnValue
+    for return_value in prev_return_values:
+        if typedoc := return_value.typedoc:
+            spec = json.loads(typedoc)
+
+            for key in spec['keys']:
+                value = '${%s}[%s]' % (str(return_value), key)
+                json_value = JSONValue(
+                    arg_name=None,
+                    kw_call_index=None,
+                    pk=None,
+                    user_input=value
+                ).jsonify()
+                return_value_keys.append((json_value, value))
+        else:
+            return_value_refs.append(return_value)
+
     sources = KeywordCallParameterSource.objects.filter(
-        kw_call_ret_val__in=prev_return_values
+        kw_call_ret_val__in=return_value_refs
     )
 
     return [[
         _('Vorherige Rückgabewerte'),
-        [
+        return_value_keys + [
             (source.get_value().jsonify(), str(source))
             for source in sources
         ]
