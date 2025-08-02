@@ -1,4 +1,5 @@
 import json
+import re
 from collections import defaultdict
 
 from django.db.models import QuerySet
@@ -40,6 +41,15 @@ def get_keyword_parameters(kw_call: KeywordCall):
     ]]
 
 
+def unrobot(token):
+    dict_access = re.compile(r'\${(.*)}\[(.*)\]')
+
+    if match := re.match(dict_access, token):
+        return f'{match.group(1)}.{match.group(2)}'
+
+    return token
+
+
 def get_prev_return_values(kw_call: KeywordCall):
     prev_return_values = kw_call.get_previous_return_values()
 
@@ -72,10 +82,15 @@ def get_prev_return_values(kw_call: KeywordCall):
 
     return [[
         _('Vorherige Rückgabewerte'),
-        return_value_keys + [
-            (source.get_value().jsonify(), str(source))
-            for source in sources
-        ]
+        sorted(
+            return_value_keys +
+            [
+                (source.get_value().jsonify(), str(source))
+                for source in sources
+            ],
+            # Sort the return values by their string representation
+            key=lambda x: unrobot(x[1])
+        )
     ]]
 
 
