@@ -16,6 +16,7 @@ def args_table(args):
     {newline.join([
         f'<tr><td>{format_arg(arg)}</td><td>{"=" if format_default_value(arg) else ""}</td><td>{format_default_value(arg)}</td></tr>'
         for arg in args
+        if arg['name']
     ])}
     </table>
     """
