@@ -104,6 +104,9 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
 
     _clone_m2o_or_o2m_fields = ['conditions', 'parameters', 'return_values']
 
+    def __repr__(self):
+        return super().__repr__().replace('KeywordCall', f'KeywordCall({self.type})')
+
     def __str__(self):
         return str(self.caller) + ' → ' + str(self.to_keyword)
 
