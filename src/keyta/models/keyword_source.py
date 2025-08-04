@@ -142,7 +142,6 @@ class KeywordSource(AbstractBaseModel):
             link_str = match.group(0)
             link = xml.dom.minidom.parseString(link_str).getElementsByTagName('a')[0]
             href: str = link.attributes['href'].value
-            text: str = link.firstChild.nodeValue
 
             if href.startswith('http'):
                 link.attributes['target'] = '_blank'
@@ -154,9 +153,11 @@ class KeywordSource(AbstractBaseModel):
                 return link.toxml()
 
             if href.startswith('#'):
+                kw_name: str = ' '.join(href.removeprefix('#').split('%20'))
+
                 if keyword_doc := (
-                    KeywordDocumentation.objects.filter(library__name=self.name, name__iexact=text).first() or
-                    KeywordDocumentation.objects.filter(resource__name=self.name, name__iexact=text).first()
+                    KeywordDocumentation.objects.filter(library__name=self.name, name__iexact=kw_name).first() or
+                    KeywordDocumentation.objects.filter(resource__name=self.name, name__iexact=kw_name).first()
                 ):
                     return open_link_in_modal(keyword_doc.get_admin_url(), keyword_doc.name)
 
