@@ -11,7 +11,8 @@
     function formatState(state) {
         const regex = /\$\{(\w+|\p{L}+)\}\[(\w+|\p{L}+)\]/u
 
-        if (state.text.match(regex))
+        // state.id is the value of the <option>
+        if (state.id && state.text.match(regex))
             return state.text.replace('$', '').replace('{', '').replace('}[', '.').replace(']', '');
 
         return state.text
@@ -37,6 +38,7 @@
                 const selected_value = django.jQuery(select).select2('data')[0]
                 const search_field = django.jQuery('.select2-search__field')
 
+                // selected_value.id is the value of the <option>
                 if (selected_value.id !== '')
                     search_field.val(selected_value.text)
             })
