@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-02 15:42+0200\n"
+"POT-Creation-Date: 2025-08-04 13:49+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -50,13 +50,17 @@ msgstr "Window-independent"
 #: .\apps\keywords\models\keyword.py:67
 #: .\apps\keywords\models\keywordcall.py:102
 #: .\apps\resources\admin\resource_import.py:19
-#: .\apps\sequences\admin\sequence.py:112 .\apps\systems\admin.py:24
+#: .\apps\sequences\admin\sequence.py:114 .\apps\systems\admin.py:24
 #: .\apps\systems\admin.py:29 .\apps\variables\admin.py:127
 #: .\apps\variables\admin.py:135 .\apps\variables\admin.py:252
 #: .\apps\variables\admin.py:297 .\apps\windows\models.py:69
 #: .\apps\windows\models.py:83 .\apps\windows\models.py:90
 msgid "Maske"
 msgstr "Window"
+
+#: .\admin\list_filters.py:51
+msgid "All"
+msgstr ""
 
 #: .\apps\actions\admin\libraries_inline.py:17 .\apps\systems\admin.py:68
 msgid "Bibliothek auswählen"
@@ -73,7 +77,7 @@ msgstr "Keyword"
 
 #: .\apps\actions\admin\windows_inline.py:18
 #: .\apps\keywords\forms\test_steps_form.py:40
-#: .\apps\sequences\admin\sequence.py:60 .\apps\variables\admin.py:133
+#: .\apps\sequences\admin\sequence.py:61 .\apps\variables\admin.py:133
 msgid "Maske auswählen"
 msgstr "Select a Window"
 
@@ -313,7 +317,7 @@ msgid "Parameter"
 msgstr "Parameter"
 
 #: .\apps\keywords\admin\keywordcall.py:38 .\apps\keywords\models\keyword.py:52
-#: .\apps\libraries\admin\library.py:58
+#: .\apps\libraries\admin\library.py:59
 #: .\apps\libraries\admin\library_import.py:42 .\apps\testcases\models.py:18
 #: .\apps\windows\models.py:25 .\models\keyword_source.py:29
 msgid "Dokumentation"
@@ -434,7 +438,7 @@ msgstr "Description"
 msgid "Vor-/Nachbereitung"
 msgstr "Setup/Teardown"
 
-#: .\apps\keywords\models\keyword.py:72 .\apps\sequences\admin\sequence.py:51
+#: .\apps\keywords\models\keyword.py:72 .\apps\sequences\admin\sequence.py:52
 #: .\apps\systems\apps.py:8 .\apps\systems\models.py:37
 #: .\apps\testcases\models.py:29 .\apps\variables\models.py:35
 #: .\apps\windows\admin.py:61 .\apps\windows\admin.py:173
@@ -547,21 +551,21 @@ msgstr "Parameter references"
 msgid " Kopie"
 msgstr " Copy"
 
-#: .\apps\libraries\admin\library.py:46
+#: .\apps\libraries\admin\library.py:47
 #, python-brace-format
 msgid "Die Bibliothek \"{library_name}\" wurde erfolgreich aktualisiert"
 msgstr "The library \"{library_name}\" has been successfully updated"
 
-#: .\apps\libraries\admin\library.py:50
+#: .\apps\libraries\admin\library.py:51
 #, fuzzy, python-brace-format
 msgid "Die Bibliothek \"{library_name}\" konnte nicht importiert werden"
 msgstr "The library \"{library_name}\" could not be imported"
 
-#: .\apps\libraries\admin\library.py:103 .\apps\resources\admin\resource.py:82
+#: .\apps\libraries\admin\library.py:105 .\apps\resources\admin\resource.py:82
 msgid "Aktualisierung"
 msgstr "Update"
 
-#: .\apps\libraries\admin\library.py:113
+#: .\apps\libraries\admin\library.py:115
 #, python-brace-format
 msgid "Eine Bibliothek ist nicht vorhanden: {err}"
 msgstr "A library is not available: {err}"
@@ -579,7 +583,12 @@ msgstr "Libraries"
 msgid "zurücksetzen"
 msgstr "reset"
 
-#: .\apps\libraries\forms.py:18
+#: .\apps\libraries\forms.py:21
+#, python-brace-format
+msgid "\"{name}\" ist keine Robot Framework Bibliothek"
+msgstr "\"{name}\" is not a Robot Framework library"
+
+#: .\apps\libraries\forms.py:23
 #, fuzzy, python-brace-format
 msgid "Die Bibliothek \"{name}\" ist im PYTHONPATH nicht vorhanden."
 msgstr "The library \"{name}\" is not in PYTHONPATH."
@@ -658,7 +667,7 @@ msgstr "Resource Import"
 msgid "Ressource-Imports"
 msgstr "Resource Imports"
 
-#: .\apps\sequences\admin\sequence.py:55 .\apps\variables\admin.py:167
+#: .\apps\sequences\admin\sequence.py:56 .\apps\variables\admin.py:167
 #: .\apps\windows\admin.py:215
 msgid "System hinzufügen"
 msgstr "Add a System"

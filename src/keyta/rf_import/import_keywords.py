@@ -57,7 +57,7 @@ def get_init_doc(library_json):
         return _("Diese Bibliothek hat keine Einstellungen")
 
 
-def get_libdoc_json(library_or_resource: str):
+def get_libdoc_dict(library_or_resource: str) -> dict:
     libdoc_json = Path(tempfile.gettempdir()) / f"{library_or_resource}.json"
     os.system(f'libdoc "{library_or_resource}" "{libdoc_json}"')
 

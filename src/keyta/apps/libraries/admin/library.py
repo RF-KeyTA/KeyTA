@@ -11,6 +11,7 @@ from django.utils.translation import gettext_lazy as _
 from keyta.admin.base_admin import BaseAdmin
 from keyta.admin.keywords_inline import Keywords
 from keyta.rf_import.import_library import import_library
+from keyta.rf_import.import_keywords import get_libdoc_dict
 from keyta.widgets import link, Icon
 
 from ..forms import LibraryForm
@@ -94,7 +95,8 @@ class LibraryAdmin(BaseAdmin):
         library_name = form.cleaned_data.get('name', None)
 
         if library_name:
-            library = import_library(library_name)
+            libdoc_dict = get_libdoc_dict(library_name)
+            library = import_library(libdoc_dict)
             super().save_form(request, form, change)
             return library
         else:
