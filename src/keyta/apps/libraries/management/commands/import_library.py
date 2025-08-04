@@ -4,6 +4,7 @@ from django.core.management.base import BaseCommand
 from django.utils.translation import gettext_lazy as _
 
 from keyta.rf_import.import_library import import_library
+from keyta.rf_import.import_keywords import get_libdoc_dict
 
 
 class Command(BaseCommand):
@@ -16,5 +17,6 @@ class Command(BaseCommand):
 
     def handle(self, *args: Any, **options: Any) -> None:
         library = options["library"][0]
-        import_library(library)
+        libdoc_dict = get_libdoc_dict(library)
+        import_library(libdoc_dict)
         print(_('Die Bibliothek "{library}" wurde erfolgreich importiert.').format(library=library))
