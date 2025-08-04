@@ -14,6 +14,7 @@ from keyta.apps.keywords.admin import (
     WindowKeywordAdmin,
     WindowKeywordAdminMixin,
 )
+from keyta.apps.keywords.models import KeywordCallReturnValue
 from keyta.forms.baseform import BaseForm
 from keyta.apps.windows.models import Window
 from keyta.widgets import (
@@ -93,7 +94,8 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
         if not sequence:
             return [ParametersInline]
 
-        if sequence.calls.filter(return_values__isnull=False).exists():
+        kw_call_pks = sequence.calls.values_list('pk')
+        if KeywordCallReturnValue.objects.filter(keyword_call__in=kw_call_pks).exists():
             inlines += [ReturnValueInline]
 
         if not sequence.has_empty_sequence:
@@ -128,7 +130,17 @@ class SequenceQuickAddAdmin(WindowKeywordAdminMixin, BaseQuickAddAdmin):
 class SequenceQuickChangeAdmin(WindowKeywordAdmin):
     fields = []
     readonly_fields = ['documentation']
-    inlines = [ParametersInline, SequenceSteps, ReturnValueInline]
+    inlines = [ParametersInline, SequenceSteps]
+
+    def get_inlines(self, request, obj):
+        sequence: Sequence = obj
+        inlines = [*self.inlines]
+
+        kw_call_pks = sequence.calls.values_list('pk')
+        if KeywordCallReturnValue.objects.filter(keyword_call__in=kw_call_pks).exists():
+            inlines += [ReturnValueInline]
+
+        return inlines
 
     def has_delete_permission(self, request, obj=None):
         return False

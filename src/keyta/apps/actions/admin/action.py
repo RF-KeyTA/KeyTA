@@ -14,6 +14,7 @@ from keyta.apps.keywords.admin import (
     WindowKeywordAdmin,
     WindowKeywordAdminMixin
 )
+from keyta.apps.keywords.models import KeywordCallReturnValue
 from keyta.apps.libraries.models import Library, LibraryImport
 from keyta.forms.baseform import form_with_select
 
@@ -92,7 +93,8 @@ class ActionAdmin(ActionAdminMixin, CloneModelAdminMixin, WindowKeywordAdmin):
         if not action:
             return [ParametersInline]
 
-        if action.calls.filter(return_values__isnull=False).exists():
+        kw_call_pks = action.calls.values_list('pk')
+        if KeywordCallReturnValue.objects.filter(keyword_call__in=kw_call_pks).exists():
             inlines += [ReturnValueInline]
 
         if not action.has_empty_sequence:
@@ -110,7 +112,17 @@ class ActionQuickAddAdmin(ActionAdminMixin, BaseQuickAddAdmin):
 class ActionQuickChangeAdmin(WindowKeywordAdmin):
     fields = []
     readonly_fields = ['documentation']
-    inlines = [ParametersInline, ActionSteps, ReturnValueInline]
+    inlines = [ParametersInline, ActionSteps]
+
+    def get_inlines(self, request, obj):
+        action: Action = obj
+        inlines = [*self.inlines]
+
+        kw_call_pks = action.calls.values_list('pk')
+        if KeywordCallReturnValue.objects.filter(keyword_call__in=kw_call_pks).exists():
+            inlines += [ReturnValueInline]
+
+        return inlines
 
     def has_delete_permission(self, request, obj=None):
         return False
