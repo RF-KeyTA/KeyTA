@@ -22,7 +22,7 @@ class Action(WindowKeyword):
             return self.depends_on_library(obj.library.pk)
 
         if isinstance(obj, ActionWindowRelation):
-            return self.has_dependents()
+            return self.uses.filter(from_keyword__in=obj.window.keywords.all()).exists()
 
         return False
 
