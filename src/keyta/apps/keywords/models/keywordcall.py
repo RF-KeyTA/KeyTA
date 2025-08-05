@@ -248,30 +248,35 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
 
     def to_robot(self, get_variable_value, user: Optional[AbstractUser]=None) -> RFKeywordCall:
         parameters = self.parameters.filter(user=user)
-        args = parameters.args()
-        kwargs = parameters.kwargs()
+        params = []
 
-        rf_args = [arg.to_robot(get_variable_value) for arg in args]
+        for param in parameters:
+            value = param.to_robot(get_variable_value) or '${EMPTY}'
+
+            if param.parameter.is_arg:
+                params.append(value)
+
+            if param.parameter.is_kwarg:
+                params.append('%s=%s' % (param.name, value))
+
         list_var = None
 
         if self.variable and self.variable.is_list():
             list_var = '@{%s}' % self.variable.name
-            rf_args = []
+            params = []
 
-            arg: KeywordCallParameter            
-            for arg in args:
-                if arg.value_ref:
-                    rf_args.append('${row}[%s]' % str(arg.value_ref))
+            param: KeywordCallParameter
+            for param in parameters:
+                if param.value_ref:
+                    params.append('${row}[%s]' % str(param.value_ref))
                 else:
-                    user_input = JSONValue.from_json(arg.value).user_input
-                    if user_input:
-                        rf_args.append(user_input)
+                    if user_input := JSONValue.from_json(param.value).user_input:
+                        params.append(user_input)
 
         return {
             'condition': ' and '.join([str(condition) for condition in self.conditions.all()]),
             'keyword': self.to_keyword.unique_name,
-            'args': rf_args,
-            'kwargs': {kwarg.name: kwarg.to_robot(get_variable_value) for kwarg in kwargs},
+            'params': params,
             'return_values': [
                 '${' + str(return_value) + '}'
                 for return_value in self.return_values.all()

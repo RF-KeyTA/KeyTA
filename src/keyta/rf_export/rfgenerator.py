@@ -18,18 +18,8 @@ EMPTY = rf_var('EMPTY')
 
 
 def call_keyword(keyword_call: RFKeywordCall):
-    kw_call_args = [
-        arg or EMPTY
-        for arg in keyword_call['args']
-    ]
-
-    kw_call = (
-            [keyword_call['keyword']] +
-            kw_call_args +
-            dict_as_kwargs(keyword_call['kwargs'])
-    )
-
-    return rf_join(kw_call)
+    params = [escape_spaces(param) for param in keyword_call['params']]
+    return rf_join([keyword_call['keyword'], *params])
 
 
 def dict_as_kwargs(dic):
