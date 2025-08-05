@@ -196,8 +196,8 @@ class VariableAdmin(SortableAdminBase, BaseAdmin):
             window.systems.values_list('name', flat=True)
         )
 
-    def autocomplete_name_queryset(self, name: str):
-        return super().autocomplete_name_queryset(name).filter(windows__isnull=True)
+    def autocomplete_name_queryset(self, name: str, request: HttpRequest):
+        return super().autocomplete_name_queryset(name, request).filter(windows__isnull=True)
 
     def change_view(self, request: HttpRequest, object_id, form_url="", extra_context=None):
         if 'quick_change' in request.GET:
@@ -350,8 +350,8 @@ class VariableQuickAddAdmin(BaseQuickAddAdmin):
     fields = ['systems', 'windows', 'name', 'schema', 'type']
     form = QuickAddVariableForm
 
-    def autocomplete_name(self, name: str, request: HttpRequest):
-        queryset = self.model.objects.filter(name__icontains=name)
+    def autocomplete_name_queryset(self, name: str, request: HttpRequest):
+        queryset = super().autocomplete_name_queryset(name, request)
         
         if 'list_id' in request.GET:
             queryset = queryset.filter(in_list__list_variable=request.GET['list_id'])
@@ -361,9 +361,7 @@ class VariableQuickAddAdmin(BaseQuickAddAdmin):
         if 'windows' in request.GET:
             queryset = queryset.filter(windows__in=[request.GET['windows']])
 
-        names = list(queryset.values_list('name', flat=True))
-
-        return json.dumps(names)
+        return queryset
 
     def formfield_for_dbfield(self, db_field, request, **kwargs):
         field = super().formfield_for_dbfield(db_field, request, **kwargs)
