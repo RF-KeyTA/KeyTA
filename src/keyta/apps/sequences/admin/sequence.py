@@ -40,8 +40,14 @@ class WindowListFilter(admin.RelatedFieldListFilter):
 class SequenceForm(BaseForm):
     def clean(self):
         name = self.cleaned_data.get('name')
-        window = self.cleaned_data.get('windows').first()
-        sequence = window.sequences.filter(name=name)
+
+        if self.instance:
+            window = self.instance.windows.first()
+            sequence = window.sequences.exclude(name=self.initial.get('name')).filter(name=name)
+        else:
+            window = self.cleaned_data.get('windows').first()
+            sequence = window.sequences.filter(name=name)
+
         if sequence.exists():
             raise forms.ValidationError(
                 {
