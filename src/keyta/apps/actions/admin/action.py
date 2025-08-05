@@ -1,7 +1,6 @@
-import json
-
+from django import forms
 from django.contrib import admin
-from django.http import HttpRequest, HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpRequest
 from django.utils.translation import gettext_lazy as _
 
 from model_clone import CloneModelAdminMixin
@@ -16,7 +15,7 @@ from keyta.apps.keywords.admin import (
 )
 from keyta.apps.keywords.models import KeywordCallReturnValue
 from keyta.apps.libraries.models import Library, LibraryImport
-from keyta.forms.baseform import form_with_select
+from keyta.forms.baseform import form_with_select, BaseForm
 
 from ..models import (
     Action,
@@ -46,6 +45,25 @@ class ActionAdminMixin(WindowKeywordAdminMixin):
                 )
 
 
+class ActionForm(BaseForm):
+    def clean(self):
+        name = self.cleaned_data.get('name')
+        systems = self.cleaned_data.get('systems').values_list('name', flat=True)
+        action_systems = [
+            system.name
+            for system in self.initial.get('systems', [])
+        ]
+
+        if system := systems.exclude(name__in=action_systems).filter(keywords__name=name).first():
+            action = self._meta.model.objects.filter(name=name).filter(systems__name=system).filter(windows__isnull=True)
+            if action.exists():
+                raise forms.ValidationError(
+                    {
+                        "name": _(f'Eine Aktion mit diesem Namen existiert bereits im System "{system}"')
+                    }
+                )
+
+
 @admin.register(Action)
 class ActionAdmin(ActionAdminMixin, CloneModelAdminMixin, WindowKeywordAdmin):
     def get_list_filter(self, request):
@@ -55,6 +73,7 @@ class ActionAdmin(ActionAdminMixin, CloneModelAdminMixin, WindowKeywordAdmin):
         Action,
         'systems',
         _('System auswählen'),
+        form_class=ActionForm,
         select_many=True
     )
     inlines = [
@@ -63,15 +82,8 @@ class ActionAdmin(ActionAdminMixin, CloneModelAdminMixin, WindowKeywordAdmin):
         ActionSteps
     ]
 
-    def autocomplete_name(self, name: str, request: HttpRequest):
-        names = list(
-            self.model.objects
-            .filter(name__icontains=name)
-            .filter(windows__isnull=True)
-            .values_list('name', flat=True)
-        )
-
-        return json.dumps(names)
+    def autocomplete_name_queryset(self, name: str, request: HttpRequest):
+        return super().autocomplete_name_queryset(name, request).filter(windows__isnull=True)
 
     def change_view(self, request, object_id, form_url="", extra_context=None):
         if 'quick_change' in request.GET:
