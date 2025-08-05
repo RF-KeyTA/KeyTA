@@ -196,9 +196,9 @@ class VariableAdmin(SortableAdminBase, BaseAdmin):
             .filter(name__icontains=name)
             .filter(windows__isnull=True)
         )
-        names = list(queryset.values_list('name', flat=True))
 
-        return json.dumps(names)
+    def autocomplete_name_queryset(self, name: str):
+        return super().autocomplete_name_queryset(name).filter(windows__isnull=True)
 
     def change_view(self, request: HttpRequest, object_id, form_url="", extra_context=None):
         if 'quick_change' in request.GET:

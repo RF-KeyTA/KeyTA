@@ -52,26 +52,28 @@ class BaseAdmin(admin.ModelAdmin):
     def add_view(self, request: HttpRequest, form_url="", extra_context=None):
         if 'autocomplete' in request.GET:
             name = str(request.GET['name'])
-            data = self.autocomplete_name(name, request)
+            data = self.autocomplete_name(name)
 
             return HttpResponse(data, content_type='application/json')
 
         return super().add_view(request, form_url, extra_context)
 
-    def autocomplete_name(self, name: str, request: HttpRequest) -> str:
-        objects = (
-            self.model.objects
-            .filter(name__icontains=name)
+    def autocomplete_name_queryset(self, name: str):
+        return self.model.objects. filter(name__icontains=name)
+
+    def autocomplete_name(self, name: str) -> str:
+        grouped = defaultdict(list)
+        name_system = (
+            self.autocomplete_name_queryset(name)
             .values_list('name', 'systems__name')
         )
-        grouped = defaultdict(list)
 
-        for name, system in objects:
-            grouped[name].append(system)
+        for key, value in name_system:
+            grouped[key].append(value)
 
         return json.dumps([
-            '%s (%s)' % (name, ', '.join(systems))
-            for name, systems in grouped.items()
+            '%s (%s)' % (group, ', '.join(items))
+            for group, items in grouped.items()
         ])
 
     def change_view(self, request, object_id, form_url="", extra_context=None):
