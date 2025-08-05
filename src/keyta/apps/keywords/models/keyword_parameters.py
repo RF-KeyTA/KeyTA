@@ -83,6 +83,14 @@ class KeywordParameter(CloneMixin, AbstractBaseModel):
             }
         )
 
+    @property
+    def is_arg(self):
+        return self.type == KeywordParameterType.ARG
+
+    @property
+    def is_kwarg(self):
+        return self.type == KeywordParameterType.KWARG
+
     def save(
         self, force_insert=False, force_update=False, using=None,
         update_fields=None
