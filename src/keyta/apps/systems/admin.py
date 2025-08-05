@@ -100,6 +100,14 @@ class SystemAdmin(BaseAdmin):
 
         return []
 
+    def has_delete_permission(self, request, obj=None):
+        system: System = obj
+
+        if system and system.windows.exists():
+            return False
+
+        return super().has_delete_permission(request, obj)
+
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
         system: System = obj
