@@ -209,7 +209,7 @@ class WindowForm(BaseForm):
 
 @admin.register(Window)
 class WindowAdmin(DocumentationField, BaseAdmin):
-    list_display = ['name', 'preview']
+    list_display = ['name', 'preview', 'system_list']
     list_display_links = ['name']
     list_filter = [
         ('systems', SystemListFilter),
@@ -238,6 +238,12 @@ class WindowAdmin(DocumentationField, BaseAdmin):
         Sequences,
         Variables,
     ]
+
+    @admin.display(description=_('Systeme'))
+    def system_list(self, window: Window):
+        return ', '.join(
+            window.systems.values_list('name', flat=True)
+        )
 
     def change_view(self, request: HttpRequest, object_id, form_url="", extra_context=None):
         if 'quick_change' in request.GET:
