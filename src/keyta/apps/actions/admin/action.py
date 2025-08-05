@@ -115,9 +115,32 @@ class ActionAdmin(ActionAdminMixin, CloneModelAdminMixin, WindowKeywordAdmin):
         return inlines
 
 
+class QuickAddActionForm(BaseForm):
+    def clean(self):
+        name = self.cleaned_data.get('name')
+        windows = self.cleaned_data.get('windows')
+
+        if len(windows) == 1:
+            window = windows[0]
+            if window.actions.filter(name=name).exists():
+                raise forms.ValidationError(
+                    {
+                        "name": _(f'Eine Aktion mit diesem Namen existiert bereits in der Maske "{window.name}"')
+                    }
+                )
+
+
 @admin.register(ActionQuickAdd)
 class ActionQuickAddAdmin(ActionAdminMixin, BaseQuickAddAdmin):
-    pass
+    form = QuickAddActionForm
+
+    def autocomplete_name_queryset(self, name: str, request: HttpRequest):
+        queryset = super().autocomplete_name_queryset(name, request)
+
+        if 'windows' in request.GET:
+            queryset = queryset.filter(windows__in=[request.GET['windows']])
+
+        return queryset
 
 
 @admin.register(ActionQuickChange)
