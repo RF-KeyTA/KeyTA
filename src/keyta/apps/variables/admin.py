@@ -331,9 +331,25 @@ class VariableSchemaQuickAddAdmin(SortableAdminBase, BaseQuickAddAdmin):
     inlines = [SchemaFields]
 
 
+class QuickAddVariableForm(BaseForm):
+    def clean(self):
+        name = self.cleaned_data.get('name')
+        windows = self.cleaned_data.get('windows')
+
+        if len(windows) == 1:
+            window = windows[0]
+            if window.variables.filter(name=name).exists():
+                raise forms.ValidationError(
+                    {
+                        "name": _(f'Eine Variable mit diesem Namen existiert bereits in der Maske "{window.name}"')
+                    }
+                )
+
+
 @admin.register(VariableQuickAdd)
 class VariableQuickAddAdmin(BaseQuickAddAdmin):
     fields = ['systems', 'windows', 'name', 'schema', 'type']
+    form = QuickAddVariableForm
 
     def autocomplete_name(self, name: str, request: HttpRequest):
         queryset = self.model.objects.filter(name__icontains=name)
