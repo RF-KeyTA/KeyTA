@@ -339,14 +339,7 @@
 
                 // A select in a form
                 django.jQuery('.form-group select').on('change', function() {
-                    const alert = $('.alert').not('.hidden')
-                    
-                    if (alert.length > 0) {
-                        $(save_button).click()
-                    }
-                    else {
-                        $.post(url, $('form').serialize() + "&_continue=")
-                    }
+                    $(save_button).click()
                 })
             }
         })
