@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-04 13:49+0200\n"
+"POT-Creation-Date: 2025-08-05 08:58+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: .\admin\base_admin.py:165 .\apps\actions\admin\action.py:56
+#: .\admin\base_admin.py:165 .\apps\actions\admin\action.py:57
 msgid "System auswählen"
 msgstr "Select a System"
 
@@ -116,7 +116,7 @@ msgid "Beziehungen zu Masken"
 msgstr "Relationships to Windows"
 
 #: .\apps\actions\models\action_step.py:9
-#: .\apps\keywords\models\keywordcall.py:351
+#: .\apps\keywords\models\keywordcall.py:354
 #: .\apps\keywords\models\library_keyword_call.py:29
 #: .\apps\keywords\models\test_step.py:28
 #: .\apps\sequences\models\sequence_step.py:9
@@ -124,7 +124,7 @@ msgid "Schritt"
 msgstr "Step"
 
 #: .\apps\actions\models\action_step.py:10
-#: .\apps\keywords\models\keywordcall.py:352
+#: .\apps\keywords\models\keywordcall.py:355
 #: .\apps\keywords\models\library_keyword_call.py:30
 #: .\apps\keywords\models\test_step.py:29
 #: .\apps\sequences\models\sequence_step.py:10
@@ -593,7 +593,7 @@ msgstr "\"{name}\" is not a Robot Framework library"
 msgid "Die Bibliothek \"{name}\" ist im PYTHONPATH nicht vorhanden."
 msgstr "The library \"{name}\" is not in PYTHONPATH."
 
-#: .\apps\libraries\management\commands\import_library.py:20
+#: .\apps\libraries\management\commands\import_library.py:22
 #, fuzzy, python-brace-format
 msgid "Die Bibliothek \"{library}\" wurde erfolgreich importiert."
 msgstr "The library \"{library_name}\" was imported successfully."
@@ -777,7 +777,7 @@ msgstr "Relationship to System"
 msgid "Beziehungen zu Systemen"
 msgstr "Relationships to Systems"
 
-#: .\rf_import\import_keywords.py:57
+#: .\rf_import\import_keywords.py:58
 msgid "Diese Bibliothek hat keine Einstellungen"
 msgstr "This library has no settings"
 
@@ -822,7 +822,9 @@ msgstr ""
 msgid "See Profile"
 msgstr ""
 
-#: .\templates\admin\base_orig.html:219 .\templates\admin\index.html:6
+#: .\templates\admin\base_orig.html:219 .\templates\admin\change_form.html:28
+#: .\templates\admin\change_list.html:28
+#: .\templates\admin\delete_confirmation.html:15 .\templates\admin\index.html:6
 msgid "Dashboard"
 msgstr ""
 
@@ -848,11 +850,6 @@ msgstr ""
 
 #: .\templates\admin\base_orig.html:356
 msgid "Close"
-msgstr ""
-
-#: .\templates\admin\change_form.html:28 .\templates\admin\change_list.html:28
-#: .\templates\admin\delete_confirmation.html:15
-msgid "Home"
 msgstr ""
 
 #: .\templates\admin\change_form.html:38 .\templates\admin\change_form.html:54

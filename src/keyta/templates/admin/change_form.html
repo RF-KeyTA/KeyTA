@@ -25,7 +25,7 @@
 {% if not is_popup %}
     {% block breadcrumbs %}
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{% url 'admin:index' %}">{% trans 'Home' %}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'admin:index' %}">{% trans 'Dashboard' %}</a></li>
             <li class="breadcrumb-item">
                 {% if has_view_permission %}
                     <a href="{% url opts|admin_urlname:'changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>
