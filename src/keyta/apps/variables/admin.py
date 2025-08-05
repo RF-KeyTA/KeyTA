@@ -1,5 +1,6 @@
 import json
 
+from django import forms
 from django.conf import settings
 from django.contrib import admin
 from django.forms import HiddenInput, MultipleHiddenInput
@@ -17,7 +18,7 @@ from keyta.admin.base_inline import (
 from keyta.admin.list_filters import SystemListFilter, WindowListFilter
 from keyta.apps.windows.admin import QuickAddMixin
 from keyta.apps.windows.models import Window
-from keyta.forms import form_with_select
+from keyta.forms import form_with_select, BaseForm
 from keyta.widgets import BaseSelect, link
 
 from .models import (
@@ -150,6 +151,25 @@ class Windows(TabularInlineWithDelete):
         return False
 
 
+class VariableForm(BaseForm):
+    def clean(self):
+        name = self.cleaned_data.get('name')
+        systems = self.cleaned_data.get('systems').values_list('name', flat=True)
+        variable_systems = [
+            system.name
+            for system in self.initial.get('systems', [])
+        ]
+
+        if system := systems.exclude(name__in=variable_systems).filter(variables__name=name).first():
+            variable = self._meta.model.objects.filter(name=name).filter(systems__name=system).filter(windows__isnull=True)
+            if variable.exists():
+                raise forms.ValidationError(
+                    {
+                        "name": _(f'Eine Variable mit diesem Namen existiert bereits im System "{system}"')
+                    }
+                )
+
+
 @admin.register(Variable)
 class VariableAdmin(SortableAdminBase, BaseAdmin):
     list_display = ['name', 'description']
@@ -165,6 +185,7 @@ class VariableAdmin(SortableAdminBase, BaseAdmin):
         Variable,
         'systems',
         _('System hinzufügen'),
+        form_class=VariableForm,
         select_many=True
     )
     inlines = [Values]
