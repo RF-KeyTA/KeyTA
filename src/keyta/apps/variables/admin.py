@@ -172,7 +172,7 @@ class VariableForm(BaseForm):
 
 @admin.register(Variable)
 class VariableAdmin(SortableAdminBase, BaseAdmin):
-    list_display = ['name', 'description']
+    list_display = ['name', 'description', 'system_list']
     list_display_links = ['name']
     list_filter = [
         ('systems', SystemListFilter),
@@ -190,11 +190,10 @@ class VariableAdmin(SortableAdminBase, BaseAdmin):
     )
     inlines = [Values]
 
-    def autocomplete_name(self, name: str, request: HttpRequest):
-        queryset = (
-            self.model.objects
-            .filter(name__icontains=name)
-            .filter(windows__isnull=True)
+    @admin.display(description=_('Systeme'))
+    def system_list(self, window: Window):
+        return ', '.join(
+            window.systems.values_list('name', flat=True)
         )
 
     def autocomplete_name_queryset(self, name: str):
