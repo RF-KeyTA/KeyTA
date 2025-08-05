@@ -19,7 +19,7 @@ from keyta.apps.variables.models import (
     VariableSchemaQuickAdd,
     VariableWindowRelation
 )
-from keyta.forms.baseform import form_with_select
+from keyta.forms.baseform import form_with_select, BaseForm
 from keyta.widgets import Icon, open_link_in_modal
 
 from .models import (
@@ -190,6 +190,23 @@ class Schemas(WindowQuickAddMixin, BaseTabularInline):
     quick_add_model = VariableSchemaQuickAdd
 
 
+class WindowForm(BaseForm):
+    def clean(self):
+        name = self.cleaned_data.get('name')
+        systems = self.cleaned_data.get('systems')
+        window_systems = [
+            system.name
+            for system in self.initial.get('systems', [])
+        ]
+
+        if system := systems.exclude(name__in=window_systems).filter(windows__name=name).first():
+            raise forms.ValidationError(
+                {
+                    "name": _(f'Eine Maske mit diesem Namen existiert bereits im System "{system}"')
+                }
+            )
+
+
 @admin.register(Window)
 class WindowAdmin(DocumentationField, BaseAdmin):
     list_display = ['name', 'preview']
@@ -213,6 +230,7 @@ class WindowAdmin(DocumentationField, BaseAdmin):
         Window,
         'systems',
         _('System hinzufügen'),
+        form_class=WindowForm,
         select_many=True
     )
     inlines = [
