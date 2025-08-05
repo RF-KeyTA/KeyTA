@@ -37,6 +37,19 @@ class WindowListFilter(admin.RelatedFieldListFilter):
         return False
 
 
+class SequenceForm(BaseForm):
+    def clean(self):
+        name = self.cleaned_data.get('name')
+        window = self.cleaned_data.get('windows').first()
+        sequence = window.sequences.filter(name=name)
+        if sequence.exists():
+            raise forms.ValidationError(
+                {
+                    "name": _(f'Eine Sequenz mit diesem Namen existiert bereits in der Maske "{window}"')
+                }
+            )
+
+
 @admin.register(Sequence)
 class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
     list_filter = [
@@ -46,7 +59,7 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
 
     form = forms.modelform_factory(
         Sequence,
-        BaseForm,
+        SequenceForm,
         fields=[],
         labels={
             'systems': _('Systeme')
@@ -121,9 +134,24 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
         )
 
 
+class QuickAddSequenceForm(BaseForm):
+    def clean(self):
+        name = self.cleaned_data.get('name')
+        windows = self.cleaned_data.get('windows')
+
+        if len(windows) == 1:
+            window = windows[0]
+            if window.sequences.filter(name=name).exists():
+                raise forms.ValidationError(
+                    {
+                        "name": _(f'Eine Sequenz mit diesem Namen existiert bereits in der Maske "{window.name}"')
+                    }
+                )
+
+
 @admin.register(SequenceQuickAdd)
 class SequenceQuickAddAdmin(WindowKeywordAdminMixin, BaseQuickAddAdmin):
-    pass
+    form = QuickAddSequenceForm
 
 
 @admin.register(SequenceQuickChange)
