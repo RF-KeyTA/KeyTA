@@ -199,12 +199,13 @@ class WindowForm(BaseForm):
             for system in self.initial.get('systems', [])
         ]
 
-        if system := systems.exclude(name__in=window_systems).filter(windows__name=name).first():
-            raise forms.ValidationError(
-                {
-                    "name": _(f'Eine Maske mit diesem Namen existiert bereits im System "{system}"')
-                }
-            )
+        if systems:
+            if system := systems.exclude(name__in=window_systems).filter(windows__name=name).first():
+                raise forms.ValidationError(
+                    {
+                        "name": _(f'Eine Maske mit diesem Namen existiert bereits im System "{system}"')
+                    }
+                )
 
 
 @admin.register(Window)

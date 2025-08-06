@@ -48,20 +48,21 @@ class ActionAdminMixin(WindowKeywordAdminMixin):
 class ActionForm(BaseForm):
     def clean(self):
         name = self.cleaned_data.get('name')
-        systems = self.cleaned_data.get('systems').values_list('name', flat=True)
+        systems = self.cleaned_data.get('systems')
         action_systems = [
             system.name
             for system in self.initial.get('systems', [])
         ]
 
-        if system := systems.exclude(name__in=action_systems).filter(keywords__name=name).first():
-            action = self._meta.model.objects.filter(name=name).filter(systems__name=system).filter(windows__isnull=True)
-            if action.exists():
-                raise forms.ValidationError(
-                    {
-                        "name": _(f'Eine Aktion mit diesem Namen existiert bereits im System "{system}"')
-                    }
-                )
+        if systems:
+            if system := systems.values_list('name', flat=True).exclude(name__in=action_systems).filter(keywords__name=name).first():
+                action = self._meta.model.objects.filter(name=name).filter(systems__name=system).filter(windows__isnull=True)
+                if action.exists():
+                    raise forms.ValidationError(
+                        {
+                            "name": _(f'Eine Aktion mit diesem Namen existiert bereits im System "{system}"')
+                        }
+                    )
 
 
 @admin.register(Action)
