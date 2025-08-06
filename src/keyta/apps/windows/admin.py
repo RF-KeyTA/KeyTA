@@ -168,7 +168,7 @@ class Variables(WindowQuickAddMixin, BaseTabularInline):
         if schema := window.schemas.first():
             return super().quick_add_url_params(request, {'schema': schema.pk})
 
-        return {}
+        return super().quick_add_url_params(request, {})
 
     @admin.display(description=_('Systeme'))
     def systems(self, obj):
