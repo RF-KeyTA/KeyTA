@@ -33,7 +33,7 @@ class DynamicChoiceField(forms.CharField):
 
 class UserInputFormset(forms.BaseInlineFormSet):
     empty_input = None, _('Kein Wert')
-    json_field_name = None
+    json_field_name = 'value'
 
     def __init__(
         self,

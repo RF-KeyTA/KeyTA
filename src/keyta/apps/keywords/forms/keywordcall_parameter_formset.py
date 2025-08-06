@@ -111,8 +111,6 @@ def get_variables_choices(kw_call_param_sources: QuerySet):
 
 
 class KeywordCallParameterFormset(UserInputFormset):
-    json_field_name = 'value'
-
     def form_errors(self, form):
         if json_field := getattr(form.instance, self.json_field_name):
             value = JSONValue.from_json(json_field)
