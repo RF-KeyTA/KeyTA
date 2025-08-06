@@ -23,13 +23,26 @@ class KeywordCallConditionFormset(UserInputFormset):
         kw_call: KeywordCall = self.parent
         kw_parameters = KeywordCallParameterSource.objects.filter(kw_param__in=kw_call.from_keyword.parameters.all())
         previous_return_values = KeywordCallParameterSource.objects.filter(kw_call_ret_val__in=kw_call.get_previous_return_values())
+        parameters = []
+        if kw_parameters.exists():
+            parameters = [[
+                _('Parameters'),
+                [(source.pk, str(source)) for source in kw_parameters]
+            ]]
+
+        return_values = []
+        if previous_return_values.exists():
+            return_values = [[
+                _('Vorherige Rückgabewerte'),
+                [(source.pk, str(source)) for source in previous_return_values]
+            ]]
 
         form.fields['value_ref'].widget = BaseSelect(
             _('Wert auswählen'),
             choices=(
                 [(None, '')] +
-                ([[_('Parameters'), [(source.pk, str(source)) for source in kw_parameters]]] if kw_parameters.exists() else []) +
-                ([[_('Vorherige Rückgabewerte'), [(source.pk, str(source)) for source in previous_return_values]]] if previous_return_values.exists() else [])
+                parameters +
+                return_values
             )
         )
         form.fields['condition'].widget.attrs['data-placeholder'] = _('Bedingung auswählen')
