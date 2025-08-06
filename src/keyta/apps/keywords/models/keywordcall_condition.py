@@ -19,7 +19,8 @@ class ConditionChoices(models.TextChoices):
 class KeywordCallCondition(CloneMixin, AbstractBaseModel):
     value_ref = models.ForeignKey(
         'keywords.KeywordCallParameterSource',
-        on_delete=models.PROTECT,
+        on_delete=models.SET_NULL,
+        null=True,
         verbose_name=_('Wert'),
     )
     condition = models.CharField(
@@ -34,7 +35,7 @@ class KeywordCallCondition(CloneMixin, AbstractBaseModel):
     )
     expected_value_ref = models.ForeignKey(
         'keywords.KeywordCallParameterSource',
-        on_delete=models.PROTECT,
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
         related_name='expected_values'
