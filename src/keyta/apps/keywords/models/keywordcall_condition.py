@@ -6,7 +6,7 @@ from model_clone import CloneMixin
 from keyta.models.base_model import AbstractBaseModel
 
 from ..json_value import JSONValue
-from .keywordcall_parameter_source import KeywordCallParameterSource
+from .keywordcall_parameter_source import KeywordCallParameterSource, KeywordCallParameterSourceType
 
 
 class ConditionChoices(models.TextChoices):
@@ -63,6 +63,44 @@ class KeywordCallCondition(CloneMixin, AbstractBaseModel):
                 return f'"{exp_value}" {self.condition} ' + '"${' + str(self.value_ref) + '}"'
 
         return super().__str__()
+
+    def make_clone(self, attrs=None, sub_clone=False, using=None, parent=None):
+        clone: KeywordCallCondition = super().make_clone(attrs=attrs, sub_clone=sub_clone, using=using, parent=parent)
+        clone_expected_value = JSONValue.from_json(clone.expected_value)
+        clone.expected_value_ref = self.expected_value_ref
+
+        if value_ref := clone.value_ref:
+            clone_keyword = clone.keyword_call.from_keyword
+
+            if value_ref.type == KeywordCallParameterSourceType.KEYWORD_PARAMETER:
+                clone.value_ref = KeywordCallParameterSource.objects.get(
+                    kw_param=clone_keyword.parameters.get(name=clone_expected_value.arg_name)
+                )
+
+            if value_ref.type == KeywordCallParameterSourceType.KW_CALL_RETURN_VALUE:
+                if clone_keyword:
+                    clone_kwcall = clone.keyword_call
+                    clone_kw_call_return_values = {
+                        str(kw_call_return_value): kw_call_return_value
+                        for kw_call_return_value in clone_kwcall.get_previous_return_values()
+                    }
+                    clone.value_ref = KeywordCallParameterSource.objects.get(
+                        kw_call_ret_val=clone_kw_call_return_values[str(self.value_ref.kw_call_ret_val)]
+                    )
+
+        if expected_value_ref := clone.expected_value_ref:
+            clone_keyword = clone.keyword_call.from_keyword
+
+            if expected_value_ref.type == KeywordCallParameterSourceType.KEYWORD_PARAMETER:
+                clone.expected_value_ref = KeywordCallParameterSource.objects.get(
+                    kw_param=clone_keyword.parameters.get(name=clone_expected_value.arg_name)
+                )
+                clone_expected_value.pk = clone.expected_value_ref.pk
+
+            clone.expected_value = clone.expected_value_ref.get_value().jsonify()
+            clone.save()
+
+        return clone
 
     def save(
         self, force_insert=False, force_update=False, using=None,
