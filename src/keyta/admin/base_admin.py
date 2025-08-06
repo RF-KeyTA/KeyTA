@@ -150,15 +150,13 @@ class BaseQuickAddAdmin(BaseAdmin):
 
         return super().add_view(request, form_url, extra_context)
 
-    def autocomplete_name(self, name: str, request: HttpRequest):
-        queryset = self.model.objects.filter(name__icontains=name)
+    def autocomplete_name_queryset(self, name: str, request: HttpRequest):
+        queryset = super().autocomplete_name_queryset(name, request)
 
         if 'windows' in request.GET:
             queryset = queryset.filter(windows__in=[request.GET['windows']])
 
-        names = list(queryset.values_list('name', flat=True))
-
-        return json.dumps(names)
+        return queryset
 
     def formfield_for_dbfield(self, db_field, request, **kwargs):
         field = super().formfield_for_dbfield(db_field, request, **kwargs)
