@@ -1,16 +1,21 @@
+from django import forms
 from django.contrib import admin
 from django.http import HttpResponseRedirect
 from django.utils.translation import gettext_lazy as _
 
 from keyta.admin.base_admin import BaseAdmin
+from keyta.admin.base_inline import TabularInlineWithDelete
 from keyta.apps.keywords.models import KeywordDocumentation
 from keyta.apps.sequences.models import SequenceStep
 from keyta.widgets import open_link_in_modal
 
+from ..forms.keywordcall_vararg_formset import KeywordCallVarargFormset
 from ..models import (
     ExecutionKeywordCall,
     KeywordCall,
+    KeywordCallParameter,
     KeywordCallReturnValue,
+    KeywordParameterType,
     LibraryKeywordCall,
     TestStep
 )
@@ -79,6 +84,27 @@ class ReturnValueField:
         return super().get_readonly_fields(request, obj)
 
 
+class VarargForm(forms.ModelForm):
+    def save(self, commit=True):
+        kw_call_parameter: KeywordCallParameter = self.instance
+        kw_call = kw_call_parameter.keyword_call
+        vararg = kw_call.to_keyword.parameters.filter(type=KeywordParameterType.VARARG).first()
+        kw_call_parameter.parameter = vararg
+
+        return super().save(commit)
+
+
+class VarargParametersInline(TabularInlineWithDelete):
+    model = KeywordCallParameter
+    fields = ['value']
+    form = VarargForm
+    formset = KeywordCallVarargFormset
+    extra = 0
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).filter(parameter__type=KeywordParameterType.VARARG)
+
+
 @admin.register(KeywordCall)
 class KeywordCallAdmin(BaseAdmin):
     parameters_inline = KeywordCallParametersInline
@@ -110,6 +136,17 @@ class KeywordCallAdmin(BaseAdmin):
     def get_fields(self, request, obj=None):
         return []
 
+    def get_inline_instances(self, request, obj=None):
+        kw_call: KeywordCall = obj
+        inline_instances = super().get_inline_instances(request, obj)
+
+        for inline in inline_instances:
+            if isinstance(inline, VarargParametersInline):
+                vararg = kw_call.to_keyword.parameters.filter(type=KeywordParameterType.VARARG).first()
+                inline.verbose_name_plural = vararg.name
+
+        return inline_instances
+
     def get_inlines(self, request, obj):
         kw_call: KeywordCall = obj
 
@@ -118,6 +155,9 @@ class KeywordCallAdmin(BaseAdmin):
         if kw_call.parameters.exists():
             inlines.append(self.parameters_inline)
 
+        if vararg := kw_call.to_keyword.parameters.filter(type=KeywordParameterType.VARARG).first():
+            inlines.append(VarargParametersInline)
+
         if kw_call.return_values.exists() and (kw_call.to_keyword.is_action or kw_call.to_keyword.is_sequence):
             inlines.append(ReadOnlyReturnValuesInline)
 
@@ -125,3 +165,8 @@ class KeywordCallAdmin(BaseAdmin):
             inlines.append(KeywordCallReturnValueInline)
 
         return inlines
+
+
+@admin.register(KeywordCallParameter)
+class KeywordCallParameterAdmin(BaseAdmin):
+    pass

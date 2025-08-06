@@ -227,6 +227,7 @@ JAZZMIN_SETTINGS = {
         'keywords.keyword',
         'keywords.keywordcall',
         'keywords.keywordcallcondition',
+        'keywords.keywordcallparameter',
         'keywords.keywordcallreturnvalue',
         'keywords.keyworddocumentation',
         'keywords.librarykeywordcall',

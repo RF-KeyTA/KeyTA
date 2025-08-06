@@ -14,6 +14,7 @@ from .keywordcall_parameter_source import KeywordCallParameterSource
 class KeywordParameterType(models.TextChoices):
     ARG = 'ARG', _('Positional Argument')
     KWARG = 'KWARG', _('Optional Argument')
+    VARARG = 'VARARG', _('Variadic Argument')
 
 
 class KeywordParameter(CloneMixin, AbstractBaseModel):
@@ -36,9 +37,6 @@ class KeywordParameter(CloneMixin, AbstractBaseModel):
         default=None,
         verbose_name=_('Standardwert')
     )
-    is_list = models.BooleanField(
-        default=False
-    )
     type = models.CharField(
         max_length=255,
         choices=KeywordParameterType.choices
@@ -59,15 +57,14 @@ class KeywordParameter(CloneMixin, AbstractBaseModel):
         return self.name
 
     @classmethod
-    def create_arg(cls, keyword: Keyword, name: str, position: int, is_list=False):
+    def create_arg(cls, keyword: Keyword, name: str, position: int):
         KeywordParameter.objects.update_or_create(
             keyword=keyword,
             position=position,
             type=KeywordParameterType.ARG,
             defaults={
-                'default_value': '@{EMPTY}' if is_list else None,
-                'name': name,
-                'is_list': is_list
+                'default_value': None,
+                'name': name
             }
         )
 
@@ -83,6 +80,18 @@ class KeywordParameter(CloneMixin, AbstractBaseModel):
             }
         )
 
+    @classmethod
+    def create_vararg(cls, keyword: Keyword, name: str, position: int):
+        KeywordParameter.objects.update_or_create(
+            keyword=keyword,
+            position=position,
+            defaults={
+                'default_value': '@{EMPTY}',
+                'name': name,
+                'type': KeywordParameterType.VARARG
+            }
+        )
+
     @property
     def is_arg(self):
         return self.type == KeywordParameterType.ARG
@@ -90,6 +99,10 @@ class KeywordParameter(CloneMixin, AbstractBaseModel):
     @property
     def is_kwarg(self):
         return self.type == KeywordParameterType.KWARG
+
+    @property
+    def is_vararg(self):
+        return self.type == KeywordParameterType.VARARG
 
     def save(
         self, force_insert=False, force_update=False, using=None,

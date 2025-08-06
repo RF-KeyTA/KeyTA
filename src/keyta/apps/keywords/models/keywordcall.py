@@ -15,7 +15,7 @@ from ..json_value import JSONValue
 from .keywordcall_condition import KeywordCallCondition
 from .keywordcall_parameters import KeywordCallParameter
 from .keywordcall_return_value import KeywordCallReturnValue
-from .keyword_parameters import KeywordParameter
+from .keyword_parameters import KeywordParameter, KeywordParameterType
 from .keyword_return_value import KeywordReturnValue
 
 
@@ -248,16 +248,24 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
 
     def to_robot(self, get_variable_value, user: Optional[AbstractUser]=None) -> RFKeywordCall:
         parameters = self.parameters.filter(user=user)
+        varargs = parameters.filter(parameter__type=KeywordParameterType.VARARG)
+
         params = []
 
         for param in parameters:
             value = param.to_robot(get_variable_value) or '${EMPTY}'
 
-            if param.parameter.is_arg:
+            if param.parameter.is_arg or param.parameter.is_vararg:
                 params.append(value)
 
             if param.parameter.is_kwarg:
-                params.append('%s=%s' % (param.name, value))
+                if varargs.exists():
+                    if param.parameter.position > varargs.first().parameter.position:
+                        params.append('%s=%s' % (param.name, value))
+                    else:
+                        params.append(value)
+                else:
+                    params.append('%s=%s' % (param.name, value))
 
         list_var = None
 
@@ -295,7 +303,7 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
             kw_call_param.update_value()
 
     def update_parameters(self, user: Optional[AbstractUser]=None):
-        for param in self.to_keyword.parameters.all():
+        for param in self.to_keyword.parameters.exclude(type=KeywordParameterType.VARARG):
             self.add_parameter(param, user)
 
     class Manager(models.Manager):

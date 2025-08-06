@@ -4,6 +4,8 @@ from django.utils.translation import gettext_lazy as _
 
 from model_clone import CloneMixin
 
+from keyta.models.base_model import AbstractBaseModel
+
 from ..json_value import JSONValue
 from .keywordcall_parameter_source import (
     KeywordCallParameterSource,
@@ -12,7 +14,7 @@ from .keywordcall_parameter_source import (
 from .keyword_parameters import KeywordParameterType
 
 
-class KeywordCallParameter(CloneMixin, models.Model):
+class KeywordCallParameter(CloneMixin, AbstractBaseModel):
     keyword_call = models.ForeignKey(
         'keywords.KeywordCall',
         on_delete=models.CASCADE,

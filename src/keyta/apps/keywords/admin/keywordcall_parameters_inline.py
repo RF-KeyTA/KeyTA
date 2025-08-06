@@ -3,7 +3,7 @@ from django import forms
 from keyta.admin.base_inline import BaseTabularInline
 
 from ..forms import KeywordCallParameterFormset
-from ..models import KeywordCallParameter
+from ..models import KeywordCallParameter, KeywordParameterType
 
 
 class KeywordCallParametersForm(forms.ModelForm):
@@ -23,6 +23,9 @@ class KeywordCallParametersInline(BaseTabularInline):
     extra = 0
     max_num = 0
     can_delete = False
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).exclude(parameter__type=KeywordParameterType.VARARG)
 
     def name(self, kw_call_param: KeywordCallParameter):
         name = kw_call_param.name

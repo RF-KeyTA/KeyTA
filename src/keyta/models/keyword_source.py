@@ -77,11 +77,10 @@ class KeywordSource(AbstractBaseModel):
                     )
                 else:
                     if arg["kind"] == 'VAR_POSITIONAL':
-                        KeywordParameter.create_arg(
+                        KeywordParameter.create_vararg(
                             keyword=kw,
                             name=name,
-                            position=idx,
-                            is_list=True
+                            position=idx
                         )
                     else:
                         kwarg_names.add(name)
