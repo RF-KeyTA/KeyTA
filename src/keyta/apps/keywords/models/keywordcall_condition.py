@@ -77,6 +77,11 @@ class KeywordCallCondition(CloneMixin, AbstractBaseModel):
 
         super().save(force_insert, force_update, using, update_fields)
 
+    def update_expected_value(self):
+        if self.expected_value_ref:
+            self.expected_value = self.expected_value_ref.get_value().jsonify()
+            self.save()
+
     class Meta:
         verbose_name=_('Vorbedingung')
         verbose_name_plural=_('Vorbedingungen')

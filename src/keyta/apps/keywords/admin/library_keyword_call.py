@@ -47,6 +47,9 @@ class LibraryKeywordCallAdmin(
         kw_call: KeywordCall = obj
 
         if kw_call.from_keyword.parameters.exists() or kw_call.get_previous_return_values().exists():
+            for condition in kw_call.conditions.all():
+                condition.update_expected_value()
+
             return inlines + [ConditionsInline]
 
         return inlines
