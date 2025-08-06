@@ -40,20 +40,25 @@ class WindowListFilter(admin.RelatedFieldListFilter):
 class SequenceForm(BaseForm):
     def clean(self):
         name = self.cleaned_data.get('name')
+        systems = self.cleaned_data.get('systems')
+        windows = self.cleaned_data.get('windows')
+        sequence_systems = [
+            system.name
+            for system in self.initial.get('systems', [])
+        ]
 
-        if self.instance:
-            window = self.instance.windows.first()
-            sequence = window.sequences.exclude(name=self.initial.get('name')).filter(name=name)
-        else:
-            window = self.cleaned_data.get('windows').first()
-            sequence = window.sequences.filter(name=name)
+        if systems:
+            if system := systems.values_list('name', flat=True).exclude(name__in=sequence_systems).filter(keywords__name=name).first():
+                if windows:
+                    sequence = self._meta.model.objects.filter(name=name).filter(systems__name=system).filter(windows__in=windows)
+                    window = windows.first()
 
-        if sequence.exists():
-            raise forms.ValidationError(
-                {
-                    "name": _(f'Eine Sequenz mit diesem Namen existiert bereits in der Maske "{window}"')
-                }
-            )
+                    if sequence.exists():
+                        raise forms.ValidationError(
+                            {
+                                "name": _(f'Eine Sequenz mit diesem Namen existiert bereits in der Maske "{window.name}"')
+                            }
+                        )
 
 
 @admin.register(Sequence)
