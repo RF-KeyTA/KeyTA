@@ -1,6 +1,7 @@
 # Add a library
 
 - A library can be added by name, except when it was already imported
+- A library with the name "test" must not be allowed to be added. (Message: ""test" ist keine Robot Framework Bibliothek")
 
 # List view
 
