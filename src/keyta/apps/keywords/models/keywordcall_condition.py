@@ -66,15 +66,13 @@ class KeywordCallCondition(CloneMixin, AbstractBaseModel):
 
     def make_clone(self, attrs=None, sub_clone=False, using=None, parent=None):
         clone: KeywordCallCondition = super().make_clone(attrs=attrs, sub_clone=sub_clone, using=using, parent=parent)
-        clone_expected_value = JSONValue.from_json(clone.expected_value)
-        clone.expected_value_ref = self.expected_value_ref
 
         if value_ref := clone.value_ref:
             clone_keyword = clone.keyword_call.from_keyword
 
             if value_ref.type == KeywordCallParameterSourceType.KEYWORD_PARAMETER:
                 clone.value_ref = KeywordCallParameterSource.objects.get(
-                    kw_param=clone_keyword.parameters.get(name=clone_expected_value.arg_name)
+                    kw_param=clone_keyword.parameters.get(name=str(value_ref))
                 )
 
             if value_ref.type == KeywordCallParameterSourceType.KW_CALL_RETURN_VALUE:
@@ -89,6 +87,7 @@ class KeywordCallCondition(CloneMixin, AbstractBaseModel):
                     )
 
         if expected_value_ref := clone.expected_value_ref:
+            clone_expected_value = JSONValue.from_json(clone.expected_value)
             clone_keyword = clone.keyword_call.from_keyword
 
             if expected_value_ref.type == KeywordCallParameterSourceType.KEYWORD_PARAMETER:
@@ -98,8 +97,8 @@ class KeywordCallCondition(CloneMixin, AbstractBaseModel):
                 clone_expected_value.pk = clone.expected_value_ref.pk
 
             clone.expected_value = clone.expected_value_ref.get_value().jsonify()
-            clone.save()
 
+        clone.save()
         return clone
 
     def save(
