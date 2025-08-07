@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('keywords', '0036_remove_keywordcallparametersource_variable_schema_field_and_more'),
+        ('keywords', '0041_remove_keywordcallparametersource_variable_schema_field_and_more'),
         ('variables', '0025_alter_variablevalue_options'),
     ]
 
