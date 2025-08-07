@@ -164,15 +164,6 @@ class Variables(WindowQuickAddMixin, BaseTabularInline):
             .order_by('variable__name')
     )
 
-    def quick_add_url_params(self, request: HttpRequest, url_params: dict):
-        window_id = request.resolver_match.kwargs['object_id']
-        window = Window.objects.get(pk=window_id)
-
-        if schema := window.schemas.first():
-            return super().quick_add_url_params(request, {'schema': schema.pk})
-
-        return super().quick_add_url_params(request, {})
-
     @admin.display(description=_('Systeme'))
     def systems(self, obj):
         return ', '.join(obj.variable.systems.values_list('name', flat=True))
