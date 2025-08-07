@@ -56,6 +56,8 @@ class WindowKeyword(CloneMixin, Keyword):
             clone_return_value.save()
 
         execution_kw_call: KeywordCall = clone.execution.keyword_calls.first()
+        execution_kw_call.to_keyword = clone
+        execution_kw_call.save()
 
         # Delete the parameters of the execution keyword call
         # so that they get updated in the ExecutionKeywordCallAdmin
