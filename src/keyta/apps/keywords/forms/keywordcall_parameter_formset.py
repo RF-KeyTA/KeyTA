@@ -41,6 +41,12 @@ def get_keyword_parameters(kw_call: KeywordCall):
     ]]
 
 
+def natural_sort(l):
+    convert = lambda text: int(text) if text.isdigit() else text.lower()
+    alphanum_key = lambda key: [convert(c) for c in re.split('([0-9]+)', key)]
+    return sorted(l, key=lambda x: alphanum_key(unrobot(x[1])))
+
+
 def unrobot(token):
     dict_access = re.compile(r'\${(.*)}\[(.*)\]')
 
@@ -82,14 +88,13 @@ def get_prev_return_values(kw_call: KeywordCall):
 
     return [[
         _('Vorherige Rückgabewerte'),
-        sorted(
+        # Sort the return values by their string representation
+        natural_sort(
             return_value_keys +
             [
                 (source.get_value().jsonify(), str(source))
                 for source in sources
-            ],
-            # Sort the return values by their string representation
-            key=lambda x: unrobot(x[1])
+            ]
         )
     ]]
 
