@@ -10,3 +10,6 @@
 - The delete-Button will reappear as soon as there is no longer a window attached to the system.
 
 - A system can be deleted (if there is no window attached to it).
+
+- A System can now be assigned to a user. In that case if a user is assigned to a system, that user can
+  see all the related items of that system. He cannot see items related to systems he is not assigned to.
