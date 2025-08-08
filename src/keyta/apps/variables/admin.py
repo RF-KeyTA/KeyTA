@@ -179,7 +179,7 @@ class VariableAdmin(SortableAdminBase, BaseAdmin):
         ('systems', SystemListFilter),
         ('windows', WindowListFilter)
     ]
-    search_fields = ['name']
+    search_fields = ['name', 'description']
     search_help_text = _('Name')
 
     form = form_with_select(
