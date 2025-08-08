@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-08 14:19+0200\n"
+"POT-Creation-Date: 2025-08-08 16:26+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -71,7 +71,8 @@ msgstr "An action with this name already exists in the system \"{system}\""
 #, python-brace-format
 msgid ""
 "Eine Aktion mit diesem Namen existiert bereits in der Maske \"{window.name}\""
-msgstr "An action with this name already exists in the window \"{window.name}\""
+msgstr ""
+"An action with this name already exists in the window \"{window.name}\""
 
 #: .\apps\actions\admin\libraries_inline.py:17 .\apps\systems\admin.py:68
 msgid "Bibliothek auswählen"
@@ -196,7 +197,7 @@ msgid "Testnachbereitung"
 msgstr "Test Teardown"
 
 #: .\apps\executions\errors.py:15
-msgid "Die Aufrufparameter sind unvollständig"
+msgid "Die Aufrufparameter (Werte) sind unvollständig"
 msgstr "The call parameters are incomplete"
 
 #: .\apps\executions\errors.py:19
@@ -204,19 +205,20 @@ msgid "Die Schritte sind unvollständig"
 msgstr "The steps are incomplete"
 
 #: .\apps\executions\errors.py:23
-msgid "Die Parameter der Schritte sind unvollständig"
+msgid "Die Parameter (Werte) der Schritte sind unvollständig"
 msgstr "The parameters of the steps are incomplete"
 
 #: .\apps\executions\errors.py:27
-msgid "Die Parameter der Anbindung ans laufende System sind unvollständig"
+msgid ""
+"Die Parameter (Werte) der Anbindung ans laufende System sind unvollständig"
 msgstr "The parameters of the connection to the running system are incomplete"
 
 #: .\apps\executions\errors.py:31
-msgid "Die Parameter der Testvorbereitung sind unvollständig"
+msgid "Die Parameter (Werte) der Testvorbereitung sind unvollständig"
 msgstr "The test setup parameters are incomplete"
 
 #: .\apps\executions\errors.py:35
-msgid "Die Parameter der Testnachbereitung sind unvollständig"
+msgid "Die Parameter (Werte) der Testnachbereitung sind unvollständig"
 msgstr "The test teardown parameters are incomplete"
 
 #: .\apps\executions\errors.py:39
@@ -356,7 +358,7 @@ msgstr "Return Values"
 msgid "Rückgabewert auswählen"
 msgstr "Select a Return Value"
 
-#: .\apps\keywords\admin\test_step.py:57 .\apps\variables\apps.py:7
+#: .\apps\keywords\admin\test_step.py:59 .\apps\variables\apps.py:7
 #: .\apps\variables\models.py:81 .\apps\variables\models.py:141
 #: .\apps\variables\models.py:148 .\apps\variables\models.py:155
 #: .\apps\variables\models.py:166
@@ -683,7 +685,8 @@ msgstr "Resource Imports"
 msgid ""
 "Eine Sequenz mit diesem Namen existiert bereits in der Maske \"{window."
 "name}\""
-msgstr "A sequence with this name already exists in the window \"{window.name}\""
+msgstr ""
+"A sequence with this name already exists in the window \"{window.name}\""
 
 #: .\apps\sequences\admin\sequence.py:80 .\apps\variables\admin.py:115
 #: .\apps\windows\admin.py:201
@@ -742,7 +745,8 @@ msgstr "A variable with this name alredy exists in the system \"{system}\""
 msgid ""
 "Eine Variable mit diesem Namen existiert bereits in der Maske \"{window."
 "name}\""
-msgstr "A variable with this name alredy exists in the window \"{window.name}\""
+msgstr ""
+"A variable with this name alredy exists in the window \"{window.name}\""
 
 #: .\apps\variables\models.py:12
 msgid "Formular"

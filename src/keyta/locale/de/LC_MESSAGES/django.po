@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-08 14:19+0200\n"
+"POT-Creation-Date: 2025-08-08 16:27+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -197,7 +197,7 @@ msgid "Testnachbereitung"
 msgstr ""
 
 #: .\apps\executions\errors.py:15
-msgid "Die Aufrufparameter sind unvollständig"
+msgid "Die Aufrufparameter (Werte) sind unvollständig"
 msgstr ""
 
 #: .\apps\executions\errors.py:19
@@ -205,19 +205,20 @@ msgid "Die Schritte sind unvollständig"
 msgstr ""
 
 #: .\apps\executions\errors.py:23
-msgid "Die Parameter der Schritte sind unvollständig"
+msgid "Die Parameter (Werte) der Schritte sind unvollständig"
 msgstr ""
 
 #: .\apps\executions\errors.py:27
-msgid "Die Parameter der Anbindung ans laufende System sind unvollständig"
+msgid ""
+"Die Parameter (Werte) der Anbindung ans laufende System sind unvollständig"
 msgstr ""
 
 #: .\apps\executions\errors.py:31
-msgid "Die Parameter der Testvorbereitung sind unvollständig"
+msgid "Die Parameter (Werte) der Testvorbereitung sind unvollständig"
 msgstr ""
 
 #: .\apps\executions\errors.py:35
-msgid "Die Parameter der Testnachbereitung sind unvollständig"
+msgid "Die Parameter (Werte) der Testnachbereitung sind unvollständig"
 msgstr ""
 
 #: .\apps\executions\errors.py:39
@@ -353,7 +354,7 @@ msgstr ""
 msgid "Rückgabewert auswählen"
 msgstr ""
 
-#: .\apps\keywords\admin\test_step.py:57 .\apps\variables\apps.py:7
+#: .\apps\keywords\admin\test_step.py:59 .\apps\variables\apps.py:7
 #: .\apps\variables\models.py:81 .\apps\variables\models.py:141
 #: .\apps\variables\models.py:148 .\apps\variables\models.py:155
 #: .\apps\variables\models.py:166

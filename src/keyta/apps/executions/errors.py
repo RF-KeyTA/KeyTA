@@ -12,7 +12,7 @@ class ErrorType(str, enum.Enum):
 
 class ValidationError(dict, enum.Enum):
     INCOMPLETE_CALL_PARAMS = {
-        'error': _('Die Aufrufparameter sind unvollständig'),
+        'error': _('Die Aufrufparameter (Werte) sind unvollständig'),
         'type': ErrorType.CALL_PARAMS
     }
     INCOMPLETE_STEP = {
@@ -20,19 +20,19 @@ class ValidationError(dict, enum.Enum):
         'type': ErrorType.STEPS
     }
     INCOMPLETE_STEP_PARAMS = {
-        'error': _('Die Parameter der Schritte sind unvollständig'),
+        'error': _('Die Parameter (Werte) der Schritte sind unvollständig'),
         'type': ErrorType.STEPS
     }
     INCOMPLETE_ATTACH_TO_SYSTEM_PARAMS = {
-        'error': _('Die Parameter der Anbindung ans laufende System sind unvollständig'),
+        'error': _('Die Parameter (Werte) der Anbindung ans laufende System sind unvollständig'),
         'type': ErrorType.SETTINGS
     }
     INCOMPLETE_TEST_SETUP_PARAMS = {
-        'error': _('Die Parameter der Testvorbereitung sind unvollständig'),
+        'error': _('Die Parameter (Werte) der Testvorbereitung sind unvollständig'),
         'type': ErrorType.SETTINGS
     }
     INCOMPLETE_TEST_TEARDOWN_PARAMS = {
-        'error': _('Die Parameter der Testnachbereitung sind unvollständig'),
+        'error': _('Die Parameter (Werte) der Testnachbereitung sind unvollständig'),
         'type': ErrorType.SETTINGS
     }
     NO_ATTACH_TO_SYSTEM = {
