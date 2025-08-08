@@ -28,10 +28,12 @@ def get_variable_values(variable: Variable):
     ]]
 
 
-def get_window_variables(kw_call: KeywordCall):
-    variable_values = kw_call.window.variables.exclude(template='').values_list('values', flat=True)
-    sources = KeywordCallParameterSource.objects.filter(
-        variable_value__in=variable_values
+def get_window_variables(kw_call: KeywordCall, exclude_variable: Variable=None):
+    variable_values = kw_call.window.variables.values_list('values', flat=True)
+    sources = (
+        KeywordCallParameterSource.objects
+        .filter(variable_value__in=variable_values)
+        .exclude(variable_value__variable=exclude_variable)
     )
 
     return get_variables_choices(sources)
@@ -42,7 +44,7 @@ class TestStepParameterFormset(KeywordCallParameterFormset):
         choices = get_prev_return_values(kw_call)
 
         if variable := kw_call.variable:
-            choices += get_variable_values(variable)
+            return choices + get_variable_values(variable) + get_window_variables(kw_call, exclude_variable=variable)
 
         return choices + get_window_variables(kw_call)
 
