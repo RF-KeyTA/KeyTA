@@ -95,9 +95,11 @@ class Resources(DeleteRelatedField, ResourceImportsInline):
 
 
 class Actions(WindowQuickAddMixin, WindowKeywordInline):
-    form = forms.modelform_factory(
+    form = form_with_select(
         KeywordWindowRelation,
-        fields=['keyword'],
+        'keyword',
+        _('Aktion auswählen'),
+        can_add_related=True,
         labels={
             'keyword': _('Aktion')
         }
@@ -112,9 +114,11 @@ class Actions(WindowQuickAddMixin, WindowKeywordInline):
 
 
 class Sequences(WindowQuickAddMixin, WindowKeywordInline):
-    form = forms.modelform_factory(
+    form = form_with_select(
         KeywordWindowRelation,
-        fields=['keyword'],
+        'keyword',
+        _('Sequenz auswählen'),
+        can_add_related=True,
         labels={
             'keyword': _('Sequenz')
         }
@@ -130,9 +134,11 @@ class Sequences(WindowQuickAddMixin, WindowKeywordInline):
 
 class Variables(WindowQuickAddMixin, BaseTabularInline):
     model = VariableWindowRelation
-    form = forms.modelform_factory(
+    form = form_with_select(
         VariableWindowRelation,
-        fields=['variable'],
+        'variable',
+        _('Referenzwert auswählen'),
+        can_add_related=True,
         labels={
             'variable': _('Referenzwert')
         }
