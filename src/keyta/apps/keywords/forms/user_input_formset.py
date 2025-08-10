@@ -53,9 +53,33 @@ class UserInputFormset(forms.BaseInlineFormSet):
     def add_fields(self, form, index):
         super().add_fields(form, index)
 
+        user_input_value, user_input_show = self.get_user_input(form, index)
+
+        if user_input_show in {"True", "False"}:
+            true_json_value = JSONValue(
+                arg_name=None,
+                kw_call_index=None,
+                pk=None,
+                user_input='True',
+            ).jsonify()
+
+            false_json_value = JSONValue(
+                arg_name=None,
+                kw_call_index=None,
+                pk=None,
+                user_input='False',
+            ).jsonify()
+
+            user_input_choices = [
+                (true_json_value, "True"),
+                (false_json_value, "False")
+            ]
+        else:
+            user_input_choices = [(user_input_value, user_input_show)]
+
         choices = (
             [(None, _('Kein Wert'))] +
-            [[_('Eingabe'), [self.get_user_input(form, index)]]] +
+            [[_('Eingabe'), user_input_choices]] +
             self.choices
         )
 
@@ -87,9 +111,10 @@ class UserInputFormset(forms.BaseInlineFormSet):
             json_value: JSONValue = self.get_json_value(form)
 
             if json_value and not json_value.pk:
-                if not json_value.user_input:
+                user_input = json_value.user_input
+                if not user_input:
                     return self.empty_input
                 else:
-                    return json_value.jsonify(), json_value.user_input
+                    return json_value.jsonify(), user_input
 
         return self.empty_input
