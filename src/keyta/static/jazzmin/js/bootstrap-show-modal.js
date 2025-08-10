@@ -37,25 +37,6 @@
         }
     }
 
-    const goBack = function () {
-        const iframeHistoryEntries = history.length
-
-        if (iframeHistoryEntries > 1) {
-            return '<a class="pr-4" href="#" onclick="history.back()">' +
-            '<i class="fa-solid fa-arrow-left"></i>' +
-            '</a>'
-        }
-        else {
-            return ''
-        }
-    }
-
-    const reload = function () {
-        return `<a class="pr-4" id="reload" href="#" onclick="document.getElementById('related-modal-iframe').contentWindow.location.reload()">` +
-        '<i class="fa-solid fa-arrow-rotate-right"></i>' +
-        '</a>'
-    }
-
     Modal.prototype.createContainerElement = function () {
         var self = this
         this.element = document.createElement("div")
@@ -67,7 +48,6 @@
         this.element.innerHTML = '<div class="modal-dialog ' + this.props.modalDialogClass + '" role="document">' +
             '<div class="modal-content">' +
             '<div class="modal-header">' +
-            reload() +
             '<h5 class="modal-title"></h5>' +
             '<button type="button" class="close" data-dismiss="modal" aria-label="Close">' +
             '<span aria-hidden="true">&times;</span>' +
