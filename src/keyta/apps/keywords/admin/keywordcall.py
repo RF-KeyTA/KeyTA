@@ -152,7 +152,7 @@ class KeywordCallAdmin(BaseAdmin):
 
         inlines = []
 
-        if kw_call.parameters.exists():
+        if kw_call.parameters.exclude(parameter__type=KeywordParameterType.VARARG).exists():
             inlines.append(self.parameters_inline)
 
         if vararg := kw_call.to_keyword.parameters.filter(type=KeywordParameterType.VARARG).first():
