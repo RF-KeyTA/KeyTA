@@ -41,6 +41,11 @@ class KeywordParameter(CloneMixin, AbstractBaseModel):
         max_length=255,
         choices=KeywordParameterType.choices
     )
+    # JSON representation of a list of strings
+    typedoc = models.CharField(
+        max_length=255,
+        default='[]'
+    )
 
     USE_UNIQUE_DUPLICATE_SUFFIX = False
 
@@ -57,19 +62,20 @@ class KeywordParameter(CloneMixin, AbstractBaseModel):
         return self.name
 
     @classmethod
-    def create_arg(cls, keyword: Keyword, name: str, position: int):
+    def create_arg(cls, keyword: Keyword, name: str, position: int, typedoc: str):
         KeywordParameter.objects.update_or_create(
             keyword=keyword,
             position=position,
             type=KeywordParameterType.ARG,
             defaults={
                 'default_value': None,
-                'name': name
+                'name': name,
+                'typedoc': typedoc
             }
         )
 
     @classmethod
-    def create_kwarg(cls, keyword: Keyword, name: str, default_value: str, position: int):
+    def create_kwarg(cls, keyword: Keyword, name: str, default_value: str, position: int, typedoc: str):
         KeywordParameter.objects.update_or_create(
             keyword=keyword,
             name=name,
@@ -77,18 +83,20 @@ class KeywordParameter(CloneMixin, AbstractBaseModel):
             defaults={
                 'default_value': default_value,
                 'position': position,
+                'typedoc': typedoc
             }
         )
 
     @classmethod
-    def create_vararg(cls, keyword: Keyword, name: str, position: int):
+    def create_vararg(cls, keyword: Keyword, name: str, position: int, typedoc: str):
         KeywordParameter.objects.update_or_create(
             keyword=keyword,
             position=position,
             defaults={
                 'default_value': '@{EMPTY}',
                 'name': name,
-                'type': KeywordParameterType.VARARG
+                'type': KeywordParameterType.VARARG,
+                'typedoc': typedoc
             }
         )
 

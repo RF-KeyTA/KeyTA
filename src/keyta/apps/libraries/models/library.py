@@ -11,6 +11,10 @@ class Library(KeywordSource):
     init_doc = models.TextField(
         verbose_name=_('Einrichtung')
     )
+    # JSON representation of a dict
+    typedocs = models.TextField(
+        default='{}'
+    )
 
     ROBOT_LIBRARIES = {
         'BuiltIn',

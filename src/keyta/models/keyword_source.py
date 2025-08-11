@@ -14,7 +14,7 @@ from keyta.apps.keywords.models import (
     KeywordParameter,
     KeywordReturnValue
 )
-from keyta.rf_import.import_keywords import args_table, get_default_value
+from keyta.rf_import.import_keywords import args_table, get_default_value, get_type
 from keyta.widgets import open_link_in_modal
 
 from .base_model import AbstractBaseModel
@@ -32,12 +32,12 @@ class KeywordSource(AbstractBaseModel):
     def __str__(self):
         return self.name
 
-    def import_keywords(self, libdoc_json):
+    def import_keywords(self, libdoc_dict: dict, typedocs: dict[str, dict]):
         keyword_names = set()
         deprecated_keywords = set()
 
         keyword: dict
-        for keyword in libdoc_json["keywords"]:
+        for keyword in libdoc_dict["keywords"]:
             name = keyword["name"]
 
             if keyword.get('deprecated', False):
@@ -57,8 +57,8 @@ class KeywordSource(AbstractBaseModel):
                 **kw_args,
                 'name': name,
                 'defaults': {
-                    'args_doc': args_table(keyword["args"]),
-                    'documentation': keyword["doc"],
+                    'args_doc': args_table(keyword['args'], typedocs),
+                    'documentation': keyword['doc'],
                     'short_doc': keyword['shortdoc']
                 }
             })
@@ -73,14 +73,16 @@ class KeywordSource(AbstractBaseModel):
                     KeywordParameter.create_arg(
                         keyword=kw,
                         name=name,
-                        position=idx
+                        position=idx,
+                        typedoc=json.dumps(get_type(arg))
                     )
                 else:
                     if arg["kind"] == 'VAR_POSITIONAL':
                         KeywordParameter.create_vararg(
                             keyword=kw,
                             name=name,
-                            position=idx
+                            position=idx,
+                            typedoc=json.dumps(get_type(arg))
                         )
                     else:
                         kwarg_names.add(name)
@@ -92,7 +94,8 @@ class KeywordSource(AbstractBaseModel):
                             keyword=kw,
                             name=name,
                             default_value=default_value,
-                            position=idx
+                            position=idx,
+                            typedoc=json.dumps(get_type(arg))
                         )
 
             for kwarg in kw.parameters.kwargs():
@@ -100,7 +103,7 @@ class KeywordSource(AbstractBaseModel):
                     kwarg.delete()
 
             if keyword.get('returnType'):
-                for typedoc in libdoc_json['typedocs']:
+                for typedoc in libdoc_dict['typedocs']:
                     if (
                         typedoc['name'] == keyword['returnType']['typedoc'] and
                         typedoc['type'] == 'TypedDict'
