@@ -22,7 +22,7 @@
                     <div class="card">
                         <div class="card-body">
                             {% with model=app.models|first %}
-                            <a href="{{ model.url }}" style="font-size: 28px; width: 100%; display: block">
+                            <a href="{{ model.url }}" id="{{ model.name|lower }}" style="font-size: 28px; width: 100%; display: block">
                                 <i class="app-icon {{ model.icon }}" style="width: 100px"></i>
                                 {{ model.name }}
                             </a>
