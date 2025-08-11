@@ -1,3 +1,5 @@
+import json
+
 from keyta.apps.libraries.models import Library, LibraryParameter
 
 from .import_keywords import (
@@ -7,14 +9,47 @@ from .import_keywords import (
 )
 
 
+def get_typedocs(libdoc_typedocs: list[dict]) -> dict[str, dict]:
+    typedocs = dict()
+
+    for typedoc in libdoc_typedocs:
+        name = typedoc['name']
+
+        if typedoc['type'] == 'Enum':
+            typedocs[name] = {
+                'type': 'Enum',
+                'name': name,
+                'doc': typedoc['doc'],
+                'members': [
+                    member['name']
+                    for member in typedoc['members']
+                ]
+            }
+
+        if typedoc['type'] == 'TypedDict':
+            typedocs[name] = {
+                'type': 'TypedDict',
+                'name': name,
+                'doc': typedoc['doc'],
+                'keys': [
+                    item['key']
+                    for item in typedoc['items']
+                ]
+            }
+
+    return typedocs
+
+
 def import_library(libdoc_dict: dict):
+    typedocs = get_typedocs(libdoc_dict['typedocs'])
     lib: Library
     lib, created = Library.objects.update_or_create(
         name=libdoc_dict["name"],
         defaults={
             'version': libdoc_dict["version"],
             'init_doc': get_init_doc(libdoc_dict),
-            'documentation': libdoc_dict["doc"] + section_importing(libdoc_dict)
+            'documentation': libdoc_dict["doc"] + section_importing(libdoc_dict),
+            'typedoc': json.dumps(typedocs)
         }
     )
 
@@ -46,6 +81,6 @@ def import_library(libdoc_dict: dict):
             if init_arg.name not in init_args_names:
                 init_arg.delete()
 
-    lib.import_keywords(libdoc_dict)
+    lib.import_keywords(libdoc_dict, typedocs)
 
     return lib
