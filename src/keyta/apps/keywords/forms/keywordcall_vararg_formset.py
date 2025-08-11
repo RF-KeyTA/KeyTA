@@ -1,11 +1,12 @@
 from ..json_value import JSONValue
 from ..models import KeywordCall, KeywordCallParameter
+from .keywordcall_parameter_formset import get_keyword_parameters, get_prev_return_values
 from .user_input_formset import UserInputFormset
 
 
 class KeywordCallVarargFormset(UserInputFormset):
     def get_choices(self, kw_call: KeywordCall):
-        return []
+        return get_keyword_parameters(kw_call) + get_prev_return_values(kw_call)
 
     def get_json_value(self, form):
         kw_call_parameter: KeywordCallParameter = form.instance
