@@ -24,6 +24,11 @@ class LibraryParameter(AbstractBaseModel):
     orig_default_value = models.CharField(
         max_length=255
     )
+    # JSON representation of a list of strings
+    typedoc = models.CharField(
+        max_length=255,
+        default='[]'
+    )
 
     def __str__(self):
         return self.name
