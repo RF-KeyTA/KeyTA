@@ -1,14 +1,11 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
-from django.http import HttpRequest, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 
 from adminsortable2.admin import SortableAdminBase
 
-from keyta.admin.base_admin import (
-    BaseAdmin,
-    BaseDocumentationAdmin
-)
+from keyta.admin.base_admin import BaseAdmin
 from keyta.admin.field_documentation import DocumentationField
 from keyta.apps.actions.models import Action
 from keyta.apps.sequences.models import Sequence
@@ -57,31 +54,13 @@ class KeywordAdmin(DocumentationField, SortableAdminBase, BaseAdmin):
         return super().change_view(request, object_id, form_url, extra_context)
 
 
-class ArgsTableMixin:
-    @admin.display(description=_('Parameters'))
-    def args_table(self, keyword: Keyword):
-        return mark_safe(keyword.args_doc)
-
-    def get_fields(self, request: HttpRequest, obj=None):
-        keyword: Keyword = obj
-        
-        if keyword.args_doc:
-            return ['args_table'] + super().get_fields(request, obj)
-        
-        return super().get_fields(request, obj)
-
-    def get_readonly_fields(self, request: HttpRequest, obj=None):
-        keyword: Keyword = obj
-
-        if keyword.args_doc:
-            return ['args_table'] + super().get_readonly_fields(request, obj)
-        
-        return super().get_readonly_fields(request, obj)
-
-
 @admin.register(KeywordDocumentation)
 class KeywordDocumentationAdmin(
-    ArgsTableMixin,
-    BaseDocumentationAdmin
+    admin.ModelAdmin
 ):
-    pass
+    fields = ['html_doc']
+    readonly_fields = ['html_doc']
+
+    @admin.display(description='')
+    def html_doc(self, keyword: Keyword):
+        return mark_safe(keyword.documentation)
