@@ -9,7 +9,7 @@ from .keywordcall_parameters_inline import KeywordCallParametersInline
 
 
 class ExecutionKeywordCallParameterFormset(KeywordCallParameterFormset):
-    def get_choices(self, kw_call: KeywordCall):
+    def get_ref_choices(self, kw_call: KeywordCall):
         return []
 
 

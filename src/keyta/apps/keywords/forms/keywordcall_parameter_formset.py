@@ -115,6 +115,15 @@ def get_variables_choices(kw_call_param_sources: QuerySet):
     ]
 
 
+def user_input(input: str):
+    return JSONValue(
+            arg_name=None,
+            kw_call_index=None,
+            pk=None,
+            user_input=input,
+        ).jsonify()
+
+
 class KeywordCallParameterFormset(UserInputFormset):
     def form_errors(self, form):
         if json_field := getattr(form.instance, self.json_field_name):
@@ -126,7 +135,44 @@ class KeywordCallParameterFormset(UserInputFormset):
                     form.fields[self.json_field_name].default_error_messages['required']
                 ])
 
-    def get_choices(self, kw_call: KeywordCall):
+    def get_choices(self, form, index) -> list:
+        kw_call_parameter: KeywordCallParameter = form.instance
+        parameter_type: list = json.loads(kw_call_parameter.parameter.typedoc)
+        choices = dict()
+
+        if parameter_type == ['bool']:
+            self.enable_user_input = False
+            choices[user_input('True')] = 'True'
+            choices[user_input('False')] = 'False'
+
+            return list(choices.items())
+
+        for type_ in parameter_type:
+            if type_ == 'bool':
+                choices[user_input('True')] = 'True'
+                choices[user_input('False')] = 'False'
+
+            if any([
+                type_ == 'None',
+                type_ in {'int', 'str', 'timedelta'},
+                type_.startswith('dict'),
+                type_.startswith('list')
+            ]):
+                self.enable_user_input = True
+
+            if typedoc := self.typedocs.get(type_):
+                if typedoc['type'] == 'Enum':
+                    self.enable_user_input = False
+
+                    for member in typedoc['members']:
+                        if member.lower() not in {'true', 'false'}:
+                            choices[user_input(member)] = member
+
+                    return list(choices.items())
+
+        return super().get_choices(form, index)
+
+    def get_ref_choices(self, kw_call: KeywordCall):
         return get_keyword_parameters(kw_call) + get_prev_return_values(kw_call)
 
     def get_json_value(self, form):

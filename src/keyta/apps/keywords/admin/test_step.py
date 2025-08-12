@@ -40,7 +40,7 @@ def get_window_variables(kw_call: KeywordCall, exclude_variable: Variable=None):
 
 
 class TestStepParameterFormset(KeywordCallParameterFormset):
-    def get_choices(self, kw_call: KeywordCall):
+    def get_ref_choices(self, kw_call: KeywordCall):
         choices = get_prev_return_values(kw_call)
 
         if variable := kw_call.variable:
