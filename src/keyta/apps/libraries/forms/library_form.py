@@ -6,7 +6,7 @@ from django.utils.translation import gettext_lazy as _
 
 from keyta.rf_import.import_keywords import get_libdoc_dict
 
-from .models import Library
+from ..models import Library
 
 
 class LibraryForm(forms.ModelForm):
