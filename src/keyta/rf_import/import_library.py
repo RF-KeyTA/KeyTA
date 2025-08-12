@@ -49,7 +49,7 @@ def import_library(libdoc_dict: dict):
             'version': libdoc_dict["version"],
             'init_doc': get_init_doc(libdoc_dict),
             'documentation': libdoc_dict["doc"] + section_importing(libdoc_dict),
-            'typedoc': json.dumps(typedocs)
+            'typedocs': json.dumps(typedocs)
         }
     )
 
