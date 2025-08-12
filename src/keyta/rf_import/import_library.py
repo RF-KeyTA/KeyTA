@@ -5,6 +5,7 @@ from keyta.apps.libraries.models import Library, LibraryParameter
 from .import_keywords import (
     get_default_value,
     get_init_doc,
+    get_type,
     section_importing
 )
 
@@ -66,11 +67,12 @@ def import_library(libdoc_dict: dict):
             init_args_names.add(name)
             default_value = get_default_value(init_arg["defaultValue"])
 
-            LibraryParameter.objects.get_or_create(
+            LibraryParameter.objects.update_or_create(
                 library=lib,
                 name=name,
                 defaults={
-                    'default_value': default_value
+                    'orig_default_value': default_value,
+                    'typedoc': json.dumps(get_type(init_arg))
                 }
             )
 
