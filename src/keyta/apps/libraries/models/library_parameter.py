@@ -42,7 +42,7 @@ class LibraryParameter(AbstractBaseModel):
             update_fields=None
     ):
         if not self.pk:
-            self.orig_default_value = self.default_value
+            self.default_value = self.orig_default_value
 
         super().save(force_insert, force_update, using, update_fields)
 
