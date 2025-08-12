@@ -28,6 +28,7 @@ class LibraryAdmin(BaseAdmin):
     inlines = [Keywords]
     form = LibraryForm
     errors = set()
+    change_form_template = 'library_change_form.html'
 
     def autocomplete_name(self, name: str, request: HttpRequest):
         return json.dumps([
