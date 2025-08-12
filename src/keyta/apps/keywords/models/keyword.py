@@ -43,10 +43,6 @@ class Keyword(DocumentationMixin, AbstractBaseModel):
         blank=True,
         verbose_name=_('Beschreibung')
     )
-    args_doc = models.TextField(
-        blank=True,
-        verbose_name=_('Parameters')
-    )
     documentation = models.TextField(
         blank=True,
         verbose_name=_('Dokumentation')
