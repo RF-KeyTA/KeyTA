@@ -3,14 +3,10 @@ from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 
 from keyta.admin.base_inline import BaseTabularInline
-from keyta.forms.optional_argument import OptionalArgumentFormSet
 from keyta.widgets import Icon, link
 
+from ..forms import LibraryParameterFormSet
 from ..models import LibraryParameter
-
-
-class LibraryParameterFormSet(OptionalArgumentFormSet):
-    value_field = 'default_value'
 
 
 class InitArguments(BaseTabularInline):

@@ -2,14 +2,15 @@ from django.db.models import QuerySet
 from django.utils.translation import gettext_lazy as _
 
 from keyta.admin.base_inline import BaseTabularInline
-from keyta.apps.libraries.models import LibraryImportParameter
-from keyta.forms import OptionalArgumentFormSet
+
+from ..forms import LibraryParameterFormSet
+from ..models import LibraryImportParameter
 
 
 class LibraryImportParametersInline(BaseTabularInline):
     model = LibraryImportParameter
     fields = ['name', 'value']
-    formset = OptionalArgumentFormSet
+    formset = LibraryParameterFormSet
     readonly_fields = ['name']
     extra = 0
     max_num = 0
