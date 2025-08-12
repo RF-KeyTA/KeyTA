@@ -14,12 +14,12 @@ from .keywordcall_parameters_inline import KeywordCallParametersInline
 
 
 class LibraryKeywordCallParameterFormset(KeywordCallParameterFormset):
-    def get_choices(self, kw_call: KeywordCall):
+    def get_ref_choices(self, kw_call: KeywordCall):
         if not kw_call.from_keyword.windows.count():
             system_ids = list(kw_call.from_keyword.systems.values_list('id', flat=True))
-            return super().get_choices(kw_call) + get_global_variables(system_ids)
+            return super().get_ref_choices(kw_call) + get_global_variables(system_ids)
 
-        return super().get_choices(kw_call)
+        return super().get_ref_choices(kw_call)
 
 
 class LibraryKeywordCallParametersInline(KeywordCallParametersInline):

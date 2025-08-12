@@ -6,7 +6,7 @@ from keyta.apps.keywords.models import KeywordCall
 
 
 class SetupTeardownParametersFormset(KeywordCallParameterFormset):
-    def get_choices(self, kw_call: KeywordCall):
+    def get_ref_choices(self, kw_call: KeywordCall):
         execution = kw_call.execution
         systems = QuerySet()
 

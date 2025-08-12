@@ -23,6 +23,7 @@ class KeywordCallConditionFormset(UserInputFormset):
         kw_call: KeywordCall = self.parent
         kw_parameters = KeywordCallParameterSource.objects.filter(kw_param__in=kw_call.from_keyword.parameters.all())
         previous_return_values = KeywordCallParameterSource.objects.filter(kw_call_ret_val__in=kw_call.get_previous_return_values())
+
         parameters = []
         if kw_parameters.exists():
             parameters = [[
@@ -47,8 +48,7 @@ class KeywordCallConditionFormset(UserInputFormset):
         )
         form.fields['condition'].widget.attrs['data-placeholder'] = _('Bedingung auswählen')
 
-
-    def get_choices(self, kw_call: KeywordCall):
+    def get_ref_choices(self, kw_call: KeywordCall):
         return get_keyword_parameters(kw_call)
 
     def get_json_value(self, form):
