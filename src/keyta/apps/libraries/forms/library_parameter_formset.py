@@ -9,8 +9,6 @@ from ..models import LibraryParameter
 
 
 class LibraryParameterFormSet(forms.BaseInlineFormSet):
-    value_field = 'default_value'
-
     def add_fields(self, form, index):
         super().add_fields(form, index)
 
@@ -49,10 +47,10 @@ class LibraryParameterFormSet(forms.BaseInlineFormSet):
             if user_input:
                 placeholder = _('Wert auswählen oder eintragen')
 
-            form.fields[self.value_field].widget = BaseSelect(
+            form.fields['default_value'].widget = BaseSelect(
                 placeholder,
-                choices=choices.items()
+                choices=choices.items(),
+                attrs={
+                    'data-tags': str(user_input).lower()
+                }
             )
-            form.fields[self.value_field].widget.attrs.update({
-                'data-tags': str(user_input).lower()
-            })
