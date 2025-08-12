@@ -8,13 +8,21 @@ from django.db import models
 from django.db.models.functions import Lower
 from django.utils.translation import gettext_lazy as _
 
+from jinja2 import Template
+
 from keyta.apps.keywords.models import (
     Keyword,
     KeywordDocumentation,
     KeywordParameter,
     KeywordReturnValue
 )
-from keyta.rf_import.import_keywords import args_table, get_default_value, get_type
+from keyta.rf_import.import_keywords import (
+    args_table,
+    format_return_type,
+    get_default_value,
+    get_type,
+    heading
+)
 from keyta.widgets import open_link_in_modal
 
 from .base_model import AbstractBaseModel
@@ -57,8 +65,12 @@ class KeywordSource(AbstractBaseModel):
                 **kw_args,
                 'name': name,
                 'defaults': {
-                    'args_doc': args_table(keyword['args'], typedocs),
-                    'documentation': keyword['doc'],
+                    'documentation': (
+                        args_table(keyword['args'], typedocs) +
+                        format_return_type(keyword['returnType'], typedocs) +
+                        heading(_('Dokumentation')) +
+                        keyword['doc']
+                    ),
                     'short_doc': keyword['shortdoc']
                 }
             })
@@ -120,7 +132,25 @@ class KeywordSource(AbstractBaseModel):
                             })
                         )
 
-        self.documentation = self.replace_links(self.documentation, heading_links=False)
+        lib_typedocs = [
+            typedoc
+            for type_ in re.findall(r'"#type-(\w+)"', self.documentation)
+            if (typedoc := typedocs.get(type_))
+        ]
+
+        template = """
+        {% for typedoc in typedocs %}
+        <div id="{{ typedoc.name }}" class="modal" tabindex="-1" role="dialog">
+            {{ typedoc.doc }}
+        </div>
+        {% endfor %}
+        """
+
+        lib_typedocs = Template(template).render({
+            'typedocs': lib_typedocs
+        })
+
+        self.documentation = self.replace_links(self.documentation, heading_links=False) + lib_typedocs
         self.save()
 
         for kw in self.keywords.all():

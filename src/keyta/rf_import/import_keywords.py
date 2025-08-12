@@ -10,9 +10,9 @@ from jinja2 import Template
 
 def args_table(libdoc_args: list[dict], typedocs: dict[str, dict]):
     if not libdoc_args:
-        return ""
+        return ''
 
-    template = """
+    template = heading(_('Parameters')) + """
     <table class="table table-borderless table-sm">
         <thead>
             <tr>
@@ -35,21 +35,6 @@ def args_table(libdoc_args: list[dict], typedocs: dict[str, dict]):
         {{ typedoc.doc }}
     </div>
     {% endfor %}
-    <script>
-        function bsShowModal(selector) {
-            let content = document.querySelector(selector)
-            let modal_selector = '.modal-body ' + selector
-            $.showModal({
-                title: selector.replace('#', ''), 
-                body: content.outerHTML, 
-                backdrop: false, 
-                modalDialogClass: "modal-dialog-centered modal-lg", 
-                modalClass: "fade modal-wide related-modal-2"
-            })
-            let modal = document.querySelector(modal_selector)
-            modal.classList.remove('modal')
-        }
-    </script>
     """
 
     args = []
@@ -98,6 +83,61 @@ def format_default_value(arg: dict):
     return ""
 
 
+def format_return_type(return_type: dict|None, typedocs: dict[str, dict]):
+    if not return_type:
+        return ''
+
+    if return_type['union']:
+        types = []
+
+        for type_ in return_type['nested']:
+            typedoc = type_['typedoc']
+
+            if typedoc == 'list':
+                if nested := type_['nested']:
+                    types.append('list[%s]' % nested[0]['name'])
+                else:
+                    types.append('list')
+            else:
+                types.append(type_['name'])
+    else:
+        name = return_type['name']
+
+        if name in {'dict'}:
+            types = [name]
+        else:
+            typedoc = return_type['typedoc']
+            types = [typedoc]
+
+            if typedoc == 'list':
+                if nested := return_type['nested']:
+                    types = ['list[%s]' % nested[0]['name']]
+                else:
+                    types = ['list']
+
+    template = heading(_('Rückgabetyp')) + """
+    <div class="mb-4">
+        <p>{{ type_repr }}</p>
+    </div>
+    {% for typedoc in typedocs %}
+    <div id="{{ typedoc.name }}" class="modal" tabindex="-1" role="dialog">
+        {{ typedoc.doc }}
+    </div>
+    {% endfor %}
+    """
+
+    return_typedocs = [
+        typedoc
+        for type_ in types
+        if (typedoc := typedocs.get(type_))
+    ]
+
+    return Template(template).render({
+        'type_repr': format_type(types, typedocs),
+        'typedocs': return_typedocs
+    })
+
+
 def format_type(arg_type: list, typedocs: dict[str, dict]):
     formatted_type = []
 
@@ -105,7 +145,10 @@ def format_type(arg_type: list, typedocs: dict[str, dict]):
         if type_ in typedocs:
             formatted_type.append(f'<a href="#{type_}" onclick="bsShowModal(\'#{type_}\')">{type_}</a>')
         else:
-            formatted_type.append(type_)
+            if type_ is None:
+                formatted_type.append('None')
+            else:
+                formatted_type.append(type_)
 
     return " | ".join(formatted_type)
 
@@ -148,6 +191,16 @@ def get_type(arg: dict) -> list[str]:
         type = []
 
     return type
+
+
+def heading(title: str):
+    return f"""
+    <div class="row">
+        <label class="col-sm-6 text-left">
+            {title}
+        </label>
+    </div>
+    """
 
 
 def section_importing(lib_json: dict):
