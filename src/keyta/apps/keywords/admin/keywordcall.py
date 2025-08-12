@@ -40,13 +40,13 @@ class ReadOnlyReturnValuesInline(KeywordCallReturnValueInline):
 
 
 class KeywordDocField:
-    @admin.display(description=_(message='Dokumentation'))
+    @admin.display(description=_('Dokumentation'))
     def to_keyword_doc(self, kw_call: KeywordCall):
-        keyword_doc = KeywordDocumentation(kw_call.to_keyword.pk)
+        keyword_doc = KeywordDocumentation.objects.get(pk=kw_call.to_keyword.pk)
 
         return open_link_in_modal(
             keyword_doc.get_admin_url(),
-            kw_call.to_keyword.name
+            str(keyword_doc)
         )
 
     def get_fields(self, request, obj=None):
