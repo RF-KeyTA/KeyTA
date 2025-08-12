@@ -153,7 +153,7 @@ def format_type(arg_type: list, typedocs: dict[str, dict]):
     return " | ".join(formatted_type)
 
 
-def get_default_value(default_value, kind):
+def get_default_value(default_value):
     if default_value is None or default_value == 'None':
         return 'None'
 

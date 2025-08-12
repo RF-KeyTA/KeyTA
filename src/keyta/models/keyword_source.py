@@ -98,10 +98,7 @@ class KeywordSource(AbstractBaseModel):
                         )
                     else:
                         kwarg_names.add(name)
-                        default_value = get_default_value(
-                            arg["defaultValue"],
-                            arg["kind"]
-                        )
+                        default_value = get_default_value(arg["defaultValue"])
                         KeywordParameter.create_kwarg(
                             keyword=kw,
                             name=name,

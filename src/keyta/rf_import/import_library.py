@@ -64,10 +64,7 @@ def import_library(libdoc_dict: dict):
                 continue
 
             init_args_names.add(name)
-            default_value = get_default_value(
-                init_arg["defaultValue"],
-                init_arg["kind"]
-            )
+            default_value = get_default_value(init_arg["defaultValue"])
 
             LibraryParameter.objects.get_or_create(
                 library=lib,
