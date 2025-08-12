@@ -157,6 +157,20 @@
         </script>
     {% endblock %}
 
+    <script>
+        function bsShowModal(selector) {
+            $.showModal({
+                title: selector.replace('#', ''),
+                body: document.querySelector(selector).outerHTML,
+                backdrop: false,
+                modalDialogClass: "modal-dialog-centered modal-lg",
+                modalClass: "fade modal-wide type-modal"
+            })
+            let modal = document.querySelector('.modal-body ' + selector)
+            modal.classList.remove('modal')
+        }
+    </script>
+
     <script type="text/javascript">
         $(document).ready(function () {
             applySelect2()
@@ -202,7 +216,7 @@
                     sessionStorage.setItem('empty_args', urlParams.get('empty_args'))
                 }
 
-                $(document).on('click', 'button.close', function() {
+                $(document).on('click', $('button.close', $('.modal').not('.type-modal')), function() {
                     $('body.popup .button-save').click()
 
                     if (sessionStorage.getItem('empty_args') !== null) {
