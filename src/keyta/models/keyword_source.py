@@ -138,8 +138,6 @@ class KeywordSource(AbstractBaseModel):
         pass
 
     def replace_links(self, docstring: str, heading_links=True):
-        heading_ids = set(re.findall(r'<h\d id=\"([^"]*)\"', self.documentation))
-
         def replace_link(match: re.Match):
             link_str = match.group(0)
             link = xml.dom.minidom.parseString(link_str).getElementsByTagName('a')[0]
@@ -154,6 +152,11 @@ class KeywordSource(AbstractBaseModel):
                 link.attributes['onclick'] = f"document.querySelector('a[aria-controls={tab_name}]').click()"
                 return link.toxml()
 
+            if href.startswith('#type-'):
+                link.attributes['href'] = href.replace('type-', '')
+                link.attributes['onclick'] = f'bsShowModal("{link.attributes["href"].value}")'
+                return link.toxml()
+
             if href.startswith('#'):
                 kw_name: str = ' '.join(href.removeprefix('#').split('%20'))
 
@@ -163,10 +166,13 @@ class KeywordSource(AbstractBaseModel):
                 ):
                     return open_link_in_modal(keyword_doc.get_admin_url(), keyword_doc.name)
 
-                if heading_links and urllib.parse.unquote(href.lstrip('#')) in heading_ids:
-                    link.attributes['href'] = self.get_admin_url() + href
-                    link.attributes['target'] = '_blank'
-                    return link.toxml()
+                if heading_links:
+                    heading_ids = set(re.findall(r'<h\d id=\"([^"]*)\"', self.documentation))
+
+                    if urllib.parse.unquote(href.lstrip('#')) in heading_ids:
+                        link.attributes['href'] = self.get_admin_url() + href
+                        link.attributes['target'] = '_blank'
+                        return link.toxml()
 
             return link.toxml()
 
