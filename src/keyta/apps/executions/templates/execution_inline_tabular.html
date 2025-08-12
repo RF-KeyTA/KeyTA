@@ -185,11 +185,13 @@
         start()
     });
 
-    log_button.addEventListener('click', function(event) {
-        event.preventDefault();
+    if (log_button) {
+        log_button.addEventListener('click', function(event) {
+            event.preventDefault();
 
-        fetch(robot_server)
-        .then(_ => window.open(log_button.getAttribute("href"), '_blank'))
-        .catch(_ => error(errors.LOG_NO_KEYTA))
-    });
+            fetch(robot_server)
+            .then(_ => window.open(log_button.getAttribute("href"), '_blank'))
+            .catch(_ => error(errors.LOG_NO_KEYTA))
+        });
+    }
 </script>
