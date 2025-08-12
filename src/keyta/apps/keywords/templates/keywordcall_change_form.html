@@ -23,25 +23,35 @@
         // and are not part of the django's empty-form inline
         const noSelect2 = '.empty-form select, .select2-hidden-accessible, .selectfilter, .selector-available select, .selector-chosen select, select[data-autocomplete-light-function=select2]';
         const selects = django.jQuery('select').not(noSelect2)
-        if (selects.length > 0) {
-            selects.select2({
-                width: 'element',
-                matcher: matchCustom,
-                templateResult: formatState,
-                templateSelection: formatState,
-            });
-        }
 
-        // Automatically fill the search field with the currently selected value
         selects.each(function (index, select) {
-            django.jQuery(select).on('select2:open', function(e) {
-                const selected_value = django.jQuery(select).select2('data')[0]
-                const search_field = django.jQuery('.select2-search__field')
+            let tags = select.getAttribute('data-tags')
 
-                // selected_value.id is the value of the <option>
-                if (selected_value.id !== '')
-                    search_field.val(selected_value.text)
-            })
+            if (tags === 'true') {
+                django.jQuery(select).select2({
+                    width: 'element',
+                    templateResult: formatState,
+                    templateSelection: formatState
+                });
+
+                // Automatically fill the search field with the currently selected value
+                django.jQuery(select).on('select2:open', function (e) {
+                    const selected_value = django.jQuery(select).select2('data')[0]
+                    const search_field = django.jQuery('.select2-search__field')
+
+                    // selected_value.id is the value of the <option>
+                    if (selected_value.id !== '')
+                        search_field.val(selected_value.text)
+                })
+            }
+            else {
+                django.jQuery(select).select2({
+                    width: 'element',
+                    minimumResultsForSearch: Infinity,
+                    templateResult: formatState,
+                    templateSelection: formatState
+                });
+            }
         })
     }
 </script>
