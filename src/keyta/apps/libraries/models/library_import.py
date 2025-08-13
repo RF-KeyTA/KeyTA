@@ -54,7 +54,7 @@ class LibraryImport(AbstractBaseModel):
                 user=user,
                 library_parameter=kwarg,
                 defaults={
-                    'value': kwarg.default_value,
+                    'value': kwarg.value,
                 }
             )
 

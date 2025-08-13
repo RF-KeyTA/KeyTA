@@ -11,7 +11,7 @@ from ..models import LibraryParameter
 
 class InitArguments(BaseTabularInline):
     model = LibraryParameter
-    fields = ['name', 'default_value']
+    fields = ['name', 'value']
     readonly_fields = ['name']
     formset = LibraryParameterFormSet
     extra = 0

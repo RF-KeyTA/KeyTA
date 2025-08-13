@@ -30,7 +30,7 @@ class LibraryParameterFormSet(forms.BaseInlineFormSet):
                     type_.startswith('dict'),
                     type_.startswith('list')
                 ]):
-                    choices[kwarg.default_value] = kwarg.default_value
+                    choices[kwarg.value] = kwarg.value
                     user_input = True
 
                 if typedoc := typedocs.get(type_):
@@ -47,7 +47,7 @@ class LibraryParameterFormSet(forms.BaseInlineFormSet):
             if user_input:
                 placeholder = _('Wert auswählen oder eintragen')
 
-            form.fields['default_value'].widget = BaseSelect(
+            form.fields['value'].widget = BaseSelect(
                 placeholder,
                 choices=choices.items(),
                 attrs={

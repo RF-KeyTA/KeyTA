@@ -17,7 +17,7 @@ class LibraryParameter(AbstractBaseModel):
         max_length=255,
         verbose_name=_('Name')
     )
-    default_value = models.CharField(
+    value = models.CharField(
         max_length=255,
         verbose_name=_('Standardwert')
     )
@@ -34,7 +34,7 @@ class LibraryParameter(AbstractBaseModel):
         return self.name
 
     def reset_value(self):
-        self.default_value = self.orig_default_value
+        self.value = self.orig_default_value
         self.save()
 
     def save(
@@ -42,7 +42,7 @@ class LibraryParameter(AbstractBaseModel):
             update_fields=None
     ):
         if not self.pk:
-            self.default_value = self.orig_default_value
+            self.value = self.orig_default_value
 
         super().save(force_insert, force_update, using, update_fields)
 
