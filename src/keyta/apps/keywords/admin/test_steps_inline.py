@@ -36,6 +36,13 @@ class TestStepsFormset(CustomInlineFormSet):
             if not test_step.parameters.exists():
                 form.fields['variable'].widget = LabelWidget()
 
+            form.fields['to_keyword'].widget = quick_change_widget(
+                form.fields['to_keyword'].widget,
+                url_params={'tab_name': test_step.get_tab_url().removeprefix('#')}
+            )
+            form.fields['to_keyword'].widget.can_add_related = False
+            form.fields['to_keyword'].widget.can_change_related = True
+
 
 class TestStepsInline(   
     DeleteRelatedField,
@@ -79,7 +86,6 @@ class TestStepsInline(
             Keyword.objects.sequences().filter(systems__in=systems) |
             Keyword.objects.filter(resource__in=resource_ids)
         ).distinct().order_by('name')
-        to_keyword_field.widget = quick_change_widget(to_keyword_field.widget)
 
         variable_field = formset.form.base_fields['variable']
         variable_field.queryset = (

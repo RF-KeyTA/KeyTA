@@ -1,5 +1,7 @@
 from itertools import groupby
 
+from adminsortable2.admin import CustomInlineFormSet
+
 from django.db.models import QuerySet
 from django.utils.translation import gettext_lazy as _
 
@@ -34,6 +36,25 @@ def global_actions(systems: QuerySet):
     ]]
 
 
+class SequenceStepsFormset(CustomInlineFormSet):
+    def add_fields(self, form, index):
+        super().add_fields(form, index)
+
+        sequence_step: KeywordCall = form.instance
+
+        # The index of an extra form is None
+        if index is not None and sequence_step.pk:
+            if not sequence_step.to_keyword:
+                form.fields['to_keyword'].widget.can_change_related = False
+
+            form.fields['to_keyword'].widget = quick_change_widget(
+                form.fields['to_keyword'].widget,
+                url_params={'tab_name': sequence_step.get_tab_url().removeprefix('#')}
+            )
+            form.fields['to_keyword'].widget.can_add_related = False
+            form.fields['to_keyword'].widget.can_change_related = True
+
+
 class SequenceSteps(StepsInline):
     model = KeywordCall
     form = form_with_select(
@@ -46,6 +67,7 @@ class SequenceSteps(StepsInline):
         form_class=StepsForm,
         can_change_related=True
     )
+    formset = SequenceStepsFormset
 
     def get_formset(self, request, obj=None, **kwargs):
         formset = super().get_formset(request, obj, **kwargs)
@@ -83,7 +105,5 @@ class SequenceSteps(StepsInline):
                 resource_kws +
                 global_actions(sequence.systems.all())
         )
-        to_keyword_field.widget = quick_change_widget(to_keyword_field.widget)
-
 
         return formset
