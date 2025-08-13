@@ -137,43 +137,45 @@ class KeywordCallParameterFormset(UserInputFormset):
 
     def get_choices(self, form, index) -> list:
         kw_call_parameter: KeywordCallParameter = form.instance
-        parameter_type: list = json.loads(kw_call_parameter.parameter.typedoc)
-        choices = dict()
 
-        if parameter_type == ['bool']:
-            self.enable_user_input = False
-            choices[user_input('True')] = 'True'
-            choices[user_input('False')] = 'False'
+        if typedoc := kw_call_parameter.parameter.typedoc:
+            parameter_type: list = json.loads(typedoc)
+            choices = dict()
 
-            return list(choices.items())
-
-        for type_ in parameter_type:
-            if type_ == 'bool':
+            if parameter_type == ['bool']:
+                self.enable_user_input = False
                 choices[user_input('True')] = 'True'
                 choices[user_input('False')] = 'False'
 
-            if any([
-                type_ == 'None',
-                type_ in {'int', 'str', 'timedelta'},
-                type_.startswith('dict'),
-                type_.startswith('list')
-            ]):
-                self.enable_user_input = True
+                return list(choices.items())
 
-            if typedoc := self.typedocs.get(type_):
-                if typedoc['type'] == 'Enum':
-                    self.enable_user_input = False
+            for type_ in parameter_type:
+                if type_ == 'bool':
+                    choices[user_input('True')] = 'True'
+                    choices[user_input('False')] = 'False'
 
-                    sorted_members = sorted(typedoc['members'])
-                    members = (
-                        list(filter(lambda x: x[0].isalpha(), sorted_members)) +
-                        list(filter(lambda x: not x[0].isalpha(), sorted_members))
-                    )
-                    for member in members:
-                        if member.lower() not in {'true', 'false'}:
-                            choices[user_input(member)] = member
+                if any([
+                    type_ == 'None',
+                    type_ in {'int', 'str', 'timedelta'},
+                    type_.startswith('dict'),
+                    type_.startswith('list')
+                ]):
+                    self.enable_user_input = True
 
-                    return list(choices.items())
+                if typedoc := self.typedocs.get(type_):
+                    if typedoc['type'] == 'Enum':
+                        self.enable_user_input = False
+
+                        sorted_members = sorted(typedoc['members'])
+                        members = (
+                            list(filter(lambda x: x[0].isalpha(), sorted_members)) +
+                            list(filter(lambda x: not x[0].isalpha(), sorted_members))
+                        )
+                        for member in members:
+                            if member.lower() not in {'true', 'false'}:
+                                choices[user_input(member)] = member
+
+                        return list(choices.items())
 
         return super().get_choices(form, index)
 
