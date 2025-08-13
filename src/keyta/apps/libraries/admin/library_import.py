@@ -11,6 +11,8 @@ from .library_import_parameters_inline import LibraryImportParametersInline
 
 @admin.register(LibraryImport)
 class LibraryImportAdmin(BaseAdmin):
+    change_form_template = 'library_change_form.html'
+
     def get_fields(self, request, obj=None):
         return self.get_readonly_fields(request, obj)
 
