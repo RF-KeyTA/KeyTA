@@ -164,7 +164,12 @@ class KeywordCallParameterFormset(UserInputFormset):
                 if typedoc['type'] == 'Enum':
                     self.enable_user_input = False
 
-                    for member in typedoc['members']:
+                    sorted_members = sorted(typedoc['members'])
+                    members = (
+                        list(filter(lambda x: x[0].isalpha(), sorted_members)) +
+                        list(filter(lambda x: not x[0].isalpha(), sorted_members))
+                    )
+                    for member in members:
                         if member.lower() not in {'true', 'false'}:
                             choices[user_input(member)] = member
 
