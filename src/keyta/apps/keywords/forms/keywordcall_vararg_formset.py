@@ -1,10 +1,11 @@
 import json
 
+from django.utils.translation import gettext_lazy as _
+
 from ..json_value import JSONValue
 from ..models import KeywordCall, KeywordCallParameter
 from .keywordcall_parameter_formset import get_keyword_parameters, get_prev_return_values
 from .user_input_formset import UserInputFormset
-
 
 def user_input(input: str):
     return JSONValue(
@@ -24,6 +25,9 @@ class KeywordCallVarargFormset(UserInputFormset):
             choices = dict()
 
             for type_ in parameter_type:
+                if type_ in {'int', 'str'}:
+                    self.enable_user_input = True
+
                 if typedoc := self.typedocs.get(type_):
                     if typedoc['type'] == 'Enum':
                         self.enable_user_input = False
@@ -32,7 +36,10 @@ class KeywordCallVarargFormset(UserInputFormset):
                             if member.lower() not in {'true', 'false'}:
                                 choices[user_input(member)] = member
 
-                        return list(choices.items())
+            if self.enable_user_input:
+                return [[_('Eingabe'), [self.get_user_input(form, index)] + list(choices.items())]]
+
+            return list(choices.items())
 
         return super().get_choices(form, index)
 
