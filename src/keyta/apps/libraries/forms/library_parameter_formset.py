@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 
 from keyta.widgets import BaseSelect
 
-from ..models import LibraryParameter
+from ..models import LibraryParameter, LibraryImportParameter
 
 
 class LibraryParameterFormSet(forms.BaseInlineFormSet):
@@ -15,6 +15,10 @@ class LibraryParameterFormSet(forms.BaseInlineFormSet):
         # The index of extra forms is None
         if index is not None:
             kwarg: LibraryParameter = form.instance
+
+            if isinstance(form.instance, LibraryImportParameter):
+                kwarg: LibraryParameter = form.instance.library_parameter
+
             kwarg_type: list = json.loads(kwarg.typedoc)
             typedocs: dict = json.loads(kwarg.library.typedocs)
             choices = dict()
