@@ -9,7 +9,7 @@ from keyta.apps.keywords.models import KeywordDocumentation
 from keyta.apps.sequences.models import SequenceStep
 from keyta.widgets import open_link_in_modal
 
-from ..forms.keywordcall_vararg_formset import KeywordCallVarargFormset
+from ..forms.library_keywordcall_vararg_formset import LibraryKeywordCallVarargFormset
 from ..models import (
     ExecutionKeywordCall,
     KeywordCall,
@@ -98,7 +98,7 @@ class VarargParametersInline(TabularInlineWithDelete):
     model = KeywordCallParameter
     fields = ['value']
     form = VarargForm
-    formset = KeywordCallVarargFormset
+    formset = LibraryKeywordCallVarargFormset
     extra = 0
 
     def get_queryset(self, request):
