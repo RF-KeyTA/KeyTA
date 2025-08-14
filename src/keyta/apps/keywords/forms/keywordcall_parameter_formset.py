@@ -6,6 +6,8 @@ from django.db.models import QuerySet
 from django.forms.utils import ErrorDict, ErrorList
 from django.utils.translation import gettext_lazy as _
 
+from keyta.widgets import BaseSelect
+
 from ..json_value import JSONValue
 from ..models import (
     KeywordCall,
@@ -13,7 +15,7 @@ from ..models import (
     KeywordCallParameter,
     KeywordCallReturnValue
 )
-from .user_input_formset import UserInputFormset
+from .user_input_formset import UserInputFormset, DynamicChoiceField
 
 
 def get_global_variables(system_ids: list[int]):
@@ -115,16 +117,37 @@ def get_variables_choices(kw_call_param_sources: QuerySet):
     ]
 
 
-def user_input(input: str):
-    return JSONValue(
-            arg_name=None,
-            kw_call_index=None,
-            pk=None,
-            user_input=input,
-        ).jsonify()
-
-
 class KeywordCallParameterFormset(UserInputFormset):
+    def add_fields(self, form, index):
+        super().add_fields(form, index)
+
+        # The index of extra forms is None
+        if index is None:
+            return
+
+        value = JSONValue.from_json(form.instance.value)
+
+        if not value.user_input and not value.pk:
+            form._errors = ErrorDict()
+            form._errors[self.json_field_name] = ErrorList([
+                form.fields[self.json_field_name].default_error_messages['required']
+            ])
+
+        form.fields['value'] = DynamicChoiceField(
+            widget=BaseSelect(
+                _('Wert auswählen oder eintragen'),
+                choices=(
+                    [self.empty_input] +
+                    [[_('Eingabe'), [self.get_user_input(form, index)]]] +
+                    self.ref_choices
+                ),
+                attrs={
+                    # Allow manual input
+                    'data-tags': 'true',
+                }
+            )
+        )
+
     def form_errors(self, form):
         if json_field := getattr(form.instance, self.json_field_name):
             value = JSONValue.from_json(json_field)
@@ -134,50 +157,6 @@ class KeywordCallParameterFormset(UserInputFormset):
                 form._errors[self.json_field_name] = ErrorList([
                     form.fields[self.json_field_name].default_error_messages['required']
                 ])
-
-    def get_choices(self, form, index) -> list:
-        kw_call_parameter: KeywordCallParameter = form.instance
-
-        if typedoc := kw_call_parameter.parameter.typedoc:
-            parameter_type: list = json.loads(typedoc)
-            choices = dict()
-
-            if parameter_type == ['bool']:
-                self.enable_user_input = False
-                choices[user_input('True')] = 'True'
-                choices[user_input('False')] = 'False'
-
-                return list(choices.items())
-
-            for type_ in parameter_type:
-                if type_ == 'bool':
-                    choices[user_input('True')] = 'True'
-                    choices[user_input('False')] = 'False'
-
-                if any([
-                    type_ == 'None',
-                    type_ in {'int', 'str', 'timedelta'},
-                    type_.startswith('dict'),
-                    type_.startswith('list')
-                ]):
-                    self.enable_user_input = True
-
-                if typedoc := self.typedocs.get(type_):
-                    if typedoc['type'] == 'Enum':
-                        self.enable_user_input = False
-
-                        sorted_members = sorted(typedoc['members'])
-                        members = (
-                            list(filter(lambda x: x[0].isalpha(), sorted_members)) +
-                            list(filter(lambda x: not x[0].isalpha(), sorted_members))
-                        )
-                        for member in members:
-                            if member.lower() not in {'true', 'false'}:
-                                choices[user_input(member)] = member
-
-                        return list(choices.items())
-
-        return super().get_choices(form, index)
 
     def get_ref_choices(self, kw_call: KeywordCall):
         return get_keyword_parameters(kw_call) + get_prev_return_values(kw_call)
