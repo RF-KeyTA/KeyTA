@@ -17,6 +17,7 @@ class LibraryParametersInline(BaseTabularInline):
     extra = 0
     max_num = 0
     can_delete = False
+    prefetch_related = 'library'
 
     def get_fields(self, request, obj=None):
         if self.has_change_permission(request, obj):
@@ -24,17 +25,14 @@ class LibraryParametersInline(BaseTabularInline):
 
         return super().get_fields(request, obj)
 
+    def get_queryset(self, request):
+        return super().get_queryset(request).prefetch_related(self.prefetch_related)
+
     def get_readonly_fields(self, request, obj=None):
         if self.has_change_permission(request, obj):
             return self.readonly_fields + ['reset']
 
         return super().get_readonly_fields(request, obj)
-
-    def get_queryset(self, request):
-        return super().get_queryset(request).prefetch_related('library')
-
-    def has_add_permission(self, request, obj=None):
-        return False
 
     @admin.display(description=_('zurücksetzen'))
     def reset(self, lib_param: LibraryParameter):

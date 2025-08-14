@@ -12,6 +12,7 @@ from .library_parameters_inline import LibraryParametersInline
 
 class LibraryImportParametersInline(LibraryParametersInline):
     model = LibraryImportParameter
+    prefetch_related = 'library_import'
     verbose_name_plural = _('Einstellungen')
 
     def get_queryset(self, request: HttpRequest) -> QuerySet:
