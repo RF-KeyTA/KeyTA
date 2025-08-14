@@ -11,24 +11,7 @@ from .keywordcall_parameter_formset import (
     get_prev_return_values,
     get_global_variables
 )
-from .user_input_formset import DynamicChoiceField, UserInputFormset, invert_dictionary
-
-
-def user_input_field(placeholder: str, user_input: tuple, choices: list = None):
-    return DynamicChoiceField(
-        widget=BaseSelect(
-            placeholder,
-            choices=(
-                [(None, _('Kein Wert'))] +
-                [[_('Eingabe'), [user_input]]] +
-                (choices or [])
-            ),
-            attrs={
-                # Allow manual input
-                'data-tags': 'true',
-            }
-        )
-    )
+from .user_input_formset import DynamicChoiceField, UserInputFormset, invert_dictionary, user_input_field
 
 
 class LibraryKeywordCallParameterFormset(UserInputFormset):

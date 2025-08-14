@@ -5,6 +5,8 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
+from keyta.widgets import BaseSelect
+
 from ..json_value import JSONValue
 from ..models import KeywordCall
 
@@ -37,9 +39,26 @@ class DynamicChoiceField(forms.CharField):
             user_input=re.sub(r"\s{2,}", " ", value)
         ).jsonify()
 
+
+def user_input_field(placeholder: str, user_input: tuple, choices: list = None):
+    return DynamicChoiceField(
+        widget=BaseSelect(
+            placeholder,
+            choices=(
+                [(None, _('Kein Wert'))] +
+                [[_('Eingabe'), [user_input]]] +
+                (choices or [])
+            ),
+            attrs={
+                # Allow manual input
+                'data-tags': 'true',
+            }
+        )
+    )
+
+
 class UserInputFormset(forms.BaseInlineFormSet):
     empty_input = None, _('Kein Wert')
-    json_field_name = 'value'
 
     def __init__(
         self,
