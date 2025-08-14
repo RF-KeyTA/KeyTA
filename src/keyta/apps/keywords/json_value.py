@@ -18,3 +18,12 @@ class JSONValue:
         # sort the keys in order to always generate the same string
         # the select widget chooses the selected value from the choices by comparing strings
         return json.dumps(asdict(self), sort_keys=True)
+
+    @classmethod
+    def user_input(cls, input):
+        return JSONValue(
+                arg_name=None,
+                kw_call_index=None,
+                pk=None,
+                user_input=input,
+            ).jsonify()

@@ -11,6 +11,13 @@ from ..json_value import JSONValue
 from ..models import KeywordCall
 
 
+def invert_dictionary(dictionary):
+    return {
+        value: key
+        for key, value in dictionary.items()
+    }
+
+
 class DynamicChoiceField(forms.CharField):
     def clean(self, value):
         return self.to_python(value)
