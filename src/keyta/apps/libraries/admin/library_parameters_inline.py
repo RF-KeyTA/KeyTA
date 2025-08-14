@@ -9,7 +9,7 @@ from ..forms import LibraryParameterFormSet
 from ..models import LibraryParameter
 
 
-class InitArguments(BaseTabularInline):
+class LibraryParametersInline(BaseTabularInline):
     model = LibraryParameter
     fields = ['name', 'value']
     readonly_fields = ['name']

@@ -19,7 +19,7 @@ from ..models import (
     Library,
     LibraryInitDocumentation
 )
-from .library_parameters_inline import InitArguments
+from .library_parameters_inline import LibraryParametersInline
 
 
 @admin.register(Library)
@@ -66,7 +66,7 @@ class LibraryAdmin(BaseAdmin):
         inlines = [Keywords]
 
         if library and library.has_parameters:
-            return inlines + [InitArguments]
+            return inlines + [LibraryParametersInline]
 
         if library:
             return inlines
