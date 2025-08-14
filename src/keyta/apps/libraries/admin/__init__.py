@@ -1,5 +1,6 @@
 from .library import LibraryAdmin, LibraryInitDocumentationAdmin
 from .library_import import LibraryImportAdmin
 from .library_import_inline import LibraryImportInline
+from .library_import_parameter import LibraryImportParameterAdmin
 from .library_import_parameters_inline import LibraryImportParametersInline
 from .library_parameter import LibraryParameterAdmin

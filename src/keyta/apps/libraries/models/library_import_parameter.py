@@ -2,8 +2,10 @@ from django.conf import settings
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from models.base_model import AbstractBaseModel
 
-class LibraryImportParameter(models.Model):
+
+class LibraryImportParameter(AbstractBaseModel):
     library_import = models.ForeignKey(
         'libraries.LibraryImport',
         on_delete=models.CASCADE,
@@ -25,6 +27,10 @@ class LibraryImportParameter(models.Model):
 
     def __str__(self):
         return self.library_parameter.name
+
+    def reset_value(self):
+        self.value = self.library_parameter.orig_default_value
+        self.save()
 
     class Meta:
         verbose_name = _('Parameter')

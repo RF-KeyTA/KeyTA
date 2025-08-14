@@ -1,22 +1,18 @@
+from django.conf import settings
+from django.contrib import admin
 from django.db.models import QuerySet
 from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 
-from keyta.admin.base_inline import BaseTabularInline
+from keyta.widgets import link, Icon
 
-from ..forms import LibraryParameterFormSet
 from ..models import LibraryImportParameter
+from .library_parameters_inline import LibraryParametersInline
 
 
-class LibraryImportParametersInline(BaseTabularInline):
+class LibraryImportParametersInline(LibraryParametersInline):
     model = LibraryImportParameter
-    fields = ['name', 'value']
-    readonly_fields = ['name']
-    formset = LibraryParameterFormSet
-    extra = 0
-    max_num = 0
     verbose_name_plural = _('Einstellungen')
-    can_delete = False
 
     def get_queryset(self, request: HttpRequest) -> QuerySet:
         queryset: QuerySet = super().get_queryset(request)
@@ -24,3 +20,13 @@ class LibraryImportParametersInline(BaseTabularInline):
 
     def name(self, kwarg: LibraryImportParameter):
         return str(kwarg)
+
+    @admin.display(description=_('zurücksetzen'))
+    def reset(self, lib_param: LibraryImportParameter):
+        url = lib_param.get_admin_url() + '?reset'
+        icon =  Icon(
+            settings.FA_ICONS.library_setting_reset,
+            {'font-size': '18px'}
+        )
+
+        return link(url, str(icon))
