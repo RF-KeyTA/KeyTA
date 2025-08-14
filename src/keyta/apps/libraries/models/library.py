@@ -49,13 +49,13 @@ class Library(KeywordSource):
         self.save()
 
         for kw in self.keywords.all():
-            kw.documentation = self.replace_links(kw.documentation, typedocs)
+            kw.documentation = self.replace_links(kw.documentation, typedocs, heading_links=True)
             kw.save()
 
     def is_library(self):
         return True
 
-    def replace_links(self, docstring: str, lib_typedocs: dict[str, dict], heading_links=True):
+    def replace_links(self, docstring: str, lib_typedocs: dict[str, dict], heading_links=False):
         def replace_link(match: re.Match):
             link_str = match.group(0)
             link = xml.dom.minidom.parseString(link_str).getElementsByTagName('a')[0]

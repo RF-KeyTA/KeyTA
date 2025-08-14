@@ -1,7 +1,7 @@
 import json
 
 from keyta.apps.libraries.models import Library, LibraryParameter
-from keyta.models.keyword_source import(
+from keyta.models.keyword_source import (
     get_default_value,
     get_init_doc,
     get_libdoc_dict,
@@ -52,7 +52,7 @@ def import_library(name: str):
                 init_arg.delete()
 
     lib.import_keywords(libdoc_dict, typedocs)
-    lib.init_doc = lib.replace_links(lib.init_doc, typedocs, heading_links=False)
+    lib.init_doc = lib.replace_links(lib.init_doc, typedocs)
     lib.save()
 
     return lib
