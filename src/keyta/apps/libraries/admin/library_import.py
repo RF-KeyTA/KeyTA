@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from keyta.admin.base_admin import BaseAdmin
 from keyta.widgets import open_link_in_modal
 
-from ..models import LibraryImport
+from ..models import LibraryImport, LibraryInitDocumentation
 from .library_import_parameters_inline import LibraryImportParametersInline
 
 
@@ -42,8 +42,10 @@ class LibraryImportAdmin(BaseAdmin):
         return ['keyword']
 
     @admin.display(description=_('Dokumentation'))
-    def library_init_doc(self, obj: LibraryImport):
+    def library_init_doc(self, lib_import: LibraryImport):
+        init_doc = LibraryInitDocumentation.objects.get(pk=lib_import.library.pk)
+
         return open_link_in_modal(
-            obj.library.get_admin_url(model='libraryinitdocumentation'),
-            obj.library.name + _(' Einstellungen')
+            init_doc.get_admin_url(),
+            str(init_doc) + _(' Einstellungen')
         )
