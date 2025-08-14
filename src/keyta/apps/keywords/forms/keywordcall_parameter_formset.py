@@ -6,8 +6,6 @@ from django.db.models import QuerySet
 from django.forms.utils import ErrorDict, ErrorList
 from django.utils.translation import gettext_lazy as _
 
-from keyta.widgets import BaseSelect
-
 from ..json_value import JSONValue
 from ..models import (
     KeywordCall,
@@ -15,7 +13,7 @@ from ..models import (
     KeywordCallParameter,
     KeywordCallReturnValue
 )
-from .user_input_formset import UserInputFormset, DynamicChoiceField
+from .user_input_formset import UserInputFormset, user_input_field
 
 
 def get_global_variables(system_ids: list[int]):
@@ -129,34 +127,15 @@ class KeywordCallParameterFormset(UserInputFormset):
 
         if not value.user_input and not value.pk:
             form._errors = ErrorDict()
-            form._errors[self.json_field_name] = ErrorList([
-                form.fields[self.json_field_name].default_error_messages['required']
+            form._errors['value'] = ErrorList([
+                form.fields['value'].default_error_messages['required']
             ])
 
-        form.fields['value'] = DynamicChoiceField(
-            widget=BaseSelect(
-                _('Wert auswählen oder eintragen'),
-                choices=(
-                    [self.empty_input] +
-                    [[_('Eingabe'), [self.get_user_input(form, index)]]] +
-                    self.ref_choices
-                ),
-                attrs={
-                    # Allow manual input
-                    'data-tags': 'true',
-                }
-            )
+        form.fields['value'] = user_input_field(
+            _('Wert auswählen oder eintragen'),
+            self.get_user_input(form, index),
+            self.ref_choices
         )
-
-    def form_errors(self, form):
-        if json_field := getattr(form.instance, self.json_field_name):
-            value = JSONValue.from_json(json_field)
-
-            if not value.user_input and not value.pk:
-                form._errors = ErrorDict()
-                form._errors[self.json_field_name] = ErrorList([
-                    form.fields[self.json_field_name].default_error_messages['required']
-                ])
 
     def get_ref_choices(self, kw_call: KeywordCall):
         return get_keyword_parameters(kw_call) + get_prev_return_values(kw_call)
