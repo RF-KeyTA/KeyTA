@@ -45,9 +45,6 @@ class Library(KeywordSource):
     def import_keywords(self, libdoc_dict: dict, typedocs: dict[str, dict]):
         super().import_keywords(libdoc_dict, typedocs)
 
-        self.documentation = self.replace_links(self.documentation, typedocs, heading_links=False)
-        self.save()
-
         for kw in self.keywords.all():
             kw.documentation = self.replace_links(kw.documentation, typedocs, heading_links=True)
             kw.save()

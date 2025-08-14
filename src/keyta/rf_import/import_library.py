@@ -53,6 +53,7 @@ def import_library(name: str):
 
     lib.import_keywords(libdoc_dict, typedocs)
     lib.init_doc = lib.replace_links(lib.init_doc, typedocs)
+    lib.documentation = lib.replace_links(lib.documentation, typedocs)
     lib.save()
 
     return lib
