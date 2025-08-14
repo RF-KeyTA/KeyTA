@@ -5,7 +5,7 @@ from keyta.widgets import BaseSelect
 from ..json_value import JSONValue
 from ..models import KeywordCall, KeywordCallParameterSource, KeywordCallCondition
 from .keywordcall_parameter_formset import get_keyword_parameters
-from .user_input_formset import UserInputFormset
+from .user_input_formset import UserInputFormset, user_input_field
 
 
 class KeywordCallConditionFormset(UserInputFormset):
@@ -15,7 +15,6 @@ class KeywordCallConditionFormset(UserInputFormset):
         pk=None,
         user_input=''
     ).jsonify(), _('leer')
-    json_field_name = 'expected_value'
 
     def add_fields(self, form, index):
         super().add_fields(form, index)
@@ -46,7 +45,14 @@ class KeywordCallConditionFormset(UserInputFormset):
                 return_values
             )
         )
+
         form.fields['condition'].widget.attrs['data-placeholder'] = _('Bedingung auswählen')
+
+        form.fields['expected_value'] = user_input_field(
+            _('Wert auswählen oder eintragen'),
+            self.get_user_input(form, index),
+            choices=self.ref_choices
+        )
 
     def get_ref_choices(self, kw_call: KeywordCall):
         return get_keyword_parameters(kw_call)
