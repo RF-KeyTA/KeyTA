@@ -18,7 +18,10 @@ class LibraryImportParameter(models.Model):
         on_delete=models.CASCADE,
         null=True
     )
-    value = models.CharField(max_length=255, verbose_name=_('Wert'))
+    value = models.CharField(
+        max_length=255,
+        verbose_name=_('Wert')
+    )
 
     def __str__(self):
         return self.name
