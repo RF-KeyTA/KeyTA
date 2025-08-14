@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-12 14:22+0200\n"
+"POT-Creation-Date: 2025-08-14 10:25+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -33,7 +33,7 @@ msgstr "Keywords"
 #: .\apps\testcases\models.py:17 .\apps\variables\admin.py:110
 #: .\apps\variables\models.py:17 .\apps\variables\models.py:100
 #: .\apps\windows\admin.py:188 .\apps\windows\models.py:18
-#: .\models\keyword_source.py:33
+#: .\models\keyword_source.py:34
 msgid "Name"
 msgstr "Name"
 
@@ -112,8 +112,8 @@ msgstr "Actions"
 #: .\apps\actions\models\action.py:68
 #: .\apps\executions\admin\setup_teardown_inline.py:36
 #: .\apps\keywords\models\keyword.py:18
-#: .\apps\libraries\admin\library_import.py:22
-#: .\apps\sequences\admin\steps_inline.py:44 .\apps\windows\admin.py:104
+#: .\apps\libraries\admin\library_import.py:24
+#: .\apps\sequences\admin\steps_inline.py:65 .\apps\windows\admin.py:104
 #: .\apps\windows\admin.py:109
 msgid "Aktion"
 msgstr "Action"
@@ -153,9 +153,10 @@ msgid "Protokoll"
 msgstr "Log"
 
 #: .\apps\executions\admin\execution_inline.py:61
+#: .\apps\libraries\admin\library_import.py:50
 #: .\apps\libraries\admin\library_import_inline.py:21
-#: .\apps\libraries\admin\library_import_parameters_inline.py:16
-#: .\apps\libraries\models\library_parameter.py:52
+#: .\apps\libraries\admin\library_import_parameters_inline.py:17
+#: .\apps\libraries\models\library_parameter.py:57
 msgid "Einstellungen"
 msgstr "Settings"
 
@@ -175,7 +176,7 @@ msgid "Werte"
 msgstr "Values"
 
 #: .\apps\executions\admin\setup_teardown_inline.py:34
-#: .\apps\sequences\admin\steps_inline.py:42 .\apps\systems\admin.py:74
+#: .\apps\sequences\admin\steps_inline.py:63 .\apps\systems\admin.py:74
 #: .\apps\windows\admin.py:101
 msgid "Aktion auswählen"
 msgstr "Select an Action"
@@ -307,32 +308,28 @@ msgstr "Robot Framework could not be executed."
 msgid "Robot Framework wird ausgeführt"
 msgstr "Robot Framework is running."
 
-#: .\apps\keywords\admin\field_first_parameter.py:8
-msgid "1. Parameter"
-msgstr "1. Parameter"
-
 #: .\apps\keywords\admin\keyword_parameters_inline.py:24
 #: .\apps\keywords\models\keyword_parameters.py:145
 #: .\apps\keywords\models\keywordcall_parameters.py:149
-#: .\apps\libraries\models\library_import_parameter.py:31
+#: .\apps\libraries\models\library_import_parameter.py:30
 msgid "Parameter"
 msgstr "Parameter"
 
 #: .\apps\keywords\admin\keyword_parameters_inline.py:25
-#: .\apps\keywords\forms\keywordcall_condition_formset.py:29
+#: .\apps\keywords\forms\keywordcall_condition_formset.py:30
 #: .\apps\keywords\forms\keywordcall_parameter_formset.py:35
 #: .\apps\keywords\models\keyword_parameters.py:146
 #: .\apps\keywords\models\keywordcall_parameters.py:150
-#: .\apps\libraries\models\library_import_parameter.py:32
+#: .\apps\libraries\models\library_import_parameter.py:31
 #: .\rf_import\import_keywords.py:15
 msgid "Parameters"
 msgstr "Parameters"
 
 #: .\apps\keywords\admin\keywordcall.py:43 .\apps\keywords\models\keyword.py:48
-#: .\apps\libraries\admin\library.py:59
-#: .\apps\libraries\admin\library_import.py:42 .\apps\testcases\models.py:18
-#: .\apps\windows\models.py:24 .\models\keyword_source.py:36
-#: .\models\keyword_source.py:70
+#: .\apps\libraries\admin\library.py:60
+#: .\apps\libraries\admin\library_import.py:44 .\apps\testcases\models.py:18
+#: .\apps\windows\models.py:24 .\models\keyword_source.py:37
+#: .\models\keyword_source.py:71
 msgid "Dokumentation"
 msgstr "Documentation"
 
@@ -369,20 +366,25 @@ msgstr "Reference Values"
 msgid "leer"
 msgstr "empty"
 
-#: .\apps\keywords\forms\keywordcall_condition_formset.py:36
+#: .\apps\keywords\forms\keywordcall_condition_formset.py:37
 #: .\apps\keywords\forms\keywordcall_parameter_formset.py:90
 msgid "Vorherige Rückgabewerte"
 msgstr "Previous Return Values"
 
-#: .\apps\keywords\forms\keywordcall_condition_formset.py:41
+#: .\apps\keywords\forms\keywordcall_condition_formset.py:42
 #, fuzzy
 #| msgid "Format auswählen"
 msgid "Wert auswählen"
 msgstr "Select a format"
 
-#: .\apps\keywords\forms\keywordcall_condition_formset.py:48
+#: .\apps\keywords\forms\keywordcall_condition_formset.py:49
 msgid "Bedingung auswählen"
 msgstr "Select a Condition"
+
+#: .\apps\keywords\forms\keywordcall_vararg_formset.py:40
+#: .\apps\keywords\forms\user_input_formset.py:84
+msgid "Eingabe"
+msgstr "Input"
 
 #: .\apps\keywords\forms\test_steps_form.py:36
 #: .\apps\keywords\models\keyword.py:19
@@ -402,16 +404,12 @@ msgstr "Select a Sequence"
 msgid "Referenzwert auswählen"
 msgstr "Select a Reference Value"
 
-#: .\apps\keywords\forms\user_input_formset.py:35
-#: .\apps\keywords\forms\user_input_formset.py:81
+#: .\apps\keywords\forms\user_input_formset.py:37
+#: .\apps\keywords\forms\user_input_formset.py:83
 msgid "Kein Wert"
 msgstr "No Value"
 
-#: .\apps\keywords\forms\user_input_formset.py:82
-msgid "Eingabe"
-msgstr "Input"
-
-#: .\apps\keywords\forms\user_input_formset.py:90
+#: .\apps\keywords\forms\user_input_formset.py:69
 msgid "Wert auswählen oder eintragen"
 msgstr "Select or enter a Value"
 
@@ -515,7 +513,7 @@ msgstr "is not"
 
 #: .\apps\keywords\models\keywordcall_condition.py:24
 #: .\apps\keywords\models\keywordcall_parameters.py:31
-#: .\apps\libraries\models\library_import_parameter.py:21
+#: .\apps\libraries\models\library_import_parameter.py:23
 #: .\apps\variables\admin.py:231 .\apps\variables\models.py:105
 #: .\apps\variables\models.py:133
 msgid "Wert"
@@ -564,44 +562,40 @@ msgstr "Parameter references"
 msgid " Kopie"
 msgstr " Copy"
 
-#: .\apps\libraries\admin\library.py:47
+#: .\apps\libraries\admin\library.py:48
 #, python-brace-format
 msgid "Die Bibliothek \"{library_name}\" wurde erfolgreich aktualisiert"
 msgstr "The library \"{library_name}\" has been successfully updated"
 
-#: .\apps\libraries\admin\library.py:51
+#: .\apps\libraries\admin\library.py:52
 #, fuzzy, python-brace-format
 msgid "Die Bibliothek \"{library_name}\" konnte nicht importiert werden"
 msgstr "The library \"{library_name}\" could not be imported"
 
-#: .\apps\libraries\admin\library.py:105 .\apps\resources\admin\resource.py:82
+#: .\apps\libraries\admin\library.py:106 .\apps\resources\admin\resource.py:82
 msgid "Aktualisierung"
 msgstr "Update"
 
-#: .\apps\libraries\admin\library.py:115
+#: .\apps\libraries\admin\library.py:116
 #, python-brace-format
 msgid "Eine Bibliothek ist nicht vorhanden: {err}"
 msgstr "A library is not available: {err}"
-
-#: .\apps\libraries\admin\library_import.py:46
-msgid " Einstellungen"
-msgstr " Settings"
 
 #: .\apps\libraries\admin\library_import_inline.py:19
 #: .\apps\libraries\apps.py:8 .\apps\libraries\models\library.py:45
 msgid "Bibliotheken"
 msgstr "Libraries"
 
-#: .\apps\libraries\admin\library_parameters_inline.py:43
+#: .\apps\libraries\admin\library_parameters_inline.py:39
 msgid "zurücksetzen"
 msgstr "reset"
 
-#: .\apps\libraries\forms.py:21
+#: .\apps\libraries\forms\library_form.py:21
 #, python-brace-format
 msgid "\"{name}\" ist keine Robot Framework Bibliothek"
 msgstr "\"{name}\" is not a Robot Framework library"
 
-#: .\apps\libraries\forms.py:23
+#: .\apps\libraries\forms\library_form.py:23
 #, fuzzy, python-brace-format
 msgid "Die Bibliothek \"{name}\" ist im PYTHONPATH nicht vorhanden."
 msgstr "The library \"{name}\" is not in PYTHONPATH."
@@ -632,7 +626,7 @@ msgstr "Library Import"
 msgid "Bibliothek-Imports"
 msgstr "Library Imports"
 
-#: .\apps\libraries\models\library_parameter.py:51
+#: .\apps\libraries\models\library_parameter.py:56
 msgid "Einstellung"
 msgstr "Setting"
 
@@ -693,11 +687,11 @@ msgstr ""
 msgid "System hinzufügen"
 msgstr "Add a System"
 
-#: .\apps\sequences\admin\steps_inline.py:29
+#: .\apps\sequences\admin\steps_inline.py:31
 msgid "Globale Aktionen"
 msgstr "Global Actions"
 
-#: .\apps\sequences\admin\steps_inline.py:65
+#: .\apps\sequences\admin\steps_inline.py:87
 msgid "Keine Aktionen vorhanden"
 msgstr "No Actions available"
 

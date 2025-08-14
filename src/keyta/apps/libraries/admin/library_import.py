@@ -47,5 +47,5 @@ class LibraryImportAdmin(BaseAdmin):
 
         return open_link_in_modal(
             init_doc.get_admin_url(),
-            str(init_doc) + _(' Einstellungen')
+            f'{init_doc} ' + _('Einstellungen')
         )
