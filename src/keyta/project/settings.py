@@ -236,6 +236,7 @@ JAZZMIN_SETTINGS = {
         'libraries.librarykeyword',
         'libraries.librarykeyworddocumentation',
         'libraries.libraryimport',
+        'libraries.libraryimportparameter',
         'libraries.libraryparameter',
         'libraries.libraryinitdocumentation',
         'resources.resourcekeyword',
