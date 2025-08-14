@@ -217,7 +217,7 @@
                 }
 
                 $(document).on('click', $('button.close', $('.modal').not('.type-modal')), function() {
-                    $('body.popup .button-save').click()
+                    // $('body.popup .button-save').click()
 
                     if (sessionStorage.getItem('empty_args') !== null) {
                         const modals = $('.modal-dialog')
