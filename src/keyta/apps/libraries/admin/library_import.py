@@ -39,6 +39,9 @@ class LibraryImportAdmin(BaseAdmin):
         
         return ['keyword']
 
+    def has_delete_permission(self, request, obj=None):
+        return False
+
     @admin.display(description=_('Dokumentation'))
     def library_init_doc(self, lib_import: LibraryImport):
         init_doc = LibraryInitDocumentation.objects.get(pk=lib_import.library.pk)
