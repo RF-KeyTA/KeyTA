@@ -26,11 +26,3 @@ class KeywordCallParametersInline(BaseTabularInline):
 
     def get_queryset(self, request):
         return super().get_queryset(request).exclude(parameter__type=KeywordParameterType.VARARG)
-
-    def name(self, kw_call_param: KeywordCallParameter):
-        name = kw_call_param.name
-
-        if '_' in name:
-            return name.replace('_', ' ').title()
-
-        return name
