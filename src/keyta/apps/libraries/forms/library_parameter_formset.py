@@ -13,10 +13,12 @@ class LibraryParameterFormSet(forms.BaseInlineFormSet):
 
         # The index of extra forms is None
         if index is not None:
+            import_param = None
             kwarg: LibraryParameter = form.instance
 
             if isinstance(form.instance, LibraryImportParameter):
-                kwarg: LibraryParameter = form.instance.library_parameter
+                import_param = form.instance
+                kwarg: LibraryParameter = import_param.library_parameter
 
             kwarg_type: list = json.loads(kwarg.typedoc)
             typedocs: dict = json.loads(kwarg.library.typedocs)
@@ -33,7 +35,10 @@ class LibraryParameterFormSet(forms.BaseInlineFormSet):
                     type_.startswith('dict'),
                     type_.startswith('list')
                 ]):
-                    choices[kwarg.value] = kwarg.value
+                    if import_param:
+                        choices[import_param.value] = import_param.value
+                    else:
+                        choices[kwarg.value] = kwarg.value
                     user_input = True
 
                 if typedoc := typedocs.get(type_):
