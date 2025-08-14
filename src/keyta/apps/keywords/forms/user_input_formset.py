@@ -5,8 +5,6 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
-from keyta.widgets import BaseSelect
-
 from ..json_value import JSONValue
 from ..models import KeywordCall
 
@@ -39,7 +37,6 @@ class DynamicChoiceField(forms.CharField):
             user_input=re.sub(r"\s{2,}", " ", value)
         ).jsonify()
 
-
 class UserInputFormset(forms.BaseInlineFormSet):
     empty_input = None, _('Kein Wert')
     json_field_name = 'value'
@@ -59,38 +56,8 @@ class UserInputFormset(forms.BaseInlineFormSet):
         self.ref_choices = self.get_ref_choices(instance)
         self.enable_user_input = True
         self.parent: KeywordCall = instance
-        to_keyword = self.parent.to_keyword
-
-        if library := to_keyword.library:
+        if library := self.parent.to_keyword.library:
             self.typedocs: dict = json.loads(library.typedocs)
-
-    def add_fields(self, form, index):
-        super().add_fields(form, index)
-
-        # The index of an extra form is None
-        if index is not None:
-            self.form_errors(form)
-
-            form.fields[self.json_field_name] = DynamicChoiceField(
-                widget=BaseSelect(
-                    _('Wert auswählen oder eintragen'),
-                    choices=self.get_choices(form, index),
-                    attrs={
-                        # Allow manual input
-                        'data-tags': str(self.enable_user_input).lower(),
-                    }
-                )
-            )
-
-    def form_errors(self, form):
-        pass
-
-    def get_choices(self, form, index) -> list:
-        return (
-            [(None, _('Kein Wert'))] +
-            [[_('Eingabe'), [self.get_user_input(form, index)]]] +
-            self.ref_choices
-        )
 
     def get_json_value(self, form) -> JSONValue:
         pass
