@@ -21,5 +21,5 @@ class LibraryImportParametersInline(BaseTabularInline):
         queryset: QuerySet = super().get_queryset(request)
         return queryset.filter(user=request.user)
 
-    def name(self, obj: LibraryImportParameter):
-        return obj.name
+    def name(self, kwarg: LibraryImportParameter):
+        return str(kwarg)

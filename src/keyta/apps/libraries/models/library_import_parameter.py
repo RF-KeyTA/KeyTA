@@ -24,10 +24,6 @@ class LibraryImportParameter(models.Model):
     )
 
     def __str__(self):
-        return self.name
-
-    @property
-    def name(self):
         return self.library_parameter.name
 
     class Meta:
