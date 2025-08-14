@@ -1,47 +1,18 @@
 import json
 
 from keyta.apps.libraries.models import Library, LibraryParameter
-
-from .import_keywords import (
+from keyta.models.keyword_source import(
     get_default_value,
     get_init_doc,
+    get_libdoc_dict,
     get_type,
+    get_typedocs,
     section_importing
 )
 
 
-def get_typedocs(libdoc_typedocs: list[dict]) -> dict[str, dict]:
-    typedocs = dict()
-
-    for typedoc in libdoc_typedocs:
-        name = typedoc['name']
-
-        if typedoc['type'] == 'Enum':
-            typedocs[name] = {
-                'type': 'Enum',
-                'name': name,
-                'doc': typedoc['doc'],
-                'members': [
-                    member['name']
-                    for member in typedoc['members']
-                ]
-            }
-
-        if typedoc['type'] == 'TypedDict':
-            typedocs[name] = {
-                'type': 'TypedDict',
-                'name': name,
-                'doc': typedoc['doc'],
-                'keys': [
-                    item['key']
-                    for item in typedoc['items']
-                ]
-            }
-
-    return typedocs
-
-
-def import_library(libdoc_dict: dict):
+def import_library(name: str):
+    libdoc_dict = get_libdoc_dict(name)
     typedocs = get_typedocs(libdoc_dict['typedocs'])
     lib: Library
     lib, created = Library.objects.update_or_create(
@@ -81,5 +52,7 @@ def import_library(libdoc_dict: dict):
                 init_arg.delete()
 
     lib.import_keywords(libdoc_dict, typedocs)
+    lib.init_doc = lib.replace_links(lib.init_doc, typedocs, heading_links=False)
+    lib.save()
 
     return lib

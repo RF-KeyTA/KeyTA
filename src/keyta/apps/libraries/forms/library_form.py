@@ -4,7 +4,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
-from keyta.rf_import.import_keywords import get_libdoc_dict
+from keyta.models.keyword_source import get_libdoc_dict
 
 from ..models import Library
 
