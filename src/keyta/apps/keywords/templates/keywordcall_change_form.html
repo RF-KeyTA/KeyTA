@@ -30,6 +30,7 @@
             if (tags === 'true') {
                 django.jQuery(select).select2({
                     width: 'element',
+                    matcher: matchCustom,
                     templateResult: formatState,
                     templateSelection: formatState
                 });
