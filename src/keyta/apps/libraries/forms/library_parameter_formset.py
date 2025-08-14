@@ -1,7 +1,6 @@
 import json
 
 from django import forms
-from django.utils.translation import gettext_lazy as _
 
 from keyta.widgets import BaseSelect
 
@@ -46,13 +45,8 @@ class LibraryParameterFormSet(forms.BaseInlineFormSet):
                     if typedoc['type'] == 'TypedDict':
                         user_input = True
 
-            placeholder = _('Wert auswählen')
-
-            if user_input:
-                placeholder = _('Wert auswählen oder eintragen')
-
             form.fields['value'].widget = BaseSelect(
-                placeholder,
+                '',
                 choices=choices.items(),
                 attrs={
                     'data-tags': str(user_input).lower()
