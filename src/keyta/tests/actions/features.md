@@ -22,7 +22,8 @@
 ### General
 
 - A change to a form field is saved automatically
-
+- Removing the only / last System will result in a notification and won't be saved.
+  
 ### Windows
 
 - An action can be (un)linked with a Window
@@ -100,7 +101,8 @@ Inlines: Parameters (if applicable), Return values
   - the parameters of a step are incomplete
 
 
-## Buttons: Delete, Clone
+## Buttons: Delete, Clone, Save
 
 - Cloning the Action produces an identical Action with the suffix Copy
 - Deleting an action works
+- Trying to Save an empty Action will result in a notification and the Action won't be saved.
