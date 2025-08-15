@@ -143,7 +143,7 @@ class BaseQuickAddAdmin(BaseAdmin):
         if request.POST and 'ref' in request.GET:
             response = super().add_view(request, form_url, extra_context)
 
-            if hasattr(response, 'context_data') and response.context_data['errors']:
+            if hasattr(response, 'context_data') and response.context_data.get('errors'):
                 return response
             else:
                 return HttpResponseRedirect(request.GET['ref'])
