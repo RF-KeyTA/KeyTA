@@ -146,7 +146,16 @@ class BaseQuickAddAdmin(BaseAdmin):
             if hasattr(response, 'context_data') and response.context_data.get('errors'):
                 return response
             else:
-                return HttpResponseRedirect(request.GET['ref'])
+                response = """
+                <script>
+                (function() {
+                    window.parent.dismissRelatedObjectModal()
+                    new Promise(r => setTimeout(r, 500));
+                    window.parent.location.reload()
+                })();
+                </script>
+                """
+                return HttpResponse(response)
 
         return super().add_view(request, form_url, extra_context)
 
