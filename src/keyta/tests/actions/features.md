@@ -22,7 +22,7 @@
 ### General
 
 - A change to a form field is saved automatically
-- Removing the only / last System will result in a notification and won't be saved.
+- Removing the last System will result in a notification and won't be saved.
   
 ### Windows
 
