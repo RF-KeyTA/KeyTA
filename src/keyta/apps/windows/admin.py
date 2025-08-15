@@ -194,6 +194,12 @@ class WindowAdmin(DocumentationField, BaseAdmin):
             str(Icon(settings.FA_ICONS.preview, {'font-size': '18px'}))
         )
 
+    @admin.display(description=_('Systeme'))
+    def system_list(self, window: Window):
+        return ', '.join(
+            window.systems.values_list('name', flat=True)
+        )
+
     fields = ['systems', 'name', 'description']
     form = form_with_select(
         Window,
@@ -207,12 +213,6 @@ class WindowAdmin(DocumentationField, BaseAdmin):
         Sequences,
         Variables
     ]
-
-    @admin.display(description=_('Systeme'))
-    def system_list(self, window: Window):
-        return ', '.join(
-            window.systems.values_list('name', flat=True)
-        )
 
     def change_view(self, request: HttpRequest, object_id, form_url="", extra_context=None):
         if 'quick_change' in request.GET:
