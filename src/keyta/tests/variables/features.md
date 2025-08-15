@@ -20,6 +20,11 @@
 - A variable can be deleted
 
 
+## General
+- Removing the only System will result in a notification and won't be saved.
+- Creating a new Variable with mandatory fields: System, Name, Type (Art)
+
+
 ## Values
 
 - A change to the name or the value is saved automatically
