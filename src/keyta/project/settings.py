@@ -193,6 +193,7 @@ STATICFILES_DIRS = [STATIC_DIR]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+FA_ICONS = Icons()
 
 # Jazzmin: Use modals instead of popups
 X_FRAME_OPTIONS = 'SAMEORIGIN'
@@ -257,14 +258,14 @@ JAZZMIN_SETTINGS = {
         'windows.windowdocumentation',
     ],
     "icons": {
-        "actions.action": "fa-solid fa-cubes-stacked",
-        "libraries.library": "fa-solid fa-robot",
-        "resources.resource": "fa-solid fa-key",
-        "sequences.sequence": "fa-solid fa-arrows-turn-to-dots",
-        "systems.system": "fa-solid fa-shapes",
-        "testcases.testcase": "fa-solid fa-list-check",
-        "variables.variable": "fa-solid fa-arrow-up-right-from-square",
-        "windows.window": "fa-solid fa-layer-group"
+        "actions.action": FA_ICONS.action,
+        "libraries.library": FA_ICONS.library,
+        "resources.resource": FA_ICONS.resource,
+        "sequences.sequence": FA_ICONS.sequence,
+        "systems.system": FA_ICONS.system,
+        "testcases.testcase": FA_ICONS.testcase,
+        "variables.variable": FA_ICONS.variable,
+        "windows.window": FA_ICONS.window
     },
     "index_title": "KeyTA",
     "order_with_respect_to": [
@@ -296,5 +297,3 @@ TINYMCE_DEFAULT_CONFIG= {
         }
     });}"""
 }
-
-FA_ICONS = Icons()
