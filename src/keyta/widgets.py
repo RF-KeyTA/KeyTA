@@ -4,6 +4,7 @@ import django
 from django import forms
 from django.conf import settings
 from django.contrib.admin.widgets import RelatedFieldWidgetWrapper
+from django.forms import Widget
 from django.forms.models import ModelChoiceIterator
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
@@ -242,6 +243,11 @@ class CustomRelatedFieldWidgetWrapper(RelatedFieldWidgetWrapper):
 
     def get_related_url(self, info, action, *args):
         return self.related_url or super().get_related_url(info, action, *args)
+
+
+class LabelWidget(Widget):
+    def render(self, name, value, attrs=None, renderer=None):
+        return '<p>-</p>'
 
 
 def quick_add_widget(widget, url, url_params):
