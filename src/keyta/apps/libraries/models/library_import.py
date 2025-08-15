@@ -80,7 +80,7 @@ class LibraryImport(AbstractBaseModel):
 
         return {
             'library': str(self.library),
-            'kwargs': {kwarg.name: kwarg.value for kwarg in kwargs}
+            'kwargs': {str(kwarg): kwarg.value for kwarg in kwargs}
         }
 
     class QuerySet(models.QuerySet):
