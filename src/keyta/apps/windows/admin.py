@@ -251,6 +251,7 @@ class WindowDocumentationAdmin(BaseDocumentationAdmin):
 @admin.register(WindowQuickAdd)
 class WindowQuickAddAdmin(BaseQuickAddAdmin):
     fields = ['systems', 'name']
+    form = WindowForm
 
     def formfield_for_dbfield(self, db_field, request, **kwargs):
         field = super().formfield_for_dbfield(db_field, request, **kwargs)
