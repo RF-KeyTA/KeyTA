@@ -21,6 +21,7 @@
 ### General
 
 - A change to a form field is saved automatically
+- Removing the last System will result in a notification and won't be saved.
 
 ### Parameters
 
@@ -85,7 +86,8 @@ Inlines: Parameters (if applicable), Return values
   - the parameters of a step are incomplete
 
 
-## Buttons: Delete, Clone
+## Buttons: Delete, Clone, Save
 
 - Cloning the Sequence produces an identical Sequence with the suffix Copy
 - Deleting a Sequence works
+- Trying to Save an empty Sequence will result in a notification and the Sequence won't be saved.
