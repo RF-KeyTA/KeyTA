@@ -193,11 +193,6 @@ class VariableQuickAddAdmin(SortableAdminBase, BaseQuickAddAdmin):
 
     def autocomplete_name_queryset(self, name: str, request: HttpRequest):
         queryset = super().autocomplete_name_queryset(name, request)
-        
-        if 'list_id' in request.GET:
-            queryset = queryset.filter(in_list__list_variable=request.GET['list_id'])
-        else:
-            queryset = queryset.filter(in_list__isnull=True)
 
         if 'windows' in request.GET:
             queryset = queryset.filter(windows__in=[request.GET['windows']])
@@ -207,15 +202,8 @@ class VariableQuickAddAdmin(SortableAdminBase, BaseQuickAddAdmin):
     def formfield_for_dbfield(self, db_field, request, **kwargs):
         field = super().formfield_for_dbfield(db_field, request, **kwargs)
 
-        if db_field.name == 'systems':
-            if 'list_id' in request.GET:
-                field.widget = MultipleHiddenInput()
-
         if db_field.name == 'type':
-            if 'list_id' in request.GET:
-                field.widget = HiddenInput()
-            else:
-                field.widget = BaseSelect('', choices=field.choices)
+            field.widget = BaseSelect('', choices=field.choices)
 
         return field
 
