@@ -6,8 +6,9 @@
 
 - In the Windows tab a new Window can be added to the System by adding another window and clicking on the plus icon
 
-- When a Sequence is attached to a Window, the delete-Button of that Window will disappear for as long, as a Sequence is attached.
-- The delete-Button will reappear as soon as there is no longer a Sequence attached to the Window.
+- When a Window is attached to a System, the delete-Button of that System will disappear for as long, as a Window is attached.
+  
+- The delete-Button will reappear as soon as there is no longer a Window attached to the System.
 
 - A system can be deleted (if there is no window attached to it).
 
