@@ -30,6 +30,8 @@
 
 - When adding a step only a Window can be selected. All other fields are grayed out
 
+- Also a "+" has been added to allow the creation of a Window form the Testcases section
+
 - After creating a Step a Sequence or Resource keyword and a Reference Value can be selected
 
 - If the step has parameters the icon Values allows setting their values and also the return value
