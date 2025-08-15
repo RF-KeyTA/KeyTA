@@ -28,3 +28,4 @@ Tabs: General, Keywords, Settings (if applicable)
 
 - A change to a value is saved automatically
 - The default value can be restored
+- The value is a number of listbox-options
