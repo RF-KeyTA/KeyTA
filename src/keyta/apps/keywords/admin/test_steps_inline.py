@@ -76,9 +76,9 @@ class TestStepsInline(
         )
 
         formset = super().get_formset(request, obj, **kwargs)
-        formset.form.base_fields['window'].queryset = windows
 
         window_field = formset.form.base_fields['window']
+        window_field.queryset = windows
         window_field.widget = quick_change_widget(window_field.widget)
 
         to_keyword_field = formset.form.base_fields['to_keyword']
