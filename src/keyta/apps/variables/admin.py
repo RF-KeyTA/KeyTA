@@ -186,9 +186,10 @@ class QuickAddVariableForm(BaseForm):
 
 
 @admin.register(VariableQuickAdd)
-class VariableQuickAddAdmin(BaseQuickAddAdmin):
+class VariableQuickAddAdmin(SortableAdminBase, BaseQuickAddAdmin):
     fields = ['systems', 'windows', 'name', 'type']
     form = QuickAddVariableForm
+    inlines = [Values]
 
     def autocomplete_name_queryset(self, name: str, request: HttpRequest):
         queryset = super().autocomplete_name_queryset(name, request)
