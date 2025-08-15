@@ -2,6 +2,7 @@ import json
 from collections import defaultdict
 
 from django import forms
+from django.conf import settings
 from django.contrib import admin, messages
 from django.contrib.admin.views.main import ChangeList
 from django.contrib.admin.widgets import AutocompleteSelectMultiple
@@ -40,7 +41,7 @@ class ListView(ChangeList):
 
 
 class BaseAdmin(admin.ModelAdmin):
-    actions = None
+    actions = [] if settings.DEBUG else None
     list_max_show_all = 50
     list_per_page = 50
     preserve_filters = False
