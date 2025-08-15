@@ -2,7 +2,11 @@ from adminsortable2.admin import CustomInlineFormSet
 
 from keyta.apps.keywords.models import KeywordCall
 from keyta.apps.testcases.models import TestCase
-from keyta.widgets import CustomRelatedFieldWidgetWrapper, quick_change_widget, LabelWidget
+from keyta.widgets import (
+    CustomRelatedFieldWidgetWrapper,
+    LabelWidget,
+    quick_change_widget
+)
 
 
 class TestStepsFormset(CustomInlineFormSet):
@@ -33,16 +37,16 @@ class TestStepsFormset(CustomInlineFormSet):
         if index is not None and test_step.pk:
             if not test_step.to_keyword:
                 form.fields['to_keyword'].widget.can_change_related = False
+            else:
+                form.fields['to_keyword'].widget = quick_change_widget(
+                    form.fields['to_keyword'].widget,
+                    url_params={'tab_name': test_step.get_tab_url().removeprefix('#')}
+                )
+                form.fields['to_keyword'].widget.can_add_related = False
+                form.fields['to_keyword'].widget.can_change_related = True
 
             if not test_step.variable:
                 form.fields['variable'].widget.can_change_related = False
 
             if not test_step.parameters.exists():
                 form.fields['variable'].widget = LabelWidget()
-
-            form.fields['to_keyword'].widget = quick_change_widget(
-                form.fields['to_keyword'].widget,
-                url_params={'tab_name': test_step.get_tab_url().removeprefix('#')}
-            )
-            form.fields['to_keyword'].widget.can_add_related = False
-            form.fields['to_keyword'].widget.can_change_related = True
