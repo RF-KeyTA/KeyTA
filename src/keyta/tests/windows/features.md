@@ -20,7 +20,7 @@
   - Sequences
   - Reference Values
 
-- A window can be deleted
+- A window can be deleted (only if there is no Sequence attached to it)
 
 ## Templates
 
