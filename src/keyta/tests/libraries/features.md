@@ -18,7 +18,7 @@ Tabs: General, Keywords, Settings (if applicable)
 - Anchor links work
 - Cross-refs to keywords work
 - External links are opened in a new window/tab
-- Typehints work (for example: "Scope")
+- Typehints work (for example: "Scope" in Browser library)
 
 ## Keywords
 
