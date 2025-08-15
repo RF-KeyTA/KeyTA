@@ -30,7 +30,7 @@
 
 - When adding a step only a Window can be selected. All other fields are grayed out
 
-- Also a "+" has been added to allow the creation of a Window form the Testcases section
+- Also a "+" has been added next to a New Step to allow the creation of a Window from the Testcases section
 
 - After creating a Step a Sequence or Resource keyword and a Reference Value can be selected
 
