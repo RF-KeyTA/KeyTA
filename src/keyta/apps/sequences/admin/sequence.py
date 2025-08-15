@@ -1,4 +1,5 @@
 from django import forms
+from django.conf import settings
 from django.contrib import admin
 from django.http import HttpResponseRedirect
 from django.utils.translation import gettext_lazy as _
@@ -170,6 +171,9 @@ class SequenceQuickChangeAdmin(WindowKeywordAdmin):
     fields = []
     readonly_fields = ['documentation']
     inlines = [ParametersInline, SequenceSteps]
+
+    def change_view(self, request, object_id, form_url="", extra_context=None):
+        return super().change_view(request, object_id, form_url, extra_context or {'title_icon': settings.FA_ICONS.sequence})
 
     def get_inlines(self, request, obj):
         sequence: Sequence = obj
