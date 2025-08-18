@@ -1,6 +1,7 @@
 import json
 import os
 import re
+import subprocess
 import tempfile
 from abc import abstractmethod
 from pathlib import Path
@@ -216,10 +217,17 @@ def section_importing(lib_json: dict):
 
 def get_libdoc_dict(library_or_resource: str) -> dict:
     libdoc_json = Path(tempfile.gettempdir()) / f"{library_or_resource}.json"
-    os.system(f'libdoc "{library_or_resource}" "{libdoc_json}"')
+    libdoc = subprocess.run(
+        f'libdoc "{library_or_resource}" "{libdoc_json}"',
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT
+    )
 
-    with open(libdoc_json, encoding='utf-8') as file:
-        return json.load(file)
+    if libdoc.returncode == 0:
+        with open(libdoc_json, encoding='utf-8') as file:
+            return json.load(file)
+
+    raise Exception(libdoc.stdout.decode('utf-8'))
 
 
 def get_typedocs(libdoc_typedocs: list[dict]) -> dict[str, dict]:
