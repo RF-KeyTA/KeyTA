@@ -43,7 +43,7 @@ class LibraryKeywordCallParameterFormset(UserInputFormset):
                     form.fields['value'] = DynamicChoiceField(
                         widget=BaseSelect(
                             '',
-                            choices=choices
+                            choices=choices + get_keyword_parameters(kw_call_parameter.keyword_call)
                         )
                     )
                 else:
