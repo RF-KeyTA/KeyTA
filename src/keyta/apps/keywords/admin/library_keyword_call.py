@@ -1,12 +1,17 @@
+from django.conf import settings
 from django.contrib import admin
+from django.utils.translation import gettext_lazy as _
 
 from keyta.admin.base_inline import TabularInlineWithDelete
+from keyta.widgets import Icon, link
 
 from ..forms import KeywordCallConditionFormset, LibraryKeywordCallParameterFormset
 from ..models import (
     KeywordCall,
     KeywordCallCondition,
-    LibraryKeywordCall
+    KeywordCallParameter,
+    LibraryKeywordCall,
+    LibraryKeywordCallParameter
 )
 from .keywordcall import KeywordCallAdmin, KeywordDocField
 from .keywordcall_parameters_inline import KeywordCallParametersInline
@@ -14,6 +19,26 @@ from .keywordcall_parameters_inline import KeywordCallParametersInline
 
 class LibraryKeywordCallParametersInline(KeywordCallParametersInline):
     formset = LibraryKeywordCallParameterFormset
+
+    def get_fields(self, request, obj=None):
+        return super().get_fields(request, obj) + ['reset']
+
+    def get_readonly_fields(self, request, obj=None):
+        return super().get_readonly_fields(request, obj) + ['reset']
+
+    @admin.display(description=_('zurücksetzen'))
+    def reset(self, kwcall_parameter: KeywordCallParameter):
+        library_kwcall_parameter = LibraryKeywordCallParameter.objects.get(pk=kwcall_parameter.pk)
+        url = library_kwcall_parameter.get_admin_url() + '?reset'
+        icon =  Icon(
+            settings.FA_ICONS.reset_default_value,
+            {'font-size': '18px'}
+        )
+
+        if library_kwcall_parameter.parameter.default_value:
+            return link(url, str(icon))
+        else:
+            return ''
 
 
 class ConditionsInline(TabularInlineWithDelete):
