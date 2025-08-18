@@ -39,7 +39,7 @@ class LibraryParametersInline(BaseTabularInline):
         ref = '&ref=' + lib_param.library.get_admin_url() + lib_param.get_tab_url()
         url = lib_param.get_admin_url() + '?reset' + ref
         icon =  Icon(
-            settings.FA_ICONS.library_setting_reset,
+            settings.FA_ICONS.reset_default_value,
             {'font-size': '18px'}
         )
 

@@ -26,7 +26,7 @@ class LibraryImportParametersInline(LibraryParametersInline):
     def reset(self, lib_param: LibraryImportParameter):
         url = lib_param.get_admin_url() + '?reset'
         icon =  Icon(
-            settings.FA_ICONS.library_setting_reset,
+            settings.FA_ICONS.reset_default_value,
             {'font-size': '18px'}
         )
 
