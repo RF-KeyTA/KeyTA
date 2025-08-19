@@ -1,3 +1,4 @@
+import json
 import re
 import urllib.parse
 import xml.dom.minidom
@@ -8,7 +9,7 @@ from django.utils.translation import gettext_lazy as _
 from jinja2 import Template
 
 from keyta.apps.keywords.models import Keyword, KeywordDocumentation
-from keyta.models.keyword_source import KeywordSource
+from keyta.models.keyword_source import KeywordSource, TypeDoc
 from keyta.widgets import open_link_in_modal
 
 
@@ -19,7 +20,7 @@ class Library(KeywordSource):
     init_doc = models.TextField(
         verbose_name=_('Einrichtung')
     )
-    # JSON representation of a dict
+    # JSON representation of dict[str, TypeDoc]
     typedocs = models.TextField(
         default='{}'
     )
@@ -37,6 +38,9 @@ class Library(KeywordSource):
         'Telnet',
         'XML'
     }
+
+    def get_typedocs(self) -> dict[str, TypeDoc]|None:
+        return json.loads(self.typedocs)
 
     @property
     def has_parameters(self):
@@ -114,6 +118,10 @@ class Library(KeywordSource):
             replace_link,
             docstring
         ) + typedocs
+
+    def set_typedocs(self, typedocs: dict[str, TypeDoc]):
+        self.typedocs = json.dumps(typedocs)
+        self.save()
 
     class Meta(KeywordSource.Meta):
         constraints = [

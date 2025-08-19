@@ -1,4 +1,3 @@
-import json
 import re
 
 from django import forms
@@ -76,7 +75,7 @@ class UserInputFormset(forms.BaseInlineFormSet):
         self.enable_user_input = True
         self.parent: KeywordCall = instance
         if library := self.parent.to_keyword.library:
-            self.typedocs: dict = json.loads(library.typedocs)
+            self.typedocs = library.get_typedocs()
 
     def get_json_value(self, form) -> JSONValue:
         pass

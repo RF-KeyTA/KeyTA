@@ -5,6 +5,7 @@ import subprocess
 import tempfile
 from abc import abstractmethod
 from pathlib import Path
+from typing import TypedDict, Literal
 
 from jinja2 import Template
 
@@ -21,7 +22,22 @@ from keyta.apps.keywords.models import (
 from .base_model import AbstractBaseModel
 
 
-def args_table(libdoc_args: list[dict], typedocs: dict[str, dict]):
+class TypeDoc(TypedDict):
+    """
+    name: str
+    doc: str
+    items: list[str]
+    type: Literal['Enum', 'TypedDict']
+    """
+
+    name: str
+    doc: str
+    items: list[str]
+    type: Literal['Enum', 'TypedDict']
+
+
+
+def args_table(libdoc_args: list[dict], typedocs: dict[str, TypeDoc]):
     if not libdoc_args:
         return ''
 
@@ -230,33 +246,33 @@ def get_libdoc_dict(library_or_resource: str) -> dict:
     raise Exception(libdoc.stdout.decode('utf-8'))
 
 
-def get_typedocs(libdoc_typedocs: list[dict]) -> dict[str, dict]:
+def get_typedocs(libdoc_typedocs: list[dict]) -> dict[str, TypeDoc]:
     typedocs = dict()
 
     for typedoc in libdoc_typedocs:
         name = typedoc['name']
 
         if typedoc['type'] == 'Enum':
-            typedocs[name] = {
-                'type': 'Enum',
-                'name': name,
-                'doc': typedoc['doc'],
-                'members': [
+            typedocs[name] = TypeDoc(
+                name=name,
+                doc=typedoc['doc'],
+                items=[
                     member['name']
                     for member in typedoc['members']
-                ]
-            }
+                ],
+                type='Enum'
+            )
 
         if typedoc['type'] == 'TypedDict':
-            typedocs[name] = {
-                'type': 'TypedDict',
-                'name': name,
-                'doc': typedoc['doc'],
-                'keys': [
+            typedocs[name] = TypeDoc(
+                name=name,
+                doc=typedoc['doc'],
+                items=[
                     item['key']
                     for item in typedoc['items']
-                ]
-            }
+                ],
+                type='TypedDict'
+            )
 
     return typedocs
 
@@ -273,7 +289,7 @@ class KeywordSource(AbstractBaseModel):
     def __str__(self):
         return self.name
 
-    def import_keywords(self, libdoc_dict: dict, typedocs: dict[str, dict]):
+    def import_keywords(self, libdoc_dict: dict, typedocs: dict[str, TypeDoc]):
         keyword_names = set()
         deprecated_keywords = set()
 

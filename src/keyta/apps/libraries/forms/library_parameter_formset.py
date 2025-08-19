@@ -22,6 +22,7 @@ class LibraryParameterFormSet(forms.BaseInlineFormSet):
 
             kwarg_type: list = json.loads(kwarg.typedoc)
             typedocs: dict = json.loads(kwarg.library.typedocs)
+            typedocs = kwarg.library.get_typedocs()
             choices = dict()
             user_input = False
 
@@ -41,11 +42,12 @@ class LibraryParameterFormSet(forms.BaseInlineFormSet):
                         choices[kwarg.value] = kwarg.value
                     user_input = True
 
-                if typedoc := typedocs.get(type_):
+                if type_ in typedocs:
+                    typedoc = typedocs[type_]
                     if typedoc['type'] == 'Enum':
-                        for member in typedoc['members']:
-                            if member.lower() not in {'true', 'false'}:
-                                choices[member] = member
+                        for item in typedoc['items']:
+                            if item.lower() not in {'true', 'false'}:
+                                choices[item] = item
 
                     if typedoc['type'] == 'TypedDict':
                         user_input = True

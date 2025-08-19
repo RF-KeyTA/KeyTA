@@ -20,10 +20,10 @@ def import_library(name: str):
         defaults={
             'version': libdoc_dict["version"],
             'init_doc': get_init_doc(libdoc_dict),
-            'documentation': libdoc_dict["doc"] + section_importing(libdoc_dict),
-            'typedocs': json.dumps(typedocs)
+            'documentation': libdoc_dict["doc"] + section_importing(libdoc_dict)
         }
     )
+    lib.set_typedocs(typedocs)
 
     if libdoc_dict["inits"]:
         init_args = libdoc_dict["inits"][0]["args"]

@@ -67,7 +67,7 @@ class LibraryKeywordCallParameterFormset(UserInputFormset):
                                 enum_name = typedoc['name']
                                 choices[enum_name] = dict()
 
-                                sorted_members = sorted(typedoc['members'])
+                                sorted_members = sorted(typedoc['items'])
                                 members = (
                                     list(filter(lambda x: x[0].isalpha(), sorted_members)) +
                                     list(filter(lambda x: not x[0].isalpha(), sorted_members))
