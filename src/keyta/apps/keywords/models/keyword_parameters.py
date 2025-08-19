@@ -1,3 +1,4 @@
+import json
 import re
 
 from django.db import models
@@ -41,7 +42,7 @@ class KeywordParameter(CloneMixin, AbstractBaseModel):
         max_length=255,
         choices=KeywordParameterType.choices
     )
-    # JSON representation of a list of strings
+    # JSON representation of a union type as a list of strings
     typedoc = models.CharField(
         max_length=255,
         default='[]'
@@ -62,43 +63,46 @@ class KeywordParameter(CloneMixin, AbstractBaseModel):
         return self.name
 
     @classmethod
-    def create_arg(cls, keyword: Keyword, name: str, position: int, typedoc: str):
-        KeywordParameter.objects.update_or_create(
+    def create_arg(cls, keyword: Keyword, name: str, position: int, typedoc: list[str]):
+        kw_param, created = KeywordParameter.objects.update_or_create(
             keyword=keyword,
             position=position,
             type=KeywordParameterType.ARG,
             defaults={
                 'default_value': None,
-                'name': name,
-                'typedoc': typedoc
+                'name': name
             }
         )
+        kw_param.set_typedoc(typedoc)
 
     @classmethod
-    def create_kwarg(cls, keyword: Keyword, name: str, default_value: str, position: int, typedoc: str):
-        KeywordParameter.objects.update_or_create(
+    def create_kwarg(cls, keyword: Keyword, name: str, default_value: str, position: int, typedoc: list[str]):
+        kw_param, created = KeywordParameter.objects.update_or_create(
             keyword=keyword,
             name=name,
             type=KeywordParameterType.KWARG,
             defaults={
                 'default_value': default_value,
                 'position': position,
-                'typedoc': typedoc
             }
         )
+        kw_param.set_typedoc(typedoc)
 
     @classmethod
-    def create_vararg(cls, keyword: Keyword, name: str, position: int, typedoc: str):
-        KeywordParameter.objects.update_or_create(
+    def create_vararg(cls, keyword: Keyword, name: str, position: int, typedoc: list[str]):
+        kw_param, created = KeywordParameter.objects.update_or_create(
             keyword=keyword,
             position=position,
             defaults={
                 'default_value': '@{EMPTY}',
                 'name': name,
                 'type': KeywordParameterType.VARARG,
-                'typedoc': typedoc
             }
         )
+        kw_param.set_typedoc(typedoc)
+
+    def get_typedoc(self) -> list[str]:
+        return json.loads(self.typedoc)
 
     @property
     def is_arg(self):
@@ -133,6 +137,10 @@ class KeywordParameter(CloneMixin, AbstractBaseModel):
                 kw_call.add_parameter(self)
         else:
             super().save(force_insert, force_update, using, update_fields)
+
+    def set_typedoc(self, typedoc: list[str]):
+        self.typedoc = json.dumps(typedoc)
+        self.save()
 
     class Meta:
         ordering = ['position']

@@ -1,5 +1,3 @@
-import json
-
 from django.utils.translation import gettext_lazy as _
 
 from keyta.widgets import BaseSelect
@@ -31,9 +29,7 @@ class LibraryKeywordCallParameterFormset(UserInputFormset):
 
         kw_call_parameter: KeywordCallParameter = form.instance
         if kw_call_parameter.pk:
-            if param_typedoc := kw_call_parameter.parameter.typedoc:
-                type_list: list = json.loads(param_typedoc)
-
+            if type_list := kw_call_parameter.parameter.get_typedoc():
                 if type_list == ['bool']:
                     choices = [
                         (JSONValue.user_input('True'), 'True'),
