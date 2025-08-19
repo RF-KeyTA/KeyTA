@@ -56,34 +56,6 @@ class KeywordDocField:
         return super().get_readonly_fields(request, obj) + ['to_keyword_doc']
 
 
-class ReturnValueField:
-    @admin.display(description=_('Rückgabewert'))
-    def return_value(self, obj):
-        kw_call: KeywordCall = obj
-        return_value: KeywordCallReturnValue = kw_call.return_value.first()
-
-        if return_value and return_value.is_set:
-            return str(return_value)
-
-        return _('Kein Rückgabewert')
-    
-    def get_fields(self, request, obj=None):
-        kw_call: KeywordCall = obj
-
-        if not any([kw_call.to_keyword.library, kw_call.to_keyword.resource]):
-            return super().get_fields(request, obj) + ['return_value']
-
-        return super().get_fields(request, obj)
-
-    def get_readonly_fields(self, request, obj=None):
-        kw_call: KeywordCall = obj
-
-        if not any([kw_call.to_keyword.library, kw_call.to_keyword.resource]):
-            return super().get_readonly_fields(request, obj) + ['return_value']
-
-        return super().get_readonly_fields(request, obj)
-
-
 class VarargForm(forms.ModelForm):
     def save(self, commit=True):
         kw_call_parameter: KeywordCallParameter = self.instance
@@ -165,8 +137,3 @@ class KeywordCallAdmin(BaseAdmin):
             inlines.append(KeywordCallReturnValueInline)
 
         return inlines
-
-
-@admin.register(KeywordCallParameter)
-class KeywordCallParameterAdmin(BaseAdmin):
-    pass
