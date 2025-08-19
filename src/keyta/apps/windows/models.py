@@ -4,8 +4,10 @@ from django.db import models
 from django.db.models.functions import Lower
 from django.utils.translation import gettext_lazy as _
 
+from keyta.apps.actions.models import Action
 from keyta.apps.keywords.models import KeywordCall
 from keyta.apps.resources.models import ResourceImport
+from keyta.apps.sequences.models import Sequence
 from keyta.models.base_model import AbstractBaseModel
 
 
@@ -28,7 +30,7 @@ class Window(AbstractBaseModel):
 
     @property
     def actions(self):
-        return self.keywords.actions()
+        return Action.objects.filter(pk__in=self.keywords.actions())
 
     def depends_on_resource(self, resource_pk: int):
         return (
@@ -55,7 +57,7 @@ class Window(AbstractBaseModel):
 
     @property
     def sequences(self):
-        return self.keywords.sequences()
+        return Sequence.objects.filter(pk__in=self.keywords.sequences())
 
     class Meta:
         ordering = [Lower('name')]

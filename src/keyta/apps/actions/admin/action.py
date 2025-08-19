@@ -16,6 +16,7 @@ from keyta.apps.keywords.admin import (
 )
 from keyta.apps.keywords.models import KeywordCallReturnValue
 from keyta.apps.libraries.models import Library, LibraryImport
+from keyta.apps.sequences.models import Sequence
 from keyta.forms.baseform import form_with_select, BaseForm
 
 from ..models import (
@@ -116,6 +117,10 @@ class ActionAdmin(ActionAdminMixin, CloneModelAdminMixin, WindowKeywordAdmin):
 
         return inlines
 
+    def get_protected_objects(self, obj):
+        action: Action = obj
+        callers = action.uses.filter(execution__isnull=True).values_list('from_keyword')
+        return Sequence.objects.filter(pk__in=callers)
 
 class QuickAddActionForm(BaseForm):
     def clean(self):

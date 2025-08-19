@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-14 10:25+0200\n"
+"POT-Creation-Date: 2025-08-19 14:09+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: .\admin\base_admin.py:165 .\apps\actions\admin\action.py:76
+#: .\admin\base_admin.py:189 .\apps\actions\admin\action.py:78
 msgid "System auswählen"
 msgstr "Select a System"
 
@@ -26,14 +26,15 @@ msgid "Schlüsselwörter"
 msgstr "Keywords"
 
 #: .\admin\keywords_inline.py:23 .\apps\keywords\admin\keyword.py:29
-#: .\apps\keywords\admin\keywordcall.py:37 .\apps\keywords\models\keyword.py:39
-#: .\apps\keywords\models\keyword_parameters.py:28
-#: .\apps\libraries\models\library_parameter.py:18 .\apps\systems\models.py:12
+#: .\apps\keywords\admin\keywordcall_return_value_inline.py:54
+#: .\apps\keywords\models\keyword.py:39
+#: .\apps\keywords\models\keyword_parameters.py:29
+#: .\apps\libraries\models\library_parameter.py:20 .\apps\systems\models.py:12
 #: .\apps\testcases\admin\base_testcase_admin.py:28
 #: .\apps\testcases\models.py:17 .\apps\variables\admin.py:110
 #: .\apps\variables\models.py:17 .\apps\variables\models.py:100
 #: .\apps\windows\admin.py:188 .\apps\windows\models.py:18
-#: .\models\keyword_source.py:34
+#: .\models\keyword_source.py:300
 msgid "Name"
 msgstr "Name"
 
@@ -48,9 +49,9 @@ msgstr "Window-independent"
 #: .\admin\list_filters.py:43 .\apps\actions\admin\windows_inline.py:20
 #: .\apps\actions\admin\windows_inline.py:23
 #: .\apps\keywords\models\keyword.py:63
-#: .\apps\keywords\models\keywordcall.py:102
+#: .\apps\keywords\models\keywordcall.py:101
 #: .\apps\resources\admin\resource_import.py:19
-#: .\apps\sequences\admin\sequence.py:138 .\apps\systems\admin.py:24
+#: .\apps\sequences\admin\sequence.py:145 .\apps\systems\admin.py:24
 #: .\apps\systems\admin.py:29 .\apps\variables\admin.py:55
 #: .\apps\variables\admin.py:63 .\apps\variables\admin.py:163
 #: .\apps\windows\models.py:68 .\apps\windows\models.py:82
@@ -62,12 +63,12 @@ msgstr "Window"
 msgid "All"
 msgstr ""
 
-#: .\apps\actions\admin\action.py:63
+#: .\apps\actions\admin\action.py:65
 #, python-brace-format
 msgid "Eine Aktion mit diesem Namen existiert bereits im System \"{system}\""
 msgstr "An action with this name already exists in the system \"{system}\""
 
-#: .\apps\actions\admin\action.py:129
+#: .\apps\actions\admin\action.py:135
 #, python-brace-format
 msgid ""
 "Eine Aktion mit diesem Namen existiert bereits in der Maske \"{window.name}\""
@@ -89,7 +90,7 @@ msgstr "Keyword"
 
 #: .\apps\actions\admin\windows_inline.py:18
 #: .\apps\keywords\forms\test_steps_form.py:40
-#: .\apps\sequences\admin\sequence.py:85 .\apps\variables\admin.py:61
+#: .\apps\sequences\admin\sequence.py:87 .\apps\variables\admin.py:61
 msgid "Maske auswählen"
 msgstr "Select a Window"
 
@@ -112,8 +113,8 @@ msgstr "Actions"
 #: .\apps\actions\models\action.py:68
 #: .\apps\executions\admin\setup_teardown_inline.py:36
 #: .\apps\keywords\models\keyword.py:18
-#: .\apps\libraries\admin\library_import.py:24
-#: .\apps\sequences\admin\steps_inline.py:65 .\apps\windows\admin.py:104
+#: .\apps\libraries\admin\library_import.py:19
+#: .\apps\sequences\admin\steps_inline.py:18 .\apps\windows\admin.py:104
 #: .\apps\windows\admin.py:109
 msgid "Aktion"
 msgstr "Action"
@@ -127,7 +128,7 @@ msgid "Beziehungen zu Masken"
 msgstr "Relationships to Windows"
 
 #: .\apps\actions\models\action_step.py:9
-#: .\apps\keywords\models\keywordcall.py:367
+#: .\apps\keywords\models\keywordcall.py:366
 #: .\apps\keywords\models\library_keyword_call.py:29
 #: .\apps\keywords\models\test_step.py:28
 #: .\apps\sequences\models\sequence_step.py:9
@@ -135,7 +136,7 @@ msgid "Schritt"
 msgstr "Step"
 
 #: .\apps\actions\models\action_step.py:10
-#: .\apps\keywords\models\keywordcall.py:368
+#: .\apps\keywords\models\keywordcall.py:367
 #: .\apps\keywords\models\library_keyword_call.py:30
 #: .\apps\keywords\models\test_step.py:29
 #: .\apps\sequences\models\sequence_step.py:10
@@ -153,10 +154,10 @@ msgid "Protokoll"
 msgstr "Log"
 
 #: .\apps\executions\admin\execution_inline.py:61
-#: .\apps\libraries\admin\library_import.py:50
+#: .\apps\libraries\admin\library_import.py:48
 #: .\apps\libraries\admin\library_import_inline.py:21
-#: .\apps\libraries\admin\library_import_parameters_inline.py:17
-#: .\apps\libraries\models\library_parameter.py:57
+#: .\apps\libraries\admin\library_import_parameters_inline.py:16
+#: .\apps\libraries\models\library_parameter.py:66
 msgid "Einstellungen"
 msgstr "Settings"
 
@@ -176,7 +177,7 @@ msgid "Werte"
 msgstr "Values"
 
 #: .\apps\executions\admin\setup_teardown_inline.py:34
-#: .\apps\sequences\admin\steps_inline.py:63 .\apps\systems\admin.py:74
+#: .\apps\sequences\admin\steps_inline.py:16 .\apps\systems\admin.py:74
 #: .\apps\windows\admin.py:101
 msgid "Aktion auswählen"
 msgstr "Select an Action"
@@ -188,12 +189,12 @@ msgid "Nachbereitung"
 msgstr "Teardown"
 
 #: .\apps\executions\admin\testcase_execution.py:11
-#: .\apps\keywords\models\keywordcall.py:23
+#: .\apps\keywords\models\keywordcall.py:22
 msgid "Testvorbereitung"
 msgstr "Test Setup"
 
 #: .\apps\executions\admin\testcase_execution.py:15
-#: .\apps\keywords\models\keywordcall.py:24
+#: .\apps\keywords\models\keywordcall.py:23
 msgid "Testnachbereitung"
 msgstr "Test Teardown"
 
@@ -233,7 +234,7 @@ msgid "Die Schritte sind leer"
 msgstr "The steps are incomplete"
 
 #: .\apps\executions\models\execution.py:29
-#: .\apps\keywords\models\keywordcall.py:34
+#: .\apps\keywords\models\keywordcall.py:33
 msgid "Schlüsselwort Ausführung"
 msgstr "Keyword Execution"
 
@@ -309,47 +310,52 @@ msgid "Robot Framework wird ausgeführt"
 msgstr "Robot Framework is running."
 
 #: .\apps\keywords\admin\keyword_parameters_inline.py:24
-#: .\apps\keywords\models\keyword_parameters.py:145
+#: .\apps\keywords\models\keyword_parameters.py:153
 #: .\apps\keywords\models\keywordcall_parameters.py:149
-#: .\apps\libraries\models\library_import_parameter.py:30
+#: .\apps\libraries\models\library_import_parameter.py:36
 msgid "Parameter"
 msgstr "Parameter"
 
 #: .\apps\keywords\admin\keyword_parameters_inline.py:25
-#: .\apps\keywords\forms\keywordcall_condition_formset.py:30
-#: .\apps\keywords\forms\keywordcall_parameter_formset.py:35
-#: .\apps\keywords\models\keyword_parameters.py:146
+#: .\apps\keywords\forms\keywordcall_condition_formset.py:29
+#: .\apps\keywords\forms\keywordcall_parameter_formset.py:34
+#: .\apps\keywords\models\keyword_parameters.py:154
 #: .\apps\keywords\models\keywordcall_parameters.py:150
-#: .\apps\libraries\models\library_import_parameter.py:31
-#: .\rf_import\import_keywords.py:15
+#: .\apps\libraries\models\library_import_parameter.py:37
+#: .\models\keyword_source.py:43
 msgid "Parameters"
 msgstr "Parameters"
 
-#: .\apps\keywords\admin\keywordcall.py:43 .\apps\keywords\models\keyword.py:48
-#: .\apps\libraries\admin\library.py:60
-#: .\apps\libraries\admin\library_import.py:44 .\apps\testcases\models.py:18
-#: .\apps\windows\models.py:24 .\models\keyword_source.py:37
-#: .\models\keyword_source.py:71
+#: .\apps\keywords\admin\keywordcall.py:26 .\apps\keywords\models\keyword.py:48
+#: .\apps\libraries\admin\library.py:59
+#: .\apps\libraries\admin\library_import.py:42 .\apps\testcases\models.py:18
+#: .\apps\windows\models.py:24 .\models\keyword_source.py:303
+#: .\models\keyword_source.py:339
 msgid "Dokumentation"
 msgstr "Documentation"
 
-#: .\apps\keywords\admin\keywordcall.py:60
-#: .\apps\keywords\admin\keywordcall_return_value_inline.py:13
-#: .\apps\keywords\models\keyword_return_value.py:22
-#: .\apps\keywords\models\keyword_return_value.py:62
-#: .\apps\keywords\models\keyword_return_value.py:63
-#: .\apps\keywords\models\keywordcall_return_value.py:76
+#: .\apps\keywords\admin\keywordcall_return_value_inline.py:26
+msgid "Type"
+msgstr ""
+
+#: .\apps\keywords\admin\keywordcall_return_value_inline.py:38
+#: .\apps\keywords\models\keyword_return_value.py:35
+#: .\apps\keywords\models\keyword_return_value.py:89
+#: .\apps\keywords\models\keyword_return_value.py:90
+#: .\apps\keywords\models\keywordcall.py:136
+#: .\apps\keywords\models\keywordcall_return_value.py:84
 msgid "Rückgabewert"
 msgstr "Return Value"
 
-#: .\apps\keywords\admin\keywordcall.py:68
-#: .\apps\keywords\models\keywordcall_return_value.py:48
-msgid "Kein Rückgabewert"
-msgstr "No return value"
-
-#: .\apps\keywords\admin\keywordcall_return_value_inline.py:14
+#: .\apps\keywords\admin\keywordcall_return_value_inline.py:39
 msgid "Rückgabewerte"
 msgstr "Return Values"
+
+#: .\apps\keywords\admin\library_keyword_call.py:29
+#: .\apps\libraries\admin\library_import_parameters_inline.py:25
+#: .\apps\libraries\admin\library_parameters_inline.py:37
+msgid "zurücksetzen"
+msgstr "reset"
 
 #: .\apps\keywords\admin\return_value_inline.py:25
 msgid "Rückgabewert auswählen"
@@ -366,12 +372,12 @@ msgstr "Reference Values"
 msgid "leer"
 msgstr "empty"
 
-#: .\apps\keywords\forms\keywordcall_condition_formset.py:37
-#: .\apps\keywords\forms\keywordcall_parameter_formset.py:90
+#: .\apps\keywords\forms\keywordcall_condition_formset.py:36
+#: .\apps\keywords\forms\keywordcall_parameter_formset.py:87
 msgid "Vorherige Rückgabewerte"
 msgstr "Previous Return Values"
 
-#: .\apps\keywords\forms\keywordcall_condition_formset.py:42
+#: .\apps\keywords\forms\keywordcall_condition_formset.py:41
 #, fuzzy
 #| msgid "Format auswählen"
 msgid "Wert auswählen"
@@ -381,10 +387,18 @@ msgstr "Select a format"
 msgid "Bedingung auswählen"
 msgstr "Select a Condition"
 
-#: .\apps\keywords\forms\keywordcall_vararg_formset.py:40
-#: .\apps\keywords\forms\user_input_formset.py:84
-msgid "Eingabe"
-msgstr "Input"
+#: .\apps\keywords\forms\keywordcall_condition_formset.py:52
+#: .\apps\keywords\forms\keywordcall_parameter_formset.py:132
+#: .\apps\keywords\forms\library_keywordcall_parameter_formset.py:25
+#: .\apps\keywords\forms\library_keywordcall_parameter_formset.py:94
+msgid "Wert auswählen oder eintragen"
+msgstr "Select or enter a Value"
+
+#: .\apps\keywords\forms\library_keywordcall_parameter_formset.py:91
+#: .\apps\keywords\forms\user_input_formset.py:47
+#: .\apps\keywords\forms\user_input_formset.py:60
+msgid "Kein Wert"
+msgstr "No Value"
 
 #: .\apps\keywords\forms\test_steps_form.py:36
 #: .\apps\keywords\models\keyword.py:19
@@ -404,14 +418,9 @@ msgstr "Select a Sequence"
 msgid "Referenzwert auswählen"
 msgstr "Select a Reference Value"
 
-#: .\apps\keywords\forms\user_input_formset.py:37
-#: .\apps\keywords\forms\user_input_formset.py:83
-msgid "Kein Wert"
-msgstr "No Value"
-
-#: .\apps\keywords\forms\user_input_formset.py:69
-msgid "Wert auswählen oder eintragen"
-msgstr "Select or enter a Value"
+#: .\apps\keywords\forms\user_input_formset.py:48
+msgid "Eingabe"
+msgstr "Input"
 
 #: .\apps\keywords\models\execution_keywordcall.py:36
 msgid "Aufrufparameter"
@@ -427,7 +436,7 @@ msgstr "Keyword from Resource"
 
 #: .\apps\keywords\models\keyword.py:28
 #: .\apps\libraries\admin\library_import_inline.py:18
-#: .\apps\libraries\models\library.py:44
+#: .\apps\libraries\models\library.py:130
 #: .\apps\libraries\models\library_import.py:40
 msgid "Bibliothek"
 msgstr "Library"
@@ -449,49 +458,49 @@ msgstr "Description"
 msgid "Vor-/Nachbereitung"
 msgstr "Setup/Teardown"
 
-#: .\apps\keywords\models\keyword.py:68 .\apps\sequences\admin\sequence.py:76
+#: .\apps\keywords\models\keyword.py:68 .\apps\sequences\admin\sequence.py:78
 #: .\apps\systems\apps.py:8 .\apps\systems\models.py:37
 #: .\apps\testcases\models.py:29 .\apps\variables\admin.py:121
 #: .\apps\variables\models.py:28 .\apps\windows\admin.py:65
-#: .\apps\windows\admin.py:156 .\apps\windows\admin.py:211
+#: .\apps\windows\admin.py:156 .\apps\windows\admin.py:197
 #: .\apps\windows\models.py:16
 msgid "Systeme"
 msgstr "Systems"
 
-#: .\apps\keywords\models\keyword_parameters.py:15
+#: .\apps\keywords\models\keyword_parameters.py:16
 msgid "Positional Argument"
 msgstr "Positional Argument"
 
-#: .\apps\keywords\models\keyword_parameters.py:16
+#: .\apps\keywords\models\keyword_parameters.py:17
 msgid "Optional Argument"
 msgstr "Optional Argument"
 
-#: .\apps\keywords\models\keyword_parameters.py:17
+#: .\apps\keywords\models\keyword_parameters.py:18
 msgid "Variadic Argument"
 msgstr ""
 
-#: .\apps\keywords\models\keyword_parameters.py:38
-#: .\apps\libraries\models\library_parameter.py:22
+#: .\apps\keywords\models\keyword_parameters.py:39
+#: .\apps\libraries\models\library_parameter.py:24
 msgid "Standardwert"
 msgstr "Default Value"
 
-#: .\apps\keywords\models\keywordcall.py:28
+#: .\apps\keywords\models\keywordcall.py:27
 msgid "Suitevorbereitung"
 msgstr "Suite Setup"
 
-#: .\apps\keywords\models\keywordcall.py:29
+#: .\apps\keywords\models\keywordcall.py:28
 msgid "Suitenachbereitung"
 msgstr "Suite Teardown"
 
-#: .\apps\keywords\models\keywordcall.py:33
+#: .\apps\keywords\models\keywordcall.py:32
 msgid "Schlüsselwort-Aufruf"
 msgstr "Keyword Call"
 
-#: .\apps\keywords\models\keywordcall.py:35
+#: .\apps\keywords\models\keywordcall.py:34
 msgid "Testschritt"
 msgstr "Test Step"
 
-#: .\apps\keywords\models\keywordcall.py:93
+#: .\apps\keywords\models\keywordcall.py:92
 msgid "Referenzwert (optional)"
 msgstr "Reference Value (optional)"
 
@@ -513,8 +522,8 @@ msgstr "is not"
 
 #: .\apps\keywords\models\keywordcall_condition.py:24
 #: .\apps\keywords\models\keywordcall_parameters.py:31
-#: .\apps\libraries\models\library_import_parameter.py:23
-#: .\apps\variables\admin.py:231 .\apps\variables\models.py:105
+#: .\apps\libraries\models\library_import_parameter.py:25
+#: .\apps\variables\admin.py:220 .\apps\variables\models.py:105
 #: .\apps\variables\models.py:133
 msgid "Wert"
 msgstr "Value"
@@ -558,37 +567,37 @@ msgstr "Parameter reference"
 msgid "Parameter-Referenzen"
 msgstr "Parameter references"
 
+#: .\apps\keywords\models\keywordcall_return_value.py:48
+msgid "Kein Rückgabewert"
+msgstr "No return value"
+
 #: .\apps\keywords\models\window_keyword.py:41 .\apps\testcases\models.py:69
 msgid " Kopie"
 msgstr " Copy"
 
-#: .\apps\libraries\admin\library.py:48
+#: .\apps\libraries\admin\library.py:47
 #, python-brace-format
 msgid "Die Bibliothek \"{library_name}\" wurde erfolgreich aktualisiert"
 msgstr "The library \"{library_name}\" has been successfully updated"
 
-#: .\apps\libraries\admin\library.py:52
+#: .\apps\libraries\admin\library.py:51
 #, fuzzy, python-brace-format
 msgid "Die Bibliothek \"{library_name}\" konnte nicht importiert werden"
 msgstr "The library \"{library_name}\" could not be imported"
 
-#: .\apps\libraries\admin\library.py:106 .\apps\resources\admin\resource.py:82
+#: .\apps\libraries\admin\library.py:104 .\apps\resources\admin\resource.py:82
 msgid "Aktualisierung"
 msgstr "Update"
 
-#: .\apps\libraries\admin\library.py:116
+#: .\apps\libraries\admin\library.py:114
 #, python-brace-format
 msgid "Eine Bibliothek ist nicht vorhanden: {err}"
 msgstr "A library is not available: {err}"
 
 #: .\apps\libraries\admin\library_import_inline.py:19
-#: .\apps\libraries\apps.py:8 .\apps\libraries\models\library.py:45
+#: .\apps\libraries\apps.py:8 .\apps\libraries\models\library.py:131
 msgid "Bibliotheken"
 msgstr "Libraries"
-
-#: .\apps\libraries\admin\library_parameters_inline.py:39
-msgid "zurücksetzen"
-msgstr "reset"
 
 #: .\apps\libraries\forms\library_form.py:21
 #, python-brace-format
@@ -605,7 +614,7 @@ msgstr "The library \"{name}\" is not in PYTHONPATH."
 msgid "Die Bibliothek \"{library}\" wurde erfolgreich importiert."
 msgstr "The library \"{library_name}\" was imported successfully."
 
-#: .\apps\libraries\models\library.py:12
+#: .\apps\libraries\models\library.py:21
 msgid "Einrichtung"
 msgstr "Installation"
 
@@ -626,7 +635,7 @@ msgstr "Library Import"
 msgid "Bibliothek-Imports"
 msgstr "Library Imports"
 
-#: .\apps\libraries\models\library_parameter.py:56
+#: .\apps\libraries\models\library_parameter.py:65
 msgid "Einstellung"
 msgstr "Setting"
 
@@ -674,7 +683,7 @@ msgstr "Resource Import"
 msgid "Ressource-Imports"
 msgstr "Resource Imports"
 
-#: .\apps\sequences\admin\sequence.py:59 .\apps\sequences\admin\sequence.py:158
+#: .\apps\sequences\admin\sequence.py:61 .\apps\sequences\admin\sequence.py:165
 #, python-brace-format
 msgid ""
 "Eine Sequenz mit diesem Namen existiert bereits in der Maske \"{window."
@@ -682,18 +691,10 @@ msgid ""
 msgstr ""
 "A sequence with this name already exists in the window \"{window.name}\""
 
-#: .\apps\sequences\admin\sequence.py:80 .\apps\variables\admin.py:115
-#: .\apps\windows\admin.py:201
+#: .\apps\sequences\admin\sequence.py:82 .\apps\variables\admin.py:115
+#: .\apps\windows\admin.py:207
 msgid "System hinzufügen"
 msgstr "Add a System"
-
-#: .\apps\sequences\admin\steps_inline.py:31
-msgid "Globale Aktionen"
-msgstr "Global Actions"
-
-#: .\apps\sequences\admin\steps_inline.py:87
-msgid "Keine Aktionen vorhanden"
-msgstr "No Actions available"
 
 #: .\apps\sequences\apps.py:8 .\apps\sequences\models\sequence.py:41
 #: .\apps\sequences\models\sequence.py:48
@@ -701,15 +702,23 @@ msgstr "No Actions available"
 msgid "Sequenzen"
 msgstr "Sequences"
 
-#: .\apps\systems\admin.py:117
+#: .\apps\sequences\forms\sequence_steps_formset.py:28
+msgid "Globale Aktionen"
+msgstr "Global Actions"
+
+#: .\apps\sequences\forms\sequence_steps_formset.py:72
+msgid "Keine Aktionen vorhanden"
+msgstr "No Actions available"
+
+#: .\apps\systems\admin.py:113
 msgid "erstelle"
 msgstr "add"
 
-#: .\apps\systems\admin.py:134
+#: .\apps\systems\admin.py:130
 msgid "Falls zutreffend, "
 msgstr "If applicable, "
 
-#: .\apps\systems\admin.py:134
+#: .\apps\systems\admin.py:130
 msgid " die Aktion zur Anbindung an das System"
 msgstr " the action used for attaching to a running system"
 
@@ -787,13 +796,13 @@ msgstr "Relationship to System"
 msgid "Beziehungen zu Systemen"
 msgstr "Relationships to Systems"
 
-#: .\rf_import\import_keywords.py:118
-msgid "Rückgabetyp"
-msgstr "Return type"
-
-#: .\rf_import\import_keywords.py:170
+#: .\models\keyword_source.py:175
 msgid "Diese Bibliothek hat keine Einstellungen"
 msgstr "This library has no settings"
+
+#: .\models\keyword_source.py:287
+msgid "Rückgabetyp"
+msgstr "Return type"
 
 #: .\templates\admin\actions.html:11
 msgid "Run the selected action"
@@ -879,13 +888,13 @@ msgstr ""
 msgid "Please correct the errors below."
 msgstr ""
 
-#: .\templates\admin\delete_confirmation.html:19
-#: .\templates\admin\delete_confirmation.html:23
-#: .\templates\admin\delete_confirmation.html:31
+#: .\templates\admin\delete_confirmation.html:18
+#: .\templates\admin\delete_confirmation.html:22
+#: .\templates\admin\delete_confirmation.html:30
 msgid "Delete"
 msgstr ""
 
-#: .\templates\admin\delete_confirmation.html:38
+#: .\templates\admin\delete_confirmation.html:37
 #, python-format
 msgid ""
 "Deleting the %(object_name)s '%(escaped_object)s' would result in deleting "
@@ -893,11 +902,15 @@ msgid ""
 "following types of objects:"
 msgstr ""
 
-#: .\templates\admin\delete_confirmation.html:45
+#: .\templates\admin\delete_confirmation.html:44
 #, python-format
 msgid ""
-"Deleting the %(object_name)s '%(escaped_object)s' would require deleting the "
-"following protected related objects:"
+"Deleting the %(object_name)s '%(escaped_object)s' is not possible as long as "
+"it is related to other objects:"
+msgstr ""
+
+#: .\templates\admin\delete_confirmation.html:50
+msgid "OK"
 msgstr ""
 
 #: .\templates\admin\delete_confirmation.html:52
@@ -930,6 +943,6 @@ msgstr ""
 msgid "General"
 msgstr ""
 
-#: .\widgets.py:254
+#: .\widgets.py:260
 msgid "Klicke auf das Plus-Symbol"
 msgstr "Click the plus icon"

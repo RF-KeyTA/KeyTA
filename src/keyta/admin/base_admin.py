@@ -9,6 +9,7 @@ from django.contrib.admin.widgets import AutocompleteSelectMultiple
 from django.forms import SelectMultiple, CheckboxSelectMultiple
 from django.http import HttpRequest, HttpResponseRedirect, HttpResponse
 from django.urls import reverse
+from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 
 
@@ -113,6 +114,19 @@ class BaseAdmin(admin.ModelAdmin):
 
     def get_changelist(self, request, **kwargs):
         return ListView
+
+    def get_deleted_objects(self, objs, request):
+        deleted_objects, model_count, perms_needed, protected = super().get_deleted_objects(objs, request)
+
+        protected = [
+            mark_safe('%s: <a href="%s" target="_blank">%s</a>' % (obj._meta.verbose_name, obj.get_admin_url(), str(obj)))
+            for obj in self.get_protected_objects(objs[0])
+        ]
+
+        return deleted_objects, model_count, perms_needed, protected
+
+    def get_protected_objects(self, obj):
+        return []
 
     def save_form(self, request, form, change):
         messages.set_level(request, messages.WARNING)

@@ -234,13 +234,9 @@ class WindowAdmin(DocumentationField, BaseAdmin):
 
         return self.inlines
 
-    def has_delete_permission(self, request, obj=None):
+    def get_protected_objects(self, obj):
         window: Window = obj
-
-        if window and window.sequences.exists():
-            return False
-
-        return super().has_delete_permission(request, obj)
+        return list(window.actions.all()) + list(window.sequences.all())
 
 
 @admin.register(WindowDocumentation)

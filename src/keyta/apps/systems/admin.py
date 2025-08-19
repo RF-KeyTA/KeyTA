@@ -84,6 +84,10 @@ class SystemAdmin(BaseAdmin):
 
         return field
 
+    def get_protected_objects(self, obj):
+        system: System = obj
+        return system.windows.all()
+
     def get_fields(self, request, obj=None):
         system: System = obj
 
@@ -99,14 +103,6 @@ class SystemAdmin(BaseAdmin):
             return self.inlines
 
         return []
-
-    def has_delete_permission(self, request, obj=None):
-        system: System = obj
-
-        if system and system.windows.exists():
-            return False
-
-        return super().has_delete_permission(request, obj)
 
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)

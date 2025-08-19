@@ -1,4 +1,5 @@
 from django import forms
+from django.apps import apps
 from django.conf import settings
 from django.contrib import admin
 from django.http import HttpResponseRedirect
@@ -16,8 +17,8 @@ from keyta.apps.keywords.admin import (
     WindowKeywordAdminMixin,
 )
 from keyta.apps.keywords.models import KeywordCallReturnValue
-from keyta.forms.baseform import BaseForm
 from keyta.apps.windows.models import Window
+from keyta.forms.baseform import BaseForm
 from keyta.widgets import (
     ModelSelect2MultipleAdminWidget, 
     Select2MultipleWidget, 
@@ -127,6 +128,13 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
             return inlines + [KeywordExecutionInline]
 
         return inlines
+
+    def get_protected_objects(self, obj):
+        sequence: Sequence = obj
+        callers = sequence.uses.filter(execution__isnull=True).values_list('testcase')
+        TestCase = apps.get_model(settings.TESTCASES_APP, model_name='testcase')
+
+        return TestCase.objects.filter(pk__in=callers)
 
     def get_readonly_fields(self, request, obj):
         sequence: Sequence = obj
