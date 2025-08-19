@@ -38,14 +38,12 @@ class KeywordReturnValue(CloneMixin, AbstractBaseModel):
         default=0
     )
     # HTML representation of the type
-    type = models.CharField(
-        max_length=1024,
+    type = models.TextField(
         null=True,
         default=None
     )
     # JSON representation of ReturnValueTypeDoc
-    typedoc = models.CharField(
-        max_length=255,
+    typedoc = models.TextField(
         null=True,
         default=None
     )
