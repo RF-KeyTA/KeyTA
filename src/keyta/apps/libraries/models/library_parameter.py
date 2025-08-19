@@ -1,3 +1,5 @@
+import json
+
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -24,7 +26,7 @@ class LibraryParameter(AbstractBaseModel):
     orig_default_value = models.CharField(
         max_length=255
     )
-    # JSON representation of a list of strings
+    # JSON representation of a union type as a list of strings
     typedoc = models.CharField(
         max_length=255,
         default='[]'
@@ -32,6 +34,9 @@ class LibraryParameter(AbstractBaseModel):
 
     def __str__(self):
         return self.name
+
+    def get_typedoc(self) -> list[str]:
+        return json.loads(self.typedoc)
 
     def reset_value(self):
         self.value = self.orig_default_value
@@ -45,6 +50,10 @@ class LibraryParameter(AbstractBaseModel):
             self.value = self.orig_default_value
 
         super().save(force_insert, force_update, using, update_fields)
+
+    def set_typedoc(self, typedoc: list[str]):
+        self.typedoc = json.dumps(typedoc)
+        self.save()
 
     class Manager(models.Manager):
         def get_queryset(self):

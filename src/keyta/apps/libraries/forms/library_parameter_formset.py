@@ -1,5 +1,3 @@
-import json
-
 from django import forms
 
 from keyta.widgets import BaseSelect
@@ -20,8 +18,7 @@ class LibraryParameterFormSet(forms.BaseInlineFormSet):
                 import_param = form.instance
                 kwarg: LibraryParameter = import_param.library_parameter
 
-            kwarg_type: list = json.loads(kwarg.typedoc)
-            typedocs: dict = json.loads(kwarg.library.typedocs)
+            kwarg_type = kwarg.get_typedoc()
             typedocs = kwarg.library.get_typedocs()
             choices = dict()
             user_input = False
