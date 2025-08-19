@@ -1,3 +1,6 @@
+import json
+from typing import TypedDict
+
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -6,6 +9,16 @@ from model_clone import CloneMixin
 from keyta.models.base_model import AbstractBaseModel
 
 from .keyword import KeywordType
+
+
+class ReturnValueTypeDoc(TypedDict):
+    """
+    name: str
+    items: list[str]
+    """
+
+    name: str
+    keys: list[str]
 
 
 class KeywordReturnValue(CloneMixin, AbstractBaseModel):
@@ -24,9 +37,17 @@ class KeywordReturnValue(CloneMixin, AbstractBaseModel):
     kw_call_index = models.PositiveSmallIntegerField(
         default=0
     )
+    # HTML representation of the type
+    type = models.CharField(
+        max_length=1024,
+        null=True,
+        default=None
+    )
+    # JSON representation of ReturnValueTypeDoc
     typedoc = models.CharField(
         max_length=255,
-        blank=True
+        null=True,
+        default=None
     )
 
     def __str__(self):
@@ -41,6 +62,10 @@ class KeywordReturnValue(CloneMixin, AbstractBaseModel):
             kw_call.delete_return_value(self)
 
         super().delete(using, keep_parents)
+
+    def get_typedoc(self) -> ReturnValueTypeDoc|None:
+        if self.typedoc:
+            return json.loads(self.typedoc)
 
     def save(
         self, force_insert=False, force_update=False, using=None, update_fields=None
@@ -57,6 +82,10 @@ class KeywordReturnValue(CloneMixin, AbstractBaseModel):
                     kw_call.add_return_value(self)
         else:
             super().save(force_insert, force_update, using, update_fields)
+
+    def set_typedoc(self, typedoc: ReturnValueTypeDoc):
+        self.typedoc = json.dumps(typedoc)
+        self.save()
 
     class Meta:
         verbose_name = _('Rückgabewert')

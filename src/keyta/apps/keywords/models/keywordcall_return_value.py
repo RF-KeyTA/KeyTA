@@ -52,9 +52,17 @@ class KeywordCallReturnValue(CloneMixin, AbstractBaseModel):
         return self.name or self.kw_call_return_value
 
     @property
+    def type(self):
+        if self.return_value:
+            return self.return_value.type
+
+        if self.kw_call_return_value:
+            return self.kw_call_return_value.type
+
+    @property
     def typedoc(self):
         if self.return_value:
-            return self.return_value.typedoc
+            return self.return_value.get_typedoc()
 
         if self.kw_call_return_value:
             return self.kw_call_return_value.typedoc

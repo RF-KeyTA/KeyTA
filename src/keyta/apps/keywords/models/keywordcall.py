@@ -1,4 +1,3 @@
-import json
 from typing import Optional
 
 from django.db import models
@@ -130,11 +129,11 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
         )
 
     def add_return_value(self, return_value: KeywordReturnValue):
-        if typedoc := return_value.typedoc:
+        if return_value.type:
             KeywordCallReturnValue.objects.get_or_create(
                 keyword_call=self,
                 kw_call_return_value=return_value.kw_call_return_value,
-                name=json.loads(typedoc)['name'],
+                name=_('Rückgabewert'),
                 return_value=return_value
             )
         else:

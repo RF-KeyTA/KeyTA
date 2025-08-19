@@ -1,5 +1,4 @@
 import json
-import os
 import re
 import subprocess
 import tempfile
@@ -112,42 +111,12 @@ def format_default_value(arg: dict):
     return ""
 
 
-def format_return_type(return_type: dict | None, typedocs: dict[str, dict]):
+def format_return_type(return_type: list, typedocs: dict[str, TypeDoc]) -> str:
     if not return_type:
         return ''
 
-    if return_type['union']:
-        types = []
-
-        for type_ in return_type['nested']:
-            typedoc = type_['typedoc']
-
-            if typedoc == 'list':
-                if nested := type_['nested']:
-                    types.append('list[%s]' % nested[0]['name'])
-                else:
-                    types.append('list')
-            else:
-                types.append(type_['name'])
-    else:
-        name = return_type['name']
-
-        if name in {'dict'}:
-            types = [name]
-        else:
-            typedoc = return_type['typedoc']
-            types = [typedoc]
-
-            if typedoc == 'list':
-                if nested := return_type['nested']:
-                    types = ['list[%s]' % nested[0]['name']]
-                else:
-                    types = ['list']
-
-    template = heading(_('Rückgabetyp')) + """
-    <div class="mb-4">
-        <p>{{ type_repr }}</p>
-    </div>
+    template = """
+    {{ type_repr }}
     {% for typedoc in typedocs %}
     <div id="{{ typedoc.name }}" class="modal" tabindex="-1" role="dialog">
         {{ typedoc.doc }}
@@ -155,29 +124,36 @@ def format_return_type(return_type: dict | None, typedocs: dict[str, dict]):
     {% endfor %}
     """
 
-    return_typedocs = [
-        typedoc
-        for type_ in types
-        if (typedoc := typedocs.get(type_))
-    ]
+    return_typedocs = []
+    for type_ in return_type:
+        if isinstance(type_, list):
+            list_type = type_[0]
+            if list_type in typedocs:
+                return_typedocs.append(typedocs[list_type])
+        else:
+            if type_ in typedocs:
+                return_typedocs.append(typedocs[type_])
 
     return Template(template).render({
-        'type_repr': format_type(types, typedocs),
+        'type_repr': format_type(return_type, typedocs),
         'typedocs': return_typedocs
-    })
+    }).strip()
 
 
-def format_type(arg_type: list, typedocs: dict[str, dict]):
+def format_type(type: list, typedocs: dict[str, TypeDoc]) -> str:
     formatted_type = []
 
-    for type_ in arg_type:
-        if type_ in typedocs:
+    for type_ in type:
+        if isinstance(type_, list):
+            list_type = type_[0]
+            if list_type in typedocs:
+                formatted_type.append(f'list[<a href="#{list_type}" onclick="bsShowModal(\'#{list_type}\')">{list_type}</a>]')
+            else:
+                formatted_type.append(f'list[{list_type}]')
+        elif type_ in typedocs:
             formatted_type.append(f'<a href="#{type_}" onclick="bsShowModal(\'#{type_}\')">{type_}</a>')
         else:
-            if type_ is None:
-                formatted_type.append('None')
-            else:
-                formatted_type.append(type_)
+            formatted_type.append(str(type_))
 
     return " | ".join(formatted_type)
 
@@ -199,19 +175,53 @@ def get_init_doc(library_json):
         return _("Diese Bibliothek hat keine Einstellungen")
 
 
+def get_return_type(return_type: dict | None) -> list:
+    if return_type is None:
+        return []
+
+    if return_type['union']:
+        types = []
+
+        for type_ in return_type['nested']:
+            typedoc = type_['typedoc']
+
+            if typedoc == 'list':
+                if nested := type_['nested']:
+                    types.append([nested[0]['name']])
+                else:
+                    types.append('list')
+            else:
+                types.append(type_['name'])
+
+        return types
+    else:
+        name = return_type['name']
+
+        if name == 'dict':
+            types = [name]
+        else:
+            typedoc = return_type['typedoc']
+            types = [typedoc]
+
+            if typedoc == 'list':
+                if nested := return_type['nested']:
+                    types = [[nested[0]['name']]]
+                else:
+                    types = ['list']
+
+        return types
+
+
 def get_type(arg: dict) -> list[str]:
     type_hint_regex = re.compile(r'[*]*\w+: ([\w|\[\]\s,]+)')
-
     if type_hint := type_hint_regex.match(arg['repr']):
         union_type = type_hint.group(1).split('|')
-        type = [
+        return [
             member_type.strip()
             for member_type in union_type
         ]
-    else:
-        type = []
 
-    return type
+    return []
 
 
 def heading(title: str):
@@ -222,13 +232,6 @@ def heading(title: str):
         </label>
     </div>
     """
-
-
-def section_importing(lib_json: dict):
-    if lib_json["inits"]:
-        return '<h2 id="Importing">Importing</h2>\n' + get_init_doc(lib_json)
-
-    return ''
 
 
 def get_libdoc_dict(library_or_resource: str) -> dict:
@@ -277,6 +280,20 @@ def get_typedocs(libdoc_typedocs: list[dict]) -> dict[str, TypeDoc]:
     return typedocs
 
 
+def return_type_doc(return_type: list, typedocs: dict[str, TypeDoc]) -> str:
+    if not return_type:
+        return ''
+
+    return heading(_('Rückgabetyp')) + format_return_type(return_type, typedocs) + '<div class="mb-4"></div>'
+
+
+def section_importing(libdoc_dict: dict):
+    if libdoc_dict["inits"]:
+        return '<h2 id="Importing">Importing</h2>' + get_init_doc(libdoc_dict)
+
+    return ''
+
+
 class KeywordSource(AbstractBaseModel):
     name = models.CharField(
         max_length=255, 
@@ -310,19 +327,38 @@ class KeywordSource(AbstractBaseModel):
             else:
                 kw_args['resource'] = self
 
+            return_type = get_return_type(keyword['returnType'])
+
             kw, created = Keyword.objects.update_or_create(**{
                 **kw_args,
                 'name': name,
                 'defaults': {
                     'documentation': (
                         args_table(keyword['args'], typedocs) +
-                        format_return_type(keyword['returnType'], typedocs) +
-                        heading(_('Dokumentation')) +
-                        keyword['doc']
+                        return_type_doc(return_type, typedocs) +
+                        heading(_('Dokumentation')) + keyword['doc']
                     ),
                     'short_doc': keyword['shortdoc']
                 }
             })
+
+            if return_type:
+                return_value, created = KeywordReturnValue.objects.update_or_create(
+                    keyword=kw,
+                    defaults={
+                        'type': format_return_type(return_type, typedocs)
+                    }
+                )
+
+                for type_ in return_type:
+                    if isinstance(type_, str) and type_ in typedocs:
+                        typedoc = typedocs[type_]
+                        if typedoc['type'] == 'TypedDict':
+                            return_value.set_typedoc({
+                                'name': typedoc['name'],
+                                'keys': typedoc['items']
+                            })
+                        break
 
             kwarg_names = set()
             for idx, arg, in enumerate(keyword["args"]):
@@ -335,7 +371,7 @@ class KeywordSource(AbstractBaseModel):
                         keyword=kw,
                         name=name,
                         position=idx,
-                        typedoc=json.dumps(get_type(arg))
+                        typedoc=get_type(arg)
                     )
                 else:
                     if arg["kind"] == 'VAR_POSITIONAL':
@@ -343,7 +379,7 @@ class KeywordSource(AbstractBaseModel):
                             keyword=kw,
                             name=name,
                             position=idx,
-                            typedoc=json.dumps(get_type(arg))
+                            typedoc=get_type(arg)
                         )
                     else:
                         kwarg_names.add(name)
@@ -353,30 +389,12 @@ class KeywordSource(AbstractBaseModel):
                             name=name,
                             default_value=default_value,
                             position=idx,
-                            typedoc=json.dumps(get_type(arg))
+                            typedoc=get_type(arg)
                         )
 
             for kwarg in kw.parameters.kwargs():
                 if kwarg.name not in kwarg_names:
                     kwarg.delete()
-
-            if keyword.get('returnType'):
-                for typedoc in libdoc_dict['typedocs']:
-                    if (
-                        typedoc['name'] == keyword['returnType']['typedoc'] and
-                        typedoc['type'] == 'TypedDict'
-                    ):
-                        KeywordReturnValue.objects.update_or_create(
-                            keyword=kw,
-                            typedoc=json.dumps({
-                                'name': typedoc['name'],
-                                'type': 'dict',
-                                'keys': [
-                                    item['key']
-                                    for item in typedoc['items']
-                                ]
-                            })
-                        )
 
         for kw in self.keywords.all():
             if (

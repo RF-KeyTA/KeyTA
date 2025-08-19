@@ -1,4 +1,3 @@
-import json
 import re
 from collections import defaultdict
 
@@ -68,9 +67,7 @@ def get_prev_return_values(kw_call: KeywordCall):
     return_value: KeywordCallReturnValue
     for return_value in prev_return_values:
         if typedoc := return_value.typedoc:
-            spec = json.loads(typedoc)
-
-            for key in spec['keys']:
+            for key in typedoc['keys']:
                 value = '${%s}[%s]' % (str(return_value), key)
                 json_value = JSONValue(
                     arg_name=None,
