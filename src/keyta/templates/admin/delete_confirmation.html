@@ -42,17 +42,21 @@
                     </ol>
                 {% elif protected %}
                     <p>{% blocktrans with escaped_object=object %}Deleting the {{ object_name }} '{{ escaped_object }}' is not possible as long as it is related to other objects:{% endblocktrans %}</p>
-                    <ol>
+                    <ul>
                         {% for obj in protected %}
                         <li>{{ obj }}</li>
                         {% endfor %}
-                    </ol>
+                    </ul>
                     <a href="#" class="btn {{ jazzmin_ui.button_classes.danger }} cancel-link">{% trans "OK" %}</a>
                 {% else %}
-                    <p>{% blocktrans with escaped_object=object %}Are you sure you want to delete the {{ object_name }} "{{ escaped_object }}"? All of the following related items will be deleted:{% endblocktrans %}</p>
+                    {% if deleted_objects %}
+                        <p>{% blocktrans with escaped_object=object %}Are you sure you want to delete the {{ object_name }} "{{ escaped_object }}"? All of the following related items will be deleted:{% endblocktrans %}</p>
+                    {% else %}
+                        <p>{% blocktrans with escaped_object=object %}Are you sure you want to delete the {{ object_name }} "{{ escaped_object }}"? It is not related to any other objects.{% endblocktrans %}</p>
+                    {% endif %}
                     <div class="row">
                         <div class="col-12 col-sm-9">
-                            <ol>{{ deleted_objects|unordered_list }}</ol>
+                            <ul>{{ deleted_objects|unordered_list }}</ul>
                         </div>
                         <div class="col-12 col-sm-3">
                             <form method="post">{% csrf_token %}
