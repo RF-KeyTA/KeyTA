@@ -1,2 +1,3 @@
 from .action import ActionAdmin, ActionQuickAddAdmin, ActionQuickChangeAdmin
 from .action_step import ActionStepAdmin
+from .action_window_relation import ActionWindowRelationAdmin

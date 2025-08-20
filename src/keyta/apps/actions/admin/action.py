@@ -171,9 +171,3 @@ class ActionQuickChangeAdmin(WindowKeywordAdmin):
 
     def has_delete_permission(self, request, obj=None):
         return False
-
-
-@admin.register(ActionWindowRelation)
-class ActionWindowRelationAdmin(BaseAdmin):
-    def get_protected_objects(self, obj: ActionWindowRelation):
-        return obj.keyword.uses.filter(from_keyword__in=obj.window.keywords.all())

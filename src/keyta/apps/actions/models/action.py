@@ -3,7 +3,6 @@ from django.utils.translation import gettext_lazy as _
 
 from keyta.apps.keywords.models import WindowKeyword
 from keyta.apps.keywords.models.keyword import KeywordType
-from keyta.models.base_model import AbstractBaseModel
 
 
 class Action(WindowKeyword):
@@ -50,14 +49,3 @@ class ActionQuickChange(Action):
         proxy = True
         verbose_name = _('Aktion')
         verbose_name_plural = _('Aktionen')
-
-
-class ActionWindowRelation(AbstractBaseModel, Action.windows.through):
-    def __str__(self):
-        return f'{self.keyword} -> {self.window}'
-
-    class Meta:
-        auto_created = True
-        proxy = True
-        verbose_name = _('Beziehung zu Maske')
-        verbose_name_plural = _('Beziehungen zu Masken')
