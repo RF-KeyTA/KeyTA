@@ -89,5 +89,11 @@ Inlines: Parameters (if applicable), Return values
 ## Buttons: Delete, Clone, Save
 
 - Cloning the Sequence produces an identical Sequence with the suffix Copy
-- Deleting a Sequence works
+- Deleting a Sequence works:
+- a) If deleting the object does not cause consistency problems: >> "Durch das Löschen von Sequenz "..." würden keine weiteren Objekte gelöscht. Möchten Sie fortfahren?" >> Ja // Nein
+
+- b) If deleting the object would result in the deletion of other objects: >> "Das Löschen von Sequenz "..." würde das Löschen der folgenden verknüpften Objekten als Folge haben. Möchten Sie fortfahren?" >> Ja // Nein
+
+- c) If deleting the object is not possible for consistency reasons: >> "Das Löschen von Sequenz "..." ist nicht möglich, da es die folgenden Verknüpfungen zerstören würde" >> OK
+  
 - Trying to Save an empty Sequence will result in a notification and the Sequence won't be saved.
