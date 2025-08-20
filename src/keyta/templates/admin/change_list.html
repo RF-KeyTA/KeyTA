@@ -106,7 +106,7 @@
 {% endblock %}
 
 {% block extrajs %}
-    {{  block.super }}
+    {{ block.super }}
     <script type="text/javascript" src="{% static 'vendor/select2/js/select2.min.js' %}"></script>
     <script>
         {% comment %} set filterInputLength default and custom values {% endcomment %}
@@ -122,6 +122,40 @@
     <script type="text/javascript" src="{% static 'jazzmin/plugins/bootstrap-show-modal/bootstrap-show-modal.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'jazzmin/js/related-modal.js' %}"></script>
     {% endif %}
+
+    <script type="text/javascript">
+        // From jazzmin/static/js/change_list.js
+        $.fn.search_filters = function () {
+            $(this).change(function () {
+                const $field = $(this);
+                const $option = $field.find('option:selected');
+                const select_name = $option.data('name');
+                if (select_name) {
+                    $field.attr('name', select_name);
+                } else {
+                    $field.removeAttr('name');
+                }
+            });
+            $(this).trigger('change');
+        };
+
+        function getMinimuInputLength(element) {
+            return window.filterInputLength[element.data('name')] ?? window.filterInputLengthDefault;
+        }
+    </script>
+
+    {% block select2 %}
+    <script type="text/javascript">
+        // Make search filters select2 and ensure they work for filtering
+        const $ele = $('.search-filter');
+        $ele.search_filters();
+        $ele.each(function () {
+            const $this = $(this);
+            $this.select2({  width: '100%', minimumInputLength: getMinimuInputLength($this) });
+        });
+    </script>
+    {% endblock %}
+
     <script type="text/javascript">
         $(document).ready(function () {
             const search_button = '#search_group button[type=submit]'
