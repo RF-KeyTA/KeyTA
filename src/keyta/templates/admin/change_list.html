@@ -160,7 +160,7 @@
         $(document).ready(function () {
             const search_button = '#search_group button[type=submit]'
 
-            $('select').on('change', function() {
+            $('select').not('select[name="action"]').on('change', function() {
                 $(search_button).click()
             })
         })
