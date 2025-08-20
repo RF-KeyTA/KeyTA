@@ -123,12 +123,12 @@
     <script type="text/javascript" src="{% static 'jazzmin/js/related-modal.js' %}"></script>
     {% endif %}
     <script type="text/javascript">
-    $(document).ready(function () {
-        const search_button = 'button[type=submit]'
-        
-        $('select').on('change', function() {
-            $(search_button).click()
+        $(document).ready(function () {
+            const search_button = '#search_group button[type=submit]'
+
+            $('select').on('change', function() {
+                $(search_button).click()
+            })
         })
-    })
     </script>
 {% endblock %}
