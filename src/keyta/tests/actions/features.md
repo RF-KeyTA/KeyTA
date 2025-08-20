@@ -109,8 +109,8 @@ Inlines: Parameters (if applicable), Return values
         >> "Durch das Löschen von Aktion "..." würden keine weiteren Objekte gelöscht. Möchten Sie fortfahren?"
         >> Ja   //    Nein
 - b) If deleting the object would result in the deletion of other objects:
-        >> ""
-        >> ""
+        >> "Das Löschen von Aktion "..." würde das Löschen der folgenden verknüpften Objekten als Folge haben.                     Möchten Sie fortfahren?"
+        >> Ja   //    Nein
 - c) If deleting the object is not possible for consistency reasons:
         >> "Das Löschen von Aktion "..." ist nicht möglich, da es die folgenden Verknüpfungen zerstören würde"
         >> OK
