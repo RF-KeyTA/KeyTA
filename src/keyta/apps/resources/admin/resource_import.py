@@ -3,6 +3,7 @@ from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 
 from keyta.admin.base_admin import BaseAdmin
+from keyta.apps.keywords.models import KeywordCall
 from keyta.models.base_model import AbstractBaseModel
 from keyta.widgets import link
 
@@ -23,6 +24,14 @@ class ResourceImportAdmin(BaseAdmin):
     def get_fields(self, request, obj=None):
         return self.get_readonly_fields(request, obj)
 
+    def get_protected_objects(self, obj: ResourceImport):
+        if window := obj.window:
+            return (
+                KeywordCall.objects
+                .filter(to_keyword__in=window.keywords)
+                .filter(to_keyword__resource_id=obj.resource.pk)
+            )
+
     def get_readonly_fields(self, request, obj=None):
         resource_import: ResourceImport = obj
 
@@ -37,6 +46,9 @@ class ResourceImportAdmin(BaseAdmin):
                 return ['from_testcase']
         
         return []
+
+    def get_related_objects(self, obj: ResourceImport):
+        return self.get_protected_objects(obj)
 
     @admin.display(description=_('Sequenz'))
     def from_sequence(self, obj):
