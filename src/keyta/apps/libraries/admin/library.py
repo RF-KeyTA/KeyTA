@@ -10,6 +10,7 @@ from django.utils.translation import gettext_lazy as _
 
 from keyta.admin.base_admin import BaseAdmin
 from keyta.admin.keywords_inline import Keywords
+from keyta.apps.keywords.models import KeywordCall
 from keyta.rf_import.import_library import import_library
 from keyta.widgets import link, Icon
 
@@ -87,6 +88,9 @@ class LibraryAdmin(BaseAdmin):
             return []
 
         return ['name', 'version', 'dokumentation']
+
+    def get_protected_objects(self, obj: Library):
+        return KeywordCall.objects.filter(to_keyword__library=obj)
 
     def has_delete_permission(self, request, obj=None):
         return request.user.is_superuser

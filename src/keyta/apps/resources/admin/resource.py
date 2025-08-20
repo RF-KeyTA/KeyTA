@@ -8,6 +8,7 @@ from django.utils.translation import gettext_lazy as _
 from keyta.admin.base_admin import BaseAdmin
 from keyta.admin.field_documentation import DocumentationField
 from keyta.admin.keywords_inline import Keywords
+from keyta.apps.keywords.models import KeywordCall
 from keyta.rf_import.import_resource import import_resource
 from keyta.widgets import Icon, link
 
@@ -64,6 +65,9 @@ class ResourceAdmin(DocumentationField, BaseAdmin):
             return []
 
         return super().get_inlines(request, obj)
+
+    def get_protected_objects(self, obj: Resource):
+        return KeywordCall.objects.filter(to_keyword__resource=obj)
 
     def get_readonly_fields(self, request, obj=None):
         if not obj:
