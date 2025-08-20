@@ -29,7 +29,7 @@ msgstr ""
 #: .\model_clone\admin.py:63
 #, python-format
 msgid "Duplicate selected %(verbose_name_plural)s"
-msgstr ""
+msgstr "Ausgewählte %(verbose_name_plural)s duplizieren"
 
 #: .\model_clone\templates\admin\change_form_object_tools.html:5
 #: .\model_clone\templates\clone\change_form.html:7
