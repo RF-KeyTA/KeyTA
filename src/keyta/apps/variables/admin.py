@@ -1,9 +1,7 @@
-import json
-
 from django import forms
 from django.conf import settings
 from django.contrib import admin
-from django.forms import HiddenInput, MultipleHiddenInput
+from django.forms import HiddenInput
 from django.http import HttpRequest, HttpResponseRedirect
 from django.utils.translation import gettext_lazy as _
 
@@ -16,6 +14,7 @@ from keyta.admin.base_inline import (
     TabularInlineWithDelete,
 )
 from keyta.admin.list_filters import SystemListFilter, WindowListFilter
+from keyta.apps.keywords.models import TestStep
 from keyta.apps.windows.models import Window
 from keyta.forms import form_with_select, BaseForm
 from keyta.widgets import BaseSelect, link
@@ -149,6 +148,10 @@ class VariableAdmin(SortableAdminBase, BaseAdmin):
         fields += ['name', 'description', 'type']
 
         return fields
+
+    def get_protected_objects(self, obj):
+        variable: Variable = obj
+        return TestStep.objects.filter(variable=variable)
 
     def get_readonly_fields(self, request, obj=None):
         variable: Variable = obj
