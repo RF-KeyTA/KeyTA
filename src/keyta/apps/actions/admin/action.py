@@ -119,8 +119,8 @@ class ActionAdmin(ActionAdminMixin, CloneModelAdminMixin, WindowKeywordAdmin):
 
     def get_protected_objects(self, obj):
         action: Action = obj
-        callers = action.uses.filter(execution__isnull=True).values_list('from_keyword')
-        return Sequence.objects.filter(pk__in=callers)
+        return action.uses.filter(execution__isnull=True)
+
 
 class QuickAddActionForm(BaseForm):
     def clean(self):
@@ -175,4 +175,5 @@ class ActionQuickChangeAdmin(WindowKeywordAdmin):
 
 @admin.register(ActionWindowRelation)
 class ActionWindowRelationAdmin(BaseAdmin):
-    pass
+    def get_protected_objects(self, obj: ActionWindowRelation):
+        return obj.keyword.uses.filter(from_keyword__in=obj.window.keywords.all())

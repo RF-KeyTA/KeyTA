@@ -131,10 +131,7 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
 
     def get_protected_objects(self, obj):
         sequence: Sequence = obj
-        callers = sequence.uses.filter(execution__isnull=True).values_list('testcase')
-        TestCase = apps.get_model(settings.TESTCASES_APP, model_name='testcase')
-
-        return TestCase.objects.filter(pk__in=callers)
+        return sequence.uses.filter(execution__isnull=True)
 
     def get_readonly_fields(self, request, obj):
         sequence: Sequence = obj
