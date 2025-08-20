@@ -105,8 +105,10 @@ Inlines: Parameters (if applicable), Return values
 
 - Cloning the Action produces an identical Action with the suffix Copy
 - Deleting an action works
-      - a) If deleting the object does not cause consistency problems:
+- a) If deleting the object does not cause consistency problems:
          >> "Durch das Löschen von Aktion "..." würden keine weiteren Objekte gelöscht. Möchten Sie fortfahren?"
          >> Ja   //    Nein
-      - b) 
+- b) If deleting the object would result in the deletion of other objects:
+- c) If deleting the object is not possible for consistency reasons:
+  
 - Trying to Save an empty Action will result in a notification and the Action won't be saved.
