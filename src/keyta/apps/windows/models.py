@@ -55,12 +55,6 @@ class Window(AbstractBaseModel):
 
     class Meta:
         ordering = [Lower('name')]
-        # constraints = [
-        #     models.UniqueConstraint(
-        #         fields=['system', 'name'],
-        #         name='unique_window_per_system'
-        #     )
-        # ]
         verbose_name = _('Maske')
         verbose_name_plural = _('Masken')
 

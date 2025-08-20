@@ -26,6 +26,7 @@ from keyta.apps.variables.models import (
 from keyta.forms.baseform import form_with_select, BaseForm
 from keyta.widgets import Icon, open_link_in_modal
 
+from .forms import WindowForm
 from .models import (
     Window,
     WindowDocumentation,
@@ -156,24 +157,6 @@ class Variables(WindowQuickAddMixin, BaseTabularInline):
     @admin.display(description=_('Systeme'))
     def systems(self, obj):
         return ', '.join(obj.variable.systems.values_list('name', flat=True))
-
-
-class WindowForm(BaseForm):
-    def clean(self):
-        name = self.cleaned_data.get('name')
-        systems = self.cleaned_data.get('systems')
-        window_systems = [
-            system.name
-            for system in self.initial.get('systems', [])
-        ]
-
-        if systems:
-            if system := systems.exclude(name__in=window_systems).filter(windows__name=name).first():
-                raise forms.ValidationError(
-                    {
-                        "name": _(f'Eine Maske mit diesem Namen existiert bereits im System "{system}"')
-                    }
-                )
 
 
 @admin.register(Window)
