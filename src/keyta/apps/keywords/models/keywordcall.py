@@ -107,7 +107,7 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
         return super().__repr__().replace('KeywordCall', f'KeywordCall({self.type})')
 
     def __str__(self):
-        return str(self.caller) + ' → ' + str(self.to_keyword)
+        return f'{self.caller} → {self.to_keyword}'
 
     def add_parameter(
         self,
