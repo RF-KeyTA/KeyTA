@@ -18,7 +18,7 @@ class DeleteRelatedField:
     def get_readonly_fields(self, request: HttpRequest, obj=None):
         @admin.display(description='')
         def delete(self, inline_obj: AbstractBaseModel):
-            if not inline_obj.pk or obj.depends_on(inline_obj):
+            if not inline_obj.pk:
                 return ''
 
             tab_url = inline_obj.get_tab_url(getattr(self, 'tab_name', None))

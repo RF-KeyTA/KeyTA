@@ -10,9 +10,6 @@ class AbstractModelMeta(ABCMeta, type(models.Model)):
 
 
 class AbstractBaseModel(models.Model, metaclass=AbstractModelMeta):
-    def depends_on(self, obj):
-        return False
-
     def get_admin_url(self, app=None):
         app_model = (app or self._meta.app_label, self._meta.model_name)
         return reverse('admin:%s_%s_change' % app_model, args=(self.pk,))

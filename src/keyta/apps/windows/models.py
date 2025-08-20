@@ -38,12 +38,6 @@ class Window(AbstractBaseModel):
             KeywordCall.objects.filter(window=self)
         ).filter(to_keyword__resource__id=resource_pk).exists()
 
-    def depends_on(self, obj):
-        if isinstance(obj, ResourceImport):
-            return self.depends_on_resource(obj.resource.pk)
-
-        return False
-
     @property
     def library_ids(self):
         return set((self.systems.values_list('library', flat=True)))

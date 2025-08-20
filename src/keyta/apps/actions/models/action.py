@@ -3,28 +3,11 @@ from django.utils.translation import gettext_lazy as _
 
 from keyta.apps.keywords.models import WindowKeyword
 from keyta.apps.keywords.models.keyword import KeywordType
-from keyta.apps.keywords.models.keywordcall import KeywordCallType
-from keyta.apps.libraries.models import LibraryImport
 from keyta.models.base_model import AbstractBaseModel
 
 
 class Action(WindowKeyword):
     _clone_m2o_or_o2m_fields = WindowKeyword._clone_m2o_or_o2m_fields + ['library_imports']
-
-    def has_dependents(self):
-        return self.uses.exclude(type=KeywordCallType.KEYWORD_EXECUTION).exists()
-
-    def depends_on_library(self, library_pk: int):
-        return self.calls.filter(to_keyword__library__id=library_pk).exists()
-
-    def depends_on(self, obj):
-        if isinstance(obj, LibraryImport):
-            return self.depends_on_library(obj.library.pk)
-
-        if isinstance(obj, ActionWindowRelation):
-            return self.uses.filter(from_keyword__in=obj.window.keywords.all()).exists()
-
-        return False
 
     @property
     def library_ids(self) -> set[int]:
