@@ -123,9 +123,17 @@ class BaseAdmin(admin.ModelAdmin):
             for obj in self.get_protected_objects(objs[0])
         ]
 
-        return deleted_objects, model_count, perms_needed, protected
+        to_be_deleted = [
+            mark_safe('%s: <a href="%s" target="_blank">%s</a>' % (obj._meta.verbose_name, obj.get_admin_url(), str(obj)))
+            for obj in self.get_related_objects(objs[0])
+        ]
+
+        return to_be_deleted, model_count, perms_needed, protected
 
     def get_protected_objects(self, obj):
+        return []
+
+    def get_related_objects(self, obj):
         return []
 
     def save_form(self, request, form, change):
