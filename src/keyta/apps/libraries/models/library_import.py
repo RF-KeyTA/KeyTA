@@ -45,7 +45,7 @@ class LibraryImport(AbstractBaseModel):
         if self.execution:
             return _('Ausführung') + f' {self.execution} -> {self.library}'
 
-        return f'{self.keyword} -> {self.library}'
+        return f'{self.library}'
 
     def add_parameters(self, user: Optional[AbstractUser]=None):
         for kwarg in self.library.kwargs.all():

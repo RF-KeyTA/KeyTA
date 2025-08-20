@@ -31,6 +31,10 @@ class LibraryImportAdmin(BaseAdmin):
         
         return []
 
+    def get_protected_objects(self, obj: LibraryImport):
+        if keyword := obj.keyword:
+            return keyword.calls.filter(to_keyword__library_id=obj.library.pk)
+
     def get_readonly_fields(self, request, obj=None):
         library_import: LibraryImport = obj
 
@@ -38,6 +42,9 @@ class LibraryImportAdmin(BaseAdmin):
             return ['library_init_doc']
         
         return ['keyword']
+
+    def get_related_objects(self, obj: LibraryImport):
+        return self.get_protected_objects(obj)
 
     @admin.display(description=_('Dokumentation'))
     def library_init_doc(self, lib_import: LibraryImport):
