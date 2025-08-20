@@ -24,8 +24,6 @@
     - The Execution result is not set
     - There is no Execution log
 
-- A Test Case can be deleted
-
 ## Steps
 
 - When adding a step only a Window can be selected. All other fields are grayed out
@@ -111,3 +109,12 @@
 - When the execution finishes:
     - the Result is set to PASS (green icon) or FAIL (red icon)
     - the Log icon opens the RF log
+ 
+
+## Delete
+- A testcase can be deleted:
+- a) If deleting the object does not cause consistency problems: >> "Durch das Löschen von Testfall "..." würden keine weiteren Objekte gelöscht. Möchten Sie fortfahren?" >> Ja // Nein
+
+- b) If deleting the object would result in the deletion of other objects: >> "Das Löschen von Testfall "..." würde das Löschen der folgenden verknüpften Objekten als Folge haben. Möchten Sie fortfahren?" >> Ja // Nein
+
+- c) If deleting the object is not possible for consistency reasons: >> "Das Löschen von Testfall "..." ist nicht möglich, da es die folgenden Verknüpfungen zerstören würde" >> OK
