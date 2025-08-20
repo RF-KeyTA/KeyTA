@@ -236,7 +236,7 @@ class WindowAdmin(DocumentationField, BaseAdmin):
 
     def get_protected_objects(self, obj):
         window: Window = obj
-        return list(window.actions.all()) + list(window.sequences.all())
+        return list(window.actions.all()) + list(window.sequences.all()) + list(window.variables.all())
 
 
 @admin.register(WindowDocumentation)
