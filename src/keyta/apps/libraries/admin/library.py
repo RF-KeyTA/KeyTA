@@ -90,7 +90,7 @@ class LibraryAdmin(BaseAdmin):
         return ['name', 'version', 'dokumentation']
 
     def get_protected_objects(self, obj: Library):
-        return KeywordCall.objects.filter(to_keyword__library=obj)
+        return KeywordCall.objects.filter(to_keyword__library=obj)[:20]
 
     def has_delete_permission(self, request, obj=None):
         return request.user.is_superuser
