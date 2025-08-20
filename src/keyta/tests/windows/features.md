@@ -27,6 +27,7 @@
 - A Window is not allowed to have no System (trying to remove the last System will result in a notification and it won't be saved)
 - A Window can be deleted (only if there is no Sequence attached to it)
 - a) If deleting the object does not cause consistency problems: >> "Durch das Löschen von Maske "..." würden keine weiteren Objekte gelöscht. Möchten Sie fortfahren?" >> Ja // Nein
+- b) If deleting the object is not possible for consistency reasons: >> "Das Löschen von Maske "..." ist nicht möglich, da es die folgenden Verknüpfungen zerstören würde" >> OK
 
 ## Templates
 
