@@ -182,6 +182,7 @@
     
     start_button.addEventListener('click', function(event) {
         event.preventDefault();
+        if (error_message) {hide(error_message)}
         start()
     });
 
