@@ -11,7 +11,9 @@
 - The delete-Button will reappear as soon as there is no longer a Window attached to the System.
 
 - A system can be deleted (if there is no window attached to it).
--> If deleting the object does not cause consistency problems: >> "Durch das Löschen von System "..." würden keine weiteren Objekte gelöscht. Möchten Sie fortfahren?" >> Ja // Nein
+- a) If deleting the object does not cause consistency problems: >> "Durch das Löschen von System "..." würden keine weiteren Objekte gelöscht. Möchten Sie fortfahren?" >> Ja // Nein
+
+- b) If deleting the object is not possible for consistency reasons: >> "Das Löschen von System "..." ist nicht möglich, da es die folgenden Verknüpfungen zerstören würde" >> OK
 
 - A System can now be assigned to a user. In that case if a user is assigned to a system, that user can
   see all the related items of that system. He cannot see items related to systems he is not assigned to.
