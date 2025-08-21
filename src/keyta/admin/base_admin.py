@@ -123,12 +123,14 @@ class BaseAdmin(admin.ModelAdmin):
             for obj in self.get_protected_objects(objs[0])
         ]
 
-        if len(objs) > 1:
+        # The action 'Delete selected elements' was executed
+        if 'action' in request.POST:
             to_be_deleted = [
                 mark_safe(
                     '%s: <a href="%s" target="_blank">%s</a>' % (obj._meta.verbose_name, obj.get_admin_url(), str(obj)))
                 for obj in objs
             ]
+        # Trying to delete a single element
         else:
             to_be_deleted = [
                 mark_safe('%s: <a href="%s" target="_blank">%s</a>' % (obj._meta.verbose_name, obj.get_admin_url(), str(obj)))
