@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-20 10:48+0200\n"
+"POT-Creation-Date: 2025-08-21 09:51+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: .\admin\base_admin.py:197 .\apps\actions\admin\action.py:78
+#: .\admin\base_admin.py:206 .\apps\actions\admin\action.py:78
 msgid "System auswählen"
 msgstr ""
 
@@ -839,7 +839,9 @@ msgstr ""
 
 #: .\templates\admin\base_orig.html:219 .\templates\admin\change_form.html:28
 #: .\templates\admin\change_list.html:28
-#: .\templates\admin\delete_confirmation.html:15 .\templates\admin\index.html:6
+#: .\templates\admin\delete_confirmation.html:15
+#: .\templates\admin\delete_selected_confirmation.html:15
+#: .\templates\admin\index.html:6
 msgid "Dashboard"
 msgstr ""
 
@@ -904,6 +906,7 @@ msgstr ""
 "es die folgenden Verknüpfungen zerstören würde:"
 
 #: .\templates\admin\delete_confirmation.html:50
+#: .\templates\admin\delete_selected_confirmation.html:49
 msgid "OK"
 msgstr ""
 
@@ -931,6 +934,44 @@ msgstr ""
 
 #: .\templates\admin\delete_confirmation.html:70
 msgid "No"
+msgstr ""
+
+#: .\templates\admin\delete_selected_confirmation.html:17
+#: .\templates\admin\delete_selected_confirmation.html:21
+#: .\templates\admin\delete_selected_confirmation.html:29
+msgid "Delete multiple objects"
+msgstr ""
+
+#: .\templates\admin\delete_selected_confirmation.html:36
+#, python-format
+msgid ""
+"Deleting the selected %(objects_name)s would result in deleting related "
+"objects, but your account doesn't have permission to delete the following "
+"types of objects:"
+msgstr ""
+
+#: .\templates\admin\delete_selected_confirmation.html:43
+msgid ""
+"Deleting the selected objects is not possible as long as they are related to "
+"other objects:"
+msgstr ""
+"Das Löschen der ausgewählten Objekte ist nicht möglich, da "
+"es die folgenden Verknüpfungen zerstören würde:"
+
+#: .\templates\admin\delete_selected_confirmation.html:51
+msgid "Are you sure you want to delete the following objects?"
+msgstr "Sind Sie sicher, dass Sie die folgenden Objekten löschen wollen?"
+
+#: .\templates\admin\delete_selected_confirmation.html:54
+msgid "Objects"
+msgstr ""
+
+#: .\templates\admin\delete_selected_confirmation.html:68
+msgid "Yes, I’m sure"
+msgstr ""
+
+#: .\templates\admin\delete_selected_confirmation.html:71
+msgid "No, take me back"
 msgstr ""
 
 #: .\templates\admin\search_form.html:28
