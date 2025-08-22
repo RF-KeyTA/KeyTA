@@ -1,4 +1,6 @@
 from django import forms
+from django.contrib import admin
+from django.utils.translation import gettext_lazy as _
 
 from keyta.admin.base_inline import BaseTabularInline
 
@@ -24,5 +26,22 @@ class KeywordCallParametersInline(BaseTabularInline):
     max_num = 0
     can_delete = False
 
+    @admin.display(description=_('Wert'))
+    def readonly_value(self, obj):
+        kw_call_parameter: KeywordCallParameter = obj
+        return kw_call_parameter.current_value
+
+    def get_fields(self, request, obj=None):
+        if not self.has_change_permission(request, obj):
+            return ['name', 'readonly_value']
+
+        return ['name', 'value']
+
     def get_queryset(self, request):
         return super().get_queryset(request).exclude(parameter__type=KeywordParameterType.VARARG)
+
+    def get_readonly_fields(self, request, obj=None):
+        if not self.has_change_permission(request, obj):
+            return ['name', 'readonly_value']
+
+        return ['name']
