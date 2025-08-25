@@ -1,6 +1,6 @@
 # List view
 
-- Test Cases can be filtered by System
+- Test Cases can be filtered by System, User and Status
 
 - Test Cases can be searched by Name
 
