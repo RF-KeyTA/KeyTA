@@ -1,7 +1,7 @@
 # List view
 
 - Test Cases can be filtered by System, User and Status
-- When opening the User-Filter-List the current user will be on top and in addition to that on the normal
+- When opening the User-Filter-List the current user will be at the top and in addition to that on the normal
 alphabetical listing that follows
 
 - Test Cases can be searched by Name
