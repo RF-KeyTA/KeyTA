@@ -1,5 +1,4 @@
 from django import forms
-from django.db.models import QuerySet
 from django.utils.translation import gettext_lazy as _
 
 from keyta.apps.keywords.models.keyword import Keyword
@@ -12,10 +11,10 @@ from ..models import KeywordCall
 from .steps_form import StepsForm
 
 
-class KeywordSelectWidget(ModelSelect2AdminWidget):
+class SequenceSelectWidget(ModelSelect2AdminWidget):
     def filter_queryset(self, request, term, queryset=None, **dependent_fields):
-        sequences: QuerySet = super().filter_queryset(request, term, queryset, **dependent_fields)
         window_id = dependent_fields['windows']
+        sequences = Keyword.objects.sequences().filter(windows__in=[window_id]).distinct()
         resource_ids = ResourceImport.objects.filter(window_id=window_id).values_list('resource')
         
         # The QuerySet returned by the super class is unique
@@ -41,7 +40,7 @@ TestStepsForm = forms.modelform_factory(
             model=Window,
             search_fields=['name__icontains'],
         ),
-        'to_keyword': KeywordSelectWidget(
+        'to_keyword': SequenceSelectWidget(
             placeholder=_('Sequenz auswählen'),
             model=Keyword,
             search_fields=['name__icontains'],
