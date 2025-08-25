@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 
-from keyta.apps.variables.models import Variable, VariableDocumentation
+from keyta.apps.variables.models import Variable, VariableDocumentation, VariableValue
 from keyta.widgets import open_link_in_modal
 
 from ..forms import KeywordCallParameterFormset
@@ -29,7 +29,10 @@ def get_variable_values(variable: Variable):
 
 
 def get_window_variables(kw_call: KeywordCall, exclude_variable: Variable=None):
-    variable_values = kw_call.window.variables.values_list('values', flat=True)
+    variable_values = VariableValue.objects.filter(
+        variable__windows__in=[kw_call.window],
+        variable__systems__in=kw_call.testcase.systems.all()
+    )
     sources = (
         KeywordCallParameterSource.objects
         .filter(variable_value__in=variable_values)
