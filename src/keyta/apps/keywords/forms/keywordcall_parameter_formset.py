@@ -108,7 +108,7 @@ def get_variables_choices(kw_call_param_sources: QuerySet):
             variable,
             values
         ]
-        for variable, values in sorted(grouped_variable_values.items(), key=lambda kv: kv[0])
+        for variable, values in sorted(grouped_variable_values.items(), key=lambda kv: kv[0].lower())
     ]
 
 
