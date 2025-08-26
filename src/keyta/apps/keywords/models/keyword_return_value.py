@@ -87,4 +87,4 @@ class KeywordReturnValue(CloneMixin, AbstractBaseModel):
 
     class Meta:
         verbose_name = _('Rückgabewert')
-        verbose_name_plural = _('Rückgabewert')
+        verbose_name_plural = _('Rückgabewerte')
