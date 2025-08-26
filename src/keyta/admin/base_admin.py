@@ -88,8 +88,6 @@ class BaseAdmin(admin.ModelAdmin):
         return super().change_view(request, object_id, form_url, extra_context)
 
     def delete_view(self, request, object_id, extra_context=None):
-        messages.set_level(request, messages.WARNING)
-
         if 'post' in request.POST and 'ref' in request.GET:
             super().delete_view(request, object_id, extra_context)
             return HttpResponseRedirect(request.GET['ref'])
