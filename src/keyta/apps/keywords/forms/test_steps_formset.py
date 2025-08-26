@@ -2,8 +2,10 @@ from django.urls import reverse
 
 from adminsortable2.admin import CustomInlineFormSet
 
-from keyta.apps.keywords.models import KeywordCall
+from keyta.apps.keywords.models import Keyword, KeywordCall
+from keyta.apps.resources.models import ResourceImport
 from keyta.apps.testcases.models import TestCase
+from keyta.apps.windows.models import Window
 from keyta.widgets import (
     CustomRelatedFieldWidgetWrapper,
     LabelWidget,
@@ -16,7 +18,7 @@ class TestStepsFormset(CustomInlineFormSet):
         self, default_order_direction=None, default_order_field=None, **kwargs
     ):
         super().__init__(default_order_direction, default_order_field, **kwargs)
-        self.parent: TestCase = kwargs['instance']
+        self.testcase: TestCase = kwargs['instance']
 
     def add_fields(self, form, index):
         super().add_fields(form, index)
@@ -29,7 +31,7 @@ class TestStepsFormset(CustomInlineFormSet):
             window_field.widget = CustomRelatedFieldWidgetWrapper(
                 window_field.widget,
                 None,
-                {'systems': self.parent.systems.first().pk}
+                {'systems': self.testcase.systems.first().pk}
             )
             window_field.widget.can_add_related = True
             window_field.widget.attrs.update({
@@ -37,14 +39,15 @@ class TestStepsFormset(CustomInlineFormSet):
             })
         else:
             if test_step.pk:
+                to_keyword_field = form.fields['to_keyword']
+
                 if not test_step.to_keyword:
-                    to_keyword_field = form.fields['to_keyword']
                     to_keyword_field.widget.can_change_related = False
                     to_keyword_field.widget = CustomRelatedFieldWidgetWrapper(
                         to_keyword_field.widget,
                         reverse('admin:sequences_sequence_add'),
                         {
-                            'systems': self.parent.systems.first().pk,
+                            'systems': self.testcase.systems.first().pk,
                             'windows': test_step.window.pk
                         }
                     )
@@ -53,7 +56,6 @@ class TestStepsFormset(CustomInlineFormSet):
                         'data-width': '95%',
                     })
                 else:
-                    to_keyword_field = form.fields['to_keyword']
                     to_keyword_field.widget = quick_change_widget(
                         to_keyword_field.widget,
                         url_params={'tab_name': test_step.get_tab_url().removeprefix('#')}
@@ -66,3 +68,22 @@ class TestStepsFormset(CustomInlineFormSet):
 
                 if not test_step.parameters.exists():
                     form.fields['variable'].widget = LabelWidget()
+
+                systems = self.testcase.systems.all()
+                windows = (
+                    Window.objects
+                    .filter(systems__in=systems)
+                    .distinct()
+                )
+                resource_ids = (
+                    ResourceImport.objects
+                    .filter(window__in=windows)
+                    .values_list('resource')
+                    .distinct()
+                )
+
+                # Set the queryset after replacing the widget
+                to_keyword_field.queryset = (
+                    Keyword.objects.sequences().filter(systems__in=systems) |
+                    Keyword.objects.filter(resource__in=resource_ids)
+                ).distinct().order_by('name')
