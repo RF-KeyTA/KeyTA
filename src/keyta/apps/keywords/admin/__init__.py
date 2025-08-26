@@ -3,6 +3,7 @@ from .keyword import KeywordAdmin, KeywordDocumentationAdmin
 from .keywordcall import KeywordCallAdmin
 from .keywordcall_condition import KeywordCallConditionAdmin
 from .keyword_call_parameter import KeywordCallParameterAdmin
+from .keywordcall_parameter import KeywordCallParameterAdmin
 from .keywordcall_parameters_inline import KeywordCallParametersInline
 from .keywordcall_return_value import KeywordCallReturnValueAdmin
 from .keywordcall_return_value_inline import KeywordCallReturnValueInline
