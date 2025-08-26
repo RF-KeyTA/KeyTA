@@ -16,4 +16,6 @@ class SetupTeardownParametersFormset(KeywordCallParameterFormset):
         if testcase := execution.testcase:
             systems = testcase.systems
 
-        return get_global_variables(system_ids=systems.values_list('id'))
+        system_ids = list(systems.values_list('id', flat=True))
+
+        return get_global_variables(system_ids)
