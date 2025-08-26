@@ -6,7 +6,7 @@ from django.utils.translation import gettext_lazy as _
 
 from model_clone import CloneModelAdminMixin
 
-from keyta.admin.base_admin import BaseAdmin, BaseQuickAddAdmin
+from keyta.admin.base_admin import BaseQuickAddAdmin
 from keyta.apps.executions.admin import KeywordExecutionInline
 from keyta.apps.keywords.admin import (
     ParametersInline,
@@ -16,12 +16,10 @@ from keyta.apps.keywords.admin import (
 )
 from keyta.apps.keywords.models import KeywordCallReturnValue
 from keyta.apps.libraries.models import Library, LibraryImport
-from keyta.apps.sequences.models import Sequence
 from keyta.forms.baseform import form_with_select, BaseForm
 
 from ..models import (
     Action,
-    ActionWindowRelation,
     ActionQuickAdd,
     ActionQuickChange
 )
