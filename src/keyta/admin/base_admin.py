@@ -116,11 +116,6 @@ class BaseAdmin(admin.ModelAdmin):
     def get_deleted_objects(self, objs, request):
         deleted_objects, model_count, perms_needed, protected = super().get_deleted_objects(objs, request)
 
-        protected = [
-            mark_safe('%s: <a href="%s" target="_blank">%s</a>' % (obj._meta.verbose_name, obj.get_admin_url(), str(obj)))
-            for obj in self.get_protected_objects(objs[0])
-        ]
-
         # The action 'Delete selected elements' was executed
         if 'action' in request.POST:
             to_be_deleted = [
@@ -128,11 +123,22 @@ class BaseAdmin(admin.ModelAdmin):
                     '%s: <a href="%s" target="_blank">%s</a>' % (obj._meta.verbose_name, obj.get_admin_url(), str(obj)))
                 for obj in objs
             ]
+            protected = [
+                mark_safe(
+                    '%s: <a href="%s" target="_blank">%s</a>' % (prot._meta.verbose_name, prot.get_admin_url(), str(prot)))
+                for obj in objs
+                for prot in self.get_protected_objects(obj)
+            ]
         # Trying to delete a single element
         else:
             to_be_deleted = [
                 mark_safe('%s: <a href="%s" target="_blank">%s</a>' % (obj._meta.verbose_name, obj.get_admin_url(), str(obj)))
                 for obj in self.get_related_objects(objs[0])
+            ]
+            protected = [
+                mark_safe(
+                    '%s: <a href="%s" target="_blank">%s</a>' % (obj._meta.verbose_name, obj.get_admin_url(), str(obj)))
+                for obj in self.get_protected_objects(objs[0])
             ]
 
         return to_be_deleted, model_count, perms_needed, protected
