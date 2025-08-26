@@ -2,7 +2,6 @@ from django.urls import reverse
 
 from adminsortable2.admin import CustomInlineFormSet
 
-from keyta.apps.keywords.models import Keyword, KeywordCall
 from keyta.apps.resources.models import ResourceImport
 from keyta.apps.testcases.models import TestCase
 from keyta.apps.windows.models import Window
@@ -12,6 +11,8 @@ from keyta.widgets import (
     quick_change_widget
 )
 
+from ..models import Keyword, KeywordCall
+
 
 class TestStepsFormset(CustomInlineFormSet):
     def __init__(
@@ -19,15 +20,31 @@ class TestStepsFormset(CustomInlineFormSet):
     ):
         super().__init__(default_order_direction, default_order_field, **kwargs)
         self.testcase: TestCase = kwargs['instance']
+        # Perform all DB queries once when the formset is initialized
+        self.systems = self.testcase.systems.all()
+        self.windows = (
+            Window.objects
+            .filter(systems__in=self.systems)
+            .distinct()
+        )
+        self.resource_ids = (
+            ResourceImport.objects
+            .filter(window__in=self.windows)
+            .values_list('resource')
+            .distinct()
+        )
 
     def add_fields(self, form, index):
         super().add_fields(form, index)
 
         test_step: KeywordCall = form.instance
 
+        to_keyword_field = form.fields['to_keyword']
+        variable_field = form.fields['variable']
+        window_field = form.fields['window']
+
         # The index of extra forms is None
         if index is None:
-            window_field = form.fields['window']
             window_field.widget = CustomRelatedFieldWidgetWrapper(
                 window_field.widget,
                 None,
@@ -38,9 +55,11 @@ class TestStepsFormset(CustomInlineFormSet):
                 'data-width': '95%',
             })
         else:
-            if test_step.pk:
-                to_keyword_field = form.fields['to_keyword']
+            window_field.widget = quick_change_widget(window_field.widget)
+            window_field.widget.can_add_related = False
+            window_field.widget.can_change_related = True
 
+            if test_step.pk:
                 if not test_step.to_keyword:
                     to_keyword_field.widget.can_change_related = False
                     to_keyword_field.widget = CustomRelatedFieldWidgetWrapper(
@@ -65,25 +84,21 @@ class TestStepsFormset(CustomInlineFormSet):
 
                 if not test_step.variable:
                     form.fields['variable'].widget.can_change_related = False
+                else:
+                    variable_field.widget = quick_change_widget(variable_field.widget)
+                    variable_field.widget.can_add_related = False
+                    variable_field.widget.can_change_related = True
 
                 if not test_step.parameters.exists():
                     form.fields['variable'].widget = LabelWidget()
 
-                systems = self.testcase.systems.all()
-                windows = (
-                    Window.objects
-                    .filter(systems__in=systems)
-                    .distinct()
-                )
-                resource_ids = (
-                    ResourceImport.objects
-                    .filter(window__in=windows)
-                    .values_list('resource')
-                    .distinct()
-                )
-
-                # Set the queryset after replacing the widget
-                to_keyword_field.queryset = (
-                    Keyword.objects.sequences().filter(systems__in=systems) |
-                    Keyword.objects.filter(resource__in=resource_ids)
-                ).distinct().order_by('name')
+        # Set the querysets after replacing the widgets
+        to_keyword_field.queryset = (
+            Keyword.objects.sequences().filter(systems__in=self.systems) |
+            Keyword.objects.filter(resource__in=self.resource_ids)
+        ).distinct().order_by('name')
+        variable_field.queryset = (
+            variable_field.queryset
+            .filter(systems__in=self.systems)
+        ).distinct().order_by('name')
+        window_field.queryset = self.windows
