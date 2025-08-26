@@ -332,7 +332,7 @@
                 })
 
                 // A select in a formset
-                const selects = django.jQuery('.form-row select')
+                const selects = django.jQuery('.form-row.has_original select')
 
                 selects.on('change', function(event) {
                     const url = window.location.href
