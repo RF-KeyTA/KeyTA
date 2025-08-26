@@ -65,7 +65,7 @@ class ExecutionInline(BaseTabularInline):
             str(Icon(settings.FA_ICONS.exec_settings))
         )
 
-    @admin.display(description=_('Ausf.'))
+    @admin.display(description=_('Ausführung'))
     def start(self, execution: Execution):
         url = execution.get_admin_url() + '?start'
         title = str(Icon(settings.FA_ICONS.exec_start))

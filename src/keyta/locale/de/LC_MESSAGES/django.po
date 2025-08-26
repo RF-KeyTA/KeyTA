@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-21 09:51+0200\n"
+"POT-Creation-Date: 2025-08-26 15:50+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,8 +18,16 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: .\admin\base_admin.py:206 .\apps\actions\admin\action.py:78
+#: .\admin\base_admin.py:210 .\apps\actions\admin\action.py:76
 msgid "System auswählen"
+msgstr ""
+
+#: .\admin\field_documentation.py:22 .\apps\keywords\admin\keywordcall.py:26
+#: .\apps\keywords\models\keyword.py:48 .\apps\libraries\admin\library.py:60
+#: .\apps\libraries\admin\library_import.py:49 .\apps\testcases\models.py:18
+#: .\apps\windows\models.py:26 .\models\keyword_source.py:303
+#: .\models\keyword_source.py:339
+msgid "Dokumentation"
 msgstr ""
 
 #: .\admin\keywords_inline.py:15 .\apps\keywords\models\keyword.py:158
@@ -54,7 +62,7 @@ msgstr ""
 #: .\apps\resources\admin\resource_import.py:20
 #: .\apps\sequences\admin\sequence.py:144 .\apps\systems\admin.py:24
 #: .\apps\systems\admin.py:29 .\apps\variables\admin.py:54
-#: .\apps\variables\admin.py:62 .\apps\variables\admin.py:166
+#: .\apps\variables\admin.py:62 .\apps\variables\admin.py:170
 #: .\apps\windows\models.py:58 .\apps\windows\models.py:72
 #: .\apps\windows\models.py:79
 msgid "Maske"
@@ -64,12 +72,12 @@ msgstr ""
 msgid "All"
 msgstr ""
 
-#: .\apps\actions\admin\action.py:65
+#: .\apps\actions\admin\action.py:63
 #, python-brace-format
 msgid "Eine Aktion mit diesem Namen existiert bereits im System \"{system}\""
 msgstr ""
 
-#: .\apps\actions\admin\action.py:135
+#: .\apps\actions\admin\action.py:133
 #, python-brace-format
 msgid ""
 "Eine Aktion mit diesem Namen existiert bereits in der Maske \"{window.name}\""
@@ -89,7 +97,7 @@ msgid "Schlüsselwort"
 msgstr ""
 
 #: .\apps\actions\admin\windows_inline.py:17
-#: .\apps\keywords\forms\test_steps_form.py:40
+#: .\apps\keywords\forms\test_steps_form.py:21
 #: .\apps\sequences\admin\sequence.py:87 .\apps\variables\admin.py:60
 msgid "Maske auswählen"
 msgstr ""
@@ -162,7 +170,15 @@ msgid "Einstellungen"
 msgstr ""
 
 #: .\apps\executions\admin\execution_inline.py:68
-msgid "Ausf."
+#: .\apps\executions\models\execution.py:191
+#: .\apps\executions\models\execution.py:192
+#: .\apps\executions\models\keyword_execution.py:140
+#: .\apps\executions\models\keyword_execution.py:141
+#: .\apps\executions\models\testcase_execution.py:135
+#: .\apps\executions\models\testcase_execution.py:136
+#: .\apps\libraries\models\library_import.py:46
+#: .\apps\resources\models\resource_import.py:46
+msgid "Ausführung"
 msgstr ""
 
 #: .\apps\executions\admin\keyword_execution.py:11
@@ -240,17 +256,6 @@ msgstr ""
 msgid "Testfall Ausführung"
 msgstr ""
 
-#: .\apps\executions\models\execution.py:191
-#: .\apps\executions\models\execution.py:192
-#: .\apps\executions\models\keyword_execution.py:140
-#: .\apps\executions\models\keyword_execution.py:141
-#: .\apps\executions\models\testcase_execution.py:135
-#: .\apps\executions\models\testcase_execution.py:136
-#: .\apps\libraries\models\library_import.py:46
-#: .\apps\resources\models\resource_import.py:46
-msgid "Ausführung"
-msgstr ""
-
 #: .\apps\executions\models\keyword_execution.py:93
 msgid "Test"
 msgstr ""
@@ -322,12 +327,13 @@ msgstr ""
 msgid "Parameters"
 msgstr "Parameter"
 
-#: .\apps\keywords\admin\keywordcall.py:26 .\apps\keywords\models\keyword.py:48
-#: .\apps\libraries\admin\library.py:60
-#: .\apps\libraries\admin\library_import.py:49 .\apps\testcases\models.py:18
-#: .\apps\windows\models.py:26 .\models\keyword_source.py:303
-#: .\models\keyword_source.py:339
-msgid "Dokumentation"
+#: .\apps\keywords\admin\keywordcall_parameters_inline.py:29
+#: .\apps\keywords\models\keywordcall_condition.py:24
+#: .\apps\keywords\models\keywordcall_parameters.py:31
+#: .\apps\libraries\models\library_import_parameter.py:25
+#: .\apps\variables\admin.py:227 .\apps\variables\models.py:105
+#: .\apps\variables\models.py:133
+msgid "Wert"
 msgstr ""
 
 #: .\apps\keywords\admin\keywordcall_return_value_inline.py:26
@@ -337,13 +343,13 @@ msgstr ""
 #: .\apps\keywords\admin\keywordcall_return_value_inline.py:38
 #: .\apps\keywords\models\keyword_return_value.py:35
 #: .\apps\keywords\models\keyword_return_value.py:89
-#: .\apps\keywords\models\keyword_return_value.py:90
 #: .\apps\keywords\models\keywordcall.py:136
 #: .\apps\keywords\models\keywordcall_return_value.py:84
 msgid "Rückgabewert"
 msgstr ""
 
 #: .\apps\keywords\admin\keywordcall_return_value_inline.py:39
+#: .\apps\keywords\models\keyword_return_value.py:90
 msgid "Rückgabewerte"
 msgstr ""
 
@@ -353,11 +359,11 @@ msgstr ""
 msgid "zurücksetzen"
 msgstr ""
 
-#: .\apps\keywords\admin\return_value_inline.py:25
+#: .\apps\keywords\admin\return_value_inline.py:26
 msgid "Rückgabewert auswählen"
 msgstr ""
 
-#: .\apps\keywords\admin\test_step.py:59 .\apps\variables\apps.py:7
+#: .\apps\keywords\admin\test_step.py:62 .\apps\variables\apps.py:7
 #: .\apps\variables\models.py:81 .\apps\variables\models.py:141
 #: .\apps\variables\models.py:148 .\apps\variables\models.py:155
 #: .\apps\variables\models.py:166
@@ -394,7 +400,7 @@ msgstr ""
 msgid "Kein Wert"
 msgstr ""
 
-#: .\apps\keywords\forms\test_steps_form.py:36
+#: .\apps\keywords\forms\test_steps_form.py:17
 #: .\apps\keywords\models\keyword.py:19
 #: .\apps\resources\admin\resource_import.py:53
 #: .\apps\sequences\models\sequence.py:40
@@ -404,11 +410,11 @@ msgstr ""
 msgid "Sequenz"
 msgstr ""
 
-#: .\apps\keywords\forms\test_steps_form.py:45 .\apps\windows\admin.py:121
+#: .\apps\keywords\forms\test_steps_form.py:26 .\apps\windows\admin.py:121
 msgid "Sequenz auswählen"
 msgstr ""
 
-#: .\apps\keywords\forms\test_steps_form.py:51 .\apps\windows\admin.py:141
+#: .\apps\keywords\forms\test_steps_form.py:32 .\apps\windows\admin.py:141
 msgid "Referenzwert auswählen"
 msgstr ""
 
@@ -514,14 +520,6 @@ msgstr ""
 msgid "ist nicht"
 msgstr ""
 
-#: .\apps\keywords\models\keywordcall_condition.py:24
-#: .\apps\keywords\models\keywordcall_parameters.py:31
-#: .\apps\libraries\models\library_import_parameter.py:25
-#: .\apps\variables\admin.py:223 .\apps\variables\models.py:105
-#: .\apps\variables\models.py:133
-msgid "Wert"
-msgstr ""
-
 #: .\apps\keywords\models\keywordcall_condition.py:29
 msgid "Bedingung"
 msgstr ""
@@ -538,26 +536,26 @@ msgstr ""
 msgid "Vorbedingungen"
 msgstr ""
 
-#: .\apps\keywords\models\keywordcall_parameter_source.py:10
+#: .\apps\keywords\models\keywordcall_parameter_source.py:12
 msgid "Schlüsselwort-Parameter"
 msgstr ""
 
-#: .\apps\keywords\models\keywordcall_parameter_source.py:11
+#: .\apps\keywords\models\keywordcall_parameter_source.py:13
 msgid "Aufrufs-Rückgabewert"
 msgstr ""
 
-#: .\apps\keywords\models\keywordcall_parameter_source.py:12
+#: .\apps\keywords\models\keywordcall_parameter_source.py:14
 #: .\apps\variables\models.py:80 .\apps\variables\models.py:140
 #: .\apps\variables\models.py:147 .\apps\variables\models.py:154
 #: .\apps\variables\models.py:165 .\apps\windows\admin.py:144
 msgid "Referenzwert"
 msgstr ""
 
-#: .\apps\keywords\models\keywordcall_parameter_source.py:94
+#: .\apps\keywords\models\keywordcall_parameter_source.py:96
 msgid "Parameter-Referenz"
 msgstr ""
 
-#: .\apps\keywords\models\keywordcall_parameter_source.py:95
+#: .\apps\keywords\models\keywordcall_parameter_source.py:97
 msgid "Parameter-Referenzen"
 msgstr ""
 
@@ -736,7 +734,7 @@ msgstr ""
 msgid "Eine Variable mit diesem Namen existiert bereits im System \"{system}\""
 msgstr ""
 
-#: .\apps\variables\admin.py:186
+#: .\apps\variables\admin.py:190
 #, python-brace-format
 msgid ""
 "Eine Variable mit diesem Namen existiert bereits in der Maske \"{window."
@@ -955,8 +953,8 @@ msgid ""
 "Deleting the selected objects is not possible as long as they are related to "
 "other objects:"
 msgstr ""
-"Das Löschen der ausgewählten Objekte ist nicht möglich, da "
-"es die folgenden Verknüpfungen zerstören würde:"
+"Das Löschen der ausgewählten Objekte ist nicht möglich, da es die folgenden "
+"Verknüpfungen zerstören würde:"
 
 #: .\templates\admin\delete_selected_confirmation.html:51
 msgid "Are you sure you want to delete the following objects?"
