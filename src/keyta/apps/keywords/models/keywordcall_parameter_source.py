@@ -3,6 +3,8 @@ from django.utils.translation import gettext_lazy as _
 
 from model_clone import CloneMixin
 
+from keyta.models.base_model import AbstractBaseModel
+
 from ..json_value import JSONValue
 
 
@@ -12,7 +14,7 @@ class KeywordCallParameterSourceType(models.TextChoices):
     VARIABLE_VALUE = 'VARIABLE_VALUE', _('Referenzwert')
 
 
-class KeywordCallParameterSource(CloneMixin, models.Model):
+class KeywordCallParameterSource(CloneMixin, AbstractBaseModel):
     kw_param = models.OneToOneField(
         'keywords.KeywordParameter',
         on_delete=models.CASCADE,

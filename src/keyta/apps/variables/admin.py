@@ -14,7 +14,7 @@ from keyta.admin.base_inline import (
     TabularInlineWithDelete,
 )
 from keyta.admin.list_filters import SystemListFilter, WindowListFilter
-from keyta.apps.keywords.models import TestStep
+from keyta.apps.keywords.models import KeywordCallParameterSource, TestStep
 from keyta.apps.windows.models import Window
 from keyta.forms import form_with_select, BaseForm
 from keyta.widgets import BaseSelect, link
@@ -151,7 +151,11 @@ class VariableAdmin(SortableAdminBase, BaseAdmin):
 
     def get_protected_objects(self, obj):
         variable: Variable = obj
-        return TestStep.objects.filter(variable=variable)
+
+        return (
+            list(TestStep.objects.filter(variable=variable)) +
+            list(KeywordCallParameterSource.objects.filter(variable_value__variable=variable))
+        )
 
     def get_readonly_fields(self, request, obj=None):
         variable: Variable = obj
