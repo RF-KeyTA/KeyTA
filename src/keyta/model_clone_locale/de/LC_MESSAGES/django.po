@@ -24,7 +24,7 @@ msgstr "Kopie erfolgreich erstellt. Wird gerade angezeigt."
 
 #: .\model_clone\admin.py:60
 msgid "Successfully created: {} new duplicates"
-msgstr ""
+msgstr "{} Kopie(n) erfolgreich erstellt."
 
 #: .\model_clone\admin.py:63
 #, python-format
