@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-26 15:50+0200\n"
+"POT-Creation-Date: 2025-08-26 15:53+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -307,7 +307,7 @@ msgid "Robot Framework konnte nicht ausgeführt werden."
 msgstr ""
 
 #: .\apps\executions\templates\execution_inline_tabular.html:158
-msgid "Robot Framework wird ausgeführt"
+msgid "Robot Framework wird ausgeführt."
 msgstr ""
 
 #: .\apps\keywords\admin\keyword_parameters_inline.py:24

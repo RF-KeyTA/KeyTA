@@ -155,7 +155,7 @@
         .catch(_ => error(errors.ROBOT_ERROR))
     
     const robot_run = (csrf_token, data) => {
-        info("{% translate 'Robot Framework wird ausgeführt' %}")
+        info("{% translate 'Robot Framework wird ausgeführt.' %}")
         start_icon.classList.replace("fa-circle-play", "fa-arrows-rotate")
         start_icon.style.animation = "spin 3s linear infinite"
         hide(result_icon)
