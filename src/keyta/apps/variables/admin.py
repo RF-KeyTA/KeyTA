@@ -1,5 +1,4 @@
 from django import forms
-from django.conf import settings
 from django.contrib import admin
 from django.forms import HiddenInput
 from django.http import HttpRequest, HttpResponseRedirect
@@ -172,7 +171,7 @@ class VariableAdmin(SortableAdminBase, BaseAdmin):
         window: Window = variable.windows.first()
 
         return link(
-            window.get_admin_url(app=settings.WINDOWS_APP),
+            window.get_admin_url(),
             window.name
         )
 

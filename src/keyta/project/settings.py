@@ -96,9 +96,6 @@ KEYTA_APPS = [
 
 INSTALLED_APPS = ADMIN_APP + DEFAULT_APPS + THIRD_PARTY_APPS + KEYTA_APPS + ['media']
 
-TESTCASES_APP = 'testcases'
-WINDOWS_APP = 'windows'
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
