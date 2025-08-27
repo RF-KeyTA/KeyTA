@@ -32,4 +32,9 @@ class DeleteRelatedField:
             )
 
         DeleteRelatedField.delete = delete
-        return super().get_readonly_fields(request, obj) + ['delete']
+        readonly_fields = super().get_readonly_fields(request, obj)
+
+        if self.has_delete_permission(request, obj):
+            return readonly_fields + ['delete']
+
+        return readonly_fields
