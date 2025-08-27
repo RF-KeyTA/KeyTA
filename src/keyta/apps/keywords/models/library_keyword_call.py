@@ -20,7 +20,6 @@ class LibraryKeywordCall(KeywordCall):
     def get_previous_return_values(self) -> QuerySet:
         return (
             super().get_previous_return_values()
-            .filter(return_value__isnull=True)
             .exclude(name__isnull=True)
         )
 
