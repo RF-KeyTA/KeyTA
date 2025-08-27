@@ -40,7 +40,7 @@ class TestStepsFormset(CustomInlineFormSet):
         test_step: KeywordCall = form.instance
 
         to_keyword_field = form.fields['to_keyword']
-        variable_field = form.fields['variable']
+        # variable_field = form.fields['variable']
         window_field = form.fields['window']
 
         # The index of extra forms is None
@@ -82,23 +82,23 @@ class TestStepsFormset(CustomInlineFormSet):
                     to_keyword_field.widget.can_add_related = False
                     to_keyword_field.widget.can_change_related = True
 
-                if not test_step.variable:
-                    form.fields['variable'].widget.can_change_related = False
-                else:
-                    variable_field.widget = quick_change_widget(variable_field.widget)
-                    variable_field.widget.can_add_related = False
-                    variable_field.widget.can_change_related = True
-
-                if not test_step.parameters.exists():
-                    form.fields['variable'].widget = LabelWidget()
+                # if not test_step.variable:
+                #     variable_field.widget.can_change_related = False
+                # else:
+                #     variable_field.widget = quick_change_widget(variable_field.widget)
+                #     variable_field.widget.can_add_related = False
+                #     variable_field.widget.can_change_related = True
+                #
+                # if not test_step.parameters.exists():
+                #     variable_field.widget = LabelWidget()
 
         # Set the querysets after replacing the widgets
         to_keyword_field.queryset = (
             Keyword.objects.sequences().filter(systems__in=self.systems) |
             Keyword.objects.filter(resource__in=self.resource_ids)
         ).distinct().order_by('name')
-        variable_field.queryset = (
-            variable_field.queryset
-            .filter(systems__in=self.systems)
-        ).distinct().order_by('name')
+        # variable_field.queryset = (
+        #     variable_field.queryset
+        #     .filter(systems__in=self.systems)
+        # ).distinct().order_by('name')
         window_field.queryset = self.windows
