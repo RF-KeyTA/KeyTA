@@ -21,10 +21,16 @@ class LibraryKeywordCallParametersInline(KeywordCallParametersInline):
     formset = LibraryKeywordCallParameterFormset
 
     def get_fields(self, request, obj=None):
-        return super().get_fields(request, obj) + ['reset']
+        if self.has_change_permission(request, obj):
+            return super().get_fields(request, obj) + ['reset']
+        else:
+            return super().get_fields(request, obj)
 
     def get_readonly_fields(self, request, obj=None):
-        return super().get_readonly_fields(request, obj) + ['reset']
+        if self.has_change_permission(request, obj):
+            return super().get_readonly_fields(request, obj) + ['reset']
+        else:
+            return super().get_readonly_fields(request, obj)
 
     @admin.display(description=_('zurücksetzen'))
     def reset(self, kwcall_parameter: KeywordCallParameter):
