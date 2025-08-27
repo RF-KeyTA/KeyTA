@@ -170,7 +170,7 @@ iframe.related-iframe {
     float: none !important;
 }
 
-p img {
+div.readonly p img {
     height: 100%;
     width: 60%;
     object-fit: contain;
