@@ -44,6 +44,9 @@ class Values(SortableTabularInlineWithDelete):
     extra = 0
     min_num = 1
 
+    def has_delete_permission(self, request, obj=None):
+        return self.can_change(request.user, 'variable')
+
 
 class Windows(TabularInlineWithDelete):
     model = VariableWindowRelation
@@ -165,6 +168,15 @@ class VariableAdmin(SortableAdminBase, BaseAdmin):
             fields += ['window']
 
         return fields
+
+    def has_add_permission(self, request):
+        return self.can_add(request.user, 'variable')
+
+    def has_change_permission(self, request, obj=None):
+        return self.can_change(request.user, 'variable')
+
+    def has_delete_permission(self, request, obj=None):
+        return self.can_delete(request.user, 'variable')
 
     @admin.display(description=_('Maske'))
     def window(self, variable: Variable):
