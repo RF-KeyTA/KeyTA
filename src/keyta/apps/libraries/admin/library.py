@@ -24,7 +24,7 @@ from .library_parameters_inline import LibraryParametersInline
 
 @admin.register(Library)
 class LibraryAdmin(BaseAdmin):
-    list_display = ['name', 'version', 'update']
+    list_display = ['name', 'version']
     inlines = [Keywords]
     form = LibraryForm
     errors = set()
@@ -37,6 +37,12 @@ class LibraryAdmin(BaseAdmin):
             self.model.objects.values_list('name', flat=True)
             .filter(name__icontains=name)
         ])
+
+    def get_list_display(self, request):
+        if self.can_change(request.user, 'library'):
+            return self.list_display + ['update']
+
+        return self.list_display
 
     def get_changelist(self, request: HttpRequest, **kwargs):
         if 'update' in request.GET:
@@ -65,7 +71,7 @@ class LibraryAdmin(BaseAdmin):
         library: Library = obj
         inlines = [Keywords]
 
-        if library and library.has_parameters:
+        if library and library.has_parameters and self.has_change_permission(request, obj):
             return inlines + [LibraryParametersInline]
 
         if library:
@@ -91,6 +97,12 @@ class LibraryAdmin(BaseAdmin):
 
     def get_protected_objects(self, obj: Library):
         return KeywordCall.objects.filter(to_keyword__library=obj)[:20]
+
+    def has_add_permission(self, request):
+        return self.can_add(request.user, 'library')
+
+    def has_change_permission(self, request, obj=None):
+        return self.can_change(request.user, 'library')
 
     def has_delete_permission(self, request, obj=None):
         return request.user.is_superuser
