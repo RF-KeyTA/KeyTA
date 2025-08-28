@@ -17,3 +17,6 @@ class StepsInline(
     fields = ['to_keyword']
     form = StepsForm
     extra = 0
+
+    def has_delete_permission(self, request, obj=None):
+        return self.can_change(request.user, 'action') or self.can_change(request.user, 'sequence')

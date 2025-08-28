@@ -52,6 +52,12 @@ class ConditionsInline(TabularInlineWithDelete):
     fields = ['value_ref', 'condition', 'expected_value']
     formset = KeywordCallConditionFormset
 
+    def has_add_permission(self, request, obj=None):
+        return self.can_change(request.user, 'keywordcall')
+
+    def has_change_permission(self, request, obj=None):
+        return self.can_change(request.user, 'keywordcall')
+
 
 @admin.register(LibraryKeywordCall)
 class LibraryKeywordCallAdmin(

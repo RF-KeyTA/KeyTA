@@ -120,3 +120,11 @@ class KeywordCallAdmin(BaseAdmin):
             inlines.append(KeywordCallReturnValueInline)
 
         return inlines
+
+    def has_change_permission(self, request, obj=None):
+        keywordcall: KeywordCall = obj
+
+        if keywordcall and keywordcall.testcase:
+            return self.can_change(request.user, 'testcase')
+
+        return super().has_change_permission(request, obj)

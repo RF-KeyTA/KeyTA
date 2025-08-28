@@ -17,3 +17,6 @@ class TestStepsInline(
     extra = 0 # necessary for saving, since to_keyword is not nullable and is null in an extra
     form = TestStepsForm
     formset = TestStepsFormset
+
+    def has_delete_permission(self, request, obj=None):
+        return self.can_change(request.user, 'testcase')

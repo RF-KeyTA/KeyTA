@@ -29,3 +29,6 @@ class Libraries(DeleteRelatedField, LibraryImportInline):
 
     def get_max_num(self, request, obj=None, **kwargs):
         return Library.objects.count()
+
+    def has_delete_permission(self, request, obj=None):
+        return self.can_change(request.user, 'action')

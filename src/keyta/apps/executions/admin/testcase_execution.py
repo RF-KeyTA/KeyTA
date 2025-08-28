@@ -21,3 +21,6 @@ class TestCaseExecutionAdmin(ExecutionAdmin):
         TestSetupInline,
         TestTeardownInline
     ]
+
+    def has_change_permission(self, request, obj=None):
+        return self.can_change(request.user, 'testcase')

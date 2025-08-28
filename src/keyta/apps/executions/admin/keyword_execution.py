@@ -24,3 +24,6 @@ class KeywordExecutionAdmin(ExecutionAdmin):
             execution.add_attach_to_system(request.user)
 
         return super().change_view(request, object_id, form_url=form_url, extra_context=extra_context)
+
+    def has_change_permission(self, request, obj=None):
+        return self.can_change(request.user, 'action') or self.can_change(request.user, 'sequence')

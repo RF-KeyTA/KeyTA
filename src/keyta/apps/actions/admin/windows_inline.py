@@ -50,3 +50,6 @@ class Windows(TabularInlineWithDelete):
 
     def has_change_permission(self, request: HttpRequest, obj=None) -> bool:
         return False
+
+    def has_delete_permission(self, request, obj=None):
+        return self.can_change(request.user, 'action')

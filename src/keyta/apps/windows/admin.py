@@ -221,6 +221,9 @@ class WindowAdmin(DocumentationField, BaseAdmin):
         window: Window = obj
         return list(window.actions.all()) + list(window.sequences.all()) + list(window.variables.all())
 
+    def has_change_permission(self, request, obj=None):
+        return self.can_change(request.user, 'window')
+
 
 @admin.register(WindowDocumentation)
 class WindowDocumentationAdmin(BaseDocumentationAdmin):

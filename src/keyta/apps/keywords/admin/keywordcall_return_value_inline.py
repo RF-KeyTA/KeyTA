@@ -39,6 +39,12 @@ class KeywordCallReturnValueInline(DeleteRelatedField, ReturnValueTypeField, Bas
     verbose_name_plural = _('Rückgabewerte')
     can_delete = False
 
+    def has_add_permission(self, request, obj=None):
+        return self.can_change(request.user, 'keywordcall')
+
+    def has_change_permission(self, request, obj=None):
+        return self.can_change(request.user, 'keywordcall')
+
 
 class ReadOnlyReturnValuesInline(KeywordCallReturnValueInline):
     fields = ['return_value_name']

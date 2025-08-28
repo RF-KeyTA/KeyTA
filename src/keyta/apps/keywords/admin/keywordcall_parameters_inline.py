@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from keyta.admin.base_inline import BaseTabularInline
 
 from ..forms import KeywordCallParameterFormset
-from ..models import KeywordCallParameter, KeywordParameterType
+from ..models import KeywordCall, KeywordCallParameter, KeywordParameterType
 
 
 class KeywordCallParametersForm(forms.ModelForm):
@@ -45,3 +45,14 @@ class KeywordCallParametersInline(BaseTabularInline):
             return ['name', 'readonly_value']
 
         return ['name']
+
+    def has_change_permission(self, request, obj=None):
+        keywordcall: KeywordCall = obj
+
+        if keywordcall and keywordcall.testcase:
+            return self.can_change(request.user, 'testcase')
+
+        if keywordcall and keywordcall.from_keyword:
+            return self.can_change(request.user, 'action') or self.can_change(request.user, 'sequence')
+
+        return super().has_change_permission(request, obj)

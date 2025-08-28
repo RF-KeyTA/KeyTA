@@ -31,3 +31,6 @@ class ParametersInline(SortableTabularInlineWithDelete):
             field.widget.attrs.update({'style': 'width: 100%'})
 
         return field
+
+    def has_delete_permission(self, request, obj=None):
+        return self.can_change(request.user, 'action') or self.can_change(request.user, 'sequence')
