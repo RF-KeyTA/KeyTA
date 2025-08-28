@@ -16,6 +16,7 @@ dependencies = [
     "django-select2~=8.2",
     "django-tinymce~=4.1",
     "Jinja2~=3.1",
+    "Pillow~=11.3.0",
     "pystray~=0.19",
     "robotframework>=7"
 ]
