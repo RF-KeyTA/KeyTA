@@ -53,7 +53,7 @@ class KeywordCallParameter(CloneMixin, AbstractBaseModel):
     objects = QuerySet.as_manager()
 
     def __str__(self):
-        return self.name
+        return f'{self.keyword_call}: {self.name}'
 
     @property
     def current_value(self):
