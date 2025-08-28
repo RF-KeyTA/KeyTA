@@ -10,9 +10,21 @@ from .field_delete_related_instance import DeleteRelatedField
 class BaseTabularInline(admin.TabularInline):
     extra = 0
 
+    def can_add(self, user: AbstractUser, model: str):
+        if app := settings.MODEL_TO_APP.get(model):
+            return user.has_perm(f'{app}.add_{model}')
+
+        return True
+
     def can_change(self, user: AbstractUser, model: str):
         if app := settings.MODEL_TO_APP.get(model):
             return user.has_perm(f'{app}.change_{model}')
+
+        return True
+
+    def can_delete(self, user: AbstractUser, model: str):
+        if app := settings.MODEL_TO_APP.get(model):
+            return user.has_perm(f'{app}.delete_{model}')
 
         return True
 
