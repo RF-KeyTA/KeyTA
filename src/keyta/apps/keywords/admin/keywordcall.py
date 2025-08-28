@@ -59,6 +59,19 @@ class VarargParametersInline(TabularInlineWithDelete):
     def get_queryset(self, request):
         return super().get_queryset(request).filter(parameter__type=KeywordParameterType.VARARG)
 
+    def has_add_permission(self, request, obj=None):
+        return self.has_change_permission(request, obj)
+
+    def has_change_permission(self, request, obj=None):
+        keywordcall: KeywordCall = obj
+
+        if keywordcall and keywordcall.from_keyword:
+            return self.can_change(request.user, 'action')
+
+        return super().has_change_permission(request, obj)
+
+    def has_delete_permission(self, request, obj=None):
+        return self.has_change_permission(request, obj)
 
 @admin.register(KeywordCall)
 class KeywordCallAdmin(BaseAdmin):
