@@ -4,6 +4,7 @@ from collections import defaultdict
 from django import forms
 from django.conf import settings
 from django.contrib import admin, messages
+from django.contrib.admin import helpers
 from django.contrib.admin.views.main import ChangeList
 from django.contrib.admin.widgets import AutocompleteSelectMultiple
 from django.forms import SelectMultiple, CheckboxSelectMultiple
@@ -13,7 +14,7 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 
 
-from keyta.widgets import BaseSelectMultiple, quick_add_widget
+from keyta.widgets import BaseSelect, BaseSelectMultiple, quick_add_widget
 
 from .field_documentation import DocumentationField
 
@@ -41,8 +42,16 @@ class ListView(ChangeList):
         self.title = model._meta.verbose_name_plural
 
 
+class ActionForm(helpers.ActionForm):
+    action = forms.ChoiceField(
+        label=_("Action:"),
+        widget=BaseSelect(_('Aktion auswählen'))
+    )
+
+
 class BaseAdmin(admin.ModelAdmin):
     actions = [] if settings.DEBUG else None
+    action_form = ActionForm
     list_max_show_all = 50
     list_per_page = 50
     preserve_filters = False
