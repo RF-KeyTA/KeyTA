@@ -97,7 +97,7 @@ KEYTA_APPS = [
 INSTALLED_APPS = ADMIN_APP + DEFAULT_APPS + THIRD_PARTY_APPS + KEYTA_APPS + ['media']
 
 # Used by BaseAdmin.can_change
-model_to_app = {}
+MODEL_TO_APP = {}
 
 
 MIDDLEWARE = [

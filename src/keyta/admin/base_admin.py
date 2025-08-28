@@ -89,7 +89,7 @@ class BaseAdmin(admin.ModelAdmin):
         ])
 
     def can_change(self, user: AbstractUser, model: str):
-        if app := settings.model_to_app.get(model):
+        if app := settings.MODEL_TO_APP.get(model):
             return user.has_perm(f'{app}.change_{model}')
 
         return True
