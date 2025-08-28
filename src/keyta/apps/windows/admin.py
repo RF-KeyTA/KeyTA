@@ -221,8 +221,14 @@ class WindowAdmin(DocumentationField, BaseAdmin):
         window: Window = obj
         return list(window.actions.all()) + list(window.sequences.all()) + list(window.variables.all())
 
+    def has_add_permission(self, request):
+        return self.can_add(request.user, 'window')
+
     def has_change_permission(self, request, obj=None):
         return self.can_change(request.user, 'window')
+
+    def has_delete_permission(self, request, obj=None):
+        return self.can_delete(request.user, 'window')
 
 
 @admin.register(WindowDocumentation)
