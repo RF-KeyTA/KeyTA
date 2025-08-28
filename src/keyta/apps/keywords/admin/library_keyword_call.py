@@ -53,10 +53,21 @@ class ConditionsInline(TabularInlineWithDelete):
     formset = KeywordCallConditionFormset
 
     def has_add_permission(self, request, obj=None):
-        return self.can_change(request.user, 'keywordcall')
+        return self.has_change_permission(request, obj)
 
     def has_change_permission(self, request, obj=None):
-        return self.can_change(request.user, 'keywordcall')
+        keywordcall: KeywordCall = obj
+
+        if keywordcall and keywordcall.testcase:
+            return self.can_change(request.user, 'testcase')
+
+        if keywordcall and keywordcall.from_keyword:
+            return self.can_change(request.user, 'action') or self.can_change(request.user, 'sequence')
+
+        return super().has_change_permission(request, obj)
+
+    def has_delete_permission(self, request, obj=None):
+        return self.has_change_permission(request, obj)
 
 
 @admin.register(LibraryKeywordCall)
