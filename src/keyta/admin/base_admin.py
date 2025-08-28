@@ -7,6 +7,7 @@ from django.contrib import admin, messages
 from django.contrib.admin import helpers
 from django.contrib.admin.views.main import ChangeList
 from django.contrib.admin.widgets import AutocompleteSelectMultiple
+from django.contrib.auth.models import AbstractUser
 from django.forms import SelectMultiple, CheckboxSelectMultiple
 from django.http import HttpRequest, HttpResponseRedirect, HttpResponse
 from django.urls import reverse
@@ -86,6 +87,12 @@ class BaseAdmin(admin.ModelAdmin):
             '%s (%s)' % (group, ', '.join(items))
             for group, items in grouped.items()
         ])
+
+    def can_change(self, user: AbstractUser, model: str):
+        if app := settings.model_to_app.get(model):
+            return user.has_perm(f'{app}.change_{model}')
+
+        return True
 
     def change_view(self, request, object_id, form_url="", extra_context=None):
         if 'autocomplete' in request.GET:
