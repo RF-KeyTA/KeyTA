@@ -32,6 +32,9 @@ class Windows(QuickAddMixin, BaseTabularInline):
     def get_queryset(self, request):
         return super().get_queryset(request).order_by('window__name')
 
+    def has_add_permission(self, request, obj):
+        return self.can_add(request.user, 'window')
+
     def has_change_permission(self, request, obj=None):
         return False
 
