@@ -160,7 +160,7 @@ def format_type(type: list, typedocs: dict[str, TypeDoc]) -> str:
 
 def get_default_value(default_value):
     if default_value is None or default_value == 'None':
-        return 'None'
+        return '${None}'
 
     if default_value == '':
         return '${EMPTY}'
