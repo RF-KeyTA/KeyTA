@@ -20,7 +20,11 @@ class ReturnValueInline(TabularInlineWithDelete):
             .values_list('kw_call_return_value_id', flat=True)
         )
         kw_call_return_value_field = formset.form.base_fields['kw_call_return_value']
-        kw_call_return_value_field.queryset = kw_call_return_value_field.queryset.exclude(id__in=kw_call_return_value_ids)
+        kw_call_return_value_field.queryset = (
+            kw_call_return_value_field.queryset
+            .filter(keyword_call__in=keyword.calls.all())
+            .exclude(id__in=kw_call_return_value_ids)
+        )
         kw_call_return_value_field.widget = ModelSelect2AdminWidget(
             model=KeywordReturnValue,
             placeholder=_('Rückgabewert auswählen'),
