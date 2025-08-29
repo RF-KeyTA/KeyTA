@@ -21,7 +21,11 @@ class Libraries(DeleteRelatedField, LibraryImportInline):
         formset = super().get_formset(request, obj, **kwargs)
         action: Action = obj
 
-        imported_libraries = self.get_queryset(request).filter(keyword_id=action.pk).values_list('library_id', flat=True)
+        imported_libraries = (
+            self.get_queryset(request)
+            .filter(keyword_id=action.pk)
+            .values_list('library_id', flat=True)
+        )
         library_field = formset.form.base_fields['library']
         library_field.queryset = library_field.queryset.exclude(id__in=imported_libraries)
 
