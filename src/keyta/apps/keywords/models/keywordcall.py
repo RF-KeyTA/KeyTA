@@ -239,7 +239,11 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
                     for return_value in self.to_keyword.return_values.all():
                         self.add_return_value(return_value)
         else:
-            if not self.return_values.count() and (self.to_keyword.is_action or self.to_keyword.is_sequence):
+            if (
+                not self.return_values.count() and
+                self.to_keyword and
+                (self.to_keyword.is_action or self.to_keyword.is_sequence)
+            ):
                 for return_value in self.to_keyword.return_values.all():
                     self.add_return_value(return_value)
 
