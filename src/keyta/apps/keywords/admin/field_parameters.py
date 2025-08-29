@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from ..models import KeywordCall
+from ..models import KeywordCall, KeywordCallParameter
 
 
 class ParameterFields:
@@ -10,9 +10,9 @@ class ParameterFields:
         position0 = position - 1
 
         if len(params) > position0:
-            param = params[position0]
-            value = params[position0].current_value or ''
-            return mark_safe('%s<br><i style="color: gray">%s</i>' % (value, str(param)))
+            param: KeywordCallParameter = params[position0]
+            value = param.current_value or ''
+            return mark_safe('%s<br><i style="color: gray">%s</i>' % (value, param.name))
         else:
             return ''
 
