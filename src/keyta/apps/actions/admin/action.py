@@ -89,7 +89,7 @@ class ActionAdmin(ActionAdminMixin, CloneModelAdminMixin, WindowKeywordAdmin):
     def change_view(self, request, object_id, form_url="", extra_context=None):
         if 'quick_change' in request.GET:
             action = ActionQuickChange.objects.get(pk=object_id)
-            return HttpResponseRedirect(action.get_admin_url()  + '#' + request.GET['tab_name'])
+            return HttpResponseRedirect(action.get_admin_url() + '?_popup=1' + '#' + request.GET['tab_name'])
 
         return super().change_view(request, object_id, form_url=form_url, extra_context=extra_context)
 

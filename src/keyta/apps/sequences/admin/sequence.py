@@ -99,7 +99,7 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
     def change_view(self, request, object_id, form_url="", extra_context=None):
         if 'quick_change' in request.GET:
             sequence = SequenceQuickChange.objects.get(pk=object_id)
-            return HttpResponseRedirect(sequence.get_admin_url() + '#' + request.GET['tab_name'])
+            return HttpResponseRedirect(sequence.get_admin_url() + '?_popup=1' + '#' + request.GET['tab_name'])
 
         return super().change_view(request, object_id, form_url=form_url, extra_context=extra_context)
 

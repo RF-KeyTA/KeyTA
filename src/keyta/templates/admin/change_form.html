@@ -88,7 +88,15 @@
                         <div class="card">
                             <div class="card-header">
                                 <h4 style="display: inline-flex; margin-bottom: 0px">
-                                    {%if title_icon %}<i class="title-icon {{ title_icon }} mr-3"></i>{% endif %} {% firstof original.name title %}
+                                    {% if title_icon %}<i class="title-icon {{ title_icon }} mr-3"></i>{% endif %} {% firstof original.name title %}
+                                    {% if is_popup %}
+                                        {% url opts|admin_urlname:'change' original.pk as change_url %}
+                                        {% if 'quickchange' in change_url %}
+                                        <a href="{{ change_url|cut:'quickchange' }}" target="_blank">
+                                            <i class="ml-2 fa-solid fa-up-right-from-square" style="font-size: 1rem"></i>
+                                        </a>
+                                        {% endif %}
+                                    {% endif %}
                                 </h4>
                                 <div id="jazzy-actions" class="{{ jazzmin_ui.actions_classes }} float-right" style="display: inline-flex">
                                 {% block submit_buttons_bottom %}

@@ -200,7 +200,7 @@ class WindowAdmin(DocumentationField, BaseAdmin):
     def change_view(self, request: HttpRequest, object_id, form_url="", extra_context=None):
         if 'quick_change' in request.GET:
             window = WindowQuickChange.objects.get(pk=object_id)
-            return HttpResponseRedirect(window.get_admin_url())
+            return HttpResponseRedirect(window.get_admin_url() + '?_popup=1')
 
         if 'view' in request.GET:
             window_doc = WindowDocumentation.objects.get(id=object_id)
