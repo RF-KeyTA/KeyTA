@@ -23,31 +23,35 @@ class LibraryParameterFormSet(forms.BaseInlineFormSet):
             choices = dict()
             user_input = False
 
-            for type_ in kwarg_type:
-                if type_ == 'bool':
-                    choices['True'] = 'True'
-                    choices['False'] = 'False'
+            if kwarg_type:
+                for type_ in kwarg_type:
+                    if type_ == 'bool':
+                        choices['True'] = 'True'
+                        choices['False'] = 'False'
 
-                if any([
-                    type_ in {'int', 'str', 'timedelta'},
-                    type_.startswith('dict'),
-                    type_.startswith('list')
-                ]):
-                    if import_param:
-                        choices[import_param.value] = import_param.value
-                    else:
-                        choices[kwarg.value] = kwarg.value
-                    user_input = True
-
-                if type_ in typedocs:
-                    typedoc = typedocs[type_]
-                    if typedoc['type'] == 'Enum':
-                        for item in typedoc['items']:
-                            if item.lower() not in {'true', 'false'}:
-                                choices[item] = item
-
-                    if typedoc['type'] == 'TypedDict':
+                    if any([
+                        type_ in {'int', 'str', 'timedelta'},
+                        type_.startswith('dict'),
+                        type_.startswith('list')
+                    ]):
+                        if import_param:
+                            choices[import_param.value] = import_param.value
+                        else:
+                            choices[kwarg.value] = kwarg.value
                         user_input = True
+
+                    if type_ in typedocs:
+                        typedoc = typedocs[type_]
+                        if typedoc['type'] == 'Enum':
+                            for item in typedoc['items']:
+                                if item.lower() not in {'true', 'false'}:
+                                    choices[item] = item
+
+                        if typedoc['type'] == 'TypedDict':
+                            user_input = True
+            else:
+                choices[kwarg.value] = kwarg.value
+                user_input = True
 
             form.fields['value'].widget = BaseSelect(
                 '',
