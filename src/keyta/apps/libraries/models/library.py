@@ -32,7 +32,6 @@ class Library(KeywordSource):
         'Dialogs',
         'OperatingSystem',
         'Process',
-        'Remote',
         'Screenshot',
         'String',
         'Telnet',
