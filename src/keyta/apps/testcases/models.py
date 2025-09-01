@@ -66,7 +66,9 @@ class TestCase(DocumentationMixin, CloneMixin, AbstractBaseModel):
         return set(system_libraries + window_libraries)
 
     def make_clone(self, attrs=None, sub_clone=False, using=None, parent=None):
-        attrs = (attrs or {}) | {'name': self.name + _(' Kopie')}
+        copies = self._meta.model.objects.filter(name__istartswith=self.name + _(' Kopie')).count()
+        attrs = (attrs or {}) | {'name': self.name + _(' Kopie ') + str(copies)}
+
         return super().make_clone(attrs=attrs, sub_clone=sub_clone, using=using, parent=parent)
 
     def robot_documentation(self):
