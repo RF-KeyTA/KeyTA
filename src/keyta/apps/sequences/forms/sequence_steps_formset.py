@@ -3,12 +3,13 @@ from itertools import groupby
 from adminsortable2.admin import CustomInlineFormSet
 
 from django.db.models import QuerySet
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 from keyta.apps.actions.models import Action
 from keyta.apps.keywords.models import Keyword
 from keyta.apps.windows.models import Window
-from keyta.widgets import quick_change_widget
+from keyta.widgets import quick_change_widget, CustomRelatedFieldWidgetWrapper
 
 from ..models import Sequence, SequenceStep
 
@@ -47,7 +48,21 @@ class SequenceStepsFormset(CustomInlineFormSet):
         to_keyword_field = form.fields['to_keyword']
 
         # The index of an extra form is None
-        if index is not None:
+        if index is None:
+            to_keyword_field.widget = CustomRelatedFieldWidgetWrapper(
+                to_keyword_field.widget,
+                reverse('admin:actions_actionquickadd_add'),
+                {
+                    'systems': self.sequence.systems.first().pk,
+                    'windows': self.sequence.windows.first().pk
+                }
+            )
+            to_keyword_field.widget.can_add_related = True
+            to_keyword_field.widget.can_change_related = False
+            to_keyword_field.widget.attrs.update({
+                'data-width': '95%',
+            })
+        else:
             to_keyword_field.widget = quick_change_widget(
                 to_keyword_field.widget,
                 url_params={'tab_name': sequence_step.get_tab_url().removeprefix('#')}
