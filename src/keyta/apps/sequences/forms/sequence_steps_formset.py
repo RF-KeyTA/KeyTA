@@ -44,14 +44,12 @@ class SequenceStepsFormset(CustomInlineFormSet):
         super().add_fields(form, index)
 
         sequence_step: SequenceStep = form.instance
+        to_keyword_field = form.fields['to_keyword']
 
         # The index of an extra form is None
-        if index is not None and sequence_step.pk:
-            if not sequence_step.to_keyword:
-                form.fields['to_keyword'].widget.can_change_related = False
-
-            form.fields['to_keyword'].widget = quick_change_widget(
-                form.fields['to_keyword'].widget,
+        if index is not None:
+            to_keyword_field.widget = quick_change_widget(
+                to_keyword_field.widget,
                 url_params={'tab_name': sequence_step.get_tab_url().removeprefix('#')}
             )
 
@@ -81,10 +79,9 @@ class SequenceStepsFormset(CustomInlineFormSet):
             for resource, keywords in groups
         ]
 
-        to_keyword_field = form.fields['to_keyword']
         to_keyword_field.choices = (
-                [(None, None)] +
-                window_actions +
-                resource_kws +
-                global_actions(self.sequence.systems.all())
+            [(None, None)] +
+            window_actions +
+            resource_kws +
+            global_actions(self.sequence.systems.all())
         )
