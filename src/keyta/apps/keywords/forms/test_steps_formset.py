@@ -56,8 +56,6 @@ class TestStepsFormset(CustomInlineFormSet):
             })
         else:
             window_field.widget = quick_change_widget(window_field.widget)
-            window_field.widget.can_add_related = False
-            window_field.widget.can_change_related = True
 
             if test_step.pk:
                 if not test_step.to_keyword:
@@ -79,15 +77,11 @@ class TestStepsFormset(CustomInlineFormSet):
                         to_keyword_field.widget,
                         url_params={'tab_name': test_step.get_tab_url().removeprefix('#')}
                     )
-                    to_keyword_field.widget.can_add_related = False
-                    to_keyword_field.widget.can_change_related = True
 
                 # if not test_step.variable:
                 #     variable_field.widget.can_change_related = False
                 # else:
                 #     variable_field.widget = quick_change_widget(variable_field.widget)
-                #     variable_field.widget.can_add_related = False
-                #     variable_field.widget.can_change_related = True
                 #
                 # if not test_step.parameters.exists():
                 #     variable_field.widget = LabelWidget()

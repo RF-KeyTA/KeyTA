@@ -54,8 +54,6 @@ class SequenceStepsFormset(CustomInlineFormSet):
                 form.fields['to_keyword'].widget,
                 url_params={'tab_name': sequence_step.get_tab_url().removeprefix('#')}
             )
-            form.fields['to_keyword'].widget.can_add_related = False
-            form.fields['to_keyword'].widget.can_change_related = True
 
         window: Window = self.sequence.windows.first()
         resource_ids = window.resource_imports.values_list('resource_id')

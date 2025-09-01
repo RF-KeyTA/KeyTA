@@ -266,8 +266,12 @@ def quick_add_widget(widget, url, url_params):
 
 
 def quick_change_widget(widget, url_params=None):
-    return CustomRelatedFieldWidgetWrapper(
+    wrapped_widget = CustomRelatedFieldWidgetWrapper(
         widget,
         None,
         {'quick_change': 1} | (url_params or {})
     )
+    wrapped_widget.can_add_related = False
+    wrapped_widget.can_change_related = True
+
+    return wrapped_widget
