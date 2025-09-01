@@ -132,14 +132,13 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
         if return_value.type:
             KeywordCallReturnValue.objects.get_or_create(
                 keyword_call=self,
-                kw_call_return_value=return_value.kw_call_return_value,
                 name=_('Rückgabewert'),
                 return_value=return_value
             )
         else:
             KeywordCallReturnValue.objects.get_or_create(
                 keyword_call=self,
-                kw_call_return_value=return_value.kw_call_return_value
+                return_value=return_value
             )
 
     def delete_conditions(self):
@@ -153,7 +152,7 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
             param.delete()
 
     def delete_return_value(self, return_value: KeywordReturnValue):
-        self.return_values.get(kw_call_return_value__id=return_value.kw_call_return_value.pk).delete()
+        self.return_values.get(return_value=return_value).delete()
 
     def delete_return_values(self):
         return_value: KeywordReturnValue
@@ -194,7 +193,7 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
             KeywordCallReturnValue.objects
             .filter(keyword_call__in=previous_kw_calls)
             .exclude(
-                Q(kw_call_return_value__isnull=True) & Q(name__isnull=True)
+                Q(return_value__isnull=True) & Q(name__isnull=True)
             )
         )
 

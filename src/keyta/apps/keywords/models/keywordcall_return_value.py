@@ -17,19 +17,13 @@ class KeywordCallReturnValue(CloneMixin, AbstractBaseModel):
         on_delete=models.CASCADE,
         related_name='return_values'
     )
-    kw_call_return_value = models.ForeignKey(
-        'keywords.KeywordCallReturnValue',
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-        default=None
-    )
     return_value = models.ForeignKey(
         'keywords.KeywordReturnValue',
         on_delete=models.CASCADE,
         null=True,
         blank=True,
-        default=None
+        default=None,
+        related_name='uses'
     )
     name = models.CharField(
         max_length=255,
@@ -42,30 +36,24 @@ class KeywordCallReturnValue(CloneMixin, AbstractBaseModel):
         if self.name:
             return self.name
 
-        if self.kw_call_return_value:
-            return str(self.kw_call_return_value)
+        if self.return_value:
+            return f'{self.return_value}'
 
         return gettext('Kein Rückgabewert')
 
     @property
     def is_set(self):
-        return self.name or self.kw_call_return_value
+        return self.name or self.return_value
 
     @property
     def type(self):
         if self.return_value:
             return self.return_value.type
 
-        if self.kw_call_return_value:
-            return self.kw_call_return_value.type
-
     @property
     def typedoc(self):
         if self.return_value:
             return self.return_value.get_typedoc()
-
-        if self.kw_call_return_value:
-            return self.kw_call_return_value.typedoc
 
     def save(
         self, force_insert=False, force_update=False, using=None, update_fields=None

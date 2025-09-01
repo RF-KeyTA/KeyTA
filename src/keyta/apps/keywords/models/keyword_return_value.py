@@ -32,6 +32,7 @@ class KeywordReturnValue(CloneMixin, AbstractBaseModel):
         null=True,
         default=None,
         on_delete=models.CASCADE,
+        related_name='uses',
         verbose_name=_('Rückgabewert')
     )
     kw_call_index = models.PositiveSmallIntegerField(
