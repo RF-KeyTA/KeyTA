@@ -23,7 +23,7 @@ from keyta.apps.variables.models import (
     VariableQuickAdd,
     VariableWindowRelation
 )
-from keyta.forms.baseform import form_with_select, BaseForm
+from keyta.forms.baseform import form_with_select
 from keyta.widgets import Icon, open_link_in_modal
 
 from .forms import WindowForm
