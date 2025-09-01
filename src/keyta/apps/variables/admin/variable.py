@@ -123,11 +123,7 @@ class VariableAdmin(SortableAdminBase, BaseAdmin):
 
     def get_protected_objects(self, obj):
         variable: Variable = obj
-
-        return (
-            list(TestStep.objects.filter(variable=variable)) +
-            list(KeywordCallParameter.objects.filter(value_ref__variable_value__variable=variable))
-        )
+        return list(variable.values.all()) + list(TestStep.objects.filter(variable=variable))
 
     def get_readonly_fields(self, request, obj=None):
         variable: Variable = obj
