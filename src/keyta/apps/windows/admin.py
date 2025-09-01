@@ -256,7 +256,7 @@ class WindowQuickChangeAdmin(WindowAdmin):
     readonly_fields = ['documentation']
 
     def get_inlines(self, request, obj):
-        inlines = [Actions, Sequences, Variables]
+        inlines = [Variables]
 
         if Resource.objects.count():
             return [Resources] + inlines
