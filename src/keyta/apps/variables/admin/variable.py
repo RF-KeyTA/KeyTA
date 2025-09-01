@@ -1,10 +1,8 @@
-from django import forms
 from django.contrib import admin
-from django.forms import HiddenInput
 from django.http import HttpRequest, HttpResponseRedirect
 from django.utils.translation import gettext_lazy as _
 
-from adminsortable2.admin import SortableAdminBase, CustomInlineFormSet
+from adminsortable2.admin import SortableAdminBase
 
 from keyta.admin.base_admin import BaseAdmin, BaseQuickAddAdmin
 from keyta.admin.base_inline import (
@@ -15,10 +13,11 @@ from keyta.admin.base_inline import (
 from keyta.admin.list_filters import SystemListFilter, WindowListFilter
 from keyta.apps.keywords.models import KeywordCallParameter, TestStep
 from keyta.apps.windows.models import Window
-from keyta.forms import form_with_select, BaseForm
+from keyta.forms import form_with_select
 from keyta.widgets import BaseSelect, link
 
-from .models import (
+from ..forms import VariableForm, VariableQuickAddForm
+from ..models import (
     Variable,
     VariableDocumentation,
     VariableQuickAdd,
@@ -26,15 +25,6 @@ from .models import (
     VariableValue,
     VariableWindowRelation
 )
-
-
-class ListElementsFormset(CustomInlineFormSet):
-    def add_fields(self, form, index):
-        super().add_fields(form, index)
-
-        # Extra forms have index None
-        if index is not None:
-            form.fields['variable'].widget = HiddenInput()
 
 
 class Values(SortableTabularInlineWithDelete):
@@ -77,26 +67,6 @@ class Windows(TabularInlineWithDelete):
 
     def has_change_permission(self, request, obj=None) -> bool:
         return False
-
-
-class VariableForm(BaseForm):
-    def clean(self):
-        name = self.cleaned_data.get('name')
-        systems = self.cleaned_data.get('systems')
-        variable_systems = [
-            system.name
-            for system in self.initial.get('systems', [])
-        ]
-
-        if systems:
-            if system := systems.values_list('name', flat=True).exclude(name__in=variable_systems).filter(variables__name=name).first():
-                variable = self._meta.model.objects.filter(name=name).filter(systems__name=system).filter(windows__isnull=True)
-                if variable.exists():
-                    raise forms.ValidationError(
-                        {
-                            "name": _(f'Eine Variable mit diesem Namen existiert bereits im System "{system}"')
-                        }
-                    )
 
 
 @admin.register(Variable)
@@ -188,25 +158,10 @@ class VariableAdmin(SortableAdminBase, BaseAdmin):
         )
 
 
-class QuickAddVariableForm(BaseForm):
-    def clean(self):
-        name = self.cleaned_data.get('name')
-        windows = self.cleaned_data.get('windows')
-
-        if len(windows) == 1:
-            window = windows[0]
-            if window.variables.filter(name=name).exists():
-                raise forms.ValidationError(
-                    {
-                        "name": _(f'Eine Variable mit diesem Namen existiert bereits in der Maske "{window.name}"')
-                    }
-                )
-
-
 @admin.register(VariableQuickAdd)
 class VariableQuickAddAdmin(SortableAdminBase, BaseQuickAddAdmin):
     fields = ['systems', 'windows', 'name', 'type']
-    form = QuickAddVariableForm
+    form = VariableQuickAddForm
     inlines = [Values]
 
     def autocomplete_name_queryset(self, name: str, request: HttpRequest):
@@ -262,11 +217,6 @@ class VariableQuickChangeAdmin(BaseAdmin):
 class VariableDocumentationAdmin(VariableQuickChangeAdmin):
     def has_change_permission(self, request, obj=None):
         return False
-
-
-@admin.register(VariableValue)
-class VariableValueAdmin(BaseAdmin):
-    pass
 
 
 @admin.register(VariableWindowRelation)
