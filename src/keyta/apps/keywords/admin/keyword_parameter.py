@@ -2,9 +2,16 @@ from django.contrib import admin
 
 from keyta.admin.base_admin import BaseAdmin
 
-from ..models import KeywordParameter
+from ..models import KeywordParameter, KeywordCallParameter
 
 
 @admin.register(KeywordParameter)
 class KeywordParameterAdmin(BaseAdmin):
-    pass
+    def get_protected_objects(self, obj):
+        kw_parameter: KeywordParameter = obj
+
+        return list(
+            KeywordCallParameter.objects
+            .filter(parameter=kw_parameter)
+            .exclude(keyword_call__execution__isnull=False)
+        )
