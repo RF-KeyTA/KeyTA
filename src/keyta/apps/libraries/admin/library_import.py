@@ -46,10 +46,6 @@ class LibraryImportAdmin(BaseAdmin):
     def get_related_objects(self, obj: LibraryImport):
         return self.get_protected_objects(obj)
 
-    def has_delete_permission(self, request, obj=None):
-        library_import: LibraryImport = obj
-        return library_import and library_import.keyword is not None
-
     @admin.display(description=_('Dokumentation'))
     def library_init_doc(self, lib_import: LibraryImport):
         init_doc = LibraryInitDocumentation.objects.get(pk=lib_import.library.pk)
