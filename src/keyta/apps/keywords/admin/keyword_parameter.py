@@ -12,6 +12,10 @@ class KeywordParameterAdmin(BaseAdmin):
 
         return list(
             KeywordCallParameter.objects
+            .filter(value_ref__kw_param=kw_parameter)
+            .exclude(keyword_call__execution__isnull=False)
+        ) + list(
+            KeywordCallParameter.objects
             .filter(parameter=kw_parameter)
             .exclude(keyword_call__execution__isnull=False)
         )
