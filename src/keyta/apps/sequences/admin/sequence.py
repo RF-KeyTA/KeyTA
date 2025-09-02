@@ -1,7 +1,7 @@
 from django import forms
-from django.apps import apps
 from django.conf import settings
 from django.contrib import admin
+from django.forms import ModelMultipleChoiceField
 from django.http import HttpResponseRedirect
 from django.utils.translation import gettext_lazy as _
 
@@ -17,11 +17,13 @@ from keyta.apps.keywords.admin import (
     WindowKeywordAdminMixin,
 )
 from keyta.apps.keywords.models import KeywordCallReturnValue
+from keyta.apps.systems.models import System
 from keyta.apps.windows.models import Window
 from keyta.forms.baseform import BaseForm
 from keyta.widgets import (
-    ModelSelect2MultipleAdminWidget, 
-    Select2MultipleWidget, 
+    CustomCheckboxSelectMultiple,
+    ModelSelect2MultipleAdminWidget,
+    Select2MultipleWidget,
     link
 )
 
@@ -103,6 +105,21 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
             return HttpResponseRedirect(sequence.get_admin_url() + '?_popup=1' + '#' + request.GET['tab_name'])
 
         return super().change_view(request, object_id, form_url=form_url, extra_context=extra_context)
+
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        field = super().formfield_for_dbfield(db_field, request, **kwargs)
+
+        if db_field.name == 'systems':
+            field = ModelMultipleChoiceField(
+                widget=CustomCheckboxSelectMultiple,
+                queryset=System.objects
+            )
+
+            if sequence_id := request.resolver_match.kwargs.get('object_id'):
+                sequence = Sequence.objects.get(id=sequence_id)
+                field.widget.in_use = set(sequence.windows.values_list('systems', flat=True))
+
+        return field
 
     def get_fields(self, request, obj=None):
         sequence: Sequence = obj
