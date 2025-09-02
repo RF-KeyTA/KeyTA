@@ -1,6 +1,7 @@
 from django import forms
 from django.conf import settings
 from django.contrib import admin
+from django.forms import ModelMultipleChoiceField
 from django.http import HttpResponseRedirect, HttpRequest
 from django.utils.translation import gettext_lazy as _
 
@@ -16,7 +17,9 @@ from keyta.apps.keywords.admin import (
 )
 from keyta.apps.keywords.models import KeywordCallReturnValue
 from keyta.apps.libraries.models import Library, LibraryImport
+from keyta.apps.systems.models import System
 from keyta.forms.baseform import form_with_select, BaseForm
+from keyta.widgets import CustomCheckboxSelectMultiple
 
 from ..models import (
     Action,
@@ -92,6 +95,24 @@ class ActionAdmin(ActionAdminMixin, CloneModelAdminMixin, WindowKeywordAdmin):
             return HttpResponseRedirect(action.get_admin_url() + '?_popup=1' + '#' + request.GET['tab_name'])
 
         return super().change_view(request, object_id, form_url=form_url, extra_context=extra_context)
+
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        field = super().formfield_for_dbfield(db_field, request, **kwargs)
+
+        if db_field.name == 'systems':
+            field = ModelMultipleChoiceField(
+                widget=CustomCheckboxSelectMultiple,
+                queryset=System.objects
+            )
+
+            if action_id := request.resolver_match.kwargs.get('object_id'):
+                action = Action.objects.get(id=action_id)
+                field.widget.in_use = (
+                    set(action.windows.values_list('systems', flat=True)).union(
+                    set(System.objects.filter(attach_to_system=action).values_list('pk', flat=True)))
+                )
+
+        return field
 
     def get_fields(self, request, obj=None):
         action: Action = obj
