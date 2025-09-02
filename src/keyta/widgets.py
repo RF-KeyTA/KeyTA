@@ -34,11 +34,7 @@ def html_to_string(tag, attrs, body) -> str:
 
 def link(url: str, title: str, new_page: bool = False, query_parameters: dict[str, str]=None, styles: dict[str, str]=None):
     if query_parameters:
-        url = url + '?' + '&'.join(
-                f'{key}={value}' 
-                for key, value 
-                in query_parameters.items()
-            )
+        url = url + '?' + url_query_parameters(query_parameters)
 
     attrs = {
         'href': url,
@@ -49,6 +45,14 @@ def link(url: str, title: str, new_page: bool = False, query_parameters: dict[st
         attrs.update({'target': '_blank'})
 
     return mark_safe(html_to_string('a', attrs_to_string(attrs), title))
+
+
+def url_query_parameters(query_parameters: dict):
+    return '&'.join(
+        f'{key}={value}'
+        for key, value
+        in query_parameters.items()
+    )
 
 
 class Icon:
