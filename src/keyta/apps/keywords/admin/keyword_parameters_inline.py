@@ -28,7 +28,10 @@ class ParametersInline(SortableTabularInlineWithDelete):
         field = super().formfield_for_dbfield(db_field, request, **kwargs)
 
         if db_field.name == 'name':
-            field.widget.attrs.update({'style': 'width: 100%'})
+            field.widget = forms.TextInput(attrs={
+                'style': 'width: 100%',
+                'placeholder': _('Name eintragen, anschließend Tab drücken')
+            })
 
         return field
 
