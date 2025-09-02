@@ -1,3 +1,4 @@
+from django.forms import ModelMultipleChoiceField
 from django.utils.translation import gettext_lazy as _
 
 from adminsortable2.admin import SortableAdminBase
@@ -9,7 +10,8 @@ from keyta.admin.list_filters import SystemListFilter
 from keyta.apps.executions.admin import ExecutionInline
 from keyta.apps.executions.models import TestCaseExecution
 from keyta.apps.keywords.admin import TestStepsInline
-from keyta.widgets import BaseSelectMultiple
+from keyta.apps.systems.models import System
+from keyta.widgets import CustomCheckboxSelectMultiple
 
 from ..models import TestCase
 
@@ -41,7 +43,14 @@ class BaseTestCaseAdmin(DocumentationField, CloneModelAdminMixin, SortableAdminB
         field = super().formfield_for_dbfield(db_field, request, **kwargs)
 
         if db_field.name == 'systems':
-            field.widget = BaseSelectMultiple(_('Systeme hinzufügen'))
+            field = ModelMultipleChoiceField(
+                widget=CustomCheckboxSelectMultiple,
+                queryset=System.objects
+            )
+
+            if testcase_id := request.resolver_match.kwargs.get('object_id'):
+                testcase = TestCase.objects.get(id=testcase_id)
+                field.widget.in_use = set(testcase.steps.values_list('window__systems', flat=True))
 
         return field
 

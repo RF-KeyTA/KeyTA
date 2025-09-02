@@ -4,7 +4,7 @@ import django
 from django import forms
 from django.conf import settings
 from django.contrib.admin.widgets import RelatedFieldWidgetWrapper
-from django.forms import Widget
+from django.forms import Widget, CheckboxSelectMultiple
 from django.forms.models import ModelChoiceIterator
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
@@ -146,6 +146,25 @@ class BaseSelectMultiple(BaseSelect):
         # An unselected <select multiple> doesn't appear in POST data, so it's
         # never known if the value is actually omitted.
         return False
+
+
+class CustomCheckboxSelectMultiple(CheckboxSelectMultiple):
+    def create_option(
+        self,
+        name,
+        value,
+        label,
+        selected,
+        index,
+        subindex=None,
+        attrs=None,
+    ):
+        option = super().create_option(name, value, label, selected, index, subindex, attrs)
+
+        if hasattr(self, 'in_use') and value in self.in_use:
+            option['attrs'].update({'onClick': 'return false'})
+
+        return option
 
 
 class ModelSelect2AdminWidget(ModelSelect2Widget):
