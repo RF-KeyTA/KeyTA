@@ -292,7 +292,7 @@
 
                         // Reloading the whole window can be avoided using HTMX
                         // to swap the row
-                        if (url.includes('_modal')) {
+                        if (url.includes('_popup')) {
                             $.post(
                                 url, 
                                 $('form').serialize() + "&_continue=", 
@@ -309,7 +309,7 @@
 
                         // Reloading the whole window can be avoided using HTMX
                         // to swap the row
-                        if (url.includes('_modal')) {
+                        if (url.includes('_popup')) {
                             $.post(
                                 url, 
                                 $('form').serialize() + "&_continue=", 
@@ -347,7 +347,7 @@
 
                     // Reloading the whole window can be avoided using HTMX
                     // to swap the row
-                    if (url.includes('_modal')) {
+                    if (url.includes('_popup')) {
                         $.post(
                             url,
                             $('form').serialize() + "&_continue=",
