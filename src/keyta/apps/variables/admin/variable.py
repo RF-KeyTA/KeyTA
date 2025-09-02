@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.forms import ModelMultipleChoiceField
 from django.http import HttpRequest, HttpResponseRedirect
 from django.utils.translation import gettext_lazy as _
 
@@ -11,10 +12,11 @@ from keyta.admin.base_inline import (
     TabularInlineWithDelete,
 )
 from keyta.admin.list_filters import SystemListFilter, WindowListFilter
-from keyta.apps.keywords.models import KeywordCallParameter, TestStep
+from keyta.apps.keywords.models import TestStep
+from keyta.apps.systems.models import System
 from keyta.apps.windows.models import Window
 from keyta.forms import form_with_select
-from keyta.widgets import BaseSelect, link
+from keyta.widgets import BaseSelect, link, CustomCheckboxSelectMultiple
 
 from ..forms import VariableForm, VariableQuickAddForm
 from ..models import (
@@ -82,10 +84,9 @@ class VariableAdmin(SortableAdminBase, BaseAdmin):
 
     form = form_with_select(
         Variable,
-        'systems',
-        _('System hinzufügen'),
-        form_class=VariableForm,
-        select_many=True
+        'type',
+        '',
+        form_class=VariableForm
     )
     inlines = [Values]
 
@@ -108,6 +109,21 @@ class VariableAdmin(SortableAdminBase, BaseAdmin):
             return HttpResponseRedirect(variable_doc.get_admin_url())
 
         return super().change_view(request, object_id, form_url, extra_context)
+
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        field = super().formfield_for_dbfield(db_field, request, **kwargs)
+
+        if db_field.name == 'systems':
+            field = ModelMultipleChoiceField(
+                widget=CustomCheckboxSelectMultiple,
+                queryset=System.objects
+            )
+
+            if variable_id := request.resolver_match.kwargs.get('object_id'):
+                variable = Variable.objects.get(id=variable_id)
+                field.widget.in_use = set(variable.windows.values_list('systems', flat=True))
+
+        return field
 
     def get_fields(self, request, obj=None):
         variable: Variable = obj
