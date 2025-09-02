@@ -1,3 +1,4 @@
+from django import forms
 from django.contrib import admin
 from django.forms import ModelMultipleChoiceField
 from django.http import HttpRequest, HttpResponseRedirect
@@ -35,6 +36,17 @@ class Values(SortableTabularInlineWithDelete):
     fields = ['name', 'value']
     extra = 0
     min_num = 1
+
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        field = super().formfield_for_dbfield(db_field, request, **kwargs)
+
+        if db_field.name == 'value':
+            field.widget = forms.TextInput(attrs={
+                'style': 'width: 100%',
+                'placeholder': _('Wert eintragen, anschließend Tab drücken')
+            })
+
+        return field
 
     def has_delete_permission(self, request, obj=None):
         return self.can_change(request.user, 'variable')
