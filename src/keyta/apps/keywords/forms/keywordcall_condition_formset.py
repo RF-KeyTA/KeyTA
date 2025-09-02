@@ -4,6 +4,7 @@ from keyta.widgets import BaseSelect
 
 from ..json_value import JSONValue
 from ..models import KeywordCall, KeywordCallParameterSource, KeywordCallCondition
+from ..models.keywordcall_condition import ConditionChoices
 from .keywordcall_parameter_formset import get_keyword_parameters
 from .user_input_formset import UserInputFormset, user_input_field
 
@@ -46,7 +47,10 @@ class KeywordCallConditionFormset(UserInputFormset):
             )
         )
 
-        form.fields['condition'].widget.attrs['data-placeholder'] = _('Bedingung auswählen')
+        form.fields['condition'].widget = BaseSelect(
+            _('Bedingung auswählen'),
+            choices=[(None, '')] + ConditionChoices.choices
+        )
 
         form.fields['expected_value'] = user_input_field(
             _('Wert auswählen oder eintragen'),
