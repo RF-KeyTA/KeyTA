@@ -39,7 +39,7 @@ class WindowKeyword(CloneMixin, Keyword):
 
     def make_clone(self, attrs=None, sub_clone=False, using=None, parent=None) -> Keyword:
         copies = self._meta.model.objects.filter(name__istartswith=self.name + _(' Kopie')).count()
-        attrs = (attrs or {}) | {'name': self.name + _(' Kopie ') + str(copies)}
+        attrs = (attrs or {}) | {'name': self.name + _(' Kopie ') + str(copies+1)}
 
         clone: WindowKeyword = super().make_clone(attrs=attrs, sub_clone=sub_clone, using=using, parent=parent)
         clone_return_values: list[KeywordReturnValue] = list(clone.return_values.all())
