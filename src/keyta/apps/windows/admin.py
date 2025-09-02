@@ -1,6 +1,7 @@
 from django import forms
 from django.conf import settings
 from django.contrib import admin
+from django.forms import ModelMultipleChoiceField
 from django.http import HttpRequest, HttpResponseRedirect
 from django.utils.translation import gettext_lazy as _
 
@@ -19,12 +20,13 @@ from keyta.apps.keywords.models import KeywordWindowRelation
 from keyta.apps.resources.admin import ResourceImportsInline
 from keyta.apps.resources.models import Resource, ResourceImport
 from keyta.apps.sequences.models import SequenceQuickAdd
+from keyta.apps.systems.models import System
 from keyta.apps.variables.models import (
     VariableQuickAdd,
     VariableWindowRelation
 )
 from keyta.forms.baseform import form_with_select
-from keyta.widgets import Icon, open_link_in_modal
+from keyta.widgets import Icon, open_link_in_modal, CustomCheckboxSelectMultiple
 
 from .forms import WindowForm
 from .models import (
@@ -207,6 +209,21 @@ class WindowAdmin(DocumentationField, BaseAdmin):
             return HttpResponseRedirect(window_doc.get_admin_url())
 
         return super().change_view(request, object_id, form_url, extra_context)
+
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        field = super().formfield_for_dbfield(db_field, request, **kwargs)
+
+        if db_field.name == 'systems':
+            field = ModelMultipleChoiceField(
+                widget=CustomCheckboxSelectMultiple,
+                queryset=System.objects
+            )
+
+            if window_id := request.resolver_match.kwargs.get('object_id'):
+                window = Window.objects.get(id=window_id)
+                field.widget.in_use = set(window.keywords.values_list('systems', flat=True))
+
+        return field
 
     def get_inlines(self, request, obj):
         if not obj:
