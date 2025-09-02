@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.http import HttpRequest
 
 from keyta.models.base_model import AbstractBaseModel
-from keyta.widgets import link, Icon
+from keyta.widgets import link, Icon, url_query_parameters
 
 
 class DeleteRelatedField:
@@ -21,10 +21,11 @@ class DeleteRelatedField:
             if not inline_obj.pk:
                 return ''
 
+            query_params = url_query_parameters(request.GET.dict() | {'ref': request.path})
             tab_url = inline_obj.get_tab_url(getattr(self, 'tab_name', None))
 
             return link(
-                inline_obj.get_delete_url() + "?ref=" + request.path + tab_url,
+                inline_obj.get_delete_url() + '?' + query_params + tab_url,
                 str(Icon(
                     settings.FA_ICONS.delete_rel,
                     {'font-size': '30px', 'margin-top': '3px'}
