@@ -1,8 +1,10 @@
+from django import forms
 from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 
 from keyta.admin.base_inline import TabularInlineWithDelete
-from keyta.forms.baseform import form_with_select
+from keyta.apps.windows.models import Window
+from keyta.widgets import ModelSelect2AdminWidget
 
 from ..models import Action, ActionWindowRelation
 
@@ -11,12 +13,18 @@ class Windows(TabularInlineWithDelete):
     model = ActionWindowRelation
     extra = 0
     fields = ['window']
-    form = form_with_select(
+    form = forms.modelform_factory(
         ActionWindowRelation,
-        'window',
-        _('Maske auswählen'),
+        fields=['window'],
         labels={
             'window': _('Maske')
+        },
+        widgets={
+            'window': ModelSelect2AdminWidget(
+                placeholder=_('Maske auswählen'),
+                model=Window,
+                search_fields=['name__icontains'],
+            )
         }
     )
     verbose_name = _('Maske')
@@ -32,6 +40,9 @@ class Windows(TabularInlineWithDelete):
             .filter(systems__in=action.systems.all())
             .distinct()
         )
+        window_field.widget.can_add_related = False
+        window_field.widget.can_change_related = False
+        window_field.widget.can_view_related = False
 
         return formset
 
