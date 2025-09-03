@@ -147,6 +147,15 @@ class ActionAdmin(ActionAdminMixin, CloneModelAdminMixin, WindowKeywordAdmin):
         action: Action = obj
         return action.uses.filter(execution__isnull=True)
 
+    def has_add_permission(self, request):
+        return self.can_add(request.user, 'action')
+
+    def has_change_permission(self, request, obj=None):
+        return self.can_change(request.user, 'action')
+
+    def has_delete_permission(self, request, obj=None):
+        return self.can_delete(request.user, 'action')
+
 
 class QuickAddActionForm(BaseForm):
     def clean(self):
@@ -194,6 +203,9 @@ class ActionQuickChangeAdmin(WindowKeywordAdmin):
             inlines += [ReturnValueInline]
 
         return inlines
+
+    def has_change_permission(self, request, obj=None):
+        return self.can_change(request.user, 'action')
 
     def has_delete_permission(self, request, obj=None):
         return False

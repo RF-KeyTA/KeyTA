@@ -3,7 +3,7 @@ from django.utils.translation import gettext_lazy as _
 
 from keyta.admin.base_inline import SortableTabularInlineWithDelete
 
-from ..models import KeywordParameter
+from ..models import Keyword, KeywordParameter
 
 
 class ParameterForm(forms.ModelForm):
@@ -36,4 +36,12 @@ class ParametersInline(SortableTabularInlineWithDelete):
         return field
 
     def has_delete_permission(self, request, obj=None):
-        return self.can_change(request.user, 'action') or self.can_change(request.user, 'sequence')
+        keyword: Keyword = obj
+
+        if keyword.is_action:
+            return self.can_change(request.user, 'action')
+
+        if keyword.is_sequence:
+            self.can_change(request.user, 'sequence')
+
+        return super().has_delete_permission(request, obj)

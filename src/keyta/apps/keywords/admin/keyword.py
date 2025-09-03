@@ -53,15 +53,6 @@ class KeywordAdmin(DocumentationField, SortableAdminBase, BaseAdmin):
         
         return super().change_view(request, object_id, form_url, extra_context)
 
-    def has_add_permission(self, request):
-        return self.can_add(request.user, 'action') or self.can_add(request.user, 'sequence')
-
-    def has_change_permission(self, request, obj=None):
-        return self.can_change(request.user, 'action') or self.can_change(request.user, 'sequence')
-
-    def has_delete_permission(self, request, obj=None):
-        return self.can_delete(request.user, 'action') or self.can_delete(request.user, 'sequence')
-
 
 @admin.register(KeywordDocumentation)
 class KeywordDocumentationAdmin(

@@ -162,6 +162,15 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
         
         return super().get_readonly_fields(request, obj)
 
+    def has_add_permission(self, request):
+        return self.can_add(request.user, 'sequence')
+
+    def has_change_permission(self, request, obj=None):
+        return self.can_change(request.user, 'sequence')
+
+    def has_delete_permission(self, request, obj=None):
+        return self.can_delete(request.user, 'sequence')
+
     @admin.display(description=_('Maske'))
     def window(self, sequence: Sequence):
         window: Window = sequence.windows.first()
@@ -224,6 +233,9 @@ class SequenceQuickChangeAdmin(WindowKeywordAdmin):
             inlines += [ReturnValueInline]
 
         return inlines
+
+    def has_change_permission(self, request, obj=None):
+        return self.can_change(request.user, 'sequence')
 
     def has_delete_permission(self, request, obj=None):
         return False
