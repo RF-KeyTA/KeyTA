@@ -11,7 +11,7 @@ from keyta.apps.executions.admin import ExecutionInline
 from keyta.apps.executions.models import TestCaseExecution
 from keyta.apps.keywords.admin import TestStepsInline
 from keyta.apps.systems.models import System
-from keyta.widgets import CustomCheckboxSelectMultiple
+from keyta.widgets import CheckboxSelectMultipleSystems
 
 from ..models import TestCase
 
@@ -44,7 +44,7 @@ class BaseTestCaseAdmin(DocumentationField, CloneModelAdminMixin, SortableAdminB
 
         if db_field.name == 'systems':
             field = ModelMultipleChoiceField(
-                widget=CustomCheckboxSelectMultiple,
+                widget=CheckboxSelectMultipleSystems,
                 queryset=System.objects
             )
             field.label = _('Systeme')

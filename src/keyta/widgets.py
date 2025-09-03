@@ -11,6 +11,8 @@ from django.utils.translation import gettext_lazy as _
 
 from django_select2.forms import ModelSelect2Widget
 
+from keyta.apps.systems.models import System
+
 
 def style_to_css(style: dict):
             return '; '.join([
@@ -149,7 +151,9 @@ class BaseSelectMultiple(BaseSelect):
         return False
 
 
-class CustomCheckboxSelectMultiple(CheckboxSelectMultiple):
+class CheckboxSelectMultipleSystems(CheckboxSelectMultiple):
+    template_name = 'checkbox_select_systems.html'
+
     def create_option(
         self,
         name,
@@ -169,6 +173,21 @@ class CustomCheckboxSelectMultiple(CheckboxSelectMultiple):
             option['attrs'].update({'disabled': 'true'})
 
         return option
+
+    def optgroups(self, name, value, attrs=None):
+        orig_optgroups = super().optgroups(name, value, attrs)
+        optgroups = {}
+
+        for _group, options, _index in orig_optgroups:
+            option = options[0]
+            system: System = option['value'].instance
+            optgroups[system.name] = {
+                'options': [option],
+                'name': system.name,
+                'url': system.get_admin_url()
+            }
+
+        return optgroups.items()
 
 
 class ModelSelect2AdminWidget(ModelSelect2Widget):

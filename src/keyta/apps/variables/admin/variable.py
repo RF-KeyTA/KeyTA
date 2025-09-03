@@ -17,7 +17,7 @@ from keyta.apps.keywords.models import TestStep
 from keyta.apps.systems.models import System
 from keyta.apps.windows.models import Window
 from keyta.forms import form_with_select
-from keyta.widgets import BaseSelect, link, CustomCheckboxSelectMultiple
+from keyta.widgets import BaseSelect, link, CheckboxSelectMultipleSystems
 
 from ..forms import VariableForm, VariableQuickAddForm
 from ..models import (
@@ -127,7 +127,7 @@ class VariableAdmin(SortableAdminBase, BaseAdmin):
 
         if db_field.name == 'systems':
             field = ModelMultipleChoiceField(
-                widget=CustomCheckboxSelectMultiple,
+                widget=CheckboxSelectMultipleSystems,
                 queryset=System.objects
             )
             field.label = _('Systeme')

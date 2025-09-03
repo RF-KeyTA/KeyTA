@@ -19,7 +19,7 @@ from keyta.apps.keywords.models import KeywordCallReturnValue
 from keyta.apps.libraries.models import Library, LibraryImport
 from keyta.apps.systems.models import System
 from keyta.forms.baseform import form_with_select, BaseForm
-from keyta.widgets import CustomCheckboxSelectMultiple
+from keyta.widgets import CheckboxSelectMultipleSystems
 
 from ..models import (
     Action,
@@ -101,7 +101,7 @@ class ActionAdmin(ActionAdminMixin, CloneModelAdminMixin, WindowKeywordAdmin):
 
         if db_field.name == 'systems':
             field = ModelMultipleChoiceField(
-                widget=CustomCheckboxSelectMultiple,
+                widget=CheckboxSelectMultipleSystems,
                 queryset=System.objects
             )
             field.label = _('Systeme')

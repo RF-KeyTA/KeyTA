@@ -22,7 +22,7 @@ from keyta.apps.resources.models import Resource, ResourceImport
 from keyta.apps.sequences.models import SequenceQuickAdd
 from keyta.apps.systems.models import System
 from keyta.forms.baseform import form_with_select
-from keyta.widgets import Icon, open_link_in_modal, CustomCheckboxSelectMultiple
+from keyta.widgets import Icon, open_link_in_modal, CheckboxSelectMultipleSystems
 
 from ..forms import WindowForm
 from ..models import (
@@ -186,7 +186,7 @@ class WindowAdmin(DocumentationField, BaseAdmin):
 
         if db_field.name == 'systems':
             field = ModelMultipleChoiceField(
-                widget=CustomCheckboxSelectMultiple,
+                widget=CheckboxSelectMultipleSystems,
                 queryset=System.objects
             )
             field.label = _('Systeme')

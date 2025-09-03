@@ -1,0 +1,16 @@
+{% with id=widget.attrs.id %}
+    <div{% if id %} id="{{ id }}"{% endif %}{% if widget.attrs.class %} class="container {{ widget.attrs.class }}"{% endif %}>
+        <div class="row">
+        {% for group_name, group in widget.optgroups %}
+            <div class="col-3">
+                {% for option in group.options %}
+                    {% with widget=option %}
+                        <input type="{{ widget.type }}" name="{{ widget.name }}"{% if widget.value != None %} value="{{ widget.value|stringformat:'s' }}"{% endif %}{% include "django/forms/widgets/attrs.html" %}>
+                    {% endwith %}
+                {% endfor %}
+                <a href="{{ group.url }}" target="_blank">{{ group.name }}</a>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+{% endwith %}

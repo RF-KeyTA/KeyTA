@@ -21,7 +21,7 @@ from keyta.apps.systems.models import System
 from keyta.apps.windows.models import Window
 from keyta.forms.baseform import BaseForm
 from keyta.widgets import (
-    CustomCheckboxSelectMultiple,
+    CheckboxSelectMultipleSystems,
     ModelSelect2MultipleAdminWidget,
     Select2MultipleWidget,
     link
@@ -111,7 +111,7 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
 
         if db_field.name == 'systems':
             field = ModelMultipleChoiceField(
-                widget=CustomCheckboxSelectMultiple,
+                widget=CheckboxSelectMultipleSystems,
                 queryset=System.objects
             )
             field.label = _('Systeme')
