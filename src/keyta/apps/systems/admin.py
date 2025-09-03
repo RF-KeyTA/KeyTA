@@ -8,8 +8,7 @@ from django.utils.translation import gettext as _
 from keyta.admin.base_admin import BaseAdmin
 from keyta.widgets import ModelSelect2AdminWidget, link, BaseSelect
 
-from ..models import System
-from .windows_inline import Windows
+from .models import System
 
 
 @admin.register(System)
@@ -17,7 +16,6 @@ class SystemAdmin(BaseAdmin):
     list_display = ['name', 'description']
 
     fields = ['name', 'description', 'library']
-    inlines = [Windows]
 
     def autocomplete_name(self, name: str, request: HttpRequest):
         return json.dumps([
