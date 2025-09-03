@@ -62,7 +62,7 @@ class TestStepsFormset(CustomInlineFormSet):
                     to_keyword_field.widget.can_change_related = False
                     to_keyword_field.widget = CustomRelatedFieldWidgetWrapper(
                         to_keyword_field.widget,
-                        reverse('admin:sequences_sequence_add'),
+                        reverse('admin:sequences_sequencequickadd_add'),
                         {
                             'systems': self.testcase.systems.first().pk,
                             'windows': test_step.window.pk
