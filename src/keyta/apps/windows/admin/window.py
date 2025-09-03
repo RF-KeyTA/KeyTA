@@ -21,20 +21,17 @@ from keyta.apps.resources.admin import ResourceImportsInline
 from keyta.apps.resources.models import Resource, ResourceImport
 from keyta.apps.sequences.models import SequenceQuickAdd
 from keyta.apps.systems.models import System
-from keyta.apps.variables.models import (
-    VariableQuickAdd,
-    VariableWindowRelation
-)
 from keyta.forms.baseform import form_with_select
 from keyta.widgets import Icon, open_link_in_modal, CustomCheckboxSelectMultiple
 
-from .forms import WindowForm
-from .models import (
+from ..forms import WindowForm
+from ..models import (
     Window,
     WindowDocumentation,
     WindowQuickAdd,
     WindowQuickChange
 )
+from .variables_inline import Variables
 
 
 class WindowQuickAddMixin(QuickAddMixin):
@@ -133,32 +130,6 @@ class Sequences(WindowQuickAddMixin, WindowKeywordInline):
 
     def get_queryset(self, request):
         return super().get_queryset(request).sequences()
-
-
-class Variables(WindowQuickAddMixin, BaseTabularInline):
-    model = VariableWindowRelation
-    form = form_with_select(
-        VariableWindowRelation,
-        'variable',
-        _('Referenzwert auswählen'),
-        can_add_related=True,
-        labels={
-            'variable': _('Referenzwert')
-        }
-    )
-    quick_add_field = 'variable'
-    quick_add_model = VariableQuickAdd
-    readonly_fields = ['systems']
-
-    def get_queryset(self, request):
-        return (
-            super().get_queryset(request)
-            .order_by('variable__name')
-    )
-
-    @admin.display(description=_('Systeme'))
-    def systems(self, obj):
-        return ', '.join(obj.variable.systems.values_list('name', flat=True))
 
 
 @admin.register(Window)
@@ -267,13 +238,18 @@ class WindowQuickAddAdmin(BaseQuickAddAdmin):
         return field
 
 
+class VariablesQuickChange(Variables):
+    def has_change_permission(self, request, obj=None):
+        return True
+
+
 @admin.register(WindowQuickChange)
 class WindowQuickChangeAdmin(WindowAdmin):
     fields = []
     readonly_fields = ['documentation']
 
     def get_inlines(self, request, obj):
-        inlines = [Variables]
+        inlines = [VariablesQuickChange]
 
         if Resource.objects.count():
             return [Resources] + inlines
