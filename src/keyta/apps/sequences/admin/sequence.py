@@ -114,6 +114,7 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
                 widget=CustomCheckboxSelectMultiple,
                 queryset=System.objects
             )
+            field.label = _('Systeme')
 
             if sequence_id := request.resolver_match.kwargs.get('object_id'):
                 sequence = Sequence.objects.get(id=sequence_id)

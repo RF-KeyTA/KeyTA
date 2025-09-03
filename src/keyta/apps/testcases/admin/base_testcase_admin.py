@@ -47,6 +47,7 @@ class BaseTestCaseAdmin(DocumentationField, CloneModelAdminMixin, SortableAdminB
                 widget=CustomCheckboxSelectMultiple,
                 queryset=System.objects
             )
+            field.label = _('Systeme')
 
             if testcase_id := request.resolver_match.kwargs.get('object_id'):
                 testcase = TestCase.objects.get(id=testcase_id)

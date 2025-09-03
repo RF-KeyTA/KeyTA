@@ -130,6 +130,7 @@ class VariableAdmin(SortableAdminBase, BaseAdmin):
                 widget=CustomCheckboxSelectMultiple,
                 queryset=System.objects
             )
+            field.label = _('Systeme')
 
             if variable_id := request.resolver_match.kwargs.get('object_id'):
                 variable = Variable.objects.get(id=variable_id)

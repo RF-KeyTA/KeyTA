@@ -189,6 +189,7 @@ class WindowAdmin(DocumentationField, BaseAdmin):
                 widget=CustomCheckboxSelectMultiple,
                 queryset=System.objects
             )
+            field.label = _('Systeme')
 
             if window_id := request.resolver_match.kwargs.get('object_id'):
                 window = Window.objects.get(id=window_id)

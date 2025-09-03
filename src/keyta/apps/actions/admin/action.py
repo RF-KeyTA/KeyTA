@@ -104,6 +104,7 @@ class ActionAdmin(ActionAdminMixin, CloneModelAdminMixin, WindowKeywordAdmin):
                 widget=CustomCheckboxSelectMultiple,
                 queryset=System.objects
             )
+            field.label = _('Systeme')
 
             if action_id := request.resolver_match.kwargs.get('object_id'):
                 action = Action.objects.get(id=action_id)
