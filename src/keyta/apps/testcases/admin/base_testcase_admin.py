@@ -50,7 +50,9 @@ class BaseTestCaseAdmin(DocumentationField, CloneModelAdminMixin, SortableAdminB
 
             if testcase_id := request.resolver_match.kwargs.get('object_id'):
                 testcase = TestCase.objects.get(id=testcase_id)
-                field.widget.in_use = set(testcase.steps.values_list('window__systems', flat=True))
+                testcase_systems = testcase.systems.values_list('pk', flat=True)
+                teststep_systems = testcase.steps.values_list('window__systems', flat=True)
+                field.widget.in_use = set(testcase_systems).intersection(teststep_systems)
 
         return field
 
