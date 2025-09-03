@@ -1,8 +1,8 @@
 from django.utils.translation import gettext_lazy as _
 
-from forms import form_with_select
 from keyta.apps.keywords.models import KeywordWindowRelation
 from keyta.apps.sequences.models import SequenceQuickAdd
+from keyta.forms import form_with_select
 
 from ..forms import QuickAddFormset
 from .window_keyword_inline import WindowKeywordInline
