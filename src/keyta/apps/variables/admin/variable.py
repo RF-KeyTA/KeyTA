@@ -114,7 +114,7 @@ class VariableAdmin(SortableAdminBase, BaseAdmin):
     def change_view(self, request: HttpRequest, object_id, form_url="", extra_context=None):
         if 'quick_change' in request.GET:
             variable = VariableQuickChange.objects.get(id=object_id)
-            return HttpResponseRedirect(variable.get_admin_url())
+            return HttpResponseRedirect(variable.get_admin_url() + '?_popup=1')
 
         if 'view' in request.GET:
             variable_doc = VariableDocumentation.objects.get(id=object_id)
