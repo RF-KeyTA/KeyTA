@@ -43,6 +43,7 @@ def link(url: str, title: str, new_page: bool = False, query_parameters: dict[st
 
     if new_page:
         attrs.update({'target': '_blank'})
+        title = title + '<i class="ml-2 fa-solid fa-up-right-from-square" style="font-size: 0.7rem"></i>'
 
     return mark_safe(html_to_string('a', attrs_to_string(attrs), title))
 
