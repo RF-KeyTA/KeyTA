@@ -1,52 +1,15 @@
 import json
 
-from django import forms
 from django.contrib import messages, admin
 from django.http import HttpRequest
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext as _
 
 from keyta.admin.base_admin import BaseAdmin
-from keyta.admin.base_inline import BaseTabularInline
-from keyta.apps.windows.admin import QuickAddMixin
-from keyta.apps.windows.models import WindowQuickAdd, WindowSystemRelation
 from keyta.widgets import ModelSelect2AdminWidget, link, BaseSelect
 
-from .models import System
-
-
-class Windows(QuickAddMixin, BaseTabularInline):
-    model = WindowSystemRelation
-    form = forms.modelform_factory(
-        WindowSystemRelation,
-        fields=['window'],
-        labels={
-            'window': _('Maske')
-        }
-    )
-    quick_add_field = 'window'
-    quick_add_model = WindowQuickAdd
-    verbose_name = _('Maske')
-    verbose_name_plural = _('Masken')
-
-    def get_queryset(self, request):
-        return super().get_queryset(request).order_by('window__name')
-
-    def has_add_permission(self, request, obj):
-        return self.can_add(request.user, 'window')
-
-    def has_change_permission(self, request, obj=None):
-        return False
-
-    def quick_add_url_params(self, request: HttpRequest, url_params: dict):
-        system_id = request.resolver_match.kwargs['object_id']
-        system = System.objects.get(pk=system_id)
-        tab_url = system.get_tab_url(getattr(self, 'tab_name', None))
-
-        return {
-            'systems': system_id,
-            'ref': request.path + tab_url
-        }
+from ..models import System
+from .windows_inline import Windows
 
 
 @admin.register(System)
