@@ -1,18 +1,19 @@
-from django import forms
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 
 from keyta.admin.base_inline import BaseTabularInline
 from keyta.apps.variables.models import VariableWindowRelation
+from keyta.forms import form_with_select
 
 from ..forms import VariablesFormset
 
 
 class Variables(BaseTabularInline):
     model = VariableWindowRelation
-    form = forms.modelform_factory(
+    form = form_with_select(
         VariableWindowRelation,
-        fields=['variable'],
+        'variable',
+        '',
         labels={
             'variable': _('Referenzwert')
         }

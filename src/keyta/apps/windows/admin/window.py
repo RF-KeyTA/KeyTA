@@ -8,21 +8,14 @@ from django.utils.translation import gettext_lazy as _
 from keyta.admin.base_admin import (
     BaseAdmin,
     BaseDocumentationAdmin,
-    BaseQuickAddAdmin,
-    QuickAddMixin
+    BaseQuickAddAdmin
 )
-from keyta.admin.base_inline import BaseTabularInline
-from keyta.admin.field_delete_related_instance import DeleteRelatedField
 from keyta.admin.field_documentation import DocumentationField
 from keyta.admin.list_filters import SystemListFilter
-from keyta.apps.actions.models import ActionQuickAdd
-from keyta.apps.keywords.models import KeywordWindowRelation
-from keyta.apps.resources.admin import ResourceImportsInline
-from keyta.apps.resources.models import Resource, ResourceImport
-from keyta.apps.sequences.models import SequenceQuickAdd
+from keyta.apps.resources.models import Resource
 from keyta.apps.systems.models import System
 from keyta.forms.baseform import form_with_select
-from keyta.widgets import Icon, open_link_in_modal, CheckboxSelectMultipleSystems
+from keyta.widgets import CheckboxSelectMultipleSystems, Icon, open_link_in_modal
 
 from ..forms import WindowForm
 from ..models import (
@@ -31,105 +24,10 @@ from ..models import (
     WindowQuickAdd,
     WindowQuickChange
 )
+from .actions_inline import Actions
+from .resources_inline import Resources
+from .sequences_inline import Sequences
 from .variables_inline import Variables
-
-
-class WindowQuickAddMixin(QuickAddMixin):
-    def quick_add_url_params(self, request: HttpRequest, url_params: dict):
-        window_id = request.resolver_match.kwargs['object_id']
-        window = Window.objects.get(pk=window_id)
-        system_id = window.systems.first().pk
-        tab_url = window.get_tab_url(getattr(self, 'tab_name', None))
-
-        # ref has to be the last key in the dictionary in order for the form
-        # fields to be automatically filled with the values in the query params
-        return {
-            'windows': window_id,
-            'systems': system_id,
-            **url_params,
-            'ref': request.path + tab_url
-        }
-
-
-class WindowKeywordInline(BaseTabularInline):
-    model = KeywordWindowRelation
-    readonly_fields = ['systems']
-    
-    def get_queryset(self, request):
-        return (
-            super().get_queryset(request)
-            .prefetch_related('keyword')
-            .order_by('keyword__name')
-        )
-
-    @admin.display(description=_('Systeme'))
-    def systems(self, obj: KeywordWindowRelation):
-        return ', '.join(obj.keyword.systems.values_list('name', flat=True))
-
-
-class Resources(DeleteRelatedField, ResourceImportsInline):
-    fk_name = 'window'
-    fields = ['resource']
-    form = form_with_select(
-        ResourceImport,
-        'resource',
-        _('Ressource auswählen')
-    )
-
-    def get_formset(self, request, obj=None, **kwargs):
-        formset = super().get_formset(request, obj, **kwargs)
-        window: Window = obj
-
-        imported_resources = (
-            self.get_queryset(request)
-            .filter(window_id=window.pk)
-            .values_list('resource_id', flat=True)
-        )
-        resource_field = formset.form.base_fields['resource']
-        resource_field.queryset = resource_field.queryset.exclude(id__in=imported_resources)
-
-        return formset
-
-    def get_max_num(self, request, obj=None, **kwargs):
-        return Resource.objects.count()
-
-
-class Actions(WindowQuickAddMixin, WindowKeywordInline):
-    form = form_with_select(
-        KeywordWindowRelation,
-        'keyword',
-        _('Aktion auswählen'),
-        can_add_related=True,
-        labels={
-            'keyword': _('Aktion')
-        }
-    )
-    quick_add_field = 'keyword'
-    quick_add_model = ActionQuickAdd
-    verbose_name = _('Aktion')
-    verbose_name_plural = _('Aktionen')
-
-    def get_queryset(self, request):
-        return super().get_queryset(request).actions()
-
-
-class Sequences(WindowQuickAddMixin, WindowKeywordInline):
-    form = form_with_select(
-        KeywordWindowRelation,
-        'keyword',
-        _('Sequenz auswählen'),
-        can_add_related=True,
-        labels={
-            'keyword': _('Sequenz')
-        }
-    )
-    quick_add_field = 'keyword'
-    quick_add_model = SequenceQuickAdd
-    verbose_name = _('Sequenz')
-    verbose_name_plural = _('Sequenzen')
-
-    def get_queryset(self, request):
-        return super().get_queryset(request).sequences()
 
 
 @admin.register(Window)
