@@ -112,7 +112,7 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
         if db_field.name == 'systems':
             field = ModelMultipleChoiceField(
                 widget=CheckboxSelectMultipleSystems,
-                queryset=System.objects
+                queryset=field.queryset
             )
             field.label = _('Systeme')
 
