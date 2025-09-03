@@ -14,7 +14,7 @@ class RichTextField:
     }
 
     def get_fields(self, request, obj=None):
-        if self.show_readonly(request, obj):
+        if obj and self.show_readonly(request, obj):
             return self.fields + ['readonly_documentation']
 
         return self.fields + [self.field]
@@ -24,7 +24,7 @@ class RichTextField:
         return mark_safe(getattr(obj, self.field))
 
     def get_readonly_fields(self, request, obj=None):
-        if self.show_readonly(request, obj):
+        if obj and self.show_readonly(request, obj):
             return [
                 readonly_field if readonly_field != self.field else 'readonly_documentation'
                 for readonly_field in self.readonly_fields
