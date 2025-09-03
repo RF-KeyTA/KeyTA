@@ -12,11 +12,10 @@ class Variables(BaseTabularInline):
     model = VariableWindowRelation
     form = forms.modelform_factory(
         VariableWindowRelation,
-        forms.ModelForm,
-        ['variable'],
+        fields=['variable'],
         labels={
             'variable': _('Referenzwert')
-        },
+        }
     )
     formset = VariablesFormset
     readonly_fields = ['systems']
