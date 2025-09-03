@@ -21,7 +21,11 @@ class Windows(BaseTabularInline):
     verbose_name_plural = _('Masken')
 
     def get_queryset(self, request):
-        return super().get_queryset(request).order_by('window__name')
+        return (
+            super().get_queryset(request)
+            .select_related('window')
+            .order_by('window__name')
+        )
 
     def has_change_permission(self, request, obj=None):
         return False
