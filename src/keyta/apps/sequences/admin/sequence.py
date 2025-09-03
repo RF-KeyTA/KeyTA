@@ -117,7 +117,9 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
 
             if sequence_id := request.resolver_match.kwargs.get('object_id'):
                 sequence = Sequence.objects.get(id=sequence_id)
-                field.widget.in_use = set(sequence.windows.values_list('systems', flat=True))
+                window_systems = sequence.windows.values_list('systems', flat=True)
+                disabled_systems = System.objects.exclude(pk__in=window_systems)
+                field.widget.disabled = set(disabled_systems.values_list('pk', flat=True))
 
         return field
 
@@ -165,7 +167,8 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
 
         return link(
             window.get_admin_url(),
-            window.name
+            window.name,
+            new_page=True
         )
 
 

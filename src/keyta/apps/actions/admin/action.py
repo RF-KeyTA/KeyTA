@@ -107,10 +107,11 @@ class ActionAdmin(ActionAdminMixin, CloneModelAdminMixin, WindowKeywordAdmin):
 
             if action_id := request.resolver_match.kwargs.get('object_id'):
                 action = Action.objects.get(id=action_id)
-                field.widget.in_use = (
-                    set(action.windows.values_list('systems', flat=True)).union(
-                    set(System.objects.filter(attach_to_system=action).values_list('pk', flat=True)))
-                )
+                window_systems = action.windows.values_list('systems', flat=True)
+
+                if window_systems.exists():
+                    disabled_systems = System.objects.exclude(pk__in=window_systems)
+                    field.widget.disabled = set(disabled_systems.values_list('pk', flat=True))
 
         return field
 

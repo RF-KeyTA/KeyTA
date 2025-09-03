@@ -133,7 +133,11 @@ class VariableAdmin(SortableAdminBase, BaseAdmin):
 
             if variable_id := request.resolver_match.kwargs.get('object_id'):
                 variable = Variable.objects.get(id=variable_id)
-                field.widget.in_use = set(variable.windows.values_list('systems', flat=True))
+                window_systems = variable.windows.values_list('systems__pk', flat=True)
+
+                if window_systems.exists():
+                    disabled_systems = System.objects.exclude(pk__in=window_systems)
+                    field.widget.disabled = set(disabled_systems.values_list('pk', flat=True))
 
         return field
 

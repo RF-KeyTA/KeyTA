@@ -165,6 +165,9 @@ class CustomCheckboxSelectMultiple(CheckboxSelectMultiple):
         if hasattr(self, 'in_use') and value in self.in_use:
             option['attrs'].update({'onClick': 'return false'})
 
+        if hasattr(self, 'disabled') and value in self.disabled:
+            option['attrs'].update({'disabled': 'true'})
+
         return option
 
 
