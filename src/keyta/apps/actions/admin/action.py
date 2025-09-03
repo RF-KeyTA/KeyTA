@@ -113,6 +113,11 @@ class ActionAdmin(ActionAdminMixin, CloneModelAdminMixin, WindowKeywordAdmin):
                     disabled_systems = System.objects.exclude(pk__in=window_systems)
                     field.widget.disabled = set(disabled_systems.values_list('pk', flat=True))
 
+                attach_to_systems = System.objects.filter(attach_to_system=action).values_list('pk', flat=True)
+
+                if attach_to_systems.exists():
+                    field.widget.in_use = set(attach_to_systems)
+
         return field
 
     def get_fields(self, request, obj=None):
