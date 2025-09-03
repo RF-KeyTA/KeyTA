@@ -178,7 +178,8 @@ class VariableAdmin(SortableAdminBase, BaseAdmin):
 
         return link(
             window.get_admin_url(),
-            window.name
+            window.name,
+            new_page=True
         )
 
 
