@@ -158,8 +158,8 @@ class VariableAdmin(SortableAdminBase, BaseAdmin):
                 window_systems = variable.windows.values_list('systems__pk', flat=True)
 
                 if window_systems.exists():
-                    disabled_systems = System.objects.exclude(pk__in=window_systems)
-                    field.widget.disabled = set(disabled_systems.values_list('pk', flat=True))
+                    field.queryset = field.queryset.filter(pk__in=window_systems)
+                    field.widget.in_use = set(window_systems)
 
         return field
 

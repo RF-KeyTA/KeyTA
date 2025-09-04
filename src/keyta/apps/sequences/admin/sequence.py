@@ -17,7 +17,6 @@ from keyta.apps.keywords.admin import (
     WindowKeywordAdminMixin,
 )
 from keyta.apps.keywords.models import KeywordCallReturnValue
-from keyta.apps.systems.models import System
 from keyta.apps.windows.models import Window
 from keyta.forms.baseform import BaseForm
 from keyta.widgets import (
@@ -119,8 +118,7 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
             if sequence_id := request.resolver_match.kwargs.get('object_id'):
                 sequence = Sequence.objects.get(id=sequence_id)
                 window_systems = sequence.windows.values_list('systems', flat=True)
-                disabled_systems = System.objects.exclude(pk__in=window_systems)
-                field.widget.disabled = set(disabled_systems.values_list('pk', flat=True))
+                field.queryset = field.queryset.filter(pk__in=window_systems)
 
         return field
 
