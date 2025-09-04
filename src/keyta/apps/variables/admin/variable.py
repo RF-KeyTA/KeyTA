@@ -8,9 +8,8 @@ from adminsortable2.admin import SortableAdminBase
 
 from keyta.admin.base_admin import BaseAdmin, BaseQuickAddAdmin
 from keyta.admin.base_inline import (
-    BaseTabularInline,
     SortableTabularInlineWithDelete,
-    TabularInlineWithDelete,
+    TabularInlineWithDelete
 )
 from keyta.admin.list_filters import SystemListFilter, WindowListFilter
 from keyta.apps.keywords.models import TestStep
@@ -211,30 +210,14 @@ class VariableQuickAddAdmin(SortableAdminBase, BaseQuickAddAdmin):
         return field
 
 
-class DictionaryValues(BaseTabularInline):
-    fk_name = 'variable'
-    model = VariableValue
-    fields = ['name', 'value']
-    readonly_fields = ['name']
-    verbose_name = ''
-    verbose_name_plural = ''
-    max_num = 0
-
-    @admin.display(description=_('Wert'))
-    def current_value(self, variable_value: VariableValue):
-        return variable_value.current_value
-
-
 @admin.register(VariableQuickChange)
-class VariableQuickChangeAdmin(BaseAdmin):
+class VariableQuickChangeAdmin(SortableAdminBase, BaseAdmin):
     def get_fields(self, request, obj=None):
         return []
 
+    # Use this method in order to get rid of the "General" tab
     def get_inline_instances(self, request, obj=None):
-        inline_instances = super().get_inline_instances(request, obj)
-        inline_instances.append(DictionaryValues(self.model, self.admin_site))
-
-        return inline_instances
+        return [Values(self.model, self.admin_site)]
 
     def has_change_permission(self, request, obj=None):
         return True
