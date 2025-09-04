@@ -33,7 +33,7 @@ class Variable(AbstractBaseModel):
     )
     type = models.CharField(
         max_length=255,
-        choices=VariableType.choices,
+        choices=sorted(VariableType.choices, key=lambda kv: kv[1]),
         default=VariableType.DICT,
         verbose_name=_('Art')
     )
