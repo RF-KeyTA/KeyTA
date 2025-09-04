@@ -8,7 +8,7 @@
                         <input type="{{ widget.type }}" name="{{ widget.name }}"{% if widget.value != None %} value="{{ widget.value|stringformat:'s' }}"{% endif %}{% include "django/forms/widgets/attrs.html" %}>
                     {% endwith %}
                 {% endfor %}
-                <a href="{{ group.url }}" target="_blank">{{ group.name }}<i class="ml-2 fa-solid fa-up-right-from-square" style="font-size: 0.7rem"></i></a>
+                {{ group.name }}
             </div>
         {% endfor %}
         </div>

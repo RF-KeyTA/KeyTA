@@ -184,7 +184,6 @@ class CheckboxSelectMultipleSystems(CheckboxSelectMultiple):
             optgroups[system.name] = {
                 'options': [option],
                 'name': system.name,
-                'url': system.get_admin_url()
             }
 
         return optgroups.items()
