@@ -9,7 +9,7 @@ from .variable_value import VariableValue
 
 class VariableType(models.TextChoices):
     DICT = 'DICT', _('Formular')
-    LIST = 'LIST', _('Tabelle')
+    LIST = 'LIST', _('Werteliste')
 
 
 class Variable(AbstractBaseModel):
