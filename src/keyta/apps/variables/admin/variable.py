@@ -1,10 +1,11 @@
 from django import forms
 from django.contrib import admin
+from django.core.exceptions import ValidationError
 from django.forms import ModelMultipleChoiceField
 from django.http import HttpRequest, HttpResponseRedirect
 from django.utils.translation import gettext_lazy as _
 
-from adminsortable2.admin import SortableAdminBase
+from adminsortable2.admin import SortableAdminBase, CustomInlineFormSet
 
 from keyta.admin.base_admin import BaseAdmin, BaseQuickAddAdmin
 from keyta.admin.base_inline import (
@@ -29,12 +30,24 @@ from ..models import (
 )
 
 
+class ValuesFormset(CustomInlineFormSet):
+    def clean(self):
+        names = set()
+
+        for form in self.forms:
+            name = form.cleaned_data.get('name')
+
+            if name and name in names:
+                raise ValidationError(_('Die Namen müssen eindeutig sein.'))
+
+            names.add(name)
+
+
 class Values(SortableTabularInlineWithDelete):
     fk_name = 'variable'
     model = VariableValue
-    fields = ['name', 'value']
     extra = 0
-    min_num = 1
+    formset = ValuesFormset
 
     def formfield_for_dbfield(self, db_field, request, **kwargs):
         field = super().formfield_for_dbfield(db_field, request, **kwargs)
@@ -46,6 +59,15 @@ class Values(SortableTabularInlineWithDelete):
             })
 
         return field
+
+    def get_fields(self, request, obj=None):
+        fields: list = super().get_fields(request, obj)
+        variable: Variable = obj
+
+        if variable and variable.is_list():
+            fields.pop(fields.index('name'))
+
+        return fields
 
     def has_delete_permission(self, request, obj=None):
         return self.can_change(request.user, 'variable')

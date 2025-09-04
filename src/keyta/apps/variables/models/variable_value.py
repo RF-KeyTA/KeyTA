@@ -40,12 +40,6 @@ class VariableValue(AbstractBaseModel):
             super().save(force_insert, force_update, using, update_fields)
 
     class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=['variable', 'name'],
-                name='unique_variable_value_name'
-            )
-        ]
         ordering = ['index']
         verbose_name = _('Wert')
         verbose_name_plural = _('Werte')
