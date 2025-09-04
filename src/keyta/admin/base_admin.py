@@ -203,7 +203,7 @@ class BaseQuickAddAdmin(BaseAdmin):
     fields = ['systems', 'windows', 'name']
 
     def add_view(self, request, form_url='', extra_context=None):
-        if request.POST and 'ref' in request.GET:
+        if request.POST and '_popup' in request.GET:
             response = super().add_view(request, form_url, extra_context)
 
             if hasattr(response, 'context_data') and response.context_data.get('errors'):
@@ -212,9 +212,18 @@ class BaseQuickAddAdmin(BaseAdmin):
                 response = """
                 <script>
                 (function() {
-                    window.parent.dismissRelatedObjectModal()
-                    new Promise(r => setTimeout(r, 500));
-                    window.parent.location.reload()
+                    const modals = window.parent.document.querySelectorAll('.modal-dialog')
+
+                    if (modals.length === 2) {
+                        window.parent.dismissRelatedObjectModal()
+                        const iframe = window.parent.document.getElementById('related-modal-iframe')
+                        iframe.contentWindow.location.reload()
+                    }
+
+                    if (modals.length === 1) {
+                        window.parent.dismissRelatedObjectModal()
+                        window.parent.location.reload()
+                    }
                 })();
                 </script>
                 """
