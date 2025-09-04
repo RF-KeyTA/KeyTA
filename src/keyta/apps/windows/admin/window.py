@@ -138,6 +138,8 @@ class WindowQuickAddAdmin(BaseQuickAddAdmin):
 
 
 class VariablesQuickChange(Variables):
+    readonly_fields = []
+
     def has_change_permission(self, request, obj=None):
         return True
 
