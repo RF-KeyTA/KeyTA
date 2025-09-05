@@ -146,5 +146,5 @@ class KeywordCallParameter(CloneMixin, AbstractBaseModel):
 
     class Meta:
         ordering = ['parameter__position']
-        verbose_name = _('Parameter')
-        verbose_name_plural = _('Parameters')
+        verbose_name = _('Eingabewert')
+        verbose_name_plural = _('Eingabewerte')
