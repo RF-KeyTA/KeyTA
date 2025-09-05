@@ -39,13 +39,23 @@ class DynamicChoiceField(forms.CharField):
         ).jsonify()
 
 
+empty_input = JSONValue(
+    arg_name=None,
+    kw_call_index=None,
+    pk=None,
+    user_input='${EMPTY}'
+).jsonify(), _('leer')
+
+no_input = None, _('Kein Wert')
+
+
 def user_input_field(placeholder: str, user_input: tuple, choices: list = None):
     return DynamicChoiceField(
         widget=BaseSelect(
             placeholder,
             choices=(
                 [(None, _('Kein Wert'))] +
-                [[_('Eingabe'), [user_input]]] +
+                [[_('Eingabe'), [user_input, empty_input]]] +
                 (choices or [])
             ),
             attrs={
@@ -57,8 +67,6 @@ def user_input_field(placeholder: str, user_input: tuple, choices: list = None):
 
 
 class UserInputFormset(forms.BaseInlineFormSet):
-    empty_input = None, _('Kein Wert')
-
     def __init__(
         self,
         data=None,
@@ -88,9 +96,8 @@ class UserInputFormset(forms.BaseInlineFormSet):
 
         if json_value and not json_value.pk:
             user_input = json_value.user_input
-            if not user_input:
-                return self.empty_input
-            else:
+
+            if user_input and user_input != '${EMPTY}':
                 return json_value.jsonify(), user_input
 
-        return self.empty_input
+        return no_input
