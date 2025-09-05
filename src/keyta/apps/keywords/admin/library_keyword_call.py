@@ -2,17 +2,16 @@ from django.conf import settings
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 
-from keyta.admin.base_inline import TabularInlineWithDelete
 from keyta.widgets import Icon, link
 
-from ..forms import KeywordCallConditionFormset, LibraryKeywordCallParameterFormset
+from ..forms import LibraryKeywordCallParameterFormset
 from ..models import (
     KeywordCall,
-    KeywordCallCondition,
     KeywordCallParameter,
     LibraryKeywordCall,
     LibraryKeywordCallParameter
 )
+from .conditions_inline import ConditionsInline
 from .keywordcall import KeywordCallAdmin, KeywordDocField
 from .keywordcall_parameters_inline import KeywordCallParametersInline
 
@@ -45,29 +44,6 @@ class LibraryKeywordCallParametersInline(KeywordCallParametersInline):
             return link(url, str(icon))
         else:
             return ''
-
-
-class ConditionsInline(TabularInlineWithDelete):
-    model = KeywordCallCondition
-    fields = ['value_ref', 'condition', 'expected_value']
-    formset = KeywordCallConditionFormset
-
-    def has_add_permission(self, request, obj=None):
-        return self.has_change_permission(request, obj)
-
-    def has_change_permission(self, request, obj=None):
-        keywordcall: KeywordCall = obj
-
-        if keywordcall and keywordcall.testcase:
-            return self.can_change(request.user, 'testcase')
-
-        if keywordcall and keywordcall.from_keyword:
-            return self.can_change(request.user, 'action') or self.can_change(request.user, 'sequence')
-
-        return super().has_change_permission(request, obj)
-
-    def has_delete_permission(self, request, obj=None):
-        return self.has_change_permission(request, obj)
 
 
 @admin.register(LibraryKeywordCall)
