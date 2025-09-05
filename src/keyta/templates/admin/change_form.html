@@ -260,7 +260,7 @@
                         $.post(url, $('form').serialize() + "&_continue=")
                     }
                 })
-                
+
                 $(document).on('shown.bs.modal', '.modal', function (event) {
                     const modal = $(event.target)
                     const iframe = $('iframe', modal)
@@ -341,6 +341,15 @@
                     }
                     else {
                         $(save_button).click()
+                    }
+                })
+
+                selects.on('select2:clearing', function (event) {
+                    event.preventDefault()
+                    const result = confirm('{% trans "Sicher?" %}')
+
+                    if (result) {
+                        django.jQuery(event.target).val(null).trigger('change');
                     }
                 })
 

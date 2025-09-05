@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-05 10:41+0200\n"
+"POT-Creation-Date: 2025-09-05 16:55+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -399,6 +399,7 @@ msgid "Referenzwerte"
 msgstr "Reference Values"
 
 #: .\apps\keywords\forms\keywordcall_condition_formset.py:18
+#: .\apps\keywords\forms\user_input_formset.py:47
 msgid "leer"
 msgstr "empty"
 
@@ -425,8 +426,8 @@ msgid "Wert auswählen oder eintragen"
 msgstr "Select or enter a Value"
 
 #: .\apps\keywords\forms\library_keywordcall_parameter_formset.py:91
-#: .\apps\keywords\forms\user_input_formset.py:47
-#: .\apps\keywords\forms\user_input_formset.py:60
+#: .\apps\keywords\forms\user_input_formset.py:49
+#: .\apps\keywords\forms\user_input_formset.py:57
 msgid "Kein Wert"
 msgstr "No Value"
 
@@ -449,7 +450,7 @@ msgstr "Select a Sequence"
 msgid "Referenzwert auswählen"
 msgstr "Select a Reference Value"
 
-#: .\apps\keywords\forms\user_input_formset.py:48
+#: .\apps\keywords\forms\user_input_formset.py:58
 msgid "Eingabe"
 msgstr "Input"
 
@@ -922,6 +923,10 @@ msgstr ""
 #: .\templates\admin\change_form.html:71 .\templates\admin\change_list.html:65
 msgid "Please correct the errors below."
 msgstr ""
+
+#: .\templates\admin\change_form.html:349
+msgid "Sicher?"
+msgstr "Are you sure?"
 
 #: .\templates\admin\delete_confirmation.html:18
 #: .\templates\admin\delete_confirmation.html:22
