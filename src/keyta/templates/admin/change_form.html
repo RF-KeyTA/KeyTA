@@ -324,12 +324,16 @@
 
                     // Reload the page when the name changes in order to validate the form
                     // This can be avoided using HTMX to swap the inline form
-                    if (input.attr('name').endsWith('name')) {
-                        $(save_button).click()
-                    }
-                    else {
-                        $.post(url, $('form').serialize() + "&_continue=")
-                    }
+                    if (url.includes('_popup')) {
+                         $.post(
+                             url,
+                             $('form').serialize() + "&_continue=",
+                             function() { window.location.reload() }
+                         )
+                     }
+                     else {
+                         $(save_button).click()
+                     }
                 })
 
                 // Selects in a saved form of a formset
