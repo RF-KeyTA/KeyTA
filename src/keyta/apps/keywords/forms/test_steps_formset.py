@@ -77,6 +77,9 @@ class TestStepsFormset(CustomInlineFormSet):
                         to_keyword_field.widget,
                         url_params={'tab_name': test_step.get_tab_url().removeprefix('#')}
                     )
+                    to_keyword_field.widget.attrs.update({
+                        'data-allow-clear': 'true'
+                    })
 
                 # if not test_step.variable:
                 #     variable_field.widget.can_change_related = False
