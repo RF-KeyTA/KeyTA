@@ -21,10 +21,10 @@ class StepsInline(
     def has_delete_permission(self, request, obj=None):
         keyword: Keyword = obj
 
-        if keyword.is_action:
+        if keyword and keyword.is_action:
             return self.can_change(request.user, 'action')
 
-        if keyword.is_sequence:
+        if keyword and keyword.is_sequence:
             self.can_change(request.user, 'sequence')
 
         return super().has_delete_permission(request, obj)
