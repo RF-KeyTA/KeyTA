@@ -576,11 +576,11 @@ msgstr ""
 
 #: .\apps\keywords\models\keywordcall_parameters.py:149
 msgid "Eingabewert"
-msgstr "Input value"
+msgstr ""
 
 #: .\apps\keywords\models\keywordcall_parameters.py:150
 msgid "Eingabewerte"
-msgstr "Input values"
+msgstr ""
 
 #: .\apps\keywords\models\keywordcall_return_value.py:48
 msgid "Kein Rückgabewert"
@@ -754,11 +754,11 @@ msgstr ""
 
 #: .\apps\variables\admin\variable.py:41
 msgid "Die Namen müssen eindeutig sein."
-msgstr "The names must be unique."
+msgstr ""
 
 #: .\apps\variables\admin\variable.py:58
 msgid "Wert eintragen, anschließend Tab drücken"
-msgstr "Enter a value and then press Tab"
+msgstr ""
 
 #: .\apps\variables\forms.py:22
 #, python-brace-format
@@ -778,7 +778,7 @@ msgstr ""
 
 #: .\apps\variables\models\variable.py:12
 msgid "Werteliste"
-msgstr "List of values"
+msgstr ""
 
 #: .\apps\variables\models\variable.py:32
 msgid "Vorlage"
