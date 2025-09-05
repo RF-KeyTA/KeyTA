@@ -5,6 +5,7 @@ from dataclasses import dataclass
 class Icons:
     action:str = 'fa-solid fa-cubes-stacked'
     clone: str = 'fa-solid fa-copy'
+    condition: str = 'fa-solid fa-code-fork'
     delete: str = 'fa-solid fa-trash-can'
     delete_rel: str = 'fa-solid fa-trash'
     edit: str = 'fa-solid fa-pencil'
