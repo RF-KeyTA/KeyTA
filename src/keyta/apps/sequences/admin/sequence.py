@@ -200,24 +200,11 @@ class SequenceQuickAddAdmin(WindowKeywordAdminMixin, BaseQuickAddAdmin):
     form = QuickAddSequenceForm
 
 
-class QuickChangeStepsFormset(SequenceStepsFormset):
-    def add_fields(self, form, index):
-        super().add_fields(form, index)
-
-        # The index of an extra form is None
-        if index is None:
-            form.fields['to_keyword'].widget.can_add_related = False
-
-
-class QuickChangeSteps(SequenceSteps):
-    formset = QuickChangeStepsFormset
-
-
 @admin.register(SequenceQuickChange)
 class SequenceQuickChangeAdmin(WindowKeywordAdmin):
     fields = []
     readonly_fields = ['documentation']
-    inlines = [ParametersInline, QuickChangeSteps]
+    inlines = [ParametersInline, SequenceSteps]
 
     def change_view(self, request, object_id, form_url="", extra_context=None):
         return super().change_view(request, object_id, form_url, extra_context or {'title_icon': settings.FA_ICONS.sequence})
