@@ -70,7 +70,7 @@ class WindowAdmin(DocumentationField, BaseAdmin):
     ]
 
     def change_view(self, request: HttpRequest, object_id, form_url="", extra_context=None):
-        if 'quick_change' in request.GET:
+        if '_popup' in request.GET:
             window = WindowQuickChange.objects.get(pk=object_id)
             return HttpResponseRedirect(window.get_admin_url() + '?_popup=1')
 
@@ -157,6 +157,9 @@ class TemplateVariables(Variables):
 class WindowQuickChangeAdmin(WindowAdmin):
     fields = []
     readonly_fields = ['documentation']
+
+    def change_view(self, request, object_id, form_url="", extra_context=None):
+        return self.changeform_view(request, object_id, form_url, extra_context or {'title_icon': settings.FA_ICONS.window})
 
     def get_inlines(self, request, obj):
         if Variable.objects.filter(~Q(template='')).exists():

@@ -3,7 +3,7 @@ from django.conf import settings
 from django.contrib import admin
 from django.forms import ModelMultipleChoiceField
 from django.http import HttpResponseRedirect
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext as _
 
 from model_clone import CloneModelAdminMixin
 
@@ -16,6 +16,7 @@ from keyta.apps.keywords.admin import (
     WindowKeywordAdmin,
     WindowKeywordAdminMixin,
 )
+from keyta.apps.keywords.admin.keyword import url_params
 from keyta.apps.keywords.models import KeywordCallReturnValue
 from keyta.apps.windows.models import Window
 from keyta.forms.baseform import BaseForm
@@ -98,9 +99,9 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
     ]
 
     def change_view(self, request, object_id, form_url="", extra_context=None):
-        if 'quick_change' in request.GET:
+        if '_popup' in request.GET:
             sequence = SequenceQuickChange.objects.get(pk=object_id)
-            return HttpResponseRedirect(sequence.get_admin_url() + '?_popup=1' + '#' + request.GET['tab_name'])
+            return HttpResponseRedirect(sequence.get_admin_url() + '?' + url_params(request.GET) + '#%s-tab' % _('Schritte').lower())
 
         return super().change_view(request, object_id, form_url=form_url, extra_context=extra_context)
 
