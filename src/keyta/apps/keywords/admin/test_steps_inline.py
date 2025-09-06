@@ -19,7 +19,12 @@ class TestStepsInline(
     formset = TestStepsFormset
 
     def get_queryset(self, request):
-        return super().get_queryset(request).select_related('to_keyword')
+        return (
+            super().get_queryset(request)
+            .select_related('to_keyword')
+            .prefetch_related('to_keyword__parameters')
+            .prefetch_related('to_keyword__return_values')
+        )
 
     def has_delete_permission(self, request, obj=None):
         return self.can_change(request.user, 'testcase')
