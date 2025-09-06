@@ -106,6 +106,7 @@ class Keyword(DocumentationMixin, AbstractBaseModel):
         args = self.parameters.args()
         kwargs = self.parameters.kwargs()
         return_values = self.return_values.all()
+        steps = self.calls.exclude(Q(to_keyword__isnull=True) | Q(enabled=False))
 
         return {
             'name': self.id_name,
@@ -114,8 +115,7 @@ class Keyword(DocumentationMixin, AbstractBaseModel):
             'kwargs': {kwarg.name: kwarg.default_value for kwarg in kwargs},
             'steps': [
                 step.to_robot(get_variable_value)
-                for step in self.calls.all()
-                if step.enabled and step.to_keyword
+                for step in steps
             ],
             'return_values': [f'${{{return_value}}}' for return_value in return_values]
         }
