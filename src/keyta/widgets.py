@@ -59,11 +59,12 @@ def url_query_parameters(query_parameters: dict):
 
 
 class Icon:
-    def __init__(self, css_class: str, styles: dict[str, str]=None):
+    def __init__(self, css_class: str, styles: dict[str, str]=None, title=None):
         self.tag = 'i'
-        self.attrs =  attrs_to_string({
+        self.attrs = attrs_to_string({
             'class': css_class,
-            'style': style_to_css({'font-size': '36px'} | (styles or {}))
+            'style': style_to_css({'font-size': '36px'} | (styles or {})),
+            'title': title or ''
         })
         self.body = ''
 
