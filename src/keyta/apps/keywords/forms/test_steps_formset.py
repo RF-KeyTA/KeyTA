@@ -21,10 +21,10 @@ class TestStepsFormset(CustomInlineFormSet):
         super().__init__(default_order_direction, default_order_field, **kwargs)
         self.testcase: TestCase = kwargs['instance']
         # Perform all DB queries once when the formset is initialized
-        self.systems = self.testcase.systems.all()
+        self.system_pks = list(self.testcase.systems.values_list('pk', flat=True))
         self.windows = (
             Window.objects
-            .filter(systems__in=self.systems)
+            .filter(systems__in=self.system_pks)
             .distinct()
         )
         self.resource_ids = (
@@ -33,6 +33,10 @@ class TestStepsFormset(CustomInlineFormSet):
             .values_list('resource')
             .distinct()
         )
+        self.to_keyword = (
+            Keyword.objects.sequences().filter(systems__in=self.system_pks) |
+            Keyword.objects.filter(resource__in=self.resource_ids)
+        ).distinct().order_by('name')
 
     def add_fields(self, form, index):
         super().add_fields(form, index)
@@ -50,7 +54,7 @@ class TestStepsFormset(CustomInlineFormSet):
             window_field.widget = CustomRelatedFieldWidgetWrapper(
                 window_field.widget,
                 None,
-                {'systems': self.testcase.systems.first().pk}
+                {'systems': self.system_pks[0]}
             )
             window_field.widget.can_add_related = True
             window_field.widget.attrs.update({
@@ -66,7 +70,7 @@ class TestStepsFormset(CustomInlineFormSet):
                         to_keyword_field.widget,
                         reverse('admin:sequences_sequencequickadd_add'),
                         {
-                            'systems': self.testcase.systems.first().pk,
+                            'systems': self.system_pks[0],
                             'windows': test_step.window.pk
                         }
                     )
@@ -92,10 +96,7 @@ class TestStepsFormset(CustomInlineFormSet):
                 #     variable_field.widget = LabelWidget()
 
         # Set the querysets after replacing the widgets
-        to_keyword_field.queryset = (
-            Keyword.objects.sequences().filter(systems__in=self.systems) |
-            Keyword.objects.filter(resource__in=self.resource_ids)
-        ).distinct().order_by('name')
+        to_keyword_field.queryset = self.to_keyword
         # variable_field.queryset = (
         #     variable_field.queryset
         #     .filter(systems__in=self.systems)
