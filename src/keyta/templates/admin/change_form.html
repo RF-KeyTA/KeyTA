@@ -292,6 +292,10 @@
 
                     row.find('input[type=text]').first().focus()
 
+                    if (selects.length === 2) {
+                        $(selects[1]).prop('disabled', true)
+                    }
+
                     if (selects.length === 3) {
                         $(selects[1]).prop('disabled', true)
                         $(selects[2]).prop('disabled', true)
