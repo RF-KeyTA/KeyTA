@@ -1,6 +1,7 @@
 from django import forms
 from django.conf import settings
 from django.contrib import admin
+from django.db.models import Q
 from django.forms import ModelMultipleChoiceField
 from django.http import HttpRequest, HttpResponseRedirect
 from django.utils.translation import gettext_lazy as _
@@ -13,11 +14,11 @@ from keyta.admin.base_admin import (
 from keyta.admin.field_documentation import DocumentationField
 from keyta.admin.list_filters import SystemListFilter
 from keyta.apps.resources.models import Resource
-from keyta.apps.systems.models import System
+from keyta.apps.variables.models import Variable
 from keyta.forms.baseform import form_with_select
 from keyta.widgets import CheckboxSelectMultipleSystems, Icon, open_link_in_modal
 
-from ..forms import WindowForm
+from ..forms import TemplateVariablesFormset, WindowForm
 from ..models import (
     Window,
     WindowDocumentation,
@@ -137,8 +138,20 @@ class WindowQuickAddAdmin(BaseQuickAddAdmin):
         return field
 
 
-class VariablesQuickChange(Variables):
+class WindowVariables(Variables):
     readonly_fields = []
+
+    def has_change_permission(self, request, obj=None):
+        return True
+
+
+class TemplateVariables(Variables):
+    formset = TemplateVariablesFormset
+    verbose_name = _('Dynamisches Wert')
+    verbose_name_plural = _('Dynamische Werte')
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).exclude(variable__template='')
 
     def has_change_permission(self, request, obj=None):
         return True
@@ -150,7 +163,10 @@ class WindowQuickChangeAdmin(WindowAdmin):
     readonly_fields = ['documentation']
 
     def get_inlines(self, request, obj):
-        inlines = [VariablesQuickChange]
+        if Variable.objects.filter(~Q(template='')).exists():
+            inlines = [WindowVariables, TemplateVariables]
+        else:
+            inlines = [WindowVariables]
 
         if Resource.objects.count():
             return [Resources] + inlines

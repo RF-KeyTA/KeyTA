@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-05 16:55+0200\n"
+"POT-Creation-Date: 2025-09-06 12:12+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -51,7 +51,7 @@ msgstr "Keywords"
 #: .\apps\testcases\models.py:17 .\apps\variables\admin\variable.py:116
 #: .\apps\variables\models\variable.py:16
 #: .\apps\variables\models\variable_value.py:17
-#: .\apps\windows\admin\window.py:42 .\apps\windows\models.py:20
+#: .\apps\windows\admin\window.py:43 .\apps\windows\models.py:20
 #: .\models\keyword_source.py:300
 msgid "Name"
 msgstr "Name"
@@ -70,7 +70,7 @@ msgstr "Window-independent"
 #: .\apps\keywords\models\keywordcall.py:101
 #: .\apps\resources\admin\resource_import.py:20
 #: .\apps\sequences\admin\sequence.py:172 .\apps\variables\admin\variable.py:81
-#: .\apps\variables\admin\variable.py:89 .\apps\variables\admin\variable.py:201
+#: .\apps\variables\admin\variable.py:89 .\apps\variables\admin\variable.py:203
 #: .\apps\windows\models.py:58 .\apps\windows\models.py:72
 #: .\apps\windows\models.py:79
 msgid "Maske"
@@ -93,7 +93,7 @@ msgstr "An action with this name already exists in the system \"{system}\""
 #: .\apps\variables\admin\variable.py:154
 #: .\apps\variables\models\variable.py:27
 #: .\apps\windows\admin\variables_inline.py:46
-#: .\apps\windows\admin\window.py:51 .\apps\windows\admin\window.py:90
+#: .\apps\windows\admin\window.py:52 .\apps\windows\admin\window.py:91
 #: .\apps\windows\admin\window_keyword_inline.py:12 .\apps\windows\models.py:18
 msgid "Systeme"
 msgstr "Systems"
@@ -447,6 +447,7 @@ msgid "Sequenz auswählen"
 msgstr "Select a Sequence"
 
 #: .\apps\keywords\forms\test_steps_form.py:32
+#: .\apps\windows\forms\template_variables_formset.py:35
 msgid "Referenzwert auswählen"
 msgstr "Select a Reference Value"
 
@@ -721,7 +722,7 @@ msgid ""
 msgstr ""
 "A sequence with this name already exists in the window \"{window.name}\""
 
-#: .\apps\sequences\admin\sequence.py:84 .\apps\windows\admin\window.py:61
+#: .\apps\sequences\admin\sequence.py:84 .\apps\windows\admin\window.py:62
 msgid "System hinzufügen"
 msgstr "Add a System"
 
@@ -805,9 +806,17 @@ msgstr ""
 msgid "Ressource auswählen"
 msgstr "Select a Resource"
 
-#: .\apps\windows\admin\window.py:44
+#: .\apps\windows\admin\window.py:45
 msgid "Vorschau"
 msgstr "Preview"
+
+#: .\apps\windows\admin\window.py:150
+msgid "Dynamisches Wert"
+msgstr "Dynamic value"
+
+#: .\apps\windows\admin\window.py:151
+msgid "Dynamische Werte"
+msgstr "Dynamic values"
 
 #: .\apps\windows\forms\window_form.py:20
 #, python-brace-format
@@ -924,7 +933,7 @@ msgstr ""
 msgid "Please correct the errors below."
 msgstr ""
 
-#: .\templates\admin\change_form.html:349
+#: .\templates\admin\change_form.html:365
 msgid "Sicher?"
 msgstr "Are you sure?"
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-05 10:38+0200\n"
+"POT-Creation-Date: 2025-09-06 12:12+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -52,7 +52,7 @@ msgstr ""
 #: .\apps\testcases\models.py:17 .\apps\variables\admin\variable.py:116
 #: .\apps\variables\models\variable.py:16
 #: .\apps\variables\models\variable_value.py:17
-#: .\apps\windows\admin\window.py:42 .\apps\windows\models.py:20
+#: .\apps\windows\admin\window.py:43 .\apps\windows\models.py:20
 #: .\models\keyword_source.py:300
 msgid "Name"
 msgstr ""
@@ -71,7 +71,7 @@ msgstr ""
 #: .\apps\keywords\models\keywordcall.py:101
 #: .\apps\resources\admin\resource_import.py:20
 #: .\apps\sequences\admin\sequence.py:172 .\apps\variables\admin\variable.py:81
-#: .\apps\variables\admin\variable.py:89 .\apps\variables\admin\variable.py:201
+#: .\apps\variables\admin\variable.py:89 .\apps\variables\admin\variable.py:203
 #: .\apps\windows\models.py:58 .\apps\windows\models.py:72
 #: .\apps\windows\models.py:79
 msgid "Maske"
@@ -94,7 +94,7 @@ msgstr ""
 #: .\apps\variables\admin\variable.py:154
 #: .\apps\variables\models\variable.py:27
 #: .\apps\windows\admin\variables_inline.py:46
-#: .\apps\windows\admin\window.py:51 .\apps\windows\admin\window.py:90
+#: .\apps\windows\admin\window.py:52 .\apps\windows\admin\window.py:91
 #: .\apps\windows\admin\window_keyword_inline.py:12 .\apps\windows\models.py:18
 msgid "Systeme"
 msgstr ""
@@ -391,6 +391,7 @@ msgid "Referenzwerte"
 msgstr ""
 
 #: .\apps\keywords\forms\keywordcall_condition_formset.py:18
+#: .\apps\keywords\forms\user_input_formset.py:47
 msgid "leer"
 msgstr ""
 
@@ -415,8 +416,8 @@ msgid "Wert auswählen oder eintragen"
 msgstr ""
 
 #: .\apps\keywords\forms\library_keywordcall_parameter_formset.py:91
-#: .\apps\keywords\forms\user_input_formset.py:47
-#: .\apps\keywords\forms\user_input_formset.py:60
+#: .\apps\keywords\forms\user_input_formset.py:49
+#: .\apps\keywords\forms\user_input_formset.py:57
 msgid "Kein Wert"
 msgstr ""
 
@@ -436,10 +437,11 @@ msgid "Sequenz auswählen"
 msgstr ""
 
 #: .\apps\keywords\forms\test_steps_form.py:32
+#: .\apps\windows\forms\template_variables_formset.py:35
 msgid "Referenzwert auswählen"
 msgstr ""
 
-#: .\apps\keywords\forms\user_input_formset.py:48
+#: .\apps\keywords\forms\user_input_formset.py:58
 msgid "Eingabe"
 msgstr ""
 
@@ -709,7 +711,7 @@ msgid ""
 "name}\""
 msgstr ""
 
-#: .\apps\sequences\admin\sequence.py:84 .\apps\windows\admin\window.py:61
+#: .\apps\sequences\admin\sequence.py:84 .\apps\windows\admin\window.py:62
 msgid "System hinzufügen"
 msgstr ""
 
@@ -792,8 +794,16 @@ msgstr ""
 msgid "Ressource auswählen"
 msgstr ""
 
-#: .\apps\windows\admin\window.py:44
+#: .\apps\windows\admin\window.py:45
 msgid "Vorschau"
+msgstr ""
+
+#: .\apps\windows\admin\window.py:150
+msgid "Dynamisches Wert"
+msgstr ""
+
+#: .\apps\windows\admin\window.py:151
+msgid "Dynamische Werte"
 msgstr ""
 
 #: .\apps\windows\forms\window_form.py:20
@@ -910,6 +920,10 @@ msgstr "Bitte den unten aufgeführten Fehler korrigieren."
 #: .\templates\admin\change_form.html:71 .\templates\admin\change_list.html:65
 msgid "Please correct the errors below."
 msgstr "Bitte die unten aufgeführten Fehler korrigieren."
+
+#: .\templates\admin\change_form.html:365
+msgid "Sicher?"
+msgstr ""
 
 #: .\templates\admin\delete_confirmation.html:18
 #: .\templates\admin\delete_confirmation.html:22
