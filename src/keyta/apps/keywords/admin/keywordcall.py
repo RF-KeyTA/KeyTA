@@ -18,6 +18,7 @@ from ..models import (
     LibraryKeywordCall,
     TestStep
 )
+from .keyword import url_params
 from .keywordcall_parameters_inline import KeywordCallParametersInline
 from .keywordcall_return_value_inline import KeywordCallReturnValueInline, ReadOnlyReturnValuesInline
 
@@ -89,15 +90,15 @@ class KeywordCallAdmin(BaseAdmin):
         if kw_call.from_keyword:
             if kw_call.from_keyword.is_action:
                 library_kw_call = LibraryKeywordCall.objects.get(id=kw_call.pk)
-                return HttpResponseRedirect(library_kw_call.get_admin_url())
+                return HttpResponseRedirect(library_kw_call.get_admin_url()  + '?' + url_params(request.GET))
 
             if kw_call.from_keyword.is_sequence:
                 sequence_step = SequenceStep.objects.get(pk=kw_call.pk)
-                return HttpResponseRedirect(sequence_step.get_admin_url())
+                return HttpResponseRedirect(sequence_step.get_admin_url()  + '?' + url_params(request.GET))
 
         if kw_call.testcase:
             test_step = TestStep.objects.get(pk=kw_call.pk)
-            return HttpResponseRedirect(test_step.get_admin_url())
+            return HttpResponseRedirect(test_step.get_admin_url()  + '?' + url_params(request.GET))
 
         return super().change_view(request, object_id, form_url, extra_context)
 
