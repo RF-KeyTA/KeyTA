@@ -23,7 +23,10 @@ class VariableValue(AbstractBaseModel):
     )
 
     def __str__(self):
-        return self.name
+        if self.name:
+            return self.name
+        else:
+            return self.value
 
     @property
     def current_value(self):
