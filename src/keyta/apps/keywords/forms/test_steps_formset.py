@@ -39,12 +39,14 @@ class TestStepsFormset(CustomInlineFormSet):
 
         test_step: KeywordCall = form.instance
 
+        execute_field = form.fields['execute']
         to_keyword_field = form.fields['to_keyword']
         # variable_field = form.fields['variable']
         window_field = form.fields['window']
 
         # The index of extra forms is None
         if index is None:
+            execute_field.widget.attrs.update({'disabled': 'disabled'})
             window_field.widget = CustomRelatedFieldWidgetWrapper(
                 window_field.widget,
                 None,

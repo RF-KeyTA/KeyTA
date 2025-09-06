@@ -82,12 +82,19 @@ class TestCase(DocumentationMixin, CloneMixin, AbstractBaseModel):
         super().save(force_insert, force_update, using, update_fields)
 
     def to_robot(self, get_variable_value) -> RFTestCase:
+        execute_from = 0
+
+        if execute_step := self.steps.filter(execute=True).first():
+            execute_from = execute_step.index
+
+        test_steps = self.steps.filter(index__gte=execute_from).exclude(to_keyword__isnull=True)
+
         return {
             'name': self.name,
             'doc': self.robot_documentation(),
             'steps': [
                 test_step.to_robot(get_variable_value)
-                for test_step in self.steps.filter(enabled=True).filter(to_keyword__isnull=False)
+                for test_step in test_steps
             ]
         }
 

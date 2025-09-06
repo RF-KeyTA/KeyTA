@@ -13,7 +13,7 @@ class TestStepsInline(
 ):
     model = KeywordCall
     fk_name = 'testcase'
-    fields = ['window', 'to_keyword']
+    fields = ['execute', 'window', 'to_keyword']
     extra = 0 # necessary for saving, since to_keyword is not nullable and is null in an extra
     form = TestStepsForm
     formset = TestStepsFormset

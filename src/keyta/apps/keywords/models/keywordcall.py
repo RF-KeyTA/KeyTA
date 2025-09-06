@@ -70,6 +70,10 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
         default=True,
         verbose_name=''
     )
+    execute = models.BooleanField(
+        default=False,
+        verbose_name='▶'
+    )
     index = models.PositiveSmallIntegerField(
         default=0,
         db_index=True
