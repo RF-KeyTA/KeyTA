@@ -2,6 +2,7 @@ from django.conf import settings
 from django.contrib import admin
 from django.http import HttpRequest
 from django.utils.safestring import mark_safe
+from django.utils.translation import gettext_lazy as _
 
 from keyta.admin.base_inline import DeleteRelatedField, SortableTabularInline
 from keyta.widgets import Icon
@@ -20,9 +21,17 @@ class StepsInline(
 ):
     model = KeywordCall
     fk_name = 'from_keyword'
-    fields = ['condition', 'to_keyword']
+    fields = ['to_keyword']
     form = StepsForm
     extra = 0
+
+    def get_fields(self, request, obj=None):
+        keyword: Keyword = obj
+
+        if keyword and keyword.calls.filter(conditions__isnull=False).exists():
+            return ['condition'] + super().get_fields(request, obj)
+
+        return super().get_fields(request, obj)
 
     def get_readonly_fields(self, request: HttpRequest, obj=None):
         readonly_fields = super().get_readonly_fields(request, obj)
@@ -33,9 +42,10 @@ class StepsInline(
                 return mark_safe(str(Icon(
                     settings.FA_ICONS.condition,
                     {
-                        'font-size': '24px',
-                        'margin-top': '10px'
-                    }
+                        'font-size': '18px',
+                        'margin-top': '14px'
+                    },
+                    title=_('Vorbedingung')
                 )))
 
             return ''
