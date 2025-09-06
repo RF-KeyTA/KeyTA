@@ -181,11 +181,13 @@ class VariableAdmin(SortableAdminBase, BaseAdmin):
 
     def get_readonly_fields(self, request, obj=None):
         variable: Variable = obj
-
         fields = []
 
         if variable and variable.windows.count() == 1:
             fields += ['window']
+
+        if variable and variable.values.exists():
+            fields += ['type']
 
         return fields
 
