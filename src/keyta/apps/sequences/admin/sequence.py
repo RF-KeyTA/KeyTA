@@ -26,7 +26,6 @@ from keyta.widgets import (
     link
 )
 
-from ..forms import SequenceStepsFormset
 from ..models import (
     Sequence,
     SequenceQuickAdd,
