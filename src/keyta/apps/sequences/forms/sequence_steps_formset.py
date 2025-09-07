@@ -4,6 +4,7 @@ from adminsortable2.admin import CustomInlineFormSet
 
 from django.db.models import QuerySet
 from django.urls import reverse
+from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 
 from keyta.apps.actions.models import Action
@@ -45,7 +46,11 @@ class SequenceStepsFormset(CustomInlineFormSet):
         super().add_fields(form, index)
 
         sequence_step: SequenceStep = form.instance
+
+        execute_field = form.fields['execute']
         to_keyword_field = form.fields['to_keyword']
+
+        execute_field.label = mark_safe('<span title="%s">▶</span>' % _('Ausführen ab'))
 
         # The index of an extra form is None
         if index is None:
