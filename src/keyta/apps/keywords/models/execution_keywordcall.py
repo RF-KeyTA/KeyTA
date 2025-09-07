@@ -33,4 +33,4 @@ class ExecutionKeywordCall(KeywordCall):
 
     class Meta:
         proxy = True
-        verbose_name = _('Aufrufparameter')
+        verbose_name = _('Eingabewerte')
