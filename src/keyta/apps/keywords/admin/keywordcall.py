@@ -85,7 +85,7 @@ class KeywordCallAdmin(BaseAdmin):
 
         if kw_call.execution:
             execution_kwcall = ExecutionKeywordCall.objects.get(id=kw_call.pk)
-            return HttpResponseRedirect(execution_kwcall.get_admin_url())
+            return HttpResponseRedirect(execution_kwcall.get_admin_url() + '?' + url_params(request.GET))
 
         if kw_call.from_keyword:
             if kw_call.from_keyword.is_action:
