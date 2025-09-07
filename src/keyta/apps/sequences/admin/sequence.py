@@ -2,7 +2,7 @@ from django import forms
 from django.conf import settings
 from django.contrib import admin
 from django.forms import ModelMultipleChoiceField
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpRequest
 from django.utils.translation import gettext as _
 
 from model_clone import CloneModelAdminMixin
@@ -98,10 +98,15 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
         SequenceSteps
     ]
 
-    def change_view(self, request, object_id, form_url="", extra_context=None):
+    def change_view(self, request: HttpRequest, object_id, form_url="", extra_context=None):
+        steps_tab = '#%s-tab' % _('Schritte').lower()
+
+        if 'steps_tab' in request.GET:
+            return HttpResponseRedirect(request.path_info + steps_tab)
+
         if '_popup' in request.GET:
             sequence = SequenceQuickChange.objects.get(pk=object_id)
-            return HttpResponseRedirect(sequence.get_admin_url() + '?' + url_params(request.GET) + '#%s-tab' % _('Schritte').lower())
+            return HttpResponseRedirect(sequence.get_admin_url() + '?' + url_params(request.GET) + steps_tab)
 
         return super().change_view(request, object_id, form_url=form_url, extra_context=extra_context)
 

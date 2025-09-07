@@ -116,7 +116,7 @@ class Keyword(DocumentationMixin, AbstractBaseModel):
 
         return {
             'name': self.id_name,
-            'doc': self.robot_documentation(),
+            'doc': self.robot_documentation() + '?steps_tab',
             'args': [arg.name for arg in args],
             'kwargs': {kwarg.name: kwarg.default_value for kwarg in kwargs},
             'steps': [
