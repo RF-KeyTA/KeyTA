@@ -14,5 +14,4 @@ from .keywordcall_parameter_source import KeywordCallParameterSource
 from .keywordcall_return_value import KeywordCallReturnValue
 from .library_keyword_call import LibraryKeywordCall
 from .library_keyword_call_parameter import LibraryKeywordCallParameter
-from .test_step import TestStep
 from .window_keyword import WindowKeyword

@@ -7,6 +7,7 @@ from keyta.admin.base_admin import BaseAdmin
 from keyta.admin.base_inline import TabularInlineWithDelete
 from keyta.apps.keywords.models import KeywordDocumentation
 from keyta.apps.sequences.models import SequenceStep
+from keyta.apps.testcases.models import TestStep
 from keyta.widgets import open_link_in_modal
 
 from ..forms.library_keywordcall_vararg_formset import LibraryKeywordCallVarargFormset
@@ -15,8 +16,7 @@ from ..models import (
     KeywordCall,
     KeywordCallParameter,
     KeywordParameterType,
-    LibraryKeywordCall,
-    TestStep
+    LibraryKeywordCall
 )
 from .keyword import url_params
 from .keywordcall_parameters_inline import KeywordCallParametersInline

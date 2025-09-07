@@ -2,15 +2,16 @@ from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 
 from keyta.apps.variables.models import Variable, VariableDocumentation, VariableValue
-from keyta.widgets import open_link_in_modal
-
-from ..forms import KeywordCallParameterFormset
-from ..forms.keywordcall_parameter_formset import get_prev_return_values, get_variables_choices
-from ..models import TestStep, KeywordCall, KeywordCallParameterSource
-from .keywordcall import (
+from keyta.apps.keywords.forms import KeywordCallParameterFormset
+from keyta.apps.keywords.forms.keywordcall_parameter_formset import get_prev_return_values, get_variables_choices
+from keyta.apps.keywords.models import KeywordCall, KeywordCallParameterSource
+from keyta.apps.keywords.admin.keywordcall import (
     KeywordCallParametersInline, 
     KeywordCallAdmin, 
 )
+from keyta.widgets import open_link_in_modal
+
+from ..models import TestStep
 
 
 def get_variable_values(variable: Variable):
@@ -55,7 +56,6 @@ class TestStepParameterFormset(KeywordCallParameterFormset):
 class TestStepParametersInline(KeywordCallParametersInline):
     fields = ['name', 'value']
     formset = TestStepParameterFormset
-
 
 
 class VariableDocField:

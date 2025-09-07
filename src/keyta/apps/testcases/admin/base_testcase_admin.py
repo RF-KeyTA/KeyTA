@@ -9,11 +9,10 @@ from keyta.admin.field_documentation import DocumentationField
 from keyta.admin.list_filters import SystemListFilter
 from keyta.apps.executions.admin import ExecutionInline
 from keyta.apps.executions.models import TestCaseExecution
-from keyta.apps.keywords.admin import TestStepsInline
-from keyta.apps.systems.models import System
 from keyta.widgets import CheckboxSelectMultipleSystems
 
 from ..models import TestCase
+from .test_steps_inline import TestStepsInline
 
 
 class LocalExecution(ExecutionInline):

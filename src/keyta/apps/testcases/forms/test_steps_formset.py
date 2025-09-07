@@ -3,6 +3,7 @@ from django.urls import reverse
 
 from adminsortable2.admin import CustomInlineFormSet
 
+from keyta.apps.keywords.models import Keyword, KeywordCall
 from keyta.apps.resources.models import ResourceImport
 from keyta.apps.testcases.models import TestCase
 from keyta.apps.windows.models import Window
@@ -10,8 +11,6 @@ from keyta.widgets import (
     CustomRelatedFieldWidgetWrapper,
     ModelSelect2AdminWidget
 )
-
-from ..models import Keyword, KeywordCall
 
 
 class TestStepsFormset(CustomInlineFormSet):

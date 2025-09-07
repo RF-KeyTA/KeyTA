@@ -1,9 +1,10 @@
 from keyta.admin.base_inline import SortableTabularInline
 from keyta.admin.field_delete_related_instance import DeleteRelatedField
 
+from keyta.apps.keywords.models import KeywordCall
+from keyta.apps.keywords.admin.field_keywordcall_args import KeywordCallArgsField
+
 from ..forms import TestStepsForm, TestStepsFormset
-from ..models import KeywordCall
-from .field_keywordcall_args import KeywordCallArgsField
 
 
 class TestStepsInline(   

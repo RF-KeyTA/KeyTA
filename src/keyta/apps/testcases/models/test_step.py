@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from .keywordcall import KeywordCall, KeywordCallType
+from keyta.apps.keywords.models.keywordcall import KeywordCall, KeywordCallType
 
 
 class TestStep(KeywordCall):

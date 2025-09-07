@@ -4,7 +4,8 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from keyta.apps.keywords.models import Keyword, KeywordCall, TestStep
+from keyta.apps.keywords.models import Keyword, KeywordCall
+from keyta.apps.testcases.models import TestStep
 from keyta.apps.variables.models import Variable
 from keyta.rf_export.testsuite import RFTestSuite
 

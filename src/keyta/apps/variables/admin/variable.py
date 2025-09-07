@@ -13,8 +13,7 @@ from keyta.admin.base_inline import (
     TabularInlineWithDelete
 )
 from keyta.admin.list_filters import SystemListFilter, WindowListFilter
-from keyta.apps.keywords.models import TestStep
-from keyta.apps.systems.models import System
+from keyta.apps.testcases.models import TestStep
 from keyta.apps.windows.models import Window
 from keyta.forms import form_with_select
 from keyta.widgets import BaseSelect, link, CheckboxSelectMultipleSystems
