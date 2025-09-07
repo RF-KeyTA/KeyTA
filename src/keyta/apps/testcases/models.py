@@ -1,6 +1,7 @@
 import re
 
 from django.db import models
+from django.db.models import Q
 from django.db.models.functions import Lower
 from django.utils.translation import gettext_lazy as _
 
@@ -88,7 +89,7 @@ class TestCase(DocumentationMixin, CloneMixin, AbstractBaseModel):
             if execute_step := self.steps.filter(execute=True).first():
                 execute_from = execute_step.index
 
-        test_steps = self.steps.filter(index__gte=execute_from).exclude(to_keyword__isnull=True)
+        test_steps = self.steps.filter(index__gte=execute_from).exclude(Q(to_keyword__isnull=True) | Q(enabled=False))
 
         return {
             'name': self.name,
