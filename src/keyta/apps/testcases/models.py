@@ -81,11 +81,12 @@ class TestCase(DocumentationMixin, CloneMixin, AbstractBaseModel):
         self.name = re.sub(r"\s{2,}", ' ', self.name)
         super().save(force_insert, force_update, using, update_fields)
 
-    def to_robot(self, get_variable_value) -> RFTestCase:
+    def to_robot(self, get_variable_value, in_execution=False) -> RFTestCase:
         execute_from = 0
 
-        if execute_step := self.steps.filter(execute=True).first():
-            execute_from = execute_step.index
+        if in_execution:
+            if execute_step := self.steps.filter(execute=True).first():
+                execute_from = execute_step.index
 
         test_steps = self.steps.filter(index__gte=execute_from).exclude(to_keyword__isnull=True)
 

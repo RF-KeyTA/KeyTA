@@ -87,7 +87,7 @@ class TestCaseExecution(Execution):
             'dict_variables': dict_variables,
             'list_variables': list_variables,
             'keywords': list(keywords.values()),
-            'testcases': [self.testcase.to_robot(get_variable_value)]
+            'testcases': [self.testcase.to_robot(get_variable_value, in_execution=True)]
         }
 
     def save(
