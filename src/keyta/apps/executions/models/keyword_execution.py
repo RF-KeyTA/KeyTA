@@ -73,7 +73,9 @@ class KeywordExecution(Execution):
 
     def get_rf_testsuite(self, get_variable_value, user: AbstractUser) -> RFTestSuite:
         keyword = self.keyword
-        keywords = {keyword.pk: keyword.to_robot(get_variable_value)}
+        keywords = {
+            keyword.pk: keyword.to_robot(get_variable_value, in_execution=True)
+        }
 
         if keyword.is_sequence:
             for keyword in Keyword.objects.filter(pk__in=self.action_ids):

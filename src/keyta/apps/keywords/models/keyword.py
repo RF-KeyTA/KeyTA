@@ -102,11 +102,17 @@ class Keyword(DocumentationMixin, AbstractBaseModel):
 
         super().save(force_insert, force_update, using, update_fields)
 
-    def to_robot(self, get_variable_value) -> RFKeyword:
+    def to_robot(self, get_variable_value, in_execution=False) -> RFKeyword:
         args = self.parameters.args()
         kwargs = self.parameters.kwargs()
         return_values = self.return_values.all()
-        steps = self.calls.exclude(Q(to_keyword__isnull=True) | Q(enabled=False))
+        execute_from = 0
+
+        if in_execution:
+            if execute_step := self.calls.filter(execute=True).first():
+                execute_from = execute_step.index
+
+        steps = self.calls.filter(index__gte=execute_from).exclude(Q(to_keyword__isnull=True) | Q(enabled=False))
 
         return {
             'name': self.id_name,
