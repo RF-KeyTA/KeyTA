@@ -65,6 +65,7 @@ class TestStepsFormset(CustomInlineFormSet):
             queryset=self.to_keyword,
             search_fields=['name__icontains'],
             dependent_fields={'window': 'windows'},
+            attrs={'data-allow-clear': 'true'}
         )
         to_keyword_field = self.form.base_fields['to_keyword']
         to_keyword_field.widget = RelatedFieldWidgetWrapper(
