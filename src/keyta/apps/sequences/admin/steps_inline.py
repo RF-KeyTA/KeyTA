@@ -21,3 +21,6 @@ class SequenceSteps(StepsInline):
         can_change_related=True
     )
     formset = SequenceStepsFormset
+
+    def get_fields(self, request, obj=None):
+        return ['execute'] + super().get_fields(request, obj)
