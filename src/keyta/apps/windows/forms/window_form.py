@@ -14,7 +14,7 @@ class WindowForm(BaseForm):
         ]
 
         if systems:
-            if system := systems.exclude(name__in=window_systems).filter(windows__name=name).first():
+            if system := systems.exclude(name__in=window_systems).filter(windows__name__iexact=name).first():
                 raise forms.ValidationError(
                     {
                         "name": _(f'Eine Maske mit diesem Namen existiert bereits im System "{system}"')

@@ -1,4 +1,3 @@
-from django import forms
 from django.conf import settings
 from django.contrib import admin
 from django.forms import ModelMultipleChoiceField
@@ -19,9 +18,10 @@ from keyta.apps.keywords.admin.keyword import url_params
 from keyta.apps.keywords.models import KeywordCallReturnValue
 from keyta.apps.libraries.models import Library, LibraryImport
 from keyta.apps.systems.models import System
-from keyta.forms.baseform import form_with_select, BaseForm
+from keyta.forms import form_with_select
 from keyta.widgets import CheckboxSelectMultipleSystems
 
+from ..forms import ActionForm, QuickAddActionForm
 from ..models import (
     Action,
     ActionQuickAdd,
@@ -47,26 +47,6 @@ class ActionAdminMixin(WindowKeywordAdminMixin):
                     keyword=action,
                     library=library,
                 )
-
-
-class ActionForm(BaseForm):
-    def clean(self):
-        name = self.cleaned_data.get('name')
-        systems = self.cleaned_data.get('systems')
-        action_systems = [
-            system.name
-            for system in self.initial.get('systems', [])
-        ]
-
-        if systems:
-            if system := systems.values_list('name', flat=True).exclude(name__in=action_systems).filter(keywords__name=name).first():
-                action = self._meta.model.objects.filter(name=name).filter(systems__name=system).filter(windows__isnull=True)
-                if action.exists():
-                    raise forms.ValidationError(
-                        {
-                            "name": _(f'Eine Aktion mit diesem Namen existiert bereits im System "{system}"')
-                        }
-                    )
 
 
 @admin.register(Action)
@@ -160,21 +140,6 @@ class ActionAdmin(ActionAdminMixin, CloneModelAdminMixin, WindowKeywordAdmin):
 
     def has_delete_permission(self, request, obj=None):
         return self.can_delete(request.user, 'action')
-
-
-class QuickAddActionForm(BaseForm):
-    def clean(self):
-        name = self.cleaned_data.get('name')
-        windows = self.cleaned_data.get('windows')
-
-        if len(windows) == 1:
-            window = windows[0]
-            if window.actions.filter(name=name).exists():
-                raise forms.ValidationError(
-                    {
-                        "name": _(f'Eine Aktion mit diesem Namen existiert bereits in der Maske "{window.name}"')
-                    }
-                )
 
 
 @admin.register(ActionQuickAdd)

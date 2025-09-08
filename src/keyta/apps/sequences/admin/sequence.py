@@ -19,7 +19,6 @@ from keyta.apps.keywords.admin import (
 from keyta.apps.keywords.admin.keyword import url_params
 from keyta.apps.keywords.models import KeywordCallReturnValue
 from keyta.apps.windows.models import Window
-from keyta.forms.baseform import BaseForm
 from keyta.widgets import (
     CheckboxSelectMultipleSystems,
     ModelSelect2MultipleAdminWidget,
@@ -27,6 +26,7 @@ from keyta.widgets import (
     link
 )
 
+from ..forms import QuickAddSequenceForm, SequenceForm
 from ..models import (
     Sequence,
     SequenceQuickAdd,
@@ -39,30 +39,6 @@ class WindowListFilter(admin.RelatedFieldListFilter):
     @property
     def include_empty_choice(self):
         return False
-
-
-class SequenceForm(BaseForm):
-    def clean(self):
-        name = self.cleaned_data.get('name')
-        systems = self.cleaned_data.get('systems')
-        windows = self.cleaned_data.get('windows')
-        sequence_systems = [
-            system.name
-            for system in self.initial.get('systems', [])
-        ]
-
-        if systems:
-            if system := systems.values_list('name', flat=True).exclude(name__in=sequence_systems).filter(keywords__name=name).first():
-                if windows:
-                    sequence = self._meta.model.objects.filter(name=name).filter(systems__name=system).filter(windows__in=windows)
-                    window = windows.first()
-
-                    if sequence.exists():
-                        raise forms.ValidationError(
-                            {
-                                "name": _(f'Eine Sequenz mit diesem Namen existiert bereits in der Maske "{window.name}"')
-                            }
-                        )
 
 
 @admin.register(Sequence)
@@ -183,21 +159,6 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
             window.name,
             new_page=True
         )
-
-
-class QuickAddSequenceForm(BaseForm):
-    def clean(self):
-        name = self.cleaned_data.get('name')
-        windows = self.cleaned_data.get('windows')
-
-        if len(windows) == 1:
-            window = windows[0]
-            if window.sequences.filter(name=name).exists():
-                raise forms.ValidationError(
-                    {
-                        "name": _(f'Eine Sequenz mit diesem Namen existiert bereits in der Maske "{window.name}"')
-                    }
-                )
 
 
 @admin.register(SequenceQuickAdd)
