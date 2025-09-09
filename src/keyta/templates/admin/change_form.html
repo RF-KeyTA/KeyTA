@@ -87,7 +87,7 @@
                     <div class="col-12 col-lg-12">
                         <div class="card">
                             <div class="card-header">
-                                <h4 style="display: inline-flex; margin-bottom: 0px">
+                                <h4 id="card-title" style="display: inline-flex; margin-bottom: 0px">
                                     {% if title_icon %}<i class="title-icon {{ title_icon }} mr-3"></i>{% endif %} {% firstof original.name title %}
                                     {% if is_popup %}
                                         {% url opts|admin_urlname:'change' original.pk as change_url %}
@@ -256,16 +256,14 @@
                     $.post(url, $('form').serialize() + "&_continue=")
                 })
 
+                // An input:text in a form
                 $('.form-group input[type=text]').on('blur', function() {
                     const input = $(this)
-                    
-                    // Reload the page when the name changes in order to update the title
-                    // This can be avoided using HTMX to swap the card
+
+                    $.post(url, $('form').serialize() + "&_continue=")
+
                     if (input.attr('name') === 'name') {
-                        $(save_button).click()
-                    }
-                    else {
-                        $.post(url, $('form').serialize() + "&_continue=")
+                        $('#card-title').html(input.val())
                     }
                 })
 
