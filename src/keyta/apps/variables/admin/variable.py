@@ -120,7 +120,10 @@ class VariableAdmin(SortableAdminBase, BaseAdmin):
         '',
         form_class=VariableForm
     )
-    inlines = [Values]
+    inlines = [
+        Windows,
+        Values
+    ]
 
     @admin.display(description=_('Systeme'))
     def system_list(self, window: Window):
