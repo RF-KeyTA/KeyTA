@@ -245,6 +245,11 @@ class VariableQuickChangeAdmin(SortableAdminBase, BaseAdmin):
         return [Values(self.model, self.admin_site)]
 
     def has_change_permission(self, request, obj=None):
+        variable: Variable = obj
+
+        if variable and variable.template:
+            return False
+
         return True
 
     def has_delete_permission(self, request, obj=None):
