@@ -1,14 +1,12 @@
 from django import forms
-from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 
-from keyta.apps.variables.models import Variable
-from keyta.widgets import quick_change_widget, BaseSelect
+from keyta.widgets import quick_change_widget
 
 from ..models import Window
 
 
-class TemplateVariablesFormset(forms.BaseInlineFormSet):
+class QuickChangeTemplateVariablesFormset(forms.BaseInlineFormSet):
     def __init__(
         self,
         data=None,
@@ -22,7 +20,6 @@ class TemplateVariablesFormset(forms.BaseInlineFormSet):
         super().__init__(data, files, instance, save_as_new, prefix, queryset, **kwargs)
 
         self.window: Window = instance
-        self.template_variables = Variable.objects.filter(~Q(template='')).all()
 
     def add_fields(self, form, index):
         super().add_fields(form, index)
@@ -31,15 +28,11 @@ class TemplateVariablesFormset(forms.BaseInlineFormSet):
 
         # The index of extra forms is None
         if index is None:
-            variable_field.widget.widget = BaseSelect(
-                _('Referenzwert auswählen')
-            )
+            variable_field.widget.attrs.update({
+                'data-placeholder': _('Referenzwert auswählen'),
+            })
         else:
             variable_field.widget = quick_change_widget(variable_field.widget)
-            variable_field.widget.widget = BaseSelect(
-                '',
-                attrs={'disabled': 'true'}
-            )
 
         # Set the queryset after replacing the widget
-        variable_field.queryset = self.template_variables
+        variable_field.queryset = variable_field.queryset.exclude(template='')

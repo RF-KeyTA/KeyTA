@@ -1,3 +1,4 @@
-from .template_variables_formset import TemplateVariablesFormset
 from .quickadd_formset import QuickAddFormset
+from .quickchange_template_variables_formset import QuickChangeTemplateVariablesFormset
+from .quickchange_variables_formset import QuickChangeVariablesFormset
 from .window_form import WindowForm

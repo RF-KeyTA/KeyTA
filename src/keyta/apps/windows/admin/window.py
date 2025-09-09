@@ -1,7 +1,6 @@
 from django import forms
 from django.conf import settings
 from django.contrib import admin
-from django.db.models import Q
 from django.forms import ModelMultipleChoiceField
 from django.http import HttpRequest, HttpResponseRedirect
 from django.utils.translation import gettext_lazy as _
@@ -18,7 +17,7 @@ from keyta.apps.variables.models import Variable
 from keyta.forms.baseform import form_with_select
 from keyta.widgets import CheckboxSelectMultipleSystems, Icon, open_link_in_modal
 
-from ..forms import TemplateVariablesFormset, WindowForm
+from ..forms import WindowForm
 from ..models import (
     Window,
     WindowDocumentation,
@@ -28,6 +27,8 @@ from ..models import (
 from .actions_inline import Actions
 from .resources_inline import Resources
 from .sequences_inline import Sequences
+from .quickchange_template_variables_inline import QuickChangeTemplateVariables
+from .quickchange_variables_inline import QuickChangeVariables
 from .variables_inline import Variables
 
 
@@ -134,25 +135,6 @@ class WindowQuickAddAdmin(BaseQuickAddAdmin):
         return field
 
 
-class WindowVariables(Variables):
-    readonly_fields = []
-
-    def has_change_permission(self, request, obj=None):
-        return True
-
-
-class TemplateVariables(Variables):
-    formset = TemplateVariablesFormset
-    verbose_name = _('Dynamisches Wert')
-    verbose_name_plural = _('Dynamische Werte')
-
-    def get_queryset(self, request):
-        return super().get_queryset(request).exclude(variable__template='')
-
-    def has_change_permission(self, request, obj=None):
-        return True
-
-
 @admin.register(WindowQuickChange)
 class WindowQuickChangeAdmin(WindowAdmin):
     fields = []
@@ -162,10 +144,10 @@ class WindowQuickChangeAdmin(WindowAdmin):
         return self.changeform_view(request, object_id, form_url, extra_context or {'title_icon': settings.FA_ICONS.window})
 
     def get_inlines(self, request, obj):
-        if Variable.objects.filter(~Q(template='')).exists():
-            inlines = [WindowVariables, TemplateVariables]
+        if Variable.objects.exclude(template='').exists():
+            inlines = [QuickChangeVariables, QuickChangeTemplateVariables]
         else:
-            inlines = [WindowVariables]
+            inlines = [QuickChangeVariables]
 
         if Resource.objects.count():
             return [Resources] + inlines
