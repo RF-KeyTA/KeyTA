@@ -69,6 +69,11 @@ class Values(SortableTabularInlineWithDelete):
         return fields
 
     def has_delete_permission(self, request, obj=None):
+        variable: Variable = obj
+
+        if variable and variable.template:
+            return False
+
         return self.can_change(request.user, 'variable')
 
 
