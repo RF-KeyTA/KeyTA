@@ -8,7 +8,7 @@
         return data;
     }
 
-    function formatState(state) {
+    function formatResult(state) {
         const regex = /\$\{(\w+|\p{L}+)\}\[(\w+|\p{L}+)\]/u
 
         // state.id is the value of the <option>
@@ -16,6 +16,26 @@
             return state.text.replace('$', '').replace('{', '').replace('}[', '.').replace(']', '');
 
         return state.text
+    }
+
+    function formatSelection(state) {
+        const regex = /\$\{(\w+|\p{L}+)\}\[(\w+|\p{L}+)\]/u
+        const icon = state.element.attributes['icon'];
+        const $template = $('<span><i></i><span></span></span>')
+
+        if (icon) {
+            $template.find('i').addClass(icon.value).addClass('mr-3')
+        }
+
+        $template.find('span').text(state.text)
+
+        // state.id is the value of the <option>
+        if (state.id && state.text.match(regex)) {
+            const name = state.text.replace('$', '').replace('{', '').replace('}[', '.').replace(']', '');
+            $template.find('span').text(name)
+        }
+
+        return $template
     }
 
     function applySelect2() {
@@ -31,8 +51,8 @@
                 django.jQuery(select).select2({
                     width: 'element',
                     matcher: matchCustom,
-                    templateResult: formatState,
-                    templateSelection: formatState
+                    templateResult: formatResult,
+                    templateSelection: formatSelection
                 });
 
                 // Automatically fill the search field with the currently selected value
@@ -49,8 +69,8 @@
                 django.jQuery(select).select2({
                     width: 'element',
                     minimumResultsForSearch: Infinity,
-                    templateResult: formatState,
-                    templateSelection: formatState
+                    templateResult: formatResult,
+                    templateSelection: formatSelection
                 });
             }
         })

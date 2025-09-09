@@ -4,6 +4,10 @@ from dataclasses import dataclass
 @dataclass
 class Icons:
     action:str = 'fa-solid fa-cubes-stacked'
+    arg_kw_param = 'fa-solid fa-p'
+    arg_return_value = 'fa-solid fa-circle-left'
+    arg_template_variable_value = 'fa-solid fa-dice-four'
+    arg_variable_value = 'fa-solid fa-r'
     clone: str = 'fa-solid fa-copy'
     condition: str = 'fa-solid fa-code-fork'
     delete: str = 'fa-solid fa-trash-can'

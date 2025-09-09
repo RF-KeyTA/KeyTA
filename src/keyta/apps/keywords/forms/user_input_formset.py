@@ -1,13 +1,15 @@
 import re
 
 from django import forms
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
 from keyta.widgets import BaseSelect
 
 from ..json_value import JSONValue
-from ..models import KeywordCall
+from ..models import KeywordCall, KeywordCallParameterSource
+from ..models.keywordcall_parameter_source import KeywordCallParameterSourceType
 
 
 def invert_dictionary(dictionary):
@@ -49,9 +51,37 @@ empty_input = JSONValue(
 no_input = None, _('Kein Wert')
 
 
+class UserInputSelect(BaseSelect):
+    icons = {
+        KeywordCallParameterSourceType.KEYWORD_PARAMETER: settings.FA_ICONS.arg_kw_param,
+        KeywordCallParameterSourceType.KW_CALL_RETURN_VALUE: settings.FA_ICONS.arg_return_value,
+        KeywordCallParameterSourceType.VARIABLE_VALUE: settings.FA_ICONS.arg_variable_value,
+    }
+
+    def create_option(
+        self, name, value, label, selected, index, subindex=None, attrs=None
+    ):
+        option = super().create_option(name, value, label, selected, index, subindex, attrs)
+
+        if value:
+            json_value = JSONValue.from_json(value)
+
+            if json_value.pk:
+                source = KeywordCallParameterSource.objects.get(pk=json_value.pk)
+                icon = self.icons[source.type]
+
+                if variable_value := source.variable_value:
+                    if variable_value.variable.template:
+                        icon = settings.FA_ICONS.arg_template_variable_value
+
+                option['attrs'].update({'icon': icon})
+
+        return option
+
+
 def user_input_field(placeholder: str, user_input: tuple, choices: list = None):
     return DynamicChoiceField(
-        widget=BaseSelect(
+        widget=UserInputSelect(
             placeholder,
             choices=(
                 [(None, _('Kein Wert'))] +
