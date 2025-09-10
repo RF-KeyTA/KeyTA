@@ -20,22 +20,26 @@
 
     function formatSelection(state) {
         const regex = /\$\{(\w+|\p{L}+)\}\[(\w+|\p{L}+)\]/u
-        const icon = state.element.attributes['icon'];
-        const $template = $('<span><i></i><span></span></span>')
+        const element = state.element
 
-        if (icon) {
-            $template.find('i').addClass(icon.value).addClass('mr-3')
+        if (element) {
+            const icon = state.element.attributes['icon'];
+            const $template = $('<span><i></i><span></span></span>')
+
+            if (icon) {
+                $template.find('i').addClass(icon.value).addClass('mr-3')
+            }
+
+            $template.find('span').text(state.text)
+
+            // state.id is the value of the <option>
+            if (state.id && state.text.match(regex)) {
+                const name = state.text.replace('$', '').replace('{', '').replace('}[', '.').replace(']', '');
+                $template.find('span').text(name)
+            }
+
+            return $template
         }
-
-        $template.find('span').text(state.text)
-
-        // state.id is the value of the <option>
-        if (state.id && state.text.match(regex)) {
-            const name = state.text.replace('$', '').replace('{', '').replace('}[', '.').replace(']', '');
-            $template.find('span').text(name)
-        }
-
-        return $template
     }
 
     function applySelect2() {
