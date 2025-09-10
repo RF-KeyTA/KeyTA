@@ -18,6 +18,7 @@ class TestStepsInline(
     extra = 0 # necessary for saving, since to_keyword is not nullable and is null in an extra
     form = TestStepsForm
     formset = TestStepsFormset
+    template = 'test_steps_sortable_tabular.html'
 
     def get_queryset(self, request):
         return (
