@@ -21,6 +21,7 @@ class SequenceSteps(StepsInline):
         can_change_related=True
     )
     formset = SequenceStepsFormset
+    template = 'sequence_steps_sortable_tabular.html'
 
     def get_fields(self, request, obj=None):
         return ['execute'] + super().get_fields(request, obj)
