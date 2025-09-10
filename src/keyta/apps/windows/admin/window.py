@@ -3,6 +3,7 @@ from django.conf import settings
 from django.contrib import admin
 from django.forms import ModelMultipleChoiceField
 from django.http import HttpRequest, HttpResponseRedirect
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 from keyta.admin.base_admin import (
@@ -74,6 +75,12 @@ class WindowAdmin(DocumentationField, BaseAdmin):
         if '_popup' in request.GET:
             window = WindowQuickChange.objects.get(pk=object_id)
             return HttpResponseRedirect(window.get_admin_url() + '?_popup=1')
+
+        current_app, model, *route = request.resolver_match.route.split('/')
+        app = settings.MODEL_TO_APP.get(model)
+
+        if app and app != current_app:
+            return HttpResponseRedirect(reverse('admin:%s_%s_change' % (app, model), args=(object_id,)))
 
         return super().change_view(request, object_id, form_url, extra_context)
 

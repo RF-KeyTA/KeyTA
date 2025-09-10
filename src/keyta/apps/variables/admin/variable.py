@@ -1,8 +1,10 @@
 from django import forms
+from django.conf import settings
 from django.contrib import admin
 from django.core.exceptions import ValidationError
 from django.forms import ModelMultipleChoiceField
 from django.http import HttpRequest, HttpResponseRedirect
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 from adminsortable2.admin import SortableAdminBase, CustomInlineFormSet
@@ -147,6 +149,12 @@ class VariableAdmin(SortableAdminBase, BaseAdmin):
         if 'view' in request.GET:
             variable_doc = VariableDocumentation.objects.get(id=object_id)
             return HttpResponseRedirect(variable_doc.get_admin_url())
+
+        current_app, model, *route = request.resolver_match.route.split('/')
+        app = settings.MODEL_TO_APP.get(model)
+
+        if app and app != current_app:
+            return HttpResponseRedirect(reverse('admin:%s_%s_change' % (app, model), args=(object_id,)))
 
         return super().change_view(request, object_id, form_url, extra_context)
 

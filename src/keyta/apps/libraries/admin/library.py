@@ -3,7 +3,7 @@ from importlib import import_module
 
 from django.conf import settings
 from django.contrib import admin, messages
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponseRedirect
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
@@ -37,6 +37,15 @@ class LibraryAdmin(BaseAdmin):
             self.model.objects.values_list('name', flat=True)
             .filter(name__icontains=name)
         ])
+
+    def change_view(self, request, object_id, form_url="", extra_context=None):
+        current_app, model, *route = request.resolver_match.route.split('/')
+        app = settings.MODEL_TO_APP.get(model)
+
+        if app and app != current_app:
+            return HttpResponseRedirect(reverse('admin:%s_%s_change' % (app, model), args=(object_id,)))
+
+        return super().change_view(request, object_id, form_url, extra_context)
 
     def get_list_display(self, request):
         if self.can_change(request.user, 'library'):

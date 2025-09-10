@@ -3,6 +3,7 @@ from django.conf import settings
 from django.contrib import admin
 from django.forms import ModelMultipleChoiceField
 from django.http import HttpResponseRedirect, HttpRequest
+from django.urls import reverse
 from django.utils.translation import gettext as _
 
 from model_clone import CloneModelAdminMixin
@@ -83,6 +84,12 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
         if '_popup' in request.GET:
             sequence = SequenceQuickChange.objects.get(pk=object_id)
             return HttpResponseRedirect(sequence.get_admin_url() + '?' + url_params(request.GET) + steps_tab)
+
+        current_app, model, *route = request.resolver_match.route.split('/')
+        app = settings.MODEL_TO_APP.get(model)
+
+        if app and app != current_app:
+            return HttpResponseRedirect(reverse('admin:%s_%s_change' % (app, model), args=(object_id,)))
 
         return super().change_view(request, object_id, form_url=form_url, extra_context=extra_context)
 
