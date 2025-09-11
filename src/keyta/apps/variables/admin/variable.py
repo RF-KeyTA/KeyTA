@@ -1,23 +1,18 @@
-from django import forms
 from django.conf import settings
 from django.contrib import admin
-from django.core.exceptions import ValidationError
 from django.forms import ModelMultipleChoiceField
 from django.http import HttpRequest, HttpResponseRedirect
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
-from adminsortable2.admin import SortableAdminBase, CustomInlineFormSet
+from adminsortable2.admin import SortableAdminBase
 
 from keyta.admin.base_admin import BaseAdmin, BaseQuickAddAdmin
-from keyta.admin.base_inline import (
-    SortableTabularInlineWithDelete,
-    TabularInlineWithDelete
-)
 from keyta.admin.list_filters import SystemListFilter, WindowListFilter
+from keyta.apps.keywords.models import KeywordCallParameter
 from keyta.apps.windows.models import Window
 from keyta.forms import form_with_select
-from keyta.widgets import BaseSelect, link, CheckboxSelectMultipleSystems
+from keyta.widgets import BaseSelect, CheckboxSelectMultipleSystems
 
 from ..forms import VariableForm, VariableQuickAddForm
 from ..models import (
@@ -25,89 +20,11 @@ from ..models import (
     VariableDocumentation,
     VariableQuickAdd,
     VariableQuickChange,
-    VariableValue,
     VariableWindowRelation
 )
-from ...keywords.models import KeywordCallParameter
 
-
-class ValuesFormset(CustomInlineFormSet):
-    def clean(self):
-        names = set()
-
-        for form in self.forms:
-            name = form.cleaned_data.get('name')
-
-            if name and name in names:
-                raise ValidationError(_('Die Namen müssen eindeutig sein.'))
-
-            names.add(name)
-
-
-class Values(SortableTabularInlineWithDelete):
-    fk_name = 'variable'
-    model = VariableValue
-    extra = 0
-    formset = ValuesFormset
-
-    def formfield_for_dbfield(self, db_field, request, **kwargs):
-        field = super().formfield_for_dbfield(db_field, request, **kwargs)
-
-        if db_field.name == 'value':
-            field.widget = forms.TextInput(attrs={
-                'style': 'width: 100%',
-                'placeholder': _('Wert eintragen, anschließend Tab drücken')
-            })
-
-        return field
-
-    def get_fields(self, request, obj=None):
-        fields: list = super().get_fields(request, obj)
-        variable: Variable = obj
-
-        if variable and variable.is_list():
-            fields.pop(fields.index('name'))
-
-        return fields
-
-    def has_delete_permission(self, request, obj=None):
-        variable: Variable = obj
-
-        if variable and variable.template:
-            return False
-
-        return self.can_change(request.user, 'variable')
-
-
-class Windows(TabularInlineWithDelete):
-    model = VariableWindowRelation
-    extra = 0
-    fields = ['window']
-    tab_name = _('Masken').lower()
-    verbose_name = _('Maske')
-    verbose_name_plural = _('Masken')
-
-    form = form_with_select(
-        VariableWindowRelation,
-        'window',
-        _('Maske auswählen'),
-        labels={
-            'window': _('Maske')
-        }
-    )
-
-    def get_formset(self, request, obj=None, **kwargs):
-        variable: Variable = obj
-        systems = variable.systems.all()
-        windows = Window.objects.filter(systems__in=systems).distinct()
-        
-        formset = super().get_formset(request, obj, **kwargs)
-        formset.form.base_fields['window'].queryset = windows
-
-        return formset
-
-    def has_change_permission(self, request, obj=None) -> bool:
-        return False
+from .values_inline import Values
+from .windows_inline import Windows
 
 
 @admin.register(Variable)

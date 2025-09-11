@@ -1,3 +1,4 @@
+from .values_inline import Values
 from .variable import (
     VariableAdmin,
     VariableDocumentationAdmin,
@@ -6,3 +7,4 @@ from .variable import (
     VariableWindowAdmin
 )
 from .variable_value import VariableValueAdmin
+from .windows_inline import Windows
