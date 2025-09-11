@@ -157,6 +157,14 @@ class VariableQuickAddAdmin(SortableAdminBase, BaseQuickAddAdmin):
         return field
 
 
+class ValuesQuickChange(Values):
+    def get_fields(self, request, obj=None):
+        fields: list = super().get_fields(request, obj)
+        fields.pop(fields.index('delete'))
+
+        return fields
+
+
 @admin.register(VariableQuickChange)
 class VariableQuickChangeAdmin(SortableAdminBase, BaseAdmin):
     def get_fields(self, request, obj=None):
@@ -164,7 +172,7 @@ class VariableQuickChangeAdmin(SortableAdminBase, BaseAdmin):
 
     # Use this method in order to get rid of the "General" tab
     def get_inline_instances(self, request, obj=None):
-        return [Values(self.model, self.admin_site)]
+        return [ValuesQuickChange(self.model, self.admin_site)]
 
     def has_change_permission(self, request, obj=None):
         variable: Variable = obj
