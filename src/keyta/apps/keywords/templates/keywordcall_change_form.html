@@ -40,6 +40,9 @@
 
             return $template
         }
+        else {
+            return state.text
+        }
     }
 
     function applySelect2() {
@@ -65,7 +68,7 @@
                     const search_field = django.jQuery('.select2-search__field')
 
                     // selected_value.id is the value of the <option>
-                    if (selected_value.id !== '')
+                    if (selected_value && selected_value.id !== '')
                         search_field.val(selected_value.text)
                 })
             }
