@@ -11,7 +11,7 @@ from ..models import (
     LibraryKeywordCall,
     LibraryKeywordCallParameter
 )
-from .conditions_inline import ConditionsInline
+from .keywordcall_conditions_inline import ConditionsInline
 from .keywordcall import KeywordCallAdmin, KeywordDocField
 from .keywordcall_parameters_inline import KeywordCallParametersInline
 

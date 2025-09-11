@@ -1,3 +1,4 @@
+from .keywordcall_conditions_inline import ConditionsInline
 from .execution_keywordcall import ExecutionKeywordCallAdmin
 from .keyword import KeywordAdmin, KeywordDocumentationAdmin
 from .keywordcall import KeywordCallAdmin

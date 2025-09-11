@@ -1,7 +1,6 @@
 from django.contrib import admin
 
-from keyta.apps.keywords.admin import KeywordCallAdmin
-from keyta.apps.keywords.admin.conditions_inline import ConditionsInline
+from keyta.apps.keywords.admin import ConditionsInline, KeywordCallAdmin
 
 from ..models import SequenceStep
 
