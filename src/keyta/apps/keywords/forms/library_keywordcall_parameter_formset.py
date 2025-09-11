@@ -5,27 +5,16 @@ from keyta.widgets import BaseSelect
 from ..json_value import JSONValue
 from ..models import KeywordCall, KeywordCallParameter
 from .keywordcall_parameter_formset import (
-    get_keyword_parameters,
-    get_prev_return_values,
-    get_global_variables
+    KeywordCallParameterFormset,
+    get_global_variables,
+    get_keyword_parameters
 )
-from .user_input_formset import DynamicChoiceField, UserInputFormset, invert_dictionary, user_input_field
+from .user_input_formset import DynamicChoiceField, invert_dictionary, user_input_field
 
 
-class LibraryKeywordCallParameterFormset(UserInputFormset):
+class LibraryKeywordCallParameterFormset(KeywordCallParameterFormset):
     def add_fields(self, form, index):
         super().add_fields(form, index)
-
-        # The index of extra forms is None
-        if index is None:
-            return
-
-        user_input = self.get_user_input(form, index)
-        form.fields['value'] = user_input_field(
-            _('Wert auswählen oder eintragen'),
-            user_input,
-            choices=self.ref_choices
-        )
 
         kw_call_parameter: KeywordCallParameter = form.instance
         if kw_call_parameter.pk:
@@ -79,6 +68,8 @@ class LibraryKeywordCallParameterFormset(UserInputFormset):
                             enable_user_input = True
 
                     if enable_user_input:
+                        user_input = self.get_user_input(form, index)
+
                         if choices:
                             enum_values = {
                                 key
@@ -105,7 +96,7 @@ class LibraryKeywordCallParameterFormset(UserInputFormset):
                             )
 
     def get_ref_choices(self, kw_call: KeywordCall):
-        ref_choices = get_keyword_parameters(kw_call) + get_prev_return_values(kw_call)
+        ref_choices = super().get_ref_choices(kw_call)
 
         if not kw_call.from_keyword.windows.count():
             system_ids = list(kw_call.from_keyword.systems.values_list('id', flat=True))
@@ -113,7 +104,3 @@ class LibraryKeywordCallParameterFormset(UserInputFormset):
             return ref_choices + get_global_variables(system_ids)
 
         return ref_choices
-
-    def get_json_value(self, form):
-        kw_call_parameter: KeywordCallParameter = form.instance
-        return kw_call_parameter.json_value
