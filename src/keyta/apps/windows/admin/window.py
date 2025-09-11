@@ -14,7 +14,6 @@ from keyta.admin.base_admin import (
 from keyta.admin.field_documentation import DocumentationField
 from keyta.admin.list_filters import SystemListFilter
 from keyta.apps.resources.models import Resource
-from keyta.apps.variables.models import Variable
 from keyta.forms.baseform import form_with_select
 from keyta.widgets import CheckboxSelectMultipleSystems, Icon, open_link_in_modal
 
@@ -28,8 +27,6 @@ from ..models import (
 from .actions_inline import Actions
 from .resources_inline import Resources
 from .sequences_inline import Sequences
-from .quickchange_template_variables_inline import QuickChangeTemplateVariables
-from .quickchange_variables_inline import QuickChangeVariables
 from .variables_inline import Variables
 
 
@@ -142,19 +139,26 @@ class WindowQuickAddAdmin(BaseQuickAddAdmin):
         return field
 
 
+class QuickChangeVariables(Variables):
+    readonly_fields = []
+
+
 @admin.register(WindowQuickChange)
 class WindowQuickChangeAdmin(WindowAdmin):
     fields = []
     readonly_fields = ['documentation']
 
     def change_view(self, request, object_id, form_url="", extra_context=None):
+        current_app, model, *route = request.resolver_match.route.split('/')
+        app = settings.MODEL_TO_APP.get(model)
+
+        if app and app != current_app:
+            return HttpResponseRedirect(reverse('admin:%s_%s_change' % (app, model), args=(object_id,)))
+
         return self.changeform_view(request, object_id, form_url, extra_context or {'title_icon': settings.FA_ICONS.window})
 
     def get_inlines(self, request, obj):
-        if Variable.objects.exclude(template='').exists():
-            inlines = [QuickChangeVariables, QuickChangeTemplateVariables]
-        else:
-            inlines = [QuickChangeVariables]
+        inlines = [QuickChangeVariables]
 
         if Resource.objects.count():
             return [Resources] + inlines
