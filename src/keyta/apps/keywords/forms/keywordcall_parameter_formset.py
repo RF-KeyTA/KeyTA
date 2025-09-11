@@ -112,6 +112,25 @@ def get_variables_choices(kw_call_param_sources: QuerySet):
     ]
 
 
+class ErrorsMixin:
+    def add_fields(self, form, index):
+        super().add_fields(form, index)
+
+        if index is not None:
+            json_value = self.get_json_value(form)
+
+            if not json_value.user_input and not json_value.pk:
+                form._errors = ErrorDict()
+                form._errors['value'] = ErrorList([
+                    form.fields['value'].default_error_messages['required']
+                ])
+
+    # This is necessary in order to be able to save the formset
+    # despite the errors that were added in form._errors
+    def is_valid(self):
+        return True
+
+
 class KeywordCallParameterFormset(UserInputFormset):
     def add_fields(self, form, index):
         super().add_fields(form, index)
@@ -119,14 +138,6 @@ class KeywordCallParameterFormset(UserInputFormset):
         # The index of extra forms is None
         if index is None:
             return
-
-        json_value = self.get_json_value(form)
-
-        if not json_value.user_input and not json_value.pk:
-            form._errors = ErrorDict()
-            form._errors['value'] = ErrorList([
-                form.fields['value'].default_error_messages['required']
-            ])
 
         form.fields['value'] = user_input_field(
             _('Wert auswählen oder eintragen'),
@@ -140,8 +151,3 @@ class KeywordCallParameterFormset(UserInputFormset):
     def get_json_value(self, form):
         kw_call_parameter: KeywordCallParameter = form.instance
         return kw_call_parameter.json_value
-
-    # This is necessary in order to be able to save the formset
-    # despite the errors that were added in form_errors
-    def is_valid(self):
-        return True

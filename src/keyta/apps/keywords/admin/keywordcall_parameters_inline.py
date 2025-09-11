@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from keyta.admin.base_inline import BaseTabularInline
 
 from ..forms import KeywordCallParameterFormset
+from ..forms.keywordcall_parameter_formset import ErrorsMixin
 from ..models import KeywordCall, KeywordCallParameter, KeywordParameterType
 
 
@@ -16,20 +17,19 @@ class KeywordCallParametersForm(forms.ModelForm):
         return super().save(commit=commit)
 
 
+class KeywordCallParameterFormsetWithErrors(ErrorsMixin, KeywordCallParameterFormset):
+    pass
+
+
 class KeywordCallParametersInline(BaseTabularInline):
     model = KeywordCallParameter
     fields = ['name', 'value']
     readonly_fields = ['name']
     form = KeywordCallParametersForm
-    formset = KeywordCallParameterFormset
+    formset = KeywordCallParameterFormsetWithErrors
     extra = 0
     max_num = 0
     can_delete = False
-
-    @admin.display(description=_('Wert'))
-    def readonly_value(self, obj):
-        kw_call_parameter: KeywordCallParameter = obj
-        return kw_call_parameter.current_value
 
     def get_fields(self, request, obj=None):
         if not self.has_change_permission(request, obj):
@@ -56,3 +56,8 @@ class KeywordCallParametersInline(BaseTabularInline):
             return self.can_change(request.user, 'action') or self.can_change(request.user, 'sequence')
 
         return super().has_change_permission(request, obj)
+
+    @admin.display(description=_('Wert'))
+    def readonly_value(self, obj):
+        kw_call_parameter: KeywordCallParameter = obj
+        return kw_call_parameter.current_value
