@@ -51,7 +51,7 @@ empty_input = JSONValue(
 no_input = None, _('Kein Wert')
 
 
-class UserInputSelect(BaseSelect):
+class BaseSelectWithIcons(BaseSelect):
     icons = {
         KeywordCallParameterSourceType.KEYWORD_PARAMETER: settings.FA_ICONS.arg_kw_param,
         KeywordCallParameterSourceType.KW_CALL_RETURN_VALUE: settings.FA_ICONS.arg_return_value,
@@ -64,10 +64,18 @@ class UserInputSelect(BaseSelect):
         option = super().create_option(name, value, label, selected, index, subindex, attrs)
 
         if value:
-            json_value = JSONValue.from_json(value)
+            pk = None
 
-            if json_value.pk:
-                source = KeywordCallParameterSource.objects.get(pk=json_value.pk)
+            if isinstance(value, int):
+                pk = value
+            elif value.startswith('{') and value.endswith('}'):
+                json_value = JSONValue.from_json(value)
+
+                if json_value.pk:
+                    pk = json_value.pk
+
+            if pk:
+                source = KeywordCallParameterSource.objects.get(pk=pk)
                 icon = self.icons[source.type]
 
                 if variable_value := source.variable_value:
@@ -81,7 +89,7 @@ class UserInputSelect(BaseSelect):
 
 def user_input_field(placeholder: str, user_input: tuple, choices: list = None):
     return DynamicChoiceField(
-        widget=UserInputSelect(
+        widget=BaseSelectWithIcons(
             placeholder,
             choices=(
                 [(None, _('Kein Wert'))] +
