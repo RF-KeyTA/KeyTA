@@ -10,13 +10,6 @@ from .user_input_formset import BaseSelectWithIcons, UserInputFormset, user_inpu
 
 
 class KeywordCallConditionFormset(UserInputFormset):
-    empty_input = JSONValue(
-        arg_name=None,
-        kw_call_index=None,
-        pk=None,
-        user_input=''
-    ).jsonify(), _('leer')
-
     def add_fields(self, form, index):
         super().add_fields(form, index)
 
