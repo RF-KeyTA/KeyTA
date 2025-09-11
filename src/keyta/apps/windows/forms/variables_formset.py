@@ -1,10 +1,10 @@
 from keyta.apps.variables.models import VariableQuickAdd
 from keyta.widgets import quick_change_widget
 
-from .quickadd_formset import QuickAddFormset
+from ..forms import QuickAddFormset
 
 
-class QuickChangeVariablesFormset(QuickAddFormset):
+class VariablesFormset(QuickAddFormset):
     def add_fields(self, form, index):
         super().add_fields(form, index)
 
