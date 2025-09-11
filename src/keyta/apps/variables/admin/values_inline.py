@@ -44,7 +44,11 @@ class Values(SortableTabularInlineWithDelete):
         variable: Variable = obj
 
         if variable and variable.is_list():
-            fields.pop(fields.index('name'))
+            return [
+                field
+                for field in fields
+                if field != 'name'
+            ]
 
         return fields
 

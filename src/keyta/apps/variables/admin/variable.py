@@ -160,9 +160,12 @@ class VariableQuickAddAdmin(SortableAdminBase, BaseQuickAddAdmin):
 class ValuesQuickChange(Values):
     def get_fields(self, request, obj=None):
         fields: list = super().get_fields(request, obj)
-        fields.pop(fields.index('delete'))
 
-        return fields
+        return [
+            field
+            for field in fields
+            if field != 'delete'
+        ]
 
 
 @admin.register(VariableQuickChange)
