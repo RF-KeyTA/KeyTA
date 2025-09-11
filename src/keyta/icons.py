@@ -11,7 +11,7 @@ class Icons:
     clone: str = 'fa-solid fa-copy'
     condition: str = 'fa-solid fa-code-fork'
     delete: str = 'fa-solid fa-trash-can'
-    delete_rel: str = 'fa-solid fa-trash'
+    delete_rel: str = 'fa-solid fa-scissors'
     edit: str = 'fa-solid fa-pencil'
     exec_fail: str = 'fa-solid fa-circle-xmark'
     exec_log: str = 'fa-regular fa-file-lines'

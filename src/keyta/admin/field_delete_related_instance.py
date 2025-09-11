@@ -28,7 +28,7 @@ class DeleteRelatedField:
                 inline_obj.get_delete_url() + '?' + query_params + tab_url,
                 str(Icon(
                     settings.FA_ICONS.delete_rel,
-                    {'font-size': '30px', 'margin-top': '5px'}
+                    {'font-size': '30px', 'margin-top': '5px', 'transform': 'rotate(180deg)'}
                 ))
             )
 
