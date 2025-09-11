@@ -1,20 +1,17 @@
-from django import forms
 from django.contrib import admin
 from django.http import HttpResponseRedirect
 from django.utils.translation import gettext_lazy as _
 
 from keyta.admin.base_admin import BaseAdmin
-from keyta.admin.base_inline import TabularInlineWithDelete
 from keyta.apps.keywords.models import KeywordDocumentation
 from keyta.apps.sequences.models import SequenceStep
 from keyta.apps.testcases.models import TestStep
 from keyta.widgets import open_link_in_modal
+from .library_keyword_call_vararg_parameters_inline import VarargParametersInline
 
-from ..forms.library_keywordcall_vararg_formset import LibraryKeywordCallVarargFormset
 from ..models import (
     ExecutionKeywordCall,
     KeywordCall,
-    KeywordCallParameter,
     KeywordParameterType,
     LibraryKeywordCall
 )
@@ -39,40 +36,6 @@ class KeywordDocField:
     def get_readonly_fields(self, request, obj=None):
         return super().get_readonly_fields(request, obj) + ['to_keyword_doc']
 
-
-class VarargForm(forms.ModelForm):
-    def save(self, commit=True):
-        kw_call_parameter: KeywordCallParameter = self.instance
-        kw_call = kw_call_parameter.keyword_call
-        vararg = kw_call.to_keyword.parameters.filter(type=KeywordParameterType.VARARG).first()
-        kw_call_parameter.parameter = vararg
-
-        return super().save(commit)
-
-
-class VarargParametersInline(TabularInlineWithDelete):
-    model = KeywordCallParameter
-    fields = ['value']
-    form = VarargForm
-    formset = LibraryKeywordCallVarargFormset
-    extra = 0
-
-    def get_queryset(self, request):
-        return super().get_queryset(request).filter(parameter__type=KeywordParameterType.VARARG)
-
-    def has_add_permission(self, request, obj=None):
-        return self.has_change_permission(request, obj)
-
-    def has_change_permission(self, request, obj=None):
-        keywordcall: KeywordCall = obj
-
-        if keywordcall and keywordcall.from_keyword:
-            return self.can_change(request.user, 'action')
-
-        return super().has_change_permission(request, obj)
-
-    def has_delete_permission(self, request, obj=None):
-        return self.has_change_permission(request, obj)
 
 @admin.register(KeywordCall)
 class KeywordCallAdmin(BaseAdmin):
@@ -104,17 +67,6 @@ class KeywordCallAdmin(BaseAdmin):
 
     def get_fields(self, request, obj=None):
         return []
-
-    def get_inline_instances(self, request, obj=None):
-        kw_call: KeywordCall = obj
-        inline_instances = super().get_inline_instances(request, obj)
-
-        for inline in inline_instances:
-            if isinstance(inline, VarargParametersInline):
-                vararg = kw_call.to_keyword.parameters.filter(type=KeywordParameterType.VARARG).first()
-                inline.verbose_name_plural = vararg.name
-
-        return inline_instances
 
     def get_inlines(self, request, obj):
         kw_call: KeywordCall = obj
