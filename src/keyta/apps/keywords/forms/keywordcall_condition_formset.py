@@ -6,7 +6,7 @@ from ..json_value import JSONValue
 from ..models import KeywordCall, KeywordCallParameterSource, KeywordCallCondition
 from ..models.keywordcall_condition import ConditionChoices
 from .keywordcall_parameter_formset import get_keyword_parameters
-from .user_input_formset import UserInputFormset, user_input_field
+from .user_input_formset import BaseSelectWithIcons, UserInputFormset, user_input_field
 
 
 class KeywordCallConditionFormset(UserInputFormset):
@@ -38,7 +38,7 @@ class KeywordCallConditionFormset(UserInputFormset):
                 [(source.pk, str(source)) for source in previous_return_values]
             ]]
 
-        form.fields['value_ref'].widget = BaseSelect(
+        form.fields['value_ref'].widget = BaseSelectWithIcons(
             _('Wert auswählen'),
             choices=(
                 [(None, '')] +
