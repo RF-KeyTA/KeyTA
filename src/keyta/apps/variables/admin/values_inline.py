@@ -31,6 +31,11 @@ class Values(SortableTabularInlineWithDelete):
     def formfield_for_dbfield(self, db_field, request, **kwargs):
         field = super().formfield_for_dbfield(db_field, request, **kwargs)
 
+        if db_field.name == 'name':
+            field.widget = forms.TextInput(attrs={
+                'style': 'width: 100%',
+            })
+
         if db_field.name == 'value':
             field.widget = forms.TextInput(attrs={
                 'style': 'width: 100%',
