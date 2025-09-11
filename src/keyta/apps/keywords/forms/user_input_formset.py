@@ -135,7 +135,7 @@ class UserInputFormset(forms.BaseInlineFormSet):
         if json_value and not json_value.pk:
             user_input = json_value.user_input
 
-            if user_input and user_input != '${EMPTY}':
+            if user_input and user_input not in {'${EMPTY}', ''}:
                 return json_value.jsonify(), user_input
 
         return no_input
