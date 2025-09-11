@@ -38,6 +38,7 @@ class VariableAdmin(SortableAdminBase, BaseAdmin):
     search_fields = ['name', 'description']
     search_help_text = _('Name')
 
+    fields = ['systems', 'name', 'description', 'type']
     form = form_with_select(
         Variable,
         'type',
@@ -95,17 +96,11 @@ class VariableAdmin(SortableAdminBase, BaseAdmin):
 
         return field
 
-    def get_fields(self, request, obj=None):
-        variable: Variable = obj
+    def get_inlines(self, request, obj):
+        if not obj:
+            return []
 
-        fields = ['systems']
-
-        if variable and variable.windows.count() == 1 and not variable.template:
-            fields += ['window']
-
-        fields += ['name', 'description', 'type']
-
-        return fields
+        return self.inlines
 
     def get_protected_objects(self, obj):
         variable: Variable = obj
@@ -119,9 +114,6 @@ class VariableAdmin(SortableAdminBase, BaseAdmin):
     def get_readonly_fields(self, request, obj=None):
         variable: Variable = obj
         fields = []
-
-        if variable and variable.windows.count() == 1:
-            fields += ['window']
 
         if variable and variable.values.exists():
             fields += ['type']
@@ -141,16 +133,6 @@ class VariableAdmin(SortableAdminBase, BaseAdmin):
 
     def has_delete_permission(self, request, obj=None):
         return self.can_delete(request.user, 'variable')
-
-    @admin.display(description=_('Maske'))
-    def window(self, variable: Variable):
-        window: Window = variable.windows.first()
-
-        return link(
-            window.get_admin_url(),
-            window.name,
-            new_page=True
-        )
 
 
 @admin.register(VariableQuickAdd)
