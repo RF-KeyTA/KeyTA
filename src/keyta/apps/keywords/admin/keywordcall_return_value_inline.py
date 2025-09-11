@@ -1,3 +1,4 @@
+from django import forms
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
@@ -38,6 +39,17 @@ class KeywordCallReturnValueInline(DeleteRelatedField, ReturnValueTypeField, Bas
     verbose_name = _('Rückgabewert')
     verbose_name_plural = _('Rückgabewerte')
     can_delete = False
+
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        field = super().formfield_for_dbfield(db_field, request, **kwargs)
+
+        if db_field.name == 'name':
+            field.widget = forms.TextInput(attrs={
+                'style': 'width: 100%',
+                'placeholder': _('Name eintragen, anschließend Tab drücken')
+            })
+
+        return field
 
     def has_add_permission(self, request, obj=None):
         return self.has_change_permission(request, obj)
