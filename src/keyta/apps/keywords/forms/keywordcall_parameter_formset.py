@@ -120,9 +120,9 @@ class KeywordCallParameterFormset(UserInputFormset):
         if index is None:
             return
 
-        value = JSONValue.from_json(form.instance.value)
+        json_value = self.get_json_value(form)
 
-        if not value.user_input and not value.pk:
+        if not json_value.user_input and not json_value.pk:
             form._errors = ErrorDict()
             form._errors['value'] = ErrorList([
                 form.fields['value'].default_error_messages['required']
@@ -131,7 +131,7 @@ class KeywordCallParameterFormset(UserInputFormset):
         form.fields['value'] = user_input_field(
             _('Wert auswählen oder eintragen'),
             self.get_user_input(form, index),
-            self.ref_choices
+            choices=self.ref_choices
         )
 
     def get_ref_choices(self, kw_call: KeywordCall):
