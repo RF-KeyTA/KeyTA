@@ -146,6 +146,7 @@ class QuickChangeVariables(Variables):
 @admin.register(WindowQuickChange)
 class WindowQuickChangeAdmin(WindowAdmin):
     fields = []
+    inlines = [QuickChangeVariables]
     readonly_fields = ['documentation']
 
     def change_view(self, request, object_id, form_url="", extra_context=None):
@@ -158,12 +159,10 @@ class WindowQuickChangeAdmin(WindowAdmin):
         return self.changeform_view(request, object_id, form_url, extra_context or {'title_icon': settings.FA_ICONS.window})
 
     def get_inlines(self, request, obj):
-        inlines = [QuickChangeVariables]
-
         if Resource.objects.count():
-            return [Resources] + inlines
+            return [Resources] + self.inlines
 
-        return inlines
+        return self.inlines
 
     def has_delete_permission(self, request, obj=None):
         return False
