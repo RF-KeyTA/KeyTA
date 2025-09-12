@@ -52,9 +52,33 @@ a.btn-success {
     border-color: var(--keyta-primary-color);
 }
 
+
+.btn-primary:focus {
+    background-color: var(--keyta-primary-color);
+    border-color: var(--keyta-primary-color);
+}
+
 .btn-primary:hover {
-    background-color: var(--keyta-secondary-color);
-    border-color: var(--keyta-secondary-color);
+    background-color: var(--keyta-primary-color);
+    border-color: var(--keyta-primary-color);
+}
+
+.btn-secondary {
+    background-color: white;
+    border-color: var(--keyta-primary-color);
+    color: var(--keyta-primary-color);
+}
+
+.btn-secondary:focus {
+    background-color: white;
+    border-color: var(--keyta-primary-color);
+    color: var(--keyta-primary-color);
+}
+
+.btn-secondary:hover {
+    background-color: white;
+    border-color: var(--keyta-primary-color);
+    color: var(--keyta-primary-color);
 }
 
 .btn-success {

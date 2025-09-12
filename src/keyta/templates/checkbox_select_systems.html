@@ -1,16 +1,31 @@
 {% with id=widget.attrs.id %}
     <div{% if id %} id="{{ id }}"{% endif %}{% if widget.attrs.class %} class="container {{ widget.attrs.class }}"{% endif %}>
         <div class="row">
+            <div class="btn-group ml-2" role="group">
         {% for group_name, group in widget.optgroups %}
-            <div class="col-3">
                 {% for option in group.options %}
                     {% with widget=option %}
-                        <input type="{{ widget.type }}" name="{{ widget.name }}"{% if widget.value != None %} value="{{ widget.value|stringformat:'s' }}"{% endif %}{% include "django/forms/widgets/attrs.html" %}>
+                        <button type="button" class="btn {% if widget.attrs.checked %}btn-primary{% else %}btn-secondary{% endif %}" id="{{widget.attrs.id}}" onclick="clickCheckbox(this)">{{ group.name }}</button>
+                        <input type="{{ widget.type }}" name="{{ widget.name }}"{% if widget.value != None %} value="{{ widget.value|stringformat:'s' }}"{% endif %}{% include "django/forms/widgets/attrs.html" %} hidden>
                     {% endwith %}
                 {% endfor %}
-                {{ group.name }}
-            </div>
         {% endfor %}
+            </div>
         </div>
     </div>
+<script>
+    function clickCheckbox(button) {
+        const checkbox = document.querySelector(`input#${button.id}`)
+        checkbox.click()
+
+        if (checkbox.checked) {
+            button.classList.remove('btn-secondary')
+            button.classList.add('btn-primary')
+        }
+        else {
+            button.classList.remove('btn-primary')
+            button.classList.add('btn-secondary')
+        }
+    }
+</script>
 {% endwith %}
