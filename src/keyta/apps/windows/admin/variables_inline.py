@@ -26,4 +26,4 @@ class Variables(BaseTabularInline):
         return ', '.join(obj.variable.systems.values_list('name', flat=True))
 
     def has_change_permission(self, request, obj=None):
-        return True
+        return False
