@@ -13,6 +13,7 @@ from keyta.admin.base_admin import (
 )
 from keyta.admin.field_documentation import DocumentationField
 from keyta.admin.list_filters import SystemListFilter
+from keyta.apps.keywords.admin.keyword import url_params
 from keyta.apps.resources.models import Resource
 from keyta.forms.baseform import form_with_select
 from keyta.widgets import CheckboxSelectMultipleSystems, Icon, open_link_in_modal
@@ -25,6 +26,7 @@ from ..models import (
     WindowQuickChange
 )
 from .actions_inline import Actions
+from .quick_change_variables_inline import QuickChangeVariables
 from .resources_inline import Resources
 from .sequences_inline import Sequences
 from .variables_inline import Variables
@@ -137,10 +139,6 @@ class WindowQuickAddAdmin(BaseQuickAddAdmin):
             field.widget = forms.MultipleHiddenInput()
 
         return field
-
-
-class QuickChangeVariables(Variables):
-    readonly_fields = []
 
 
 @admin.register(WindowQuickChange)
