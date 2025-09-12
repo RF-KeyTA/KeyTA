@@ -152,7 +152,7 @@ class WindowQuickChangeAdmin(WindowAdmin):
         app = settings.MODEL_TO_APP.get(model)
 
         if app and app != current_app:
-            return HttpResponseRedirect(reverse('admin:%s_%s_change' % (app, model), args=(object_id,)))
+            return HttpResponseRedirect(reverse('admin:%s_%s_change' % (app, model), args=(object_id,)) + '?' + url_params(request.GET))
 
         return self.changeform_view(request, object_id, form_url, extra_context or {'title_icon': settings.FA_ICONS.window})
 
