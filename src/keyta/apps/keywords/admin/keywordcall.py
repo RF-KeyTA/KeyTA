@@ -53,11 +53,13 @@ class KeywordCallAdmin(BaseAdmin):
         if kw_call.from_keyword:
             if kw_call.from_keyword.is_action:
                 library_kw_call = LibraryKeywordCall.objects.get(id=kw_call.pk)
-                return HttpResponseRedirect(library_kw_call.get_admin_url()  + '?' + url_params(request.GET))
+                # Do not forward the URL params of the current request. It breaks the conditions inline.
+                return HttpResponseRedirect(library_kw_call.get_admin_url())
 
             if kw_call.from_keyword.is_sequence:
                 sequence_step = SequenceStep.objects.get(pk=kw_call.pk)
-                return HttpResponseRedirect(sequence_step.get_admin_url()  + '?' + url_params(request.GET))
+                # Do not forward the URL params of the current request. It breaks the conditions inline.
+                return HttpResponseRedirect(sequence_step.get_admin_url())
 
         if kw_call.testcase:
             test_step = TestStep.objects.get(pk=kw_call.pk)
