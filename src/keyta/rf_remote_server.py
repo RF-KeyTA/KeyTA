@@ -2,15 +2,18 @@ import json
 import os
 import posixpath
 import re
-import tempfile
 import subprocess
-import urllib
+import tempfile
+import traceback
 import unicodedata
+import urllib
+
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 from .IProcess import IProcess
+from .rf_log import generate_log, RobotLog
 
 
 tmp_dir = Path(tempfile.gettempdir()) / 'KeyTA'
@@ -63,6 +66,7 @@ def robot_run(
 
     robot_kwargs = {
         'listener': 'keyta.Listener',
+        'maxassignlength': '1000', # RF truncates return values larger than this in the log
         'outputdir': output_dir,
         'output': 'output.json'
     }
@@ -73,7 +77,13 @@ def robot_run(
         stderr=subprocess.PIPE
     )
 
-    log_path = output_dir / 'log.html'
+    try:
+        log = generate_log(RobotLog().simplify_output(output_dir / 'output.json'))
+        log_path = output_dir / 'simple_log.html'
+        write_file_to_disk(log_path, log)
+    except:
+        traceback.print_exc()
+        log_path = output_dir / 'log.html'
 
     return {
         'log': os.path.relpath(log_path, tmp_dir).replace('\\', '/'),
@@ -121,9 +131,7 @@ class RequestHandler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         function = self.path.lstrip('/')
-        content_len = int(self.headers.get('content-length'))
-        data = self.rfile.read(content_len).decode('utf-8')
-        kwargs = json.loads(data, strict=False)
+        kwargs = self.get_request_body()
         result = self.functions[function](**kwargs)
         response = json.dumps(result).encode('utf-8')
 
@@ -133,6 +141,15 @@ class RequestHandler(BaseHTTPRequestHandler):
         self.send_header('Content-Length', str(len(response)))
         self.end_headers()
         self.wfile.write(response)
+
+    def get_request_body(self) -> dict:
+        content_len = int(self.headers.get('content-length'))
+        data = self.rfile.read(content_len).decode('utf-8')
+
+        if data:
+            return json.loads(data, strict=False)
+        else:
+            return {}
 
     def translate_path(self, path):
         """Translate a /-separated PATH to the local filename syntax.
