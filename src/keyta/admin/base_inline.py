@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractUser
 
 from adminsortable2.admin import SortableInlineAdminMixin
 
-from .field_delete_related_instance import DeleteRelatedField
+from .field_delete_related_instance import UnlinkRelatedField
 
 
 class BaseTabularInline(admin.TabularInline):
@@ -41,9 +41,9 @@ class SortableTabularInline(SortableInlineAdminMixin, BaseTabularInline):
     template = 'sortable_tabular.html'
 
 
-class SortableTabularInlineWithDelete(DeleteRelatedField, SortableTabularInline):
+class SortableTabularInlineWithDelete(UnlinkRelatedField, SortableTabularInline):
     pass
 
 
-class TabularInlineWithDelete(DeleteRelatedField, BaseTabularInline):
+class TabularInlineWithDelete(UnlinkRelatedField, BaseTabularInline):
     pass

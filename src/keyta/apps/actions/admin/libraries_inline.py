@@ -1,6 +1,6 @@
 from django.utils.translation import gettext_lazy as _
 
-from keyta.admin.field_delete_related_instance import DeleteRelatedField
+from keyta.admin.field_delete_related_instance import UnlinkRelatedField
 from keyta.apps.libraries.admin import LibraryImportInline
 from keyta.apps.libraries.models import Library, LibraryImport
 from keyta.forms.baseform import form_with_select
@@ -8,7 +8,7 @@ from keyta.forms.baseform import form_with_select
 from ..models import Action
 
 
-class Libraries(DeleteRelatedField, LibraryImportInline):
+class Libraries(UnlinkRelatedField, LibraryImportInline):
     fk_name = 'keyword'
     fields = ['library']
     form = form_with_select(

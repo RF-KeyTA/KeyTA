@@ -4,7 +4,8 @@ from django.http import HttpRequest
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 
-from keyta.admin.base_inline import DeleteRelatedField, SortableTabularInline
+from keyta.admin.base_inline import SortableTabularInline
+from keyta.admin.field_delete_related_instance import DeleteRelatedField
 from keyta.widgets import Icon
 
 from ..forms import StepsForm

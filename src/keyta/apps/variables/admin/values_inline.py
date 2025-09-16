@@ -4,7 +4,8 @@ from django.utils.translation import gettext_lazy as _
 
 from adminsortable2.admin import CustomInlineFormSet
 
-from keyta.admin.base_inline import SortableTabularInlineWithDelete
+from keyta.admin.field_delete_related_instance import DeleteRelatedField
+from keyta.admin.base_inline import SortableTabularInline
 
 from ..models import Variable, VariableValue
 
@@ -22,7 +23,7 @@ class ValuesFormset(CustomInlineFormSet):
             names.add(name)
 
 
-class Values(SortableTabularInlineWithDelete):
+class Values(DeleteRelatedField, SortableTabularInline):
     fk_name = 'variable'
     model = VariableValue
     extra = 0

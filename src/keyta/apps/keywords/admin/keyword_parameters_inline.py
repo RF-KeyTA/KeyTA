@@ -1,7 +1,8 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
 
-from keyta.admin.base_inline import SortableTabularInlineWithDelete
+from keyta.admin.field_delete_related_instance import DeleteRelatedField
+from keyta.admin.base_inline import SortableTabularInline
 
 from ..models import Keyword, KeywordParameter
 
@@ -16,7 +17,7 @@ class ParameterForm(forms.ModelForm):
         return name
 
 
-class ParametersInline(SortableTabularInlineWithDelete):
+class ParametersInline(DeleteRelatedField, SortableTabularInline):
     model = KeywordParameter
     fields = ['position', 'name']
     form = ParameterForm
