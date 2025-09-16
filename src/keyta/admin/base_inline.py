@@ -41,9 +41,5 @@ class SortableTabularInline(SortableInlineAdminMixin, BaseTabularInline):
     template = 'sortable_tabular.html'
 
 
-class SortableTabularInlineWithDelete(UnlinkRelatedField, SortableTabularInline):
-    pass
-
-
 class TabularInlineWithDelete(UnlinkRelatedField, BaseTabularInline):
     pass
