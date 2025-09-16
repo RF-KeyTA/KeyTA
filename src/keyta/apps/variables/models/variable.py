@@ -113,7 +113,6 @@ class VariableWindowRelation(AbstractBaseModel, Variable.windows.through):
         return str(self.window)
 
     class Meta:
-        auto_created = True
         proxy = True
         verbose_name = _('Referenzwert')
         verbose_name_plural = _('Referenzwerte')

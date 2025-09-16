@@ -10,7 +10,6 @@ class ActionWindowRelation(AbstractBaseModel, Action.windows.through):
         return f'{self.window}'
 
     class Meta:
-        auto_created = True
         proxy = True
         verbose_name = _('Zuweisung zur Maske')
         verbose_name_plural = _('Zuweisungen zu Masken')
