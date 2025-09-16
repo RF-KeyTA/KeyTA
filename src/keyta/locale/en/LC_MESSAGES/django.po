@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-15 14:54+0200\n"
+"POT-Creation-Date: 2025-09-16 14:55+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -167,15 +167,11 @@ msgstr "Action"
 msgid "Schritt"
 msgstr "Step"
 
-#: .\apps\actions\models\action_window_relation.py:15
-#, fuzzy
-#| msgid "Beziehung zu Maske"
+#: .\apps\actions\models\action_window_relation.py:14
 msgid "Zuweisung zur Maske"
 msgstr "Relationship to Window"
 
-#: .\apps\actions\models\action_window_relation.py:16
-#, fuzzy
-#| msgid "Beziehungen zu Masken"
+#: .\apps\actions\models\action_window_relation.py:15
 msgid "Zuweisungen zu Masken"
 msgstr "Relationships to Windows"
 
@@ -336,13 +332,13 @@ msgstr "Robot Framework could not be executed."
 msgid "Robot Framework wird ausgeführt."
 msgstr "Robot Framework is running."
 
-#: .\apps\keywords\admin\keyword_parameters_inline.py:24
+#: .\apps\keywords\admin\keyword_parameters_inline.py:25
 #: .\apps\keywords\models\keyword_parameters.py:153
 #: .\apps\libraries\models\library_import_parameter.py:36
 msgid "Parameter"
 msgstr "Parameter"
 
-#: .\apps\keywords\admin\keyword_parameters_inline.py:25
+#: .\apps\keywords\admin\keyword_parameters_inline.py:26
 #: .\apps\keywords\forms\keywordcall_condition_formset.py:23
 #: .\apps\keywords\forms\keywordcall_parameter_formset.py:34
 #: .\apps\keywords\models\keyword_parameters.py:154
@@ -351,7 +347,7 @@ msgstr "Parameter"
 msgid "Parameters"
 msgstr "Parameters"
 
-#: .\apps\keywords\admin\keyword_parameters_inline.py:33
+#: .\apps\keywords\admin\keyword_parameters_inline.py:34
 #: .\apps\keywords\admin\keywordcall_return_value_inline.py:49
 msgid "Name eintragen, anschließend Tab drücken"
 msgstr "Enter a name and then press Tab"
@@ -393,7 +389,7 @@ msgid "zurücksetzen"
 msgstr "reset"
 
 #: .\apps\keywords\admin\library_keyword_call_vararg_parameters_inline.py:40
-#: .\apps\variables\admin\values_inline.py:42
+#: .\apps\variables\admin\values_inline.py:43
 msgid "Wert eintragen, anschließend Tab drücken"
 msgstr "Enter a value and then press Tab"
 
@@ -401,7 +397,7 @@ msgstr "Enter a value and then press Tab"
 msgid "Rückgabewert auswählen"
 msgstr "Select a Return Value"
 
-#: .\apps\keywords\admin\steps_inline.py:48
+#: .\apps\keywords\admin\steps_inline.py:49
 #: .\apps\keywords\models\keywordcall_condition.py:123
 msgid "Vorbedingung"
 msgstr "Precondition"
@@ -567,7 +563,7 @@ msgstr "Call Return Value"
 #: .\apps\variables\models\variable.py:93
 #: .\apps\variables\models\variable.py:100
 #: .\apps\variables\models\variable.py:107
-#: .\apps\variables\models\variable.py:118
+#: .\apps\variables\models\variable.py:117
 #: .\apps\windows\admin\quick_change_variables_inline.py:17
 #: .\apps\windows\admin\variables_inline.py:18
 msgid "Referenzwert"
@@ -765,7 +761,7 @@ msgstr "Automation"
 #: .\apps\variables\models\variable.py:94
 #: .\apps\variables\models\variable.py:101
 #: .\apps\variables\models\variable.py:108
-#: .\apps\variables\models\variable.py:119
+#: .\apps\variables\models\variable.py:118
 msgid "Referenzwerte"
 msgstr "Reference Values"
 
@@ -773,7 +769,7 @@ msgstr "Reference Values"
 msgid "Testfälle"
 msgstr "Test Cases"
 
-#: .\apps\variables\admin\values_inline.py:20
+#: .\apps\variables\admin\values_inline.py:21
 msgid "Die Namen müssen eindeutig sein."
 msgstr "The names must be unique."
 
