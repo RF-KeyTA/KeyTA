@@ -61,15 +61,19 @@ def url_query_parameters(query_parameters: dict):
 class Icon:
     def __init__(self, css_class: str, styles: dict[str, str]=None, title=None):
         self.tag = 'i'
-        self.attrs = attrs_to_string({
+        self.attrs = {
             'class': css_class,
-            'style': style_to_css({'font-size': '36px'} | (styles or {})),
+            'style': {'font-size': '36px'} | (styles or {}),
             'title': title or ''
-        })
+        }
         self.body = ''
 
     def __str__(self):
-        return html_to_string(self.tag, self.attrs, self.body)
+        return html_to_string(
+            self.tag,
+            attrs_to_string(self.attrs | {'style': style_to_css(self.attrs['style'])}),
+            self.body
+        )
 
 
 def bold(text: str):
