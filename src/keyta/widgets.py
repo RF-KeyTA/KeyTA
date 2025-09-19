@@ -81,10 +81,10 @@ def bold(text: str):
     return f"<b>{text}</b>"
 
 
-def open_link_in_modal(url: str, title: str):
+def open_link_in_modal(url: str, title: str, attrs: dict|None=None):
     return mark_safe(
-        '<a class="related-widget-wrapper-link view-related" href="%s">%s</a>'
-        % (url, title)
+        '<a class="related-widget-wrapper-link view-related" %s>%s</a>'
+        % (attrs_to_string({'href': url} | (attrs or {})), title)
     )
 
 
