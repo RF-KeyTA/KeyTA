@@ -13,10 +13,16 @@ from django.http import HttpRequest, HttpResponseRedirect, HttpResponse
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 
-
 from keyta.widgets import BaseSelect, BaseSelectMultiple
 
 from .field_documentation import DocumentationField
+
+
+def url_params(params: dict):
+    return '&'.join([
+        '%s=%s' % (name, value)
+        for name, value in params.items()
+    ])
 
 
 class ListView(ChangeList):

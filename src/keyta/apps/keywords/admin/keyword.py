@@ -5,20 +5,13 @@ from django.http import HttpResponseRedirect
 
 from adminsortable2.admin import SortableAdminBase
 
-from keyta.admin.base_admin import BaseAdmin
+from keyta.admin.base_admin import BaseAdmin, url_params
 from keyta.admin.field_documentation import DocumentationField
 from keyta.apps.actions.models import Action
 from keyta.apps.sequences.models import Sequence
 
 from ..models import KeywordDocumentation, Keyword
 from ..models.keyword import KeywordType
-
-
-def url_params(params: dict):
-    return '&'.join([
-        '%s=%s' % (name, value)
-        for name, value in params.items()
-    ])
 
 
 @admin.register(Keyword)

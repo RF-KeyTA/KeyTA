@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.http import HttpResponseRedirect
 from django.utils.translation import gettext_lazy as _
 
-from keyta.admin.base_admin import BaseAdmin
+from keyta.admin.base_admin import BaseAdmin, url_params
 from keyta.apps.keywords.models import KeywordDocumentation
 from keyta.apps.sequences.models import SequenceStep
 from keyta.apps.testcases.models import TestStep
@@ -15,7 +15,6 @@ from ..models import (
     KeywordParameterType,
     LibraryKeywordCall
 )
-from .keyword import url_params
 from .keywordcall_parameters_inline import KeywordCallParametersInline
 from .keywordcall_return_value_inline import KeywordCallReturnValueInline, ReadOnlyReturnValuesInline
 

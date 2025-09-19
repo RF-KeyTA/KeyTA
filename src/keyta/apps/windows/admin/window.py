@@ -9,11 +9,11 @@ from django.utils.translation import gettext_lazy as _
 from keyta.admin.base_admin import (
     BaseAdmin,
     BaseDocumentationAdmin,
-    BaseQuickAddAdmin
+    BaseQuickAddAdmin,
+    url_params
 )
 from keyta.admin.field_documentation import DocumentationField
 from keyta.admin.list_filters import SystemListFilter
-from keyta.apps.keywords.admin.keyword import url_params
 from keyta.apps.resources.models import Resource
 from keyta.forms.baseform import form_with_select
 from keyta.widgets import CheckboxSelectMultipleSystems, Icon, open_link_in_modal
