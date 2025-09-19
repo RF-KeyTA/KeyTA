@@ -1,12 +1,13 @@
 from django.utils.translation import gettext_lazy as _
 
-from keyta.admin.base_inline import TabularInlineWithDelete
+from keyta.admin.field_delete_related_instance import DeleteRelatedField
+from keyta.admin.base_inline import BaseTabularInline
 from keyta.widgets import ModelSelect2AdminWidget
 
 from ..models import Keyword, KeywordCallReturnValue, KeywordReturnValue
 
 
-class ReturnValueInline(TabularInlineWithDelete):
+class ReturnValueInline(DeleteRelatedField, BaseTabularInline):
     model = KeywordReturnValue
     fields = ['kw_call_return_value']
     extra = 0
