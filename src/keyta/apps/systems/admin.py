@@ -29,7 +29,12 @@ class SystemAdmin(BaseAdmin):
         field = super().formfield_for_dbfield(db_field, request, **kwargs)
 
         if db_field.name == 'library':
-            field.widget = BaseSelect(_('Bibliothek auswählen'))
+            field.widget = ModelSelect2AdminWidget(
+                search_fields=['name__icontains'],
+                attrs={
+                    'data-placeholder': _('Bibliothek auswählen'),
+                    'style': 'width: 95%'
+                })
 
         if db_field.name == 'attach_to_system':
             field.widget = ModelSelect2AdminWidget(
