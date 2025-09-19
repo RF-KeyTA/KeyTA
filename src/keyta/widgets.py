@@ -63,9 +63,10 @@ class Icon:
         self.tag = 'i'
         self.attrs = {
             'class': css_class,
-            'style': {'font-size': '36px'} | (styles or {}),
-            'title': title or ''
+            'style': {'font-size': '36px'} | (styles or {})
         }
+        if title:
+            self.attrs['title'] = title
         self.body = ''
 
     def __str__(self):
