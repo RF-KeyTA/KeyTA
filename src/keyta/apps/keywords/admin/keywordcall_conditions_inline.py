@@ -1,7 +1,8 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
 
-from keyta.admin.base_inline import TabularInlineWithDelete
+from keyta.admin.base_inline import BaseTabularInline
+from keyta.admin.field_delete_related_instance import DeleteRelatedField
 
 from ..forms import KeywordCallConditionFormset
 from ..json_value import JSONValue
@@ -19,7 +20,7 @@ class ConditionForm(forms.ModelForm):
         return expected_value
 
 
-class ConditionsInline(TabularInlineWithDelete):
+class ConditionsInline(DeleteRelatedField, BaseTabularInline):
     model = KeywordCallCondition
     fields = ['value_ref', 'condition', 'expected_value']
     form = ConditionForm
