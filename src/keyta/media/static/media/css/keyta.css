@@ -234,7 +234,7 @@ div.readonly p img {
     justify-content: start;
 }
 
-#jazzy-sidebar {
+.main-sidebar {
     background: linear-gradient(
         to top right,
         var(--keyta-primary-color),
@@ -242,6 +242,10 @@ div.readonly p img {
         var(--keyta-light-color)
     );
     position: fixed;
+}
+
+.layout-navbar-fixed.layout-fixed .wrapper .sidebar {
+    margin-top: 0 !important;
 }
 
 .brand-text {
