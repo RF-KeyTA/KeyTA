@@ -95,7 +95,7 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
     def formfield_for_dbfield(self, db_field, request, **kwargs):
         field = super().formfield_for_dbfield(db_field, request, **kwargs)
 
-        if db_field.name == 'systems':
+        if db_field.name == 'systems' and '/change/' in request.path:
             field = ModelMultipleChoiceField(
                 widget=CheckboxSelectMultipleSystems,
                 queryset=field.queryset
