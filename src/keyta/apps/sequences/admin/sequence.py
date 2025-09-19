@@ -22,8 +22,7 @@ from keyta.apps.keywords.models import KeywordCallReturnValue
 from keyta.apps.windows.models import Window
 from keyta.widgets import (
     CheckboxSelectMultipleSystems,
-    ModelSelect2MultipleAdminWidget,
-    Select2MultipleWidget,
+    ManyToManySelectOneWidget,
     link
 )
 
@@ -57,12 +56,12 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
             'systems': _('Systeme')
         },
         widgets={
-            'systems': ModelSelect2MultipleAdminWidget(
-                placeholder=_('System hinzufügen'),
+            'systems': ManyToManySelectOneWidget(
+                placeholder=_('System auswählen'),
                 model=Sequence.systems.through,
                 search_fields=['name__icontains'],
             ),
-            'windows': Select2MultipleWidget(
+            'windows': ManyToManySelectOneWidget(
                 placeholder=_('Maske auswählen'),
                 model=Sequence.windows.through,
                 search_fields=['name__icontains'],
