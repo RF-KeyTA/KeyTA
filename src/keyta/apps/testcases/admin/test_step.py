@@ -1,15 +1,13 @@
 from django.contrib import admin
-from django.utils.translation import gettext_lazy as _
 
-from keyta.apps.variables.models import Variable, VariableDocumentation, VariableValue
+from keyta.apps.variables.models import Variable, VariableValue
 from keyta.apps.keywords.forms import KeywordCallParameterFormset
 from keyta.apps.keywords.forms.keywordcall_parameter_formset import get_prev_return_values, get_variables_choices
 from keyta.apps.keywords.models import KeywordCall, KeywordCallParameterSource
 from keyta.apps.keywords.admin.keywordcall import (
-    KeywordCallParametersInline, 
-    KeywordCallAdmin, 
+    KeywordCallAdmin,
+    KeywordCallParametersInline
 )
-from keyta.widgets import open_link_in_modal
 
 from ..models import TestStep
 
@@ -56,33 +54,6 @@ class TestStepParameterFormset(KeywordCallParameterFormset):
 class TestStepParametersInline(KeywordCallParametersInline):
     fields = ['name', 'value']
     formset = TestStepParameterFormset
-
-
-class VariableDocField:
-    @admin.display(description=_('Referenzwerte'))
-    def variable_doc(self, test_step: TestStep):
-        variable_doc = VariableDocumentation(test_step.variable.pk)
-
-        return open_link_in_modal(
-            variable_doc.get_admin_url(),
-            test_step.variable.name
-        )
-
-    def get_fields(self, request, obj=None):
-        test_step: TestStep = obj
-
-        if test_step.variable:
-            return super().get_fields(request, obj) + ['variable_doc']
-
-        return super().get_fields(request, obj)
-
-    def get_readonly_fields(self, request, obj=None):
-        test_step: TestStep = obj
-
-        if test_step.variable:
-            return super().get_readonly_fields(request, obj) + ['variable_doc']
-
-        return super().get_readonly_fields(request, obj)
 
 
 @admin.register(TestStep)
