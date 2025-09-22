@@ -304,3 +304,7 @@ div.readonly p img {
 .action-icon {
 	font-size: 30px;
 }
+
+input[type=checkbox][id$=execute] {
+    margin-top: 10px;
+}
