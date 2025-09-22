@@ -5,10 +5,11 @@ from django.http import HttpResponseRedirect
 
 from adminsortable2.admin import SortableAdminBase
 
-from keyta.admin.base_admin import BaseAdmin, url_params
+from keyta.admin.base_admin import BaseAdmin
 from keyta.admin.field_documentation import DocumentationField
 from keyta.apps.actions.models import Action
 from keyta.apps.sequences.models import Sequence
+from keyta.widgets import url_query_parameters
 
 from ..models import KeywordDocumentation, Keyword
 from ..models.keyword import KeywordType
@@ -38,11 +39,11 @@ class KeywordAdmin(DocumentationField, SortableAdminBase, BaseAdmin):
 
         if keyword.type == KeywordType.ACTION:
             action = Action.objects.get(pk=object_id)
-            return HttpResponseRedirect(action.get_admin_url() + '?' + url_params(request.GET))
+            return HttpResponseRedirect(action.get_admin_url() + '?' + url_query_parameters(request.GET))
         
         if keyword.type == KeywordType.SEQUENCE:
             sequence = Sequence.objects.get(pk=object_id)
-            return HttpResponseRedirect(sequence.get_admin_url() + '?' + url_params(request.GET))
+            return HttpResponseRedirect(sequence.get_admin_url() + '?' + url_query_parameters(request.GET))
         
         return super().change_view(request, object_id, form_url, extra_context)
 

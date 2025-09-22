@@ -7,7 +7,7 @@ from django.utils.translation import gettext_lazy as _
 
 from model_clone import CloneModelAdminMixin
 
-from keyta.admin.base_admin import BaseQuickAddAdmin, url_params
+from keyta.admin.base_admin import BaseQuickAddAdmin
 from keyta.apps.executions.admin import KeywordExecutionInline
 from keyta.apps.keywords.admin import (
     ParametersInline,
@@ -19,7 +19,7 @@ from keyta.apps.keywords.models import KeywordCallReturnValue
 from keyta.apps.libraries.models import Library, LibraryImport
 from keyta.apps.systems.models import System
 from keyta.forms import form_with_select
-from keyta.widgets import CheckboxSelectMultipleSystems
+from keyta.widgets import CheckboxSelectMultipleSystems, url_query_parameters
 
 from ..forms import ActionForm, QuickAddActionForm
 from ..models import (
@@ -78,7 +78,7 @@ class ActionAdmin(ActionAdminMixin, CloneModelAdminMixin, WindowKeywordAdmin):
 
         if '_popup' in request.GET:
             action = ActionQuickChange.objects.get(pk=object_id)
-            return HttpResponseRedirect(action.get_admin_url() + '?' + url_params(request.GET) + steps_tab)
+            return HttpResponseRedirect(action.get_admin_url() + '?' + url_query_parameters(request.GET) + steps_tab)
 
         current_app, model, *route = request.resolver_match.route.split('/')
         app = settings.MODEL_TO_APP.get(model)

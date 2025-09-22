@@ -18,13 +18,6 @@ from keyta.widgets import BaseSelect, BaseSelectMultiple
 from .field_documentation import DocumentationField
 
 
-def url_params(params: dict):
-    return '&'.join([
-        '%s=%s' % (name, value)
-        for name, value in params.items()
-    ])
-
-
 class ListView(ChangeList):
     def __init__(
         self,

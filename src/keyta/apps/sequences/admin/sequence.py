@@ -8,7 +8,7 @@ from django.utils.translation import gettext as _
 
 from model_clone import CloneModelAdminMixin
 
-from keyta.admin.base_admin import BaseQuickAddAdmin, url_params
+from keyta.admin.base_admin import BaseQuickAddAdmin
 from keyta.admin.list_filters import SystemListFilter
 from keyta.apps.executions.admin import KeywordExecutionInline
 from keyta.apps.keywords.admin import (
@@ -22,7 +22,8 @@ from keyta.apps.windows.models import Window
 from keyta.widgets import (
     CheckboxSelectMultipleSystems,
     ManyToManySelectOneWidget,
-    link
+    link,
+    url_query_parameters
 )
 
 from ..forms import QuickAddSequenceForm, SequenceForm
@@ -81,7 +82,7 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
 
         if '_popup' in request.GET:
             sequence = SequenceQuickChange.objects.get(pk=object_id)
-            return HttpResponseRedirect(sequence.get_admin_url() + '?' + url_params(request.GET) + steps_tab)
+            return HttpResponseRedirect(sequence.get_admin_url() + '?' + url_query_parameters(request.GET) + steps_tab)
 
         current_app, model, *route = request.resolver_match.route.split('/')
         app = settings.MODEL_TO_APP.get(model)

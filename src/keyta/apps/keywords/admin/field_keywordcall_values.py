@@ -1,8 +1,7 @@
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 
-from keyta.admin.base_admin import url_params
-from keyta.widgets import open_link_in_modal
+from keyta.widgets import open_link_in_modal, url_query_parameters
 
 from ..models import KeywordCall
 
@@ -35,7 +34,7 @@ class KeywordCallValuesField:
             if self.get_user(request):
                 query_params['user'] = '1'
 
-            htmx_attrs['hx-get'] += '?' + url_params(query_params)
+            htmx_attrs['hx-get'] += '?' + url_query_parameters(query_params)
 
             return open_link_in_modal(
                 kw_call.get_admin_url(),

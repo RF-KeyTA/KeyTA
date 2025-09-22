@@ -2,11 +2,11 @@ from django.contrib import admin
 from django.http import HttpResponseRedirect, HttpResponse
 from django.utils.translation import gettext_lazy as _
 
-from keyta.admin.base_admin import BaseAdmin, url_params
+from keyta.admin.base_admin import BaseAdmin
 from keyta.apps.keywords.models import KeywordDocumentation
 from keyta.apps.sequences.models import SequenceStep
 from keyta.apps.testcases.models import TestStep
-from keyta.widgets import open_link_in_modal
+from keyta.widgets import open_link_in_modal, url_query_parameters
 
 from ..models import (
     ExecutionKeywordCall,
@@ -59,7 +59,7 @@ class KeywordCallAdmin(BaseAdmin):
 
         if kw_call.execution:
             execution_kwcall = ExecutionKeywordCall.objects.get(id=kw_call.pk)
-            return HttpResponseRedirect(execution_kwcall.get_admin_url() + '?' + url_params(request.GET))
+            return HttpResponseRedirect(execution_kwcall.get_admin_url() + '?' + url_query_parameters(request.GET))
 
         if kw_call.from_keyword:
             if kw_call.from_keyword.is_action:
@@ -74,7 +74,7 @@ class KeywordCallAdmin(BaseAdmin):
 
         if kw_call.testcase:
             test_step = TestStep.objects.get(pk=kw_call.pk)
-            return HttpResponseRedirect(test_step.get_admin_url()  + '?' + url_params(request.GET))
+            return HttpResponseRedirect(test_step.get_admin_url()  + '?' + url_query_parameters(request.GET))
 
         return super().change_view(request, object_id, form_url, extra_context)
 
