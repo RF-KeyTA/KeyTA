@@ -1,18 +1,31 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
+from keyta.widgets import attrs_to_string
+
 from ..models import KeywordCall, KeywordCallParameter
 
 
 class ParameterFields:
     def show_parameter(self, kw_call: KeywordCall, position: int):
+        htmx_attrs = {
+            'hx-get': kw_call.get_admin_url(),
+            'hx-swap': 'innerHTML',
+            'hx-trigger': 'modal-closed from:body'
+        }
         params = list(kw_call.parameters.all())
         position0 = position - 1
 
         if len(params) > position0:
             param: KeywordCallParameter = params[position0]
             value = param.current_value or ''
-            return mark_safe('%s<br><i style="color: gray">%s</i>' % (value, param.name))
+            htmx_attrs['hx-get'] += '?update_param=' + param.name
+
+            return mark_safe(f"""
+            <span {attrs_to_string(htmx_attrs)}>{value}</span>
+            <br>
+            <i style="color: gray">{param.name}</i>
+            """)
         else:
             return ''
 
