@@ -35,6 +35,8 @@ class LibraryImportAdmin(BaseAdmin):
         if keyword := obj.keyword:
             return keyword.calls.filter(to_keyword__library_id=obj.library.pk)
 
+        return []
+
     def get_readonly_fields(self, request, obj=None):
         library_import: LibraryImport = obj
 
