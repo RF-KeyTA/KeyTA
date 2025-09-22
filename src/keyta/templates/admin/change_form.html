@@ -142,6 +142,7 @@
 {% block extrajs %}
     {{ block.super }}
     <!-- BEGIN change_form.html -->
+    <script type="text/javascript" src="{% static 'admin/js/htmx.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'admin/js/jquery.floatingscroll.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'vendor/select2/js/select2.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'jazzmin/js/change_form.js' %}"></script>
@@ -215,34 +216,18 @@
                 const save_button = '.button-save'
                 $(save_button).hide()
 
-                // If the keyword call has empty args reload the page 
-                // upon closing the keyword call modal in order to update
-                // the args icon 
-                const urlParams = new URLSearchParams(window.location.search)
-                const emptyArgs = urlParams.get('empty_args')
+                $(document).on('hide.bs.modal', function (event) {
+                    const modals = $('div[id^="bootstrap-show-modal"]')
 
-                if (emptyArgs != null) {
-                    sessionStorage.setItem('empty_args', urlParams.get('empty_args'))
-                }
-
-                $(document).on('click', $('button.close', $('.modal').not('.type-modal')), function() {
-                    // $('body.popup .button-save').click()
-
-                    if (sessionStorage.getItem('empty_args') !== null) {
-                        const modals = $('.modal-dialog')
-
-                        // Reloading the whole window can be avoided using HTMX
-                        // with server-sent events (sse) to swap the args icon
-                        if (modals.length === 2) {
-                            $('#related-modal-iframe').get(0).contentWindow.location.reload()
+                    modals.each((index, modal) => {
+                        if (index === 0) {
+                            htmx.trigger("body", "modal-closed")
                         }
-
-                        if (modals.length === 1) {
-                            window.location.reload()
+                        else {
+                            const previousModal = $('#related-modal-iframe', modals[index-1])
+                            previousModal.get(0).contentWindow.htmx.trigger("body", "modal-closed")
                         }
-
-                        sessionStorage.clear()
-                    }
+                    })
                 })
 
                 $('form').on('keydown', function(e) {

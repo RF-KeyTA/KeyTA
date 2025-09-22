@@ -10,14 +10,14 @@ from keyta.widgets import Icon
 
 from ..forms import StepsForm
 from ..models import Keyword, KeywordCall
+from .field_keywordcall_values import KeywordCallValuesField
 from .field_parameters import ParameterFields
-from .field_keywordcall_args import KeywordCallArgsField
 
 
 class StepsInline(
     DeleteRelatedField,
     ParameterFields,
-    KeywordCallArgsField,
+    KeywordCallValuesField,
     SortableTabularInline
 ):
     model = KeywordCall

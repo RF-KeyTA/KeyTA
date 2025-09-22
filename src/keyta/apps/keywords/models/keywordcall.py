@@ -1,5 +1,6 @@
 from typing import Optional
 
+from django.conf import settings
 from django.db import models
 from django.db.models import Q, QuerySet, UniqueConstraint
 from django.contrib.auth.models import AbstractUser
@@ -9,6 +10,7 @@ from model_clone import CloneMixin
 
 from keyta.models.base_model import AbstractBaseModel
 from keyta.rf_export.keywords import RFKeywordCall
+from keyta.widgets import Icon
 
 from ..json_value import JSONValue
 from .keywordcall_condition import KeywordCallCondition
@@ -173,6 +175,56 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
         if self.pk:
             return self.from_keyword or self.testcase or self.execution
         return None
+
+    def get_icon(self, user: Optional[AbstractUser] = None) -> Icon|None:
+        to_keyword_parameters_count = self.to_keyword.parameters.count()
+        has_return_values = self.return_values.exists()
+
+        if not self.pk or not self.to_keyword:
+            return None
+
+        if to_keyword_parameters_count == 0:
+            if not has_return_values:
+                if not (self.to_keyword.library or self.to_keyword.resource):
+                    icon = Icon(
+                        settings.FA_ICONS.kw_call_no_input_no_output,
+                        {
+                            'color': 'black',
+                            'font-size': '18px',
+                            'margin-left': '12px',
+                            'margin-top': '8px'
+                        }
+                    )
+                    icon.attrs['name'] = 'no-input-no-output'
+                    return icon
+                else:
+                 # For a Library/Resource keyword the icon is necessary to set the return value
+                 icon = Icon(settings.FA_ICONS.kw_call_only_output)
+                 icon.attrs['name'] = 'only-output'
+                 icon.attrs['style'].update({'filter': 'hue-rotate(150deg)'})
+                 return icon
+            else:
+                icon = Icon(settings.FA_ICONS.kw_call_only_output, {'color': 'var(--keyta-secondary-color)'})
+                icon.attrs['name'] = 'only-output'
+                return icon
+
+        if self.parameters.filter(user=user).count() != to_keyword_parameters_count:
+            self.update_parameters(user)
+
+        if has_return_values:
+            icon = Icon(settings.FA_ICONS.kw_call_input_output)
+            icon.attrs['name'] = 'input-output'
+            return self.update_icon(icon, user)
+        else:
+            icon = Icon(settings.FA_ICONS.kw_call_only_input, {'color': 'var(--keyta-primary-color)'})
+            icon.attrs['name'] = 'only-input'
+            return self.update_icon(icon, user)
+
+    def update_icon(self, icon: Icon, user: Optional[AbstractUser] = None):
+        if self.has_empty_arg(user):
+            icon.attrs['style'].update({'filter': 'hue-rotate(150deg)'})
+
+        return icon
 
     @classmethod
     def get_substeps(cls, kw_calls: QuerySet):

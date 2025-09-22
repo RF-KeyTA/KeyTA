@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.utils.translation import gettext_lazy as _
 
 from keyta.admin.base_admin import BaseAdmin, url_params
@@ -7,7 +7,6 @@ from keyta.apps.keywords.models import KeywordDocumentation
 from keyta.apps.sequences.models import SequenceStep
 from keyta.apps.testcases.models import TestStep
 from keyta.widgets import open_link_in_modal
-from .library_keyword_call_vararg_parameters_inline import VarargParametersInline
 
 from ..models import (
     ExecutionKeywordCall,
@@ -17,6 +16,7 @@ from ..models import (
 )
 from .keywordcall_parameters_inline import KeywordCallParametersInline
 from .keywordcall_return_value_inline import KeywordCallReturnValueInline, ReadOnlyReturnValuesInline
+from .library_keyword_call_vararg_parameters_inline import VarargParametersInline
 
 
 class KeywordDocField:
@@ -43,6 +43,15 @@ class KeywordCallAdmin(BaseAdmin):
 
     def change_view(self, request, object_id, form_url="", extra_context=None):
         kw_call = KeywordCall.objects.get(pk=object_id)
+
+        if request.GET.get('update_icon'):
+            if request.GET.get('user'):
+                icon = kw_call.get_icon(request.user)
+            else:
+                icon = kw_call.get_icon()
+
+            return HttpResponse(str(icon))
+
         kw_call.update_parameter_values()
 
         if kw_call.execution:

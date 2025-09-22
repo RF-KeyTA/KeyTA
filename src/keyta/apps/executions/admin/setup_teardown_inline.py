@@ -1,10 +1,9 @@
-from django.contrib import admin
 from django.db.models import QuerySet
 from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 
 from keyta.admin.base_inline import BaseTabularInline
-from keyta.apps.keywords.admin.field_keywordcall_args import BaseKeywordCallArgs
+from keyta.apps.keywords.admin.field_keywordcall_values import KeywordCallValuesField
 from keyta.apps.keywords.forms import StepsForm
 from keyta.apps.keywords.models import Keyword
 from keyta.forms.baseform import form_with_select
@@ -12,20 +11,12 @@ from keyta.forms.baseform import form_with_select
 from ..models import Execution, Setup, Teardown
 
 
-class KeywordCallArgsField(BaseKeywordCallArgs):
-    def get_fields(self, request, obj=None):
-        return super().get_fields(request, obj) + ['args']
-
-    def get_readonly_fields(self, request: HttpRequest, obj=None):
-        @admin.display(description=_('Werte'))
-        def args(self, kw_call):
-            return self.get_icon(kw_call, request.user)
-
-        KeywordCallArgsField.args = args
-        return super().get_readonly_fields(request, obj) + ['args']
+class SetupTeardownKeywordCallValuesField(KeywordCallValuesField):
+    def get_user(self, request):
+        return request.user
 
 
-class SetupInline(KeywordCallArgsField, BaseTabularInline):
+class SetupInline(SetupTeardownKeywordCallValuesField, BaseTabularInline):
     model = Setup
     fields = ['enabled', 'to_keyword']
     form = form_with_select(
