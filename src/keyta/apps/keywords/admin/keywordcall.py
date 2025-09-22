@@ -55,7 +55,7 @@ class KeywordCallAdmin(BaseAdmin):
         kw_call.update_parameter_values()
 
         if param := request.GET.get('update_param'):
-            return HttpResponse(kw_call.get_parameter_value(param))
+            return HttpResponse(kw_call.get_parameter_value(param) or '')
 
         if kw_call.execution:
             execution_kwcall = ExecutionKeywordCall.objects.get(id=kw_call.pk)
