@@ -24,7 +24,7 @@ class LibraryImportParametersInline(LibraryParametersInline):
 
     @admin.display(description=_('zurücksetzen'))
     def reset(self, lib_param: LibraryImportParameter):
-        url = lib_param.get_admin_url() + '?reset'
+        url = lib_param.get_admin_url() + '?_popup=1&reset'
         icon =  Icon(
             settings.FA_ICONS.reset_default_value,
             {'font-size': '18px'}

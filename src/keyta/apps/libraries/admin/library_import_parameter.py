@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django.http import HttpRequest, HttpResponseRedirect
 
+from keyta.widgets import url_query_parameters
+
 from ..models import LibraryImportParameter
 
 
@@ -11,8 +13,6 @@ class LibraryImportParameterAdmin(admin.ModelAdmin):
             lib_import_param = LibraryImportParameter.objects.get(id=object_id)
             lib_import_param.reset_value()
 
-            super().change_view(request, object_id, form_url, extra_context)
-
-            return HttpResponseRedirect(lib_import_param.library_import.get_admin_url())
+            return HttpResponseRedirect(lib_import_param.library_import.get_admin_url() + '?' + url_query_parameters(request.GET))
 
         return super().change_view(request, object_id, form_url, extra_context)
