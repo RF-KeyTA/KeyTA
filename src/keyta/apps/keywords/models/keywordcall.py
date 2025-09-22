@@ -177,11 +177,11 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
         return None
 
     def get_icon(self, user: Optional[AbstractUser] = None) -> Icon|None:
-        to_keyword_parameters_count = self.to_keyword.parameters.count()
-        has_return_values = self.return_values.exists()
-
         if not self.pk or not self.to_keyword:
             return None
+
+        to_keyword_parameters_count = self.to_keyword.parameters.count()
+        has_return_values = self.return_values.exists()
 
         if to_keyword_parameters_count == 0:
             if not has_return_values:
