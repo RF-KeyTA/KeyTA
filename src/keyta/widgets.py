@@ -14,14 +14,6 @@ from django_select2.forms import ModelSelect2Widget
 from keyta.apps.systems.models import System
 
 
-def style_to_css(style: dict):
-            return '; '.join([
-                f'{name}: {value}'
-                for name, value
-                in style.items()
-            ])
-
-
 def attrs_to_string(attrs: dict) -> str:
     return ' '.join([
         f'{name}="{value}"'
@@ -32,6 +24,22 @@ def attrs_to_string(attrs: dict) -> str:
 
 def html_to_string(tag, attrs, body) -> str:
     return f'<{tag} {attrs}>{body}</{tag}>'
+
+
+def style_to_css(style: dict):
+    return '; '.join([
+        f'{name}: {value}'
+        for name, value
+        in style.items()
+    ])
+
+
+def url_query_parameters(query_parameters: dict):
+    return '&'.join(
+        f'{key}={value}'
+        for key, value
+        in query_parameters.items()
+    )
 
 
 def link(url: str, title: str, new_page: bool = False, query_parameters: dict[str, str]=None, styles: dict[str, str]=None):
@@ -48,14 +56,6 @@ def link(url: str, title: str, new_page: bool = False, query_parameters: dict[st
         title = title + '<i class="ml-2 fa-solid fa-up-right-from-square" style="font-size: 0.7rem"></i>'
 
     return mark_safe(html_to_string('a', attrs_to_string(attrs), title))
-
-
-def url_query_parameters(query_parameters: dict):
-    return '&'.join(
-        f'{key}={value}'
-        for key, value
-        in query_parameters.items()
-    )
 
 
 class Icon:
