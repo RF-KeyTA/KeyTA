@@ -21,6 +21,7 @@ class KeywordCallValuesField:
         def values(self, obj):
             kw_call: KeywordCall = self.get_kw_call(obj)
             icon = kw_call.get_icon(self.get_user(request))
+            icon.attrs['style'] |= {'margin-left': '5px'}
             htmx_attrs = {
                 'hx-get': kw_call.get_admin_url(),
                 'hx-on::after-swap': 'presentRelatedObjectModal()',
