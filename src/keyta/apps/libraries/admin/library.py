@@ -17,6 +17,7 @@ from keyta.widgets import link, Icon
 from ..forms import LibraryForm
 from ..models import (
     Library,
+    LibraryImport,
     LibraryInitDocumentation
 )
 from .library_parameters_inline import LibraryParametersInline
@@ -105,7 +106,10 @@ class LibraryAdmin(BaseAdmin):
         return ['name', 'version', 'dokumentation']
 
     def get_protected_objects(self, obj: Library):
-        return KeywordCall.objects.filter(to_keyword__library=obj)[:20]
+        return (
+            list(KeywordCall.objects.filter(to_keyword__library=obj)[:20]) +
+            list(LibraryImport.objects.filter(library=obj)[:20])
+        )
 
     def has_add_permission(self, request):
         return self.can_add(request.user, 'library')
