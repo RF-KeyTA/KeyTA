@@ -4,8 +4,7 @@ from django.utils.translation import gettext_lazy as _
 
 from keyta.admin.base_inline import BaseTabularInline
 
-from ..forms import KeywordCallParameterFormset
-from ..forms.keywordcall_parameter_formset import ErrorsMixin
+from ..forms import KeywordCallParameterFormsetWithErrors
 from ..models import KeywordCall, KeywordCallParameter, KeywordParameterType
 
 
@@ -15,10 +14,6 @@ class KeywordCallParametersForm(forms.ModelForm):
         # before saving
         self._errors = None
         return super().save(commit=commit)
-
-
-class KeywordCallParameterFormsetWithErrors(ErrorsMixin, KeywordCallParameterFormset):
-    pass
 
 
 class KeywordCallParametersInline(BaseTabularInline):

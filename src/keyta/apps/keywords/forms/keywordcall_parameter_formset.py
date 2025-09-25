@@ -151,3 +151,7 @@ class KeywordCallParameterFormset(UserInputFormset):
     def get_json_value(self, form):
         kw_call_parameter: KeywordCallParameter = form.instance
         return kw_call_parameter.json_value
+
+
+class KeywordCallParameterFormsetWithErrors(ErrorsMixin, KeywordCallParameterFormset):
+    pass
