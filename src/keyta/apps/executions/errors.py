@@ -12,34 +12,34 @@ class ErrorType(str, enum.Enum):
 
 class ValidationError(dict, enum.Enum):
     INCOMPLETE_CALL_PARAMS = {
-        'error': _('Die Aufrufparameter (Werte) sind unvollständig'),
+        'error': _('Die Aufrufparameter (Werte) sind unvollständig.'),
         'type': ErrorType.CALL_PARAMS
     }
     INCOMPLETE_STEP = {
-        'error': _('Die Schritte sind unvollständig'),
+        'error': _('Die Schritte sind unvollständig.'),
         'type': ErrorType.STEPS
     }
     INCOMPLETE_STEP_PARAMS = {
-        'error': _('Die Parameter (Werte) der Schritte sind unvollständig'),
+        'error': _('Die Parameter (Werte) der Schritte sind unvollständig.'),
         'type': ErrorType.STEPS
     }
     INCOMPLETE_ATTACH_TO_SYSTEM_PARAMS = {
-        'error': _('Die Parameter (Werte) der Anbindung ans laufende System sind unvollständig'),
+        'error': _('Die Parameter (Werte) der Anbindung ans laufende System (unter Einstellungen) sind unvollständig.'),
         'type': ErrorType.SETTINGS
     }
     INCOMPLETE_TEST_SETUP_PARAMS = {
-        'error': _('Die Parameter (Werte) der Testvorbereitung sind unvollständig'),
+        'error': _('Die Parameter (Werte) der Testvorbereitung (unter Einstellungen) sind unvollständig.'),
         'type': ErrorType.SETTINGS
     }
     INCOMPLETE_TEST_TEARDOWN_PARAMS = {
-        'error': _('Die Parameter (Werte) der Testnachbereitung sind unvollständig'),
+        'error': _('Die Parameter (Werte) der Testnachbereitung (unter Einstellungen) sind unvollständig.'),
         'type': ErrorType.SETTINGS
     }
     NO_ATTACH_TO_SYSTEM = {
-        'error': _('Die Anbindung ans laufende System muss gepflegt werden'),
+        'error': _('Die Anbindung ans laufende System muss in den Einstellungen gepflegt werden.'),
         'type': ErrorType.SYSTEM
     }
     NO_STEPS = {
-        'error': _('Die Schritte sind leer'),
+        'error': _('Die Schritte sind leer.'),
         'type': ErrorType.STEPS
     }
