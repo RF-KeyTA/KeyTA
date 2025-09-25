@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from keyta.apps.variables.models import Variable, VariableValue
-from keyta.apps.keywords.forms import KeywordCallParameterFormset
+from keyta.apps.keywords.forms import KeywordCallParameterFormsetWithErrors
 from keyta.apps.keywords.forms.keywordcall_parameter_formset import get_prev_return_values, get_variables_choices
 from keyta.apps.keywords.models import KeywordCall, KeywordCallParameterSource
 from keyta.apps.keywords.admin.keywordcall import (
@@ -41,7 +41,7 @@ def get_window_variables(kw_call: KeywordCall, exclude_variable: Variable=None):
     return get_variables_choices(sources)
 
 
-class TestStepParameterFormset(KeywordCallParameterFormset):
+class TestStepParameterFormset(KeywordCallParameterFormsetWithErrors):
     def get_ref_choices(self, kw_call: KeywordCall):
         choices = get_prev_return_values(kw_call)
 
