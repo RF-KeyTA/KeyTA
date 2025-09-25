@@ -50,6 +50,8 @@ class KeywordCallAdmin(BaseAdmin):
             else:
                 icon = kw_call.get_icon()
 
+            icon.attrs['style'] |= {'margin-left': '5px'}
+
             return HttpResponse(str(icon))
 
         kw_call.update_parameter_values()

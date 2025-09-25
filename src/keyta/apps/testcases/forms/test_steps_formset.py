@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 
 from adminsortable2.admin import CustomInlineFormSet
 
-from keyta.apps.keywords.models import Keyword, KeywordCall
+from keyta.apps.keywords.models import Keyword
 from keyta.apps.resources.models import ResourceImport
 from keyta.apps.testcases.models import TestCase
 from keyta.apps.windows.models import Window
@@ -13,6 +13,8 @@ from keyta.widgets import (
     CustomRelatedFieldWidgetWrapper,
     ModelSelect2AdminWidget
 )
+
+from ..models import TestStep
 
 
 class TestStepsFormset(CustomInlineFormSet):
@@ -77,8 +79,6 @@ class TestStepsFormset(CustomInlineFormSet):
     def add_fields(self, form, index):
         super().add_fields(form, index)
 
-        test_step: KeywordCall = form.instance
-
         execute_field = form.fields['execute']
         to_keyword_field = form.fields['to_keyword']
         # variable_field = form.fields['variable']
@@ -99,7 +99,9 @@ class TestStepsFormset(CustomInlineFormSet):
                 'data-width': '95%',
             })
         else:
-            if test_step.pk:
+            if form.instance.pk:
+                test_step = TestStep.objects.get(pk=form.instance.pk)
+
                 if not test_step.to_keyword:
                     to_keyword_field.widget.can_change_related = False
                     to_keyword_field.widget = CustomRelatedFieldWidgetWrapper(
@@ -108,9 +110,15 @@ class TestStepsFormset(CustomInlineFormSet):
                         {
                             'systems': self.system_pks[0],
                             'windows': test_step.window.pk
+                        },
+                        {
+                            'hx-get': test_step.get_admin_url() + '?step-changed',
+                            'hx-on::after-swap': 'presentRelatedObjectModal()',
+                            'hx-swap': 'outerHTML',
+                            'hx-trigger': 'step-changed from:body'
                         }
                     )
                     to_keyword_field.widget.can_add_related = True
                     to_keyword_field.widget.attrs.update({
-                        'data-width': '95%',
+                        'data-width': '91%',
                     })

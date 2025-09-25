@@ -177,8 +177,21 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
         return None
 
     def get_icon(self, user: Optional[AbstractUser] = None) -> Icon|None:
+        def no_input_no_output():
+            icon = Icon(
+                settings.FA_ICONS.kw_call_no_input_no_output,
+                {
+                    'color': 'black',
+                    'font-size': '18px',
+                    'margin-left': '12px',
+                    'margin-top': '8px'
+                }
+            )
+            icon.attrs['name'] = 'no-input-no-output'
+            return icon
+
         if not self.pk or not self.to_keyword:
-            return None
+            return no_input_no_output()
 
         to_keyword_parameters_count = self.to_keyword.parameters.count()
         has_return_values = self.return_values.exists()
@@ -186,17 +199,7 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
         if to_keyword_parameters_count == 0:
             if not has_return_values:
                 if not (self.to_keyword.library or self.to_keyword.resource):
-                    icon = Icon(
-                        settings.FA_ICONS.kw_call_no_input_no_output,
-                        {
-                            'color': 'black',
-                            'font-size': '18px',
-                            'margin-left': '12px',
-                            'margin-top': '8px'
-                        }
-                    )
-                    icon.attrs['name'] = 'no-input-no-output'
-                    return icon
+                    return no_input_no_output()
                 else:
                  # For a Library/Resource keyword the icon is necessary to set the return value
                  icon = Icon(settings.FA_ICONS.kw_call_only_output)

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 
-from keyta.widgets import open_link_in_modal, url_query_parameters
+from keyta.widgets import link, open_link_in_modal, url_query_parameters
 
 from ..models import KeywordCall
 
@@ -21,11 +21,13 @@ class KeywordCallValuesField:
             kw_call: KeywordCall = self.get_kw_call(obj)
             icon = kw_call.get_icon(self.get_user(request))
             icon.attrs['style'] |= {'margin-left': '5px'}
+            url = kw_call.get_admin_url()
+
             htmx_attrs = {
-                'hx-get': kw_call.get_admin_url(),
+                'hx-get': url,
                 'hx-on::after-swap': 'presentRelatedObjectModal()',
                 'hx-swap': 'innerHTML',
-                'hx-trigger': 'modal-closed from:body'
+                'hx-trigger': 'modal-closed from:body, step-changed from:body'
             }
 
             query_params = {
@@ -36,8 +38,14 @@ class KeywordCallValuesField:
 
             htmx_attrs['hx-get'] += '?' + url_query_parameters(query_params)
 
+            if 'None' in url:
+                return link(
+                    url,
+                    str(icon)
+                )
+
             return open_link_in_modal(
-                kw_call.get_admin_url(),
+                url,
                 str(icon),
                 htmx_attrs
             )

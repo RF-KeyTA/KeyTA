@@ -1,4 +1,5 @@
 from itertools import groupby
+from typing import Optional
 
 import django
 from django import forms
@@ -23,7 +24,7 @@ def attrs_to_string(attrs: dict) -> str:
 
 
 def html_to_string(tag, attrs, body) -> str:
-    return f'<{tag} {attrs}>{body}</{tag}>'
+    return f'<{tag} {attrs_to_string(attrs)}>{body}</{tag}>'
 
 
 def style_to_css(style: dict):
@@ -42,20 +43,29 @@ def url_query_parameters(query_parameters: dict):
     )
 
 
-def link(url: str, title: str, new_page: bool = False, query_parameters: dict[str, str]=None, styles: dict[str, str]=None):
+def link(
+    url: str,
+    title: str,
+    new_page: bool=False,
+    query_parameters: Optional[dict]=None,
+    styles: Optional[dict]=None,
+    attrs: Optional[dict]=None
+):
     if query_parameters:
         url = url + '?' + url_query_parameters(query_parameters)
 
-    attrs = {
-        'href': url,
-        'style': style_to_css(styles or {})
+    local_attrs = {
+        'href': url
     }
 
     if new_page:
-        attrs.update({'target': '_blank'})
+        local_attrs.update({'target': '_blank'})
         title = title + '<i class="ml-2 fa-solid fa-up-right-from-square" style="font-size: 0.7rem"></i>'
 
-    return mark_safe(html_to_string('a', attrs_to_string(attrs), title))
+    if styles:
+        local_attrs['style'] = style_to_css(styles)
+
+    return mark_safe(html_to_string('a', local_attrs | (attrs or {}), title))
 
 
 class Icon:
@@ -72,7 +82,7 @@ class Icon:
     def __str__(self):
         return html_to_string(
             self.tag,
-            attrs_to_string(self.attrs | {'style': style_to_css(self.attrs['style'])}),
+            self.attrs | {'style': style_to_css(self.attrs['style'])},
             self.body
         )
 
@@ -270,7 +280,8 @@ class GroupedByResource(GroupedChoiceIterator):
 
 
 class CustomRelatedFieldWidgetWrapper(RelatedFieldWidgetWrapper):
-    def __init__(self, widget, url, url_params: dict, **kwargs) -> None:
+    def __init__(self, widget, url, url_params: dict, htmx_attrs: Optional[dict]=None) -> None:
+            self.htmx_attrs = htmx_attrs
             self.related_url = url
             self.url_params = '&'.join([
                 f'{name}={value}'
@@ -285,6 +296,7 @@ class CustomRelatedFieldWidgetWrapper(RelatedFieldWidgetWrapper):
 
     def get_context(self, name, value, attrs):
             context = super().get_context(name, value, attrs)
+            context['htmx_attrs'] = self.htmx_attrs or {}
             context['url_params'] = self.url_params
 
             return context

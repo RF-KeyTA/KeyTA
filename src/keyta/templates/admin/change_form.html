@@ -325,31 +325,76 @@
                 })
 
                 // Selects in a saved form of a formset
-                const selects = django.jQuery('.form-row.has_original select')
+                const formset_forms = django.jQuery('.form-row.has_original')
+                formset_forms.each((index, form) => {
+                    const selects = django.jQuery('select', form)
 
-                selects.on('change', function(event) {
-                    const url = window.location.href
+                    selects.on('select2:clearing', function (event) {
+                        event.preventDefault()
+                        const result = confirm('{% trans "Sicher?" %}')
 
-                    // Reloading the whole window can be avoided using HTMX
-                    // to swap the row
-                    if (url.includes('_popup')) {
-                        $.post(
-                            url,
-                            $('form').serialize() + "&_continue=",
-                            function() { window.location.reload() }
-                        )
+                        if (result) {
+                            django.jQuery(event.target).val(null).trigger('change');
+                        }
+                    })
+
+                    if (selects.length === 2) {
+                        if (index === 0) {
+                            selects.on('change', function () {
+                                $(save_button).click()
+                            })
+                        }
+                        else {
+                            const second_select = django.jQuery(selects[1])
+                            second_select.on('change', function () {
+                                if (second_select.val()) {
+                                    $.post(
+                                        window.location.href,
+                                        $('form').serialize() + "&_continue=",
+                                        function () {
+                                            second_select.closest('tr').find('td.field-values a').css('visibility', 'visible')
+                                            htmx.trigger("body", 'step-changed')
+                                        }
+                                    )
+                                }
+                                else {
+                                    const related_widget_link = second_select.siblings('a').first()
+                                    $.post(
+                                        window.location.href,
+                                        $('form').serialize() + "&_continue=",
+                                        function() {
+                                            $.get(
+                                                // TODO: We need a hidden field that contains the change URL of the step
+                                                '/testcases/teststep/134/change?step-empty',
+                                                function (res) {
+                                                    related_widget_link.replaceWith(res);
+                                                    htmx.trigger("body", 'modal-closed')
+                                                    second_select.closest('tr').find('td.field-values a').css('visibility', 'hidden')
+                                                }
+                                            )
+                                        }
+                                    )
+                                }
+                            })
+                        }
                     }
                     else {
-                        $(save_button).click()
-                    }
-                })
+                        selects.on('change', function(event) {
+                            const url = window.location.href
 
-                selects.on('select2:clearing', function (event) {
-                    event.preventDefault()
-                    const result = confirm('{% trans "Sicher?" %}')
-
-                    if (result) {
-                        django.jQuery(event.target).val(null).trigger('change');
+                            // Reloading the whole window can be avoided using HTMX
+                            // to swap the row
+                            if (url.includes('_popup')) {
+                                $.post(
+                                    url,
+                                    $('form').serialize() + "&_continue=",
+                                    function() { window.location.reload() }
+                                )
+                            }
+                            else {
+                                $(save_button).click()
+                            }
+                        })
                     }
                 })
 

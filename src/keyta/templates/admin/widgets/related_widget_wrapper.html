@@ -8,6 +8,9 @@
             <a class="related-widget-wrapper-link add-related" id="add_id_{{ name }}"
                href="{{ add_related_url }}?{{ url_params }}"
                data-popup="yes"
+               {% for name, value in htmx_attrs.items %}
+               {{name}}="{{value}}"
+               {% endfor %}
             >
                 <i class="fa-solid fa-circle-plus mr-2"></i>
             </a>
