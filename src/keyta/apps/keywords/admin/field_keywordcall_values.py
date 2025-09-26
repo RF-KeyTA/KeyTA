@@ -31,7 +31,7 @@ class KeywordCallValuesField:
             }
 
             query_params = {
-                'update_icon': icon.attrs['name']
+                'update-icon': icon.attrs['name']
             }
             if self.get_user(request):
                 query_params['user'] = '1'
