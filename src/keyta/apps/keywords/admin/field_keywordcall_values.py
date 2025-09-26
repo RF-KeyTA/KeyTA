@@ -41,7 +41,15 @@ class KeywordCallValuesField:
             if 'None' in url:
                 return link(
                     url,
-                    str(icon)
+                    str(icon),
+                    attrs={'style': 'visibility: hidden'}
+                )
+
+            if not kw_call.to_keyword:
+                return open_link_in_modal(
+                    url,
+                    str(icon),
+                    htmx_attrs | {'style': 'visibility: hidden'}
                 )
 
             return open_link_in_modal(
