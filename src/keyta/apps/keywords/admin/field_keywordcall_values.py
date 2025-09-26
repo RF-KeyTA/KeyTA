@@ -27,7 +27,7 @@ class KeywordCallValuesField:
                 'hx-get': url,
                 'hx-on::after-swap': 'presentRelatedObjectModal()',
                 'hx-swap': 'innerHTML',
-                'hx-trigger': 'modal-closed from:body, step-changed from:body'
+                'hx-trigger': f'modal-closed-{kw_call.pk} from:body, modal-closed from:body'
             }
 
             query_params = {

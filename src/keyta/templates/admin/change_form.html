@@ -221,7 +221,12 @@
 
                     modals.each((index, modal) => {
                         if (index === 0) {
-                            htmx.trigger("body", "modal-closed")
+                            const modalWindow = $('#related-modal-iframe', modal).get(0).contentWindow
+                            const match = modalWindow.location.pathname.match(/\/(\d+)\//)
+                            if (match) {
+                                const pk = match[1]
+                                htmx.trigger('body', `modal-closed-${pk}`)
+                            }
                         }
                         else {
                             const previousModal = $('#related-modal-iframe', modals[index-1])
