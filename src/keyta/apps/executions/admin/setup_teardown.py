@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.http import HttpRequest, HttpResponse
 
 from keyta.apps.keywords.admin import KeywordCallAdmin, KeywordCallParametersInline
-from keyta.apps.keywords.admin.keywordcall import KeywordDocField
+from keyta.apps.keywords.admin.field_keyword_documentation import KeywordDocField
 from keyta.apps.keywords.models import KeywordCall
 
 from ..forms import SetupTeardownParametersFormset

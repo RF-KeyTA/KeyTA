@@ -5,8 +5,9 @@ from ..models import (
     KeywordParameterType,
     LibraryKeywordCall
 )
+from .field_keyword_documentation import KeywordDocField
 from .keywordcall_conditions_inline import ConditionsInline
-from .keywordcall import KeywordCallAdmin, KeywordDocField
+from .keywordcall import KeywordCallAdmin
 from .library_keyword_call_parameters_inline import LibraryKeywordCallParametersInline
 from .library_keyword_call_vararg_parameters_inline import VarargParametersInline
 
