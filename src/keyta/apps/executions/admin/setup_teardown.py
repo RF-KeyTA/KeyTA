@@ -39,4 +39,9 @@ class SetupTeardownAdmin(
         return super().changeform_view(request, object_id, form_url, extra_context)
 
     def get_inlines(self, request, obj):
-        return [SetupTeardownParametersInline]
+        setup: Setup = obj
+
+        if setup.parameters.exists():
+            return [SetupTeardownParametersInline]
+
+        return []
