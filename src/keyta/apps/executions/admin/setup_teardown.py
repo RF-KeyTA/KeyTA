@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest
 
 from keyta.apps.keywords.admin import KeywordCallAdmin, KeywordCallParametersInline
 from keyta.apps.keywords.admin.field_keyword_documentation import KeywordDocField
@@ -26,13 +26,8 @@ class SetupTeardownAdmin(
     def change_view(self, request, object_id, form_url="", extra_context=None):
         kw_call = KeywordCall.objects.get(pk=object_id)
 
-        if request.GET.get('update_icon'):
-            if request.GET.get('user'):
-                icon = kw_call.get_icon(request.user)
-            else:
-                icon = kw_call.get_icon()
-
-            return HttpResponse(str(icon))
+        if request.GET.get('update-icon'):
+            return self.update_icon(request, kw_call)
 
         kw_call.update_parameter_values()
 

@@ -2,16 +2,18 @@ from django.contrib import admin
 from django.http import HttpResponse
 from django.urls import reverse
 
-from keyta.apps.variables.models import Variable, VariableValue
-from keyta.apps.keywords.forms import KeywordCallParameterFormsetWithErrors
-from keyta.apps.keywords.forms.keywordcall_parameter_formset import get_prev_return_values, get_variables_choices
-from keyta.apps.keywords.models import KeywordCall, KeywordCallParameterSource
 from keyta.apps.keywords.admin.keywordcall import (
     KeywordCallAdmin,
     KeywordCallParametersInline
 )
-from keyta.widgets import Icon
-from widgets import open_link_in_modal, url_query_parameters
+from keyta.apps.keywords.forms import KeywordCallParameterFormsetWithErrors
+from keyta.apps.keywords.forms.keywordcall_parameter_formset import (
+    get_prev_return_values,
+    get_variables_choices
+)
+from keyta.apps.keywords.models import KeywordCall, KeywordCallParameterSource
+from keyta.apps.variables.models import Variable, VariableValue
+from keyta.widgets import Icon, open_link_in_modal, url_query_parameters
 
 from ..models import TestStep
 
@@ -88,12 +90,11 @@ class TestStepAdmin(
                 reverse('admin:sequences_sequencequickadd_add') + '?' + url_query_parameters(query_params),
                 str(Icon('fa-solid fa-circle-plus mr-2', {'font-size': '16px'})),
                 attrs={
-                    'data-href-template': '/keywords/keyword/__fk__/change/?_to_field=id&_popup=1',
-                    'hx-get': test_step.get_admin_url() + '?step-changed',
-                    'hx-on::after-swap': 'presentRelatedObjectModal()',
-                    'hx-swap': 'innerHTML',
-                    'hx-trigger': 'step-changed from:body'
+                    'data-href-template': '/keywords/keyword/__fk__/change/?_to_field=id&_popup=1'
                 }
             ))
+
+        if 'update-icon' in request.GET:
+            return self.update_icon(request, test_step)
 
         return self.changeform_view(request, object_id, form_url, extra_context or {'show_delete': False})
