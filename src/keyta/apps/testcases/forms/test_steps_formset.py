@@ -110,15 +110,10 @@ class TestStepsFormset(CustomInlineFormSet):
                         {
                             'systems': self.system_pks[0],
                             'windows': test_step.window.pk
-                        },
-                        {
-                            'hx-get': test_step.get_admin_url() + '?step-changed',
-                            'hx-on::after-swap': 'presentRelatedObjectModal()',
-                            'hx-swap': 'outerHTML',
-                            'hx-trigger': 'step-changed from:body'
                         }
                     )
                     to_keyword_field.widget.can_add_related = True
                     to_keyword_field.widget.attrs.update({
-                        'data-width': '91%',
+                        'data-width': '96.5%',
+                        'data-style': 'width: 96.5%',
                     })
