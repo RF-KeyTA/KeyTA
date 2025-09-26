@@ -344,37 +344,57 @@
                     })
 
                     if (selects.length === 2) {
+                        const first_select = django.jQuery(selects[0])
+                        const second_select = django.jQuery(selects[1])
+
+                        first_select.on('change', function () {
+                            $(save_button).click()
+                        })
+
                         if (index === 0) {
-                            selects.on('change', function () {
+                            second_select.on('change', function () {
                                 $(save_button).click()
                             })
                         }
                         else {
-                            const second_select = django.jQuery(selects[1])
                             second_select.on('change', function () {
+                                const related_widget_link = second_select.siblings('a').first()
+                                const test_step_url = second_select.closest('tr').find('td.field-test_step_url').text().trim()
+
                                 if (second_select.val()) {
                                     $.post(
                                         window.location.href,
                                         $('form').serialize() + "&_continue=",
                                         function () {
                                             second_select.closest('tr').find('td.field-values a').css('visibility', 'visible')
-                                            htmx.trigger("body", 'step-changed')
+                                            $.get(
+                                                test_step_url + '?step-changed',
+                                                function (res) {
+                                                    related_widget_link.replaceWith(res)
+                                                    presentRelatedObjectModal()
+                                                }
+                                            )
+                                            $.get(
+                                                test_step_url + '?update-icon',
+                                                function (res) {
+                                                    second_select.closest('tr').find('td.field-values a > i').replaceWith(res);
+                                                    presentRelatedObjectModal()
+                                                }
+                                            )
                                         }
                                     )
                                 }
                                 else {
-                                    const related_widget_link = second_select.siblings('a').first()
                                     $.post(
                                         window.location.href,
                                         $('form').serialize() + "&_continue=",
                                         function() {
                                             $.get(
-                                                // TODO: We need a hidden field that contains the change URL of the step
-                                                '/testcases/teststep/134/change?step-empty',
+                                                test_step_url + '?step-empty',
                                                 function (res) {
                                                     related_widget_link.replaceWith(res);
-                                                    htmx.trigger("body", 'modal-closed')
                                                     second_select.closest('tr').find('td.field-values a').css('visibility', 'hidden')
+                                                    presentRelatedObjectModal()
                                                 }
                                             )
                                         }
