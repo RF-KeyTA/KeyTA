@@ -235,6 +235,13 @@
                     })
                 })
 
+                $(document).on('shown.bs.modal', '.modal', function (event) {
+                    const modal = $(event.target)
+                    const iframe = $('iframe', modal)
+
+                    iframe.contents().find('input[type=text]').first().focus()
+                })
+
                 $('form').on('keydown', function(e) {
                     const url = window.location.href
 
@@ -244,32 +251,6 @@
                 })
 
                 $('.form-row.has_original').on('dragend', function() {
-                    $.post(url, $('form').serialize() + "&_continue=")
-                })
-
-                // An input:text in a form
-                $('.form-group input[type=text]').on('blur', function() {
-                    const input = $(this)
-
-                    $.post(url, $('form').serialize() + "&_continue=")
-
-                    if (input.attr('name') === 'name') {
-                        $('#card-title').html(input.val())
-                    }
-                })
-
-                $(document).on('shown.bs.modal', '.modal', function (event) {
-                    const modal = $(event.target)
-                    const iframe = $('iframe', modal)
-
-                    iframe.contents().find('input[type=text]').first().focus()
-                })
-
-                django.jQuery('.form-row.has_original input[type=checkbox]').on('change', function() {
-                    $.post(url, $('form').serialize() + "&_continue=")
-                })
-                
-                django.jQuery('.form-group input[type=checkbox]').on('change', function() {
                     $.post(url, $('form').serialize() + "&_continue=")
                 })
 
@@ -308,9 +289,18 @@
                     })
                 })
 
-                // An input:text in a formset
-                const inputs = django.jQuery('.form-row.has_original input:text')
+                // A checkbox in a saved form of a formset
+                django.jQuery('.form-row.has_original input[type=checkbox]').on('change', function() {
+                    $.post(url, $('form').serialize() + "&_continue=")
+                })
 
+                // A checkbox in a form
+                django.jQuery('.form-group input[type=checkbox]').on('change', function() {
+                    $.post(url, $('form').serialize() + "&_continue=")
+                })
+
+                // Input texts in a saved form of a formset
+                const inputs = django.jQuery('.form-row.has_original input:text')
                 inputs.on('change', function(event) {
                     const input = $(this)
                     const url = window.location.href
@@ -327,6 +317,17 @@
                      else {
                          $(save_button).click()
                      }
+                })
+
+                // An Input text in a form
+                $('.form-group input[type=text]').on('blur', function() {
+                    const input = $(this)
+
+                    $.post(url, $('form').serialize() + "&_continue=")
+
+                    if (input.attr('name') === 'name') {
+                        $('#card-title').html(input.val())
+                    }
                 })
 
                 // Selects in a saved form of a formset
@@ -425,7 +426,6 @@
 
                 // Selects in an extra form of a formset
                 const extra_selects = django.jQuery('select', django.jQuery('.form-row').not('.has_original'))
-
                 extra_selects.on('change', function(event) {
                     const url = window.location.href
 
