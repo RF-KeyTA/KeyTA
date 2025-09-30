@@ -2,6 +2,8 @@ from django.contrib import admin
 from django.http import HttpResponseRedirect, HttpResponse
 
 from keyta.admin.base_admin import BaseAdmin
+from keyta.apps.actions.admin.library_keyword_call_vararg_parameters_inline import VarargParametersInline
+from keyta.apps.actions.models import ActionStep
 from keyta.apps.sequences.models import SequenceStep
 from keyta.apps.testcases.models import TestStep
 from keyta.widgets import url_query_parameters
@@ -9,12 +11,10 @@ from keyta.widgets import url_query_parameters
 from ..models import (
     ExecutionKeywordCall,
     KeywordCall,
-    KeywordParameterType,
-    LibraryKeywordCall
+    KeywordParameterType
 )
 from .keywordcall_parameters_inline import KeywordCallParametersInline
 from .keywordcall_return_value_inline import KeywordCallReturnValueInline, ReadOnlyReturnValuesInline
-from .library_keyword_call_vararg_parameters_inline import VarargParametersInline
 
 
 class UpdateIconHtmx:
@@ -51,7 +51,7 @@ class KeywordCallAdmin(UpdateIconHtmx, BaseAdmin):
 
         if kw_call.from_keyword:
             if kw_call.from_keyword.is_action:
-                library_kw_call = LibraryKeywordCall.objects.get(id=kw_call.pk)
+                library_kw_call = ActionStep.objects.get(id=kw_call.pk)
                 # Do not forward the URL params of the current request. It breaks the conditions inline.
                 return HttpResponseRedirect(library_kw_call.get_admin_url())
 

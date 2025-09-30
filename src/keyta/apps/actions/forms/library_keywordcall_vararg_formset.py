@@ -1,5 +1,6 @@
-from ..json_value import JSONValue
-from ..models import KeywordCallParameter
+from keyta.apps.keywords.json_value import JSONValue
+from keyta.apps.keywords.models import KeywordCallParameter
+
 from .library_keywordcall_parameter_formset import LibraryKeywordCallParameterFormset
 
 

@@ -2,13 +2,13 @@ from django import forms
 from django.utils.translation import gettext_lazy as _
 
 from keyta.admin.base_inline import TabularInlineWithDelete
-
-from ..forms import LibraryKeywordCallVarargFormset
-from ..models import (
+from keyta.apps.keywords.models import (
     KeywordCall,
     KeywordCallParameter,
     KeywordParameterType
 )
+
+from ..forms import LibraryKeywordCallVarargFormset
 
 
 class VarargForm(forms.ModelForm):

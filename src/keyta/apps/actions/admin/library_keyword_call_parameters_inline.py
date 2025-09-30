@@ -2,12 +2,13 @@ from django.conf import settings
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 
+from keyta.apps.keywords.admin.keywordcall_parameters_inline import KeywordCallParametersInline
+from keyta.apps.keywords.forms.keywordcall_parameter_formset import ErrorsMixin
+from keyta.apps.keywords.models import KeywordCall, KeywordCallParameter
 from keyta.widgets import Icon, link
 
 from ..forms import LibraryKeywordCallParameterFormset
-from ..forms.keywordcall_parameter_formset import ErrorsMixin
-from ..models import KeywordCall, KeywordCallParameter, LibraryKeywordCallParameter
-from .keywordcall_parameters_inline import KeywordCallParametersInline
+from ..models import LibraryKeywordCallParameter
 
 
 class LibraryKeywordCallParameterFormsetWithErrors(ErrorsMixin, LibraryKeywordCallParameterFormset):

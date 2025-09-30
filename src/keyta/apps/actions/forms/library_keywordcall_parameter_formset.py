@@ -2,14 +2,14 @@ from django.utils.translation import gettext_lazy as _
 
 from keyta.widgets import BaseSelect
 
-from ..json_value import JSONValue
-from ..models import KeywordCall, KeywordCallParameter
-from .keywordcall_parameter_formset import (
+from keyta.apps.keywords.json_value import JSONValue
+from keyta.apps.keywords.models import KeywordCall, KeywordCallParameter
+from keyta.apps.keywords.forms.keywordcall_parameter_formset import (
     KeywordCallParameterFormset,
     get_global_variables,
     get_keyword_parameters
 )
-from .user_input_formset import DynamicChoiceField, invert_dictionary, user_input_field
+from keyta.apps.keywords.forms.user_input_formset import DynamicChoiceField, invert_dictionary, user_input_field
 
 
 class LibraryKeywordCallParameterFormset(KeywordCallParameterFormset):

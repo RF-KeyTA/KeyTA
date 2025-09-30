@@ -12,6 +12,4 @@ from .keywordcall_condition import KeywordCallCondition
 from .keywordcall_parameters import KeywordCallParameter
 from .keywordcall_parameter_source import KeywordCallParameterSource
 from .keywordcall_return_value import KeywordCallReturnValue
-from .library_keyword_call import LibraryKeywordCall
-from .library_keyword_call_parameter import LibraryKeywordCallParameter
 from .window_keyword import WindowKeyword
