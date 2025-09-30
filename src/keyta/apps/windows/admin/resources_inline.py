@@ -1,6 +1,6 @@
 from django.utils.translation import gettext_lazy as _
 
-from keyta.admin.field_delete_related_instance import DeleteRelatedField
+from keyta.admin.field_delete_related_instance import UnlinkRelatedField
 from keyta.apps.resources.admin import ResourceImportsInline
 from keyta.apps.resources.models import Resource, ResourceImport
 from keyta.forms import form_with_select
@@ -8,7 +8,7 @@ from keyta.forms import form_with_select
 from ..models import Window
 
 
-class Resources(DeleteRelatedField, ResourceImportsInline):
+class Resources(UnlinkRelatedField, ResourceImportsInline):
     fk_name = 'window'
     fields = ['resource']
     form = form_with_select(
