@@ -28,7 +28,7 @@ class ResourceImportAdmin(BaseAdmin):
         if window := obj.window:
             return (
                 KeywordCall.objects
-                .filter(to_keyword__in=window.keywords)
+                .filter(to_keyword__in=window.keywords.all())
                 .filter(to_keyword__resource_id=obj.resource.pk)
             )
 
