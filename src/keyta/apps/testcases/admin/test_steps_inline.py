@@ -3,8 +3,9 @@ from django.contrib import admin
 from keyta.admin.base_inline import SortableTabularInline
 from keyta.admin.field_delete_related_instance import DeleteRelatedField
 from keyta.apps.keywords.admin.field_keywordcall_values import KeywordCallValuesField
+from keyta.apps.keywords.forms import StepsForm
 
-from ..forms import TestStepsForm, TestStepsFormset
+from ..forms import TestStepsFormset
 from ..models import TestStep
 
 
@@ -18,7 +19,7 @@ class TestStepsInline(
     fields = ['test_step_url', 'execute', 'window', 'to_keyword']
     readonly_fields = ['test_step_url']
     extra = 0 # necessary for saving, since to_keyword is not nullable and is null in an extra
-    form = TestStepsForm
+    form = StepsForm
     formset = TestStepsFormset
     template = 'test_steps_sortable_tabular.html'
 
