@@ -3,8 +3,8 @@ from .variable import (
     VariableAdmin,
     VariableDocumentationAdmin,
     VariableQuickAddAdmin,
-    VariableQuickChangeAdmin,
-    VariableWindowAdmin
+    VariableQuickChangeAdmin
 )
 from .variable_value import VariableValueAdmin
+from .variable_window_relation import VariableWindowAdmin
 from .windows_inline import Windows
