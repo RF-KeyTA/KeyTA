@@ -1,9 +1,11 @@
 import re
 from collections import defaultdict
 
-from django.db.models import QuerySet
+from django.db.models import QuerySet, Q
 from django.forms.utils import ErrorDict, ErrorList
 from django.utils.translation import gettext_lazy as _
+
+from keyta.apps.variables.models import Variable
 
 from ..json_value import JSONValue
 from ..models import (
@@ -16,14 +18,12 @@ from .user_input_formset import UserInputFormset, user_input_field
 
 
 def get_global_variables(system_ids: list[int]):
-    sources = (
-        KeywordCallParameterSource.objects
-        .filter(variable_value__variable__systems__in=system_ids)
-        .filter(variable_value__variable__windows__isnull=True)
-        .distinct()
-    )
+    variables = Variable.objects.filter(
+        systems__in=system_ids,
+        windows__isnull=True
+    ).distinct()
 
-    return get_variables_choices(sources)
+    return get_variables_choices(variables)
 
 
 def get_keyword_parameters(kw_call: KeywordCall):
@@ -96,9 +96,12 @@ def get_prev_return_values(kw_call: KeywordCall):
     ]]
 
 
-def get_variables_choices(kw_call_param_sources: QuerySet):
-    variable_names = [source.variable_value.variable.name for source in kw_call_param_sources]
+def get_variables_choices(variables: QuerySet):
     grouped_variable_values = defaultdict(list)
+    kw_call_param_sources = KeywordCallParameterSource.objects.filter(
+        Q(variable_value__variable__in=variables)
+    )
+    variable_names = [variable.name for variable in variables]
 
     for variable_name, source in zip(variable_names, kw_call_param_sources):
         grouped_variable_values[variable_name].append((source.get_value().jsonify(), str(source)))
