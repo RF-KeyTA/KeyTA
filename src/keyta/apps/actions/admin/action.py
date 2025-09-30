@@ -64,7 +64,8 @@ class ActionAdmin(ActionAdminMixin, CloneModelAdminMixin, WindowKeywordAdmin):
     inlines = [
         Libraries,
         ParametersInline,
-        ActionSteps
+        ActionSteps,
+        ReturnValueInline
     ]
 
     def autocomplete_name_queryset(self, name: str, request: HttpRequest):
@@ -124,10 +125,6 @@ class ActionAdmin(ActionAdminMixin, CloneModelAdminMixin, WindowKeywordAdmin):
 
         if not action:
             return [ParametersInline]
-
-        kw_call_pks = action.calls.values_list('pk')
-        if KeywordCallReturnValue.objects.filter(keyword_call__in=kw_call_pks).exists():
-            inlines += [ReturnValueInline]
 
         if not action.has_empty_sequence:
             return inlines + [KeywordExecutionInline]
