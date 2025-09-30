@@ -48,6 +48,9 @@ class SetupInline(SetupTeardownKeywordCallValuesField, BaseTabularInline):
             .distinct()
         )
 
+        if keyword:
+            keywords = keywords.exclude(pk=execution.keyword.pk)
+
         formset = super().get_formset(request, obj, **kwargs)
         formset.form.base_fields['to_keyword'].queryset = keywords
 
