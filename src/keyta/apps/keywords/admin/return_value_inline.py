@@ -4,7 +4,7 @@ from keyta.admin.field_delete_related_instance import DeleteRelatedField
 from keyta.admin.base_inline import BaseTabularInline
 from keyta.widgets import ModelSelect2AdminWidget
 
-from ..models import Keyword, KeywordCallReturnValue, KeywordReturnValue
+from ..models import Keyword, KeywordReturnValue
 
 
 class ReturnValueInline(DeleteRelatedField, BaseTabularInline):
@@ -33,10 +33,6 @@ class ReturnValueInline(DeleteRelatedField, BaseTabularInline):
         )
 
         return formset
-
-    def get_max_num(self, request, obj=None, **kwargs):
-        keyword: Keyword = obj
-        return KeywordCallReturnValue.objects.filter(keyword_call__in=keyword.calls.all()).count()
 
     def has_change_permission(self, request, obj=None):
         return False
