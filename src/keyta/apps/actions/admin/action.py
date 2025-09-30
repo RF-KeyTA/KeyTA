@@ -16,6 +16,7 @@ from keyta.apps.keywords.admin import (
     WindowKeywordAdminMixin
 )
 from keyta.apps.keywords.models import KeywordCallReturnValue
+from keyta.apps.keywords.models.keywordcall import KeywordCallType
 from keyta.apps.libraries.models import Library, LibraryImport
 from keyta.apps.systems.models import System
 from keyta.forms import form_with_select
@@ -133,7 +134,7 @@ class ActionAdmin(ActionAdminMixin, CloneModelAdminMixin, WindowKeywordAdmin):
 
     def get_protected_objects(self, obj):
         action: Action = obj
-        return action.uses.filter(execution__isnull=True)
+        return action.uses.exclude(type=KeywordCallType.KEYWORD_EXECUTION)
 
     def has_add_permission(self, request):
         return self.can_add(request.user, 'action')
