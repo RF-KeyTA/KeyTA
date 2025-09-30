@@ -2,7 +2,7 @@ from .variable import (
     Variable,
     VariableDocumentation,
     VariableQuickAdd,
-    VariableQuickChange,
-    VariableWindowRelation
+    VariableQuickChange
 )
 from .variable_value import VariableValue
+from .variable_window_relation import VariableWindowRelation

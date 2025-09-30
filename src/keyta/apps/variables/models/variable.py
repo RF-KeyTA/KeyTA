@@ -106,13 +106,3 @@ class VariableQuickChange(Variable):
         proxy = True
         verbose_name = _('Referenzwert')
         verbose_name_plural = _('Referenzwerte')
-
-
-class VariableWindowRelation(AbstractBaseModel, Variable.windows.through):
-    def __str__(self):
-        return str(self.window)
-
-    class Meta:
-        proxy = True
-        verbose_name = _('Referenzwert')
-        verbose_name_plural = _('Referenzwerte')
