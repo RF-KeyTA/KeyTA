@@ -3,8 +3,6 @@ from django.urls import reverse
 
 from keyta.widgets import quick_add_widget
 
-from ..models import Window
-
 
 class QuickAddFormset(forms.BaseInlineFormSet):
     def __init__(
@@ -18,8 +16,7 @@ class QuickAddFormset(forms.BaseInlineFormSet):
         **kwargs
     ):
         super().__init__(data, files, instance, save_as_new, prefix, queryset, **kwargs)
-        self.window: Window = instance
-        self.system_pks = self.window.systems.values_list('pk', flat=True)
+        self.instance = instance
 
     def add_fields(self, form, index):
         super().add_fields(form, index)
@@ -35,11 +32,7 @@ class QuickAddFormset(forms.BaseInlineFormSet):
             quick_add_field.widget = quick_add_widget(
                 quick_add_field.widget,
                 quick_add_url,
-                {
-                    'quick_add': '1',
-                    'systems': ','.join([str(pk) for pk in self.system_pks]),
-                    'windows': self.window.pk
-                }
+                self.quick_add_url_params()
             )
 
     def quick_add_field(self) -> str:
@@ -47,3 +40,13 @@ class QuickAddFormset(forms.BaseInlineFormSet):
 
     def quick_add_model(self):
         pass
+
+    def quick_add_url_params(self):
+        window = self.instance
+        system_pks = window.systems.values_list('pk', flat=True)
+
+        return {
+            'quick_add': '1',
+            'systems': ','.join([str(pk) for pk in system_pks]),
+            'windows': window.pk
+        }

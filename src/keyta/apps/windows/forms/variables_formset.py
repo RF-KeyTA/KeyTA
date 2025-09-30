@@ -1,7 +1,6 @@
 from keyta.apps.variables.models import VariableQuickAdd
+from keyta.forms import QuickAddFormset
 from keyta.widgets import quick_change_widget
-
-from ..forms import QuickAddFormset
 
 
 class VariablesFormset(QuickAddFormset):
