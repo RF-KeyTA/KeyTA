@@ -1,4 +1,3 @@
-from django import forms
 from django.conf import settings
 from django.contrib import admin, messages
 from django.http import HttpRequest
@@ -19,7 +18,17 @@ from ..models import Resource
 @admin.register(Resource)
 class ResourceAdmin(DocumentationField, BaseAdmin):
     list_display = ['name', 'update']
+    form = ResourceForm
+    fields = ['path']
+    readonly_fields = ['documentation']
     inlines = [Keywords]
+
+    @admin.display(description=_('Aktualisierung'))
+    def update(self, resource: Resource):
+        return link(
+            reverse('admin:resources_resource_changelist') + f'?update&resource_id={resource.id}',
+            str(Icon(settings.FA_ICONS.library_update, {'font-size': '18px'}))
+        )
 
     def get_changelist(self, request: HttpRequest, **kwargs):
         if 'update' in request.GET:
@@ -36,29 +45,20 @@ class ResourceAdmin(DocumentationField, BaseAdmin):
 
         return super().get_changelist(request, **kwargs)
 
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        field = super().formfield_for_dbfield(db_field, request, **kwargs)
+
+        if db_field.name == 'path':
+            field.label = _('Ressource')
+            field.help_text = _('Dateipfad wie beim Importieren einer Ressource in einer .robot Datei')
+
+        return field
+
     def get_fields(self, request, obj=None):
         if not obj:
             return ['path']
 
-        return ['path'] + super().get_fields(request, obj)
-
-    def get_form(self, request, obj=None, change=False, **kwargs):
-        path_help_text = ''
-
-        if not obj:
-            path_help_text = _('Dateipfad wie beim Importieren einer Ressource in einer .robot Datei') 
-
-        return forms.modelform_factory(
-            Resource,
-            fields=['path'],
-            form=ResourceForm,
-            labels={
-                'path': _('Ressource')
-            },
-            help_texts={
-                'path': path_help_text
-            }
-        )
+        return super().get_fields(request, obj)
 
     def get_inlines(self, request, obj):
         if not obj:
@@ -82,10 +82,3 @@ class ResourceAdmin(DocumentationField, BaseAdmin):
             resource = import_resource(form.cleaned_data['path'])
             super().save_form(request, form, change)
             return resource
-
-    @admin.display(description=_('Aktualisierung'))
-    def update(self, resource: Resource):
-        return link(
-            reverse('admin:resources_resource_changelist') + f'?update&resource_id={resource.id}',
-            str(Icon(settings.FA_ICONS.library_update, {'font-size': '18px'}))
-        )
