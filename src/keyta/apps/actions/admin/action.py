@@ -140,9 +140,19 @@ class ActionAdmin(ActionAdminMixin, CloneModelAdminMixin, WindowKeywordAdmin):
         return self.can_add(request.user, 'action')
 
     def has_change_permission(self, request, obj=None):
+        action: Action = obj
+
+        if action and action.setup_teardown:
+            return request.user.is_superuser
+
         return self.can_change(request.user, 'action')
 
     def has_delete_permission(self, request, obj=None):
+        action: Action = obj
+
+        if action and action.setup_teardown:
+            return request.user.is_superuser
+
         return self.can_delete(request.user, 'action')
 
 
