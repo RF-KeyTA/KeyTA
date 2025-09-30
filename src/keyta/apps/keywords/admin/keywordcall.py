@@ -4,6 +4,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from keyta.admin.base_admin import BaseAdmin
 from keyta.apps.actions.admin.library_keyword_call_vararg_parameters_inline import VarargParametersInline
 from keyta.apps.actions.models import ActionStep
+from keyta.apps.executions.models import Setup, Teardown
 from keyta.apps.sequences.models import SequenceStep
 from keyta.apps.testcases.models import TestStep
 from keyta.widgets import url_query_parameters
@@ -15,6 +16,7 @@ from ..models import (
 )
 from .keywordcall_parameters_inline import KeywordCallParametersInline
 from .keywordcall_return_value_inline import KeywordCallReturnValueInline, ReadOnlyReturnValuesInline
+from ..models.keywordcall import KeywordCallType, TestSetupTeardown
 
 
 class UpdateIconHtmx:
@@ -46,8 +48,17 @@ class KeywordCallAdmin(UpdateIconHtmx, BaseAdmin):
             return HttpResponse(kw_call.get_parameter_value(param) or '')
 
         if kw_call.execution:
-            execution_kwcall = ExecutionKeywordCall.objects.get(id=kw_call.pk)
-            return HttpResponseRedirect(execution_kwcall.get_admin_url() + '?' + url_query_parameters(request.GET))
+            if kw_call.type == KeywordCallType.KEYWORD_EXECUTION:
+                execution_kwcall = ExecutionKeywordCall.objects.get(id=kw_call.pk)
+                return HttpResponseRedirect(execution_kwcall.get_admin_url() + '?' + url_query_parameters(request.GET))
+
+            if kw_call.type == TestSetupTeardown.TEST_SETUP:
+                test_setup = Setup.objects.get(id=kw_call.pk)
+                return HttpResponseRedirect(test_setup.get_admin_url() + '?' + url_query_parameters(request.GET))
+
+            if kw_call.type == TestSetupTeardown.TEST_TEARDOWN:
+                test_teardown = Teardown.objects.get(id=kw_call.pk)
+                return HttpResponseRedirect(test_teardown.get_admin_url() + '?' + url_query_parameters(request.GET))
 
         if kw_call.from_keyword:
             if kw_call.from_keyword.is_action:
