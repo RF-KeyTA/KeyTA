@@ -1,20 +1,15 @@
-from django.contrib.admin.widgets import RelatedFieldWidgetWrapper
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 
 from adminsortable2.admin import CustomInlineFormSet
 
-from keyta.apps.keywords.models import Keyword
-from keyta.apps.resources.models import ResourceImport
-from keyta.apps.testcases.models import TestCase
-from keyta.apps.windows.models import Window
 from keyta.widgets import (
     CustomRelatedFieldWidgetWrapper,
     ModelSelect2AdminWidget
 )
 
-from ..models import TestStep
+from ..models import TestCase, TestStep
 
 
 class TestStepsFormset(CustomInlineFormSet):
@@ -26,62 +21,12 @@ class TestStepsFormset(CustomInlineFormSet):
         self.testcase: TestCase = kwargs['instance']
         # Perform all DB queries once when the formset is initialized
         self.system_pks = list(self.testcase.systems.values_list('pk', flat=True))
-        self.windows = (
-            Window.objects
-            .filter(systems__in=self.system_pks)
-            .only('pk', 'name')
-            .distinct()
-        )
-        self.resource_ids = (
-            ResourceImport.objects
-            .filter(window__in=self.windows)
-            .values_list('resource')
-            .distinct()
-        )
-        self.to_keyword = (
-            (
-            Keyword.objects.sequences().filter(systems__in=self.system_pks) |
-            Keyword.objects.filter(resource__in=self.resource_ids)
-            )
-            .only('pk', 'name')
-            .distinct()
-            .order_by('name')
-        )
-
-        window_widget = ModelSelect2AdminWidget(
-            placeholder='Maske auswählen',
-            model=Window,
-            queryset=self.windows,
-            search_fields=['name__icontains'],
-        )
-        window_field = self.form.base_fields['window']
-        window_field.widget = RelatedFieldWidgetWrapper(
-            window_widget,
-            window_field.widget.rel,
-            window_field.widget.admin_site
-        )
-
-        to_keyword_widget = ModelSelect2AdminWidget(
-            placeholder='Sequenz auswählen',
-            model=Keyword,
-            queryset=self.to_keyword,
-            search_fields=['name__icontains'],
-            dependent_fields={'window': 'windows'},
-            attrs={'data-allow-clear': 'true'}
-        )
-        to_keyword_field = self.form.base_fields['to_keyword']
-        to_keyword_field.widget = RelatedFieldWidgetWrapper(
-            to_keyword_widget,
-            to_keyword_field.widget.rel,
-            to_keyword_field.widget.admin_site
-        )
 
     def add_fields(self, form, index):
         super().add_fields(form, index)
 
         execute_field = form.fields['execute']
         to_keyword_field = form.fields['to_keyword']
-        # variable_field = form.fields['variable']
         window_field = form.fields['window']
 
         execute_field.label = mark_safe('<span title="%s">▶</span>' % _('Ausführen ab'))
