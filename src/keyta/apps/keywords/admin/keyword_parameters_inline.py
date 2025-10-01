@@ -1,4 +1,5 @@
 from django import forms
+from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 
 from keyta.admin.field_delete_related_instance import DeleteRelatedField
@@ -35,6 +36,14 @@ class ParametersInline(DeleteRelatedField, SortableTabularInline):
             })
 
         return field
+
+    def get_max_num(self, request, obj=None, **kwargs):
+        keyword: Keyword = obj
+
+        if keyword and keyword.uses.exclude(Q(execution__isnull=False) & Q(to_keyword=keyword)).count() > 1:
+            return keyword.parameters.count()
+
+        return super().get_max_num(request, obj=obj, **kwargs)
 
     def has_delete_permission(self, request, obj=None):
         keyword: Keyword = obj
