@@ -19,7 +19,7 @@ class ParameterFields:
         if len(params) > position0:
             param: KeywordCallParameter = params[position0]
             value = param.current_value or ''
-            htmx_attrs['hx-get'] += '?update-param=' + param.name
+            htmx_attrs['hx-get'] += f'?update-param={position0}'
 
             return mark_safe(f"""
             <span {attrs_to_string(htmx_attrs)}>{value}</span>
