@@ -47,15 +47,15 @@ class KeywordCallValuesField:
 
             if not kw_call.to_keyword:
                 return open_link_in_modal(
-                    url,
+                    url + f'?kw_call_pk={kw_call.pk}',
                     str(icon),
-                    htmx_attrs | {'style': 'visibility: hidden'}
+                    attrs=htmx_attrs | {'style': 'visibility: hidden'}
                 )
 
             return open_link_in_modal(
-                url,
+                url + f'?kw_call_pk={kw_call.pk}',
                 str(icon),
-                htmx_attrs
+                attrs=htmx_attrs
             )
 
         KeywordCallValuesField.values = values
