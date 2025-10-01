@@ -6,7 +6,7 @@ from adminsortable2.admin import CustomInlineFormSet
 
 from keyta.widgets import (
     CustomRelatedFieldWidgetWrapper,
-    ModelSelect2AdminWidget
+    quick_change_widget
 )
 
 from ..models import TestCase, TestStep
@@ -62,3 +62,12 @@ class TestStepsFormset(CustomInlineFormSet):
                         'data-width': '96.5%',
                         'data-style': 'width: 96.5%',
                     })
+                else:
+                    to_keyword_field.widget = quick_change_widget(
+                        to_keyword_field.widget,
+                        url_params={
+                            'kw_call_pk': test_step.pk
+                        }
+                    )
+
+                window_field.widget.can_change_related = True

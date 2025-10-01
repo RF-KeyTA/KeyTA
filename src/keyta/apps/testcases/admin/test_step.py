@@ -51,7 +51,7 @@ class TestStepAdmin(
 
         if 'step-changed' in request.GET:
             return HttpResponse(open_link_in_modal(
-                test_step.to_keyword.get_admin_url(),
+                test_step.to_keyword.get_admin_url() + f'?kw_call_pk={test_step.pk}',
                 str(Icon('fa-solid fa-magnifying-glass', {'font-size': '16px'})),
                 attrs={
                     'data-href-template': '/keywords/keyword/__fk__/change/?_to_field=id&_popup=1'
