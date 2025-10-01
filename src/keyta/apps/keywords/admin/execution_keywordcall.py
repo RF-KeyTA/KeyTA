@@ -1,25 +1,18 @@
 from django.contrib import admin
 from django.http import HttpRequest
 
-from keyta.apps.variables.models import VariableValue
+from keyta.apps.variables.models import Variable
 
 from ..forms import KeywordCallParameterFormset
 from ..forms.keywordcall_parameter_formset import get_variables_choices
-from ..models import ExecutionKeywordCall, KeywordCall, KeywordCallParameterSource
+from ..models import ExecutionKeywordCall, KeywordCall
 from .keywordcall import KeywordCallAdmin
 from .keywordcall_parameters_inline import KeywordCallParametersInline
 
 
 def get_window_variables(window):
-    variable_values = VariableValue.objects.filter(
-        variable__windows__in=[window],
-    )
-    sources = (
-        KeywordCallParameterSource.objects
-        .filter(variable_value__in=variable_values)
-    )
-
-    return get_variables_choices(sources)
+    variables = Variable.objects.filter(windows__in=[window])
+    return get_variables_choices(variables)
 
 
 class ExecutionKeywordCallParameterFormset(KeywordCallParameterFormset):
