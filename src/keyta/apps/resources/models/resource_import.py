@@ -47,6 +47,13 @@ class ResourceImport(AbstractBaseModel):
 
         return f'{self.window} -> {self.resource}'
 
+    def delete(self, using=None, keep_parents=False):
+        if self.window:
+            for keyword in self.resource.keywords.all():
+                keyword.windows.remove(self.window)
+
+        super().delete(using, keep_parents)
+
     def save(
         self, force_insert=False, force_update=False, using=None,
             update_fields=None
@@ -54,10 +61,15 @@ class ResourceImport(AbstractBaseModel):
         if not self.pk:
             if self.window:
                 self.type = ResourceImportType.FROM_WINDOW
+
             if self.execution:
                 self.type = ResourceImportType.FROM_EXECUTION
 
             super().save(force_insert, force_update, using, update_fields)
+
+            if self.window:
+                for keyword in self.resource.keywords.all():
+                    keyword.windows.add(self.window)
         else:
             super().save(force_insert, force_update, using, update_fields)
 
