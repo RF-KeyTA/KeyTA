@@ -70,7 +70,10 @@ class SequenceStepsFormset(CustomInlineFormSet):
         else:
             to_keyword_field.widget = quick_change_widget(
                 to_keyword_field.widget,
-                url_params={'tab_name': sequence_step.get_tab_url().removeprefix('#')}
+                url_params={
+                    'kw_call_pk': sequence_step.pk,
+                    'tab_name': sequence_step.get_tab_url().removeprefix('#')
+                }
             )
 
         window: Window = self.sequence.windows.first()
