@@ -221,11 +221,15 @@
 
                     modals.each((index, modal) => {
                         if (index === 0) {
-                            const modalWindow = $('#related-modal-iframe', modal).get(0).contentWindow
-                            const match = modalWindow.location.pathname.match(/\/(\d+)\//)
-                            if (match) {
-                                const pk = match[1]
-                                htmx.trigger('body', `modal-closed-${pk}`)
+                            const modal_iframe = $('#related-modal-iframe', modal).get(0)
+
+                            if (modal_iframe) {
+                                const location = modal_iframe.contentWindow.location
+                                const match = location.pathname.match(/step\/(\d+)\//) || location.search.match(/kw_call_pk=(\d+)/)
+                                if (match) {
+                                    const pk = match[1]
+                                    htmx.trigger('body', `modal-closed-${pk}`)
+                                }
                             }
                         }
                         else {
