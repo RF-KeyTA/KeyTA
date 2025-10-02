@@ -3,7 +3,7 @@ from django.http import HttpRequest
 
 from keyta.apps.variables.models import Variable
 
-from ..forms import KeywordCallParameterFormset
+from ..forms import KeywordCallParameterFormsetWithErrors
 from ..forms.keywordcall_parameter_formset import get_variables_choices
 from ..models import ExecutionKeywordCall, KeywordCall
 from .keywordcall import KeywordCallAdmin
@@ -15,7 +15,7 @@ def get_window_variables(window):
     return get_variables_choices(variables)
 
 
-class ExecutionKeywordCallParameterFormset(KeywordCallParameterFormset):
+class ExecutionKeywordCallParameterFormset(KeywordCallParameterFormsetWithErrors):
     def get_ref_choices(self, kw_call: KeywordCall):
         exec_keyword = kw_call.to_keyword
 
