@@ -1,11 +1,11 @@
 import re
 from collections import defaultdict
 
-from django.db.models import QuerySet, Q
+from django.db.models import QuerySet
 from django.forms.utils import ErrorDict, ErrorList
 from django.utils.translation import gettext_lazy as _
 
-from keyta.apps.variables.models import Variable
+from keyta.apps.variables.models import Variable, VariableValue
 
 from ..json_value import JSONValue
 from ..models import (
@@ -98,12 +98,17 @@ def get_prev_return_values(kw_call: KeywordCall):
 
 def get_variables_choices(variables: QuerySet):
     grouped_variable_values = defaultdict(list)
-    kw_call_param_sources = KeywordCallParameterSource.objects.filter(
-        Q(variable_value__variable__in=variables)
+    variable_names = (
+        VariableValue.objects
+        .filter(variable__in=variables)
+        .values_list('variable__name', flat=True)
     )
-    variable_names = [variable.name for variable in variables]
+    variable_value_sources = (
+        KeywordCallParameterSource.objects
+        .filter(variable_value__variable__in=variables)
+    )
 
-    for variable_name, source in zip(variable_names, kw_call_param_sources):
+    for variable_name, source in zip(variable_names, variable_value_sources):
         grouped_variable_values[variable_name].append((source.get_value().jsonify(), str(source)))
 
     return [
