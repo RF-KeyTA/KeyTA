@@ -1,1 +1,2 @@
+from .setup_teardown_formset import SetupTeardownFormset
 from .setup_teardown_parameters_formset import SetupTeardownParametersFormset
