@@ -45,7 +45,7 @@ class TestStepsInline(
             )
 
         if db_field.name == 'window':
-            field.queryset = field.queryset.filter(systems__in=testcase.systems.all())
+            field.queryset = field.queryset.filter(systems__in=testcase.systems.all()).distinct()
             field.widget.widget = ModelSelect2AdminWidget(
                 placeholder=_('Maske auswählen'),
                 model=Window,
