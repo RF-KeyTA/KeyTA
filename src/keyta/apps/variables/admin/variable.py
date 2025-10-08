@@ -90,7 +90,6 @@ class VariableAdmin(SortableAdminBase, BaseAdmin):
                 window_systems = variable.windows.values_list('systems__pk', flat=True)
 
                 if window_systems.exists():
-                    field.queryset = field.queryset.filter(pk__in=window_systems)
                     field.widget.in_use = set(window_systems)
 
         return field
