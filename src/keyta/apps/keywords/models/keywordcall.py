@@ -318,6 +318,8 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
         varargs = parameters.filter(parameter__type=KeywordParameterType.VARARG)
 
         params = []
+        table_var = None
+        table_columns = []
 
         for param in parameters:
             value = param.to_robot(get_variable_value) or '${EMPTY}'
@@ -334,19 +336,11 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
                 else:
                     params.append('%s=%s' % (param.name, value))
 
-        list_var = None
+            if param.value_ref and param.value_ref.table_column:
+                table_columns.append('${%s}' % str(param.value_ref))
 
-        if self.variable and self.variable.is_list():
-            list_var = '@{%s}' % self.variable.name
-            params = []
-
-            param: KeywordCallParameter
-            for param in parameters:
-                if param.value_ref:
-                    params.append('${row}[%s]' % str(param.value_ref))
-                else:
-                    if user_input := JSONValue.from_json(param.value).user_input:
-                        params.append(user_input)
+                if not table_var:
+                    table_var = '@{%s}' % str(param.value_ref.table_column.table)
 
         return {
             'condition': ' and '.join([str(condition) for condition in self.conditions.all()]),
@@ -357,7 +351,8 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
                 for return_value in self.return_values.all()
                 if return_value.is_set
             ],
-            'list_var': list_var
+            'table_var': table_var,
+            'table_columns': table_columns
         }
 
     @classmethod

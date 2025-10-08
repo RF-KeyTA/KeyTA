@@ -6,7 +6,8 @@ class RFKeywordCall(TypedDict):
     keyword: str
     params: list[str]
     return_values: list[str]
-    list_var: Optional[str]
+    table_var: Optional[str]
+    table_columns: list[str]
 
 
 class RFKeyword(TypedDict):

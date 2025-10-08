@@ -4,7 +4,12 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from keyta.apps.keywords.models import Keyword, KeywordCall
+from keyta.apps.keywords.models import (
+    Keyword,
+    KeywordCall,
+    KeywordCallParameter,
+    KeywordCallParameterSource
+)
 from keyta.apps.testcases.models import TestStep
 from keyta.apps.variables.models import Variable
 from keyta.rf_export.testsuite import RFTestSuite
@@ -41,21 +46,31 @@ class TestCaseExecution(Execution):
             .distinct()
         )
 
-    def get_dict_list_variables(self, get_variable_value):
-        dict_variables = []
-        list_variables = []
+    def get_tables_rows(self):
+        table_variables = []
+        row_variables = []
 
-        step: TestStep
-        for step in self.testcase.steps.filter(variable__isnull=False):
-            variable: Variable = step.variable
+        value_ref_pks = (
+            KeywordCallParameter.objects
+            .filter(keyword_call__in=self.testcase.steps.all())
+            .filter(value_ref__isnull=False)
+            .values_list('value_ref', flat=True)
+        )
 
-            if variable.is_dict():
-                dict_variables.append(variable.to_robot(get_variable_value))
+        table_pks = (
+            KeywordCallParameterSource.objects
+            .filter(pk__in=value_ref_pks)
+            .filter(table_column__isnull=False)
+            .values_list('table_column__table', flat=True)
+            .distinct()
+        )
 
-            if variable.is_list():
-                list_variables.append(variable.to_robot(get_variable_value))
+        for table in Variable.objects.filter(pk__in=table_pks):
+            table_variable, table_row_variables = table.get_rows()
+            table_variables.append(table_variable)
+            row_variables.extend(table_row_variables)
 
-        return dict_variables, list_variables
+        return table_variables, row_variables
 
     def get_keyword_calls(self) -> models.QuerySet:
         setup_teardown_calls = KeywordCall.get_substeps(self.keyword_calls)
@@ -80,13 +95,13 @@ class TestCaseExecution(Execution):
             if to_keyword := test_teardown.to_keyword:
                 keywords[to_keyword.id] = to_keyword.to_robot(get_variable_value)
 
-        dict_variables, list_variables = self.get_dict_list_variables(get_variable_value)
+        tables, rows = self.get_tables_rows()
 
         return {
             'name': self.testcase.name,
             'settings': self.get_rf_settings(get_variable_value, user),
-            'dict_variables': dict_variables,
-            'list_variables': list_variables,
+            'tables': tables,
+            'rows': rows,
             'keywords': list(keywords.values()),
             'testcases': [self.testcase.to_robot(get_variable_value, in_execution=True)]
         }

@@ -11,6 +11,7 @@ from ..json_value import JSONValue
 class KeywordCallParameterSourceType(models.TextChoices):
     KEYWORD_PARAMETER = 'KEYWORD_PARAMETER', _('Schlüsselwort-Parameter')
     KW_CALL_RETURN_VALUE = 'KW_CALL_RETURN_VALUE', _('Aufrufs-Rückgabewert')
+    TABLE_COLUMN = 'TABLE_COLUMN', _('Spalte')
     VARIABLE_VALUE = 'VARIABLE_VALUE', _('Referenzwert')
 
 
@@ -27,6 +28,12 @@ class KeywordCallParameterSource(CloneMixin, AbstractBaseModel):
         null=True,
         default=None
     )
+    table_column = models.OneToOneField(
+        'variables.Variable',
+        on_delete=models.CASCADE,
+        null=True,
+        default=None
+    )
     variable_value = models.OneToOneField(
         'variables.VariableValue',
         on_delete=models.CASCADE,
@@ -38,12 +45,13 @@ class KeywordCallParameterSource(CloneMixin, AbstractBaseModel):
         choices=KeywordCallParameterSourceType.choices
     )
 
-    _clone_o2o_fields = ['kw_param', 'kw_call_ret_val', 'variable_value']
+    _clone_o2o_fields = ['kw_param', 'kw_call_ret_val', 'table_column', 'variable_value']
 
     def __str__(self):
         return str(
             self.kw_param or
             self.kw_call_ret_val or
+            self.table_column or
             self.variable_value
         )
 
@@ -64,7 +72,7 @@ class KeywordCallParameterSource(CloneMixin, AbstractBaseModel):
                 user_input=None
             )
 
-        if self.variable_value:
+        if self.table_column or self.variable_value:
             return JSONValue(
                 arg_name=None,
                 kw_call_index=None,
@@ -80,6 +88,9 @@ class KeywordCallParameterSource(CloneMixin, AbstractBaseModel):
 
         if self.kw_call_ret_val:
             self.type = KeywordCallParameterSourceType.KW_CALL_RETURN_VALUE
+
+        if self.table_column:
+            self.type = KeywordCallParameterSourceType.TABLE_COLUMN
 
         if self.variable_value:
             self.type = KeywordCallParameterSourceType.VARIABLE_VALUE

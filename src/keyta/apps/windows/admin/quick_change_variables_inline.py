@@ -20,5 +20,8 @@ class QuickChangeVariables(BaseTabularInline):
     formset = VariablesFormset
     readonly_fields = []
 
+    def get_queryset(self, request):
+        return super().get_queryset(request).exclude(variable__table__isnull=False)
+
     def has_change_permission(self, request, obj=None):
         return True

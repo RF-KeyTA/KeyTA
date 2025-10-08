@@ -7,8 +7,8 @@
     {%- endfor %}
     {%- endif %}
     {%- for step in testcase.steps %}
-    {%- if step.list_var %}
-    FOR   ${row}   IN   {{ step.list_var }}
+    {%- if step.table_var %}
+    FOR   {{ rf_join(step.table_columns) }}   IN   {{ step.table_var }}
         {{ call_keyword(step) }}
     END
     {%- else %}

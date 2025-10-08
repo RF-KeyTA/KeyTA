@@ -21,7 +21,9 @@ from ..models import (
     VariableQuickAdd,
     VariableQuickChange
 )
+from ..models.variable import VariableType
 
+from .table_columns_inline import TableColumns
 from .values_inline import Values
 from .windows_inline import Windows
 
@@ -95,10 +97,18 @@ class VariableAdmin(SortableAdminBase, BaseAdmin):
         return field
 
     def get_inlines(self, request, obj):
-        if not obj:
+        variable: Variable = obj
+
+        if not variable:
             return []
 
+        if variable and variable.type == VariableType.TABLE:
+            return [Windows, TableColumns]
+
         return self.inlines
+
+    def get_queryset(self, request: HttpRequest):
+        return super().get_queryset(request).exclude(table__isnull=False)
 
     def get_protected_objects(self, obj):
         variable: Variable = obj
@@ -113,7 +123,7 @@ class VariableAdmin(SortableAdminBase, BaseAdmin):
         variable: Variable = obj
         fields = []
 
-        if variable and variable.values.exists():
+        if variable and (variable.values.exists() or variable.columns.exists()):
             fields += ['type']
 
         return fields
@@ -155,6 +165,17 @@ class VariableQuickAddAdmin(SortableAdminBase, BaseQuickAddAdmin):
         return field
 
 
+class TableColumnsQuickChange(TableColumns):
+    def get_fields(self, request, obj=None):
+        fields: list = super().get_fields(request, obj)
+
+        return [
+            field
+            for field in fields
+            if field != 'delete'
+        ]
+
+
 class ValuesQuickChange(Values):
     def get_fields(self, request, obj=None):
         fields: list = super().get_fields(request, obj)
@@ -173,6 +194,11 @@ class VariableQuickChangeAdmin(SortableAdminBase, BaseAdmin):
 
     # Use this method in order to get rid of the "General" tab
     def get_inline_instances(self, request, obj=None):
+        variable: Variable = obj
+
+        if variable.type == VariableType.TABLE:
+            return [TableColumnsQuickChange(self.model, self.admin_site)]
+
         return [ValuesQuickChange(self.model, self.admin_site)]
 
     def has_change_permission(self, request, obj=None):

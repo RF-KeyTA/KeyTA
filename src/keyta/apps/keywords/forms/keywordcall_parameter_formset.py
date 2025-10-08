@@ -1,7 +1,7 @@
 import re
 from collections import defaultdict
 
-from django.db.models import QuerySet
+from django.db.models import QuerySet, Q
 from django.forms.utils import ErrorDict, ErrorList
 from django.utils.translation import gettext_lazy as _
 
@@ -98,14 +98,21 @@ def get_prev_return_values(kw_call: KeywordCall):
 
 def get_variables_choices(variables: QuerySet):
     grouped_variable_values = defaultdict(list)
-    variable_names = (
+    variable_names = list(
         VariableValue.objects
         .filter(variable__in=variables)
         .values_list('variable__name', flat=True)
+    ) + list(
+        Variable.objects
+        .filter(table__in=variables)
+        .values_list('table__name', flat=True)
     )
     variable_value_sources = (
         KeywordCallParameterSource.objects
-        .filter(variable_value__variable__in=variables)
+        .filter(
+            Q(variable_value__variable__in=variables) |
+            Q(table_column__table__in=variables)
+        )
     )
 
     for variable_name, source in zip(variable_names, variable_value_sources):
@@ -114,7 +121,7 @@ def get_variables_choices(variables: QuerySet):
     return [
         [
             variable,
-            values
+            sorted(values, key=lambda value: value[1].lower())
         ]
         for variable, values in sorted(grouped_variable_values.items(), key=lambda kv: kv[0].lower())
     ]

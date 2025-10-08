@@ -25,6 +25,7 @@ def get_window_variables(kw_call: KeywordCall):
             windows__in=[kw_call.window],
             systems__in=kw_call.testcase.systems.all()
         )
+        .exclude(table__isnull=False)
     )
 
     return get_variables_choices(variables)

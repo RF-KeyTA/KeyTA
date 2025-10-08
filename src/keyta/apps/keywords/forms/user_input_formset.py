@@ -55,7 +55,8 @@ class BaseSelectWithIcons(BaseSelect):
     icons = {
         KeywordCallParameterSourceType.KEYWORD_PARAMETER: settings.FA_ICONS.arg_kw_param,
         KeywordCallParameterSourceType.KW_CALL_RETURN_VALUE: settings.FA_ICONS.arg_return_value,
-        KeywordCallParameterSourceType.VARIABLE_VALUE: settings.FA_ICONS.arg_variable_value,
+        KeywordCallParameterSourceType.VARIABLE_VALUE: settings.FA_ICONS.arg_variable,
+        KeywordCallParameterSourceType.TABLE_COLUMN: settings.FA_ICONS.arg_variable
     }
 
     def create_option(

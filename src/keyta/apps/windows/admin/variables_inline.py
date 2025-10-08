@@ -25,5 +25,8 @@ class Variables(BaseTabularInline):
     def systems(self, obj):
         return ', '.join(obj.variable.systems.values_list('name', flat=True))
 
+    def get_queryset(self, request):
+        return super().get_queryset(request).exclude(variable__table__isnull=False)
+
     def has_change_permission(self, request, obj=None):
         return False

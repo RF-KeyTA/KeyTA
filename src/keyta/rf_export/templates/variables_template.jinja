@@ -1,8 +1,8 @@
 *** Variables ***
-{%- for name, dict_v in dict_variables %}
-{{ name }}     {{ kwargs_list(dict_v) }}
+{%- for table_name, row_names in tables %}
+{{ table_name }}    {{ rf_join(row_names) }}
 {%- endfor %}
 
-{%- for name, list_v in list_variables %}
-{{ name }}     {{ rf_join(list_v) }}
+{%- for row_name, values in rows %}
+{{ row_name }}    {{ rf_join(values) }}
 {%- endfor %}
