@@ -102,11 +102,6 @@ class ActionAdmin(ActionAdminMixin, CloneModelAdminMixin, WindowKeywordAdmin):
 
             if action_id := request.resolver_match.kwargs.get('object_id'):
                 action = Action.objects.get(id=action_id)
-                window_systems = action.windows.values_list('systems', flat=True)
-
-                if window_systems.exists():
-                    field.queryset = field.queryset.filter(pk__in=window_systems)
-
                 attach_to_systems = System.objects.filter(attach_to_system=action).values_list('pk', flat=True)
 
                 if attach_to_systems.exists():
