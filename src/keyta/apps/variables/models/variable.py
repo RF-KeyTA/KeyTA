@@ -79,13 +79,6 @@ class Variable(AbstractBaseModel):
         verbose_name = _('Referenzwert')
         verbose_name_plural = _('Referenzwerte')
 
-        # constraints = [
-        #     models.UniqueConstraint(
-        #         fields=['window', 'name'],
-        #         name='unique_variable_per_window'
-        #     )
-        # ]
-
 
 class VariableDocumentation(Variable):
     class Meta:
