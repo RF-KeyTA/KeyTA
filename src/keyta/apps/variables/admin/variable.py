@@ -12,7 +12,7 @@ from keyta.admin.list_filters import SystemListFilter, WindowListFilter
 from keyta.apps.keywords.models import KeywordCallParameter
 from keyta.apps.windows.models import Window
 from keyta.forms import form_with_select
-from keyta.widgets import BaseSelect, CheckboxSelectMultipleSystems
+from keyta.widgets import BaseSelect, CheckboxSelectMultipleSystems, url_query_parameters
 
 from ..forms import VariableForm, VariableQuickAddForm
 from ..models import (
@@ -147,6 +147,17 @@ class VariableAdmin(SortableAdminBase, BaseAdmin):
 class VariableQuickAddAdmin(SortableAdminBase, BaseQuickAddAdmin):
     fields = ['systems', 'windows', 'name', 'type']
     form = VariableQuickAddForm
+
+    def add_view(self, request, form_url='', extra_context=None):
+        current_app, model, *route = request.resolver_match.route.split('/')
+        app = settings.MODEL_TO_APP.get(model)
+
+        if app and app != current_app:
+            add_url = reverse('admin:%s_%s_add' % (app, model))
+
+            return HttpResponseRedirect(add_url + '?' + url_query_parameters(request.GET))
+
+        return super().add_view(request, form_url, extra_context)
 
     def autocomplete_name_queryset(self, name: str, request: HttpRequest):
         queryset = super().autocomplete_name_queryset(name, request)
