@@ -97,26 +97,21 @@ def get_prev_return_values(kw_call: KeywordCall):
 
 
 def get_variables_choices(variables: QuerySet):
-    grouped_variable_values = defaultdict(list)
-    variable_names = list(
-        VariableValue.objects
-        .filter(variable__in=variables)
-        .values_list('variable__name', flat=True)
-    ) + list(
-        Variable.objects
-        .filter(table__in=variables)
-        .values_list('table__name', flat=True)
-    )
-    variable_value_sources = (
-        KeywordCallParameterSource.objects
-        .filter(
-            Q(variable_value__variable__in=variables) |
-            Q(table_column__table__in=variables)
-        )
-    )
+    def sources_to_choices(sources: QuerySet):
+        return [
+            ((source.get_value().jsonify(), str(source)))
+            for source in sources
+        ]
 
-    for variable_name, source in zip(variable_names, variable_value_sources):
-        grouped_variable_values[variable_name].append((source.get_value().jsonify(), str(source)))
+    grouped_variable_values = {}
+
+    for variable in variables:
+        if variable.is_table():
+            sources = KeywordCallParameterSource.objects.filter(table_column__in=variable.columns.all())
+        else:
+            sources = KeywordCallParameterSource.objects.filter(variable_value__in=variable.values.all())
+
+        grouped_variable_values[variable.name] = sources_to_choices(sources)
 
     return [
         [
