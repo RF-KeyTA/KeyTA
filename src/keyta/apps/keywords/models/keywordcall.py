@@ -194,7 +194,7 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
             return no_input_no_output()
 
         to_keyword_parameters_count = self.to_keyword.parameters.count()
-        has_return_values = self.return_values.exists()
+        has_return_values = not self.type == KeywordCallType.KEYWORD_EXECUTION and self.return_values.exists()
 
         if to_keyword_parameters_count == 0:
             if not has_return_values:
