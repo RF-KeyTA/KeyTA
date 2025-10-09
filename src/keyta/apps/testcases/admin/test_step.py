@@ -1,10 +1,12 @@
+from django.conf import settings
 from django.contrib import admin
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 
-from keyta.apps.keywords.admin.keywordcall import (
+from keyta.apps.keywords.admin import (
     KeywordCallAdmin,
-    KeywordCallParametersInline
+    KeywordCallParametersInline,
+    ReadOnlyReturnValuesInline
 )
 from keyta.apps.keywords.forms import KeywordCallParameterFormsetWithErrors
 from keyta.apps.keywords.forms.keywordcall_parameter_formset import (
@@ -16,6 +18,7 @@ from keyta.apps.variables.models import Variable
 from keyta.widgets import Icon, open_link_in_modal, url_query_parameters
 
 from ..models import TestStep
+from .quick_change_variables_inline import QuickChangeVariables
 
 
 def get_window_variables(kw_call: KeywordCall):
@@ -45,9 +48,19 @@ class TestStepParametersInline(KeywordCallParametersInline):
 class TestStepAdmin(
     KeywordCallAdmin
 ):
-    parameters_inline = TestStepParametersInline
+    change_form_template = 'test_step_change_form.html'
+    # It must be a non-empty list, otherwise the inlines are not shown as tabs.
+    inlines = [QuickChangeVariables]
+
+    def switch_inlines(self, request):
+        if request.method == 'POST':
+            self.inlines = []
+        else:
+            self.inlines = [QuickChangeVariables]
 
     def change_view(self, request, object_id, form_url="", extra_context=None):
+        self.switch_inlines(request)
+
         test_step = TestStep.objects.get(pk=object_id)
 
         if 'step-changed' in request.GET:
@@ -76,4 +89,22 @@ class TestStepAdmin(
         if 'update-icon' in request.GET:
             return self.update_icon(request, test_step)
 
+        current_app, model, *route = request.resolver_match.route.split('/')
+        app = settings.MODEL_TO_APP.get(model)
+
+        if app and app != current_app:
+            return HttpResponseRedirect(reverse('admin:%s_%s_change' % (app, model), args=(object_id,)))
+
         return self.changeform_view(request, object_id, form_url, extra_context or {'show_delete': False})
+
+    def get_inlines(self, request, obj):
+        test_step: TestStep = obj
+        inlines = []
+
+        if test_step.parameters.exists():
+            inlines.append(TestStepParametersInline)
+
+        if test_step.return_values.exists():
+            inlines.append(ReadOnlyReturnValuesInline)
+
+        return inlines + self.inlines

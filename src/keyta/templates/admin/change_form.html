@@ -117,8 +117,10 @@
                                 </div>
                             </div>
                             <div class="card-body">
+                                {% block card_body %}
                                 {% get_changeform_template adminform as changeform_template %}
                                 {% include changeform_template %}
+                                {% endblock %}
                             </div>
                         </div>
                     </div>

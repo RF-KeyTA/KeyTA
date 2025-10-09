@@ -7,7 +7,7 @@ from .keywordcall_parameter import KeywordCallParameterAdmin
 from .keywordcall_parameter_source import KeywordCallParameterSourceAdmin
 from .keywordcall_parameters_inline import KeywordCallParametersInline
 from .keywordcall_return_value import KeywordCallReturnValueAdmin
-from .keywordcall_return_value_inline import KeywordCallReturnValueInline
+from .keywordcall_return_value_inline import KeywordCallReturnValueInline, ReadOnlyReturnValuesInline
 from .keyword_parameter import KeywordParameterAdmin
 from .keyword_parameters_inline import ParametersInline
 from .return_value import ReturnValueAdmin
