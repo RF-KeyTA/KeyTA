@@ -15,7 +15,12 @@ from keyta.admin.field_documentation import DocumentationField
 from keyta.admin.list_filters import SystemListFilter
 from keyta.apps.resources.models import Resource
 from keyta.forms.baseform import form_with_select
-from keyta.widgets import CheckboxSelectMultipleSystems, Icon, open_link_in_modal, url_query_parameters
+from keyta.widgets import (
+    CheckboxSelectMultipleSystems,
+    Icon,
+    open_link_in_modal,
+    url_query_parameters
+)
 
 from ..forms import WindowForm
 from ..models import (
@@ -25,7 +30,6 @@ from ..models import (
     WindowQuickChange
 )
 from .actions_inline import Actions
-from .quick_change_variables_inline import QuickChangeVariables
 from .resources_inline import Resources
 from .sequences_inline import Sequences
 from .variables_inline import Variables
@@ -143,7 +147,6 @@ class WindowQuickAddAdmin(BaseQuickAddAdmin):
 @admin.register(WindowQuickChange)
 class WindowQuickChangeAdmin(WindowAdmin):
     fields = []
-    inlines = [QuickChangeVariables]
     readonly_fields = ['documentation']
 
     def change_view(self, request, object_id, form_url="", extra_context=None):
@@ -157,9 +160,9 @@ class WindowQuickChangeAdmin(WindowAdmin):
 
     def get_inlines(self, request, obj):
         if Resource.objects.count():
-            return [Resources] + self.inlines
+            return [Resources]
 
-        return self.inlines
+        return []
 
     def has_delete_permission(self, request, obj=None):
         return False
