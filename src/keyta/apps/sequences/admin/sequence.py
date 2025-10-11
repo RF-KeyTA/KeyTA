@@ -172,11 +172,22 @@ class SequenceQuickAddAdmin(WindowKeywordAdminMixin, BaseQuickAddAdmin):
     form = QuickAddSequenceForm
 
 
+class SequenceQuickChangeSteps(SequenceSteps):
+    def get_fields(self, request, obj=None):
+        fields = super().get_fields(request, obj)
+
+        return [
+            field
+            for field in fields
+            if field != 'execute'
+        ]
+
+
 @admin.register(SequenceQuickChange)
 class SequenceQuickChangeAdmin(WindowKeywordAdmin):
     fields = []
     readonly_fields = ['documentation']
-    inlines = [ParametersInline, SequenceSteps]
+    inlines = [ParametersInline, SequenceQuickChangeSteps]
 
     def change_view(self, request, object_id, form_url="", extra_context=None):
         return super().change_view(request, object_id, form_url, extra_context or {'title_icon': settings.FA_ICONS.sequence})
