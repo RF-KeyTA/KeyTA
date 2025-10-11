@@ -1,3 +1,4 @@
+from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 
 from keyta.apps.keywords.admin import StepsInline
@@ -25,3 +26,11 @@ class SequenceSteps(StepsInline):
 
     def get_fields(self, request, obj=None):
         return ['execute'] + super().get_fields(request, obj)
+
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        field = super().formfield_for_dbfield(db_field, request, **kwargs)
+
+        if db_field.name == 'execute':
+            field.label = mark_safe('<span title="%s">▶</span>' % _('Ausführen ab'))
+
+        return field
