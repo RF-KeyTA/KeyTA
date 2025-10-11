@@ -8,10 +8,11 @@ from ..models import KeywordCall, KeywordCallParameter
 
 class ParameterFields:
     def show_parameter(self, kw_call: KeywordCall, position: int):
+        pk = kw_call.pk
         htmx_attrs = {
             'hx-get': kw_call.get_admin_url(),
             'hx-swap': 'innerHTML',
-            'hx-trigger': 'modal-closed from:body'
+            'hx-trigger': f'modal-closed-{pk} from:body, modal-closed from:body'
         }
         params = list(kw_call.parameters.all())
         position0 = position - 1
