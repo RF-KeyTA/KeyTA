@@ -116,6 +116,10 @@ class BaseAdmin(admin.ModelAdmin):
     def delete_view(self, request, object_id, extra_context=None):
         if 'post' in request.POST and 'ref' in request.GET:
             super().delete_view(request, object_id, extra_context)
+
+            if popup := request.GET.get('_popup'):
+                return HttpResponseRedirect(request.GET['ref'] + '?_popup=' + popup)
+
             return HttpResponseRedirect(request.GET['ref'])
 
         return super().delete_view(request, object_id, extra_context)
