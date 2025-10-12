@@ -48,6 +48,15 @@ def exec_django_command(command: str):
     return exec_command(f'python manage.py {command}', DJANGO_DIR)
 
 
+def is_running(app: str):
+    process_list = subprocess.check_output(['TASKLIST', '/FI', f'imagename eq {app}']).decode('iso-8859-1')
+    return len([
+        line
+        for line in process_list.splitlines()
+        if line.startswith(app)
+    ]) > 1
+
+
 def open_keyta():
     open_url('http://localhost:8000')
 
@@ -108,7 +117,9 @@ def keyta():
         'open_keyta': 'Open KeyTA',
         'terminate_keyta': 'Terminate KeyTA'
     }
-    App(texts).run()
+
+    if not is_running('keyta.exe'):
+        App(texts).run()
 
 
 def keyta_de():
@@ -117,4 +128,6 @@ def keyta_de():
         'open_keyta': 'KeyTA starten',
         'terminate_keyta': 'KeyTA beenden'
     }
-    App(texts).run()
+
+    if not is_running('keyta-de.exe'):
+        App(texts).run()
