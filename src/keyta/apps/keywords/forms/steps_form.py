@@ -11,7 +11,6 @@ class StepsForm(BaseForm):
             if 'window' in self.changed_data:
                 kw_call.to_keyword = None
                 kw_call.delete_parameters()
-                kw_call.variable = None
                 kw_call.save()
 
             if all([
@@ -21,12 +20,5 @@ class StepsForm(BaseForm):
                 kw_call.delete_conditions()
                 kw_call.delete_parameters()
                 kw_call.delete_return_values()
-                kw_call.delete_variable()
-
-            if all([
-                self.initial.get('variable', None),
-                'variable' in self.changed_data
-            ]):
-                kw_call.reset_parameters()
 
         return kw_call

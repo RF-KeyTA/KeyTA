@@ -88,15 +88,6 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
     )
 
     # --Customization--
-    # In a TestCase a keyword call may use values from the selected Variable
-    variable = models.ForeignKey(
-        'variables.Variable',
-        on_delete=models.CASCADE,
-        null=True,
-        default=None,
-        blank=True,
-        verbose_name=_('Referenzwert (optional)')
-    )
     # In a TestCase keyword calls depend on the selected Window
     window = models.ForeignKey(
         'windows.Window',
@@ -165,10 +156,6 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
         return_value: KeywordReturnValue
         for return_value in self.return_values.all():
             return_value.delete()
-
-    def delete_variable(self):
-        self.variable = None
-        self.save()
 
     @property
     def caller(self):
