@@ -11,6 +11,7 @@ import urllib
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
+from robot.running import TestSuite
 
 from .IProcess import IProcess
 from .rf_log import generate_log, RobotLog
@@ -63,6 +64,8 @@ def robot_run(
     output_dir = base_dir / 'output'
     robot_file = base_dir / 'Testsuite.robot'
     write_file_to_disk(robot_file, testsuite)
+    suite = TestSuite.from_file_system(robot_file)
+    suite.to_json(output_dir/'input.json', indent=4)
 
     robot_kwargs = {
         'listener': 'keyta.Listener',
@@ -78,7 +81,7 @@ def robot_run(
     )
 
     try:
-        log = generate_log(RobotLog().simplify_output(output_dir / 'output.json'))
+        log = generate_log(RobotLog().simplify_output(output_dir / 'input.json', output_dir / 'output.json'))
         log_path = output_dir / 'simple_log.html'
         write_file_to_disk(log_path, log)
     except:

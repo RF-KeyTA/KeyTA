@@ -50,17 +50,18 @@ def generate_log(rf: dict):
 
     return log_template.render({
         "bootstrap": {
-            "css": open(cwd / 'assets' / 'bootstrap.min.css').read(),
-            "js": open(cwd / 'assets' / 'bootstrap.bundle.min.js').read(),
+            "css": open(cwd / 'assets' / 'bootstrap' / 'css' / 'bootstrap.min.css').read(),
+            "js": open(cwd / 'assets' / 'bootstrap' / 'js' / 'bootstrap.bundle.min.js').read(),
         },
         "logo": f"data:image/jpg;base64, {logo_b64}",
         "rf": rf,
-        "svg": {
-            "action":  open(cwd / 'assets' / 'cubes-stacked.svg').read(),
-            "arrow_left": open(cwd / 'assets' / 'arrow-left-long.svg').read(),
-            "arrow_up_right": open(cwd / 'assets' / 'arrow-up-right.svg').read(),
-            "sequence":  open(cwd / 'assets' / 'arrow-progress.svg').read(),
-            "testcase": open(cwd / 'assets' / 'ballot-check.svg').read()
+        "icon": {
+            "action": '<i class="fa-solid fa-cubes-stacked"></i>',
+            "download": '<i class="fa-solid fa-floppy-disk fa-2xl"></i>',
+            "go_back": '<i class="fa-solid fa-arrow-left-long fa-xl"></i>',
+            "go_to": '<i class="fa-solid fa-arrow-up-right-from-square"></i>',
+            "sequence": '<i class="fa-solid fa-arrows-turn-to-dots"></i>',
+            "testcase": '<i class="fa-solid fa-list-check"></i>'
         }
     })
 
@@ -123,12 +124,21 @@ def parse_object(pairs):
 
 class RobotLog:
     def __init__(self):
+        self.keyword_args = {}
         self.items = {
             "test_cases": [],
             "keywords": dict()
         }
 
-    def simplify_output(self, output_json: Path) -> dict:
+    def simplify_output(self, input_json: Path, output_json: Path) -> dict:
+        with open(input_json, encoding='utf-8') as file:
+            input = json.load(file)
+            keywords = input['resource']['keywords']
+            for keyword in keywords:
+                _, name = keyword['name'].split('::')
+
+                self.keyword_args[name] = [unrobot(arg) for arg in keyword.get('args', [])]
+
         with open(output_json, encoding='utf-8') as file:
             output = json.load(file, object_pairs_hook=parse_object)
 
@@ -170,7 +180,7 @@ class RobotLog:
             'start_time': format_date(parse_date(step['start_time'])),
             'elapsed_time': format_time(step['elapsed_time']),
             'steps': [],
-            'args': [],
+            'args': {},
             'return_values': dict(),
         }
 
@@ -215,19 +225,20 @@ class RobotLog:
             result.update({'url': step['doc']})
 
         if 'args' in step:
-            args = []
+            args = {}
             dict_access = re.compile(r'(\${.*})\[(.*)\]')
+            default_arg_names = ['Param %s' % i for i in range(1, len(step['args']) + 1)]
 
-            for arg in step['args']:
+            for arg_name, arg in zip(self.keyword_args.get(name, default_arg_names), step['args']):
                 if assign:
                     if match := re.match(dict_access, arg):
                         dict_, item = match.group(1), match.group(2)
-                        args.append(assign[dict_][item])
+                        args[arg_name] = assign[dict_][item]
                 else:
                     if level < 2:
-                        args.append(unrobot(arg))
+                        args[arg_name] = unrobot(arg)
                     else:
-                        args.append(arg)
+                        args[arg_name] = arg
 
             result.update({'args': args})
 
