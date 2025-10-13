@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.db.models import Q
+from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 
 from keyta.admin.base_inline import SortableTabularInline
@@ -32,6 +33,9 @@ class TestStepsInline(
         field = super().formfield_for_dbfield(db_field, request, **kwargs)
         testcase_id = request.resolver_match.kwargs['object_id']
         testcase = TestCase.objects.get(id=testcase_id)
+
+        if db_field.name == 'execute':
+            field.label = mark_safe('<span title="%s">▶</span>' % _('Ausführen ab'))
 
         if db_field.name == 'to_keyword':
             field.label = _('Sequenz')

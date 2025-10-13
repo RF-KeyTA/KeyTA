@@ -1,6 +1,4 @@
 from django.urls import reverse
-from django.utils.safestring import mark_safe
-from django.utils.translation import gettext_lazy as _
 
 from adminsortable2.admin import CustomInlineFormSet
 
@@ -28,8 +26,6 @@ class TestStepsFormset(CustomInlineFormSet):
         execute_field = form.fields['execute']
         to_keyword_field = form.fields['to_keyword']
         window_field = form.fields['window']
-
-        execute_field.label = mark_safe('<span title="%s">▶</span>' % _('Ausführen ab'))
 
         # The index of extra forms is None
         if index is None:
