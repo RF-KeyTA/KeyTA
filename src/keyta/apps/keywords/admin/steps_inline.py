@@ -62,6 +62,6 @@ class StepsInline(
             return self.can_change(request.user, 'action')
 
         if keyword and keyword.is_sequence:
-            self.can_change(request.user, 'sequence')
+            return self.can_change(request.user, 'sequence')
 
         return super().has_delete_permission(request, obj)
