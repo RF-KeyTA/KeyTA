@@ -60,7 +60,6 @@ def link(
 
     if new_page:
         local_attrs.update({'target': '_blank'})
-        title = title + '<i class="ml-2 fa-solid fa-up-right-from-square" style="font-size: 0.7rem"></i>'
 
     if styles:
         local_attrs['style'] = style_to_css(styles)
