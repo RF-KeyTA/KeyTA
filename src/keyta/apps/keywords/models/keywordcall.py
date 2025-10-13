@@ -212,7 +212,7 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
 
     def update_icon(self, icon: Icon, user: Optional[AbstractUser] = None):
         if self.has_empty_arg(user):
-            icon.attrs['style'].update({'color': '#ff5a9e'})
+            icon.attrs['style'].update({'color': '#ff5a9e', '--fa-primary-color': '#ff5a9e'})
 
         return icon
 
