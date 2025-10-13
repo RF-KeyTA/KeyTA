@@ -58,6 +58,18 @@ class TestStepsInline(
 
         return field
 
+    def get_fields(self, request, obj=None):
+        fields = super().get_fields(request, obj)
+
+        if self.can_change(request.user, 'testcase'):
+            return fields
+
+        return [
+            field
+            for field in fields
+            if field != 'execute'
+        ]
+
     def get_queryset(self, request):
         return (
             super().get_queryset(request)

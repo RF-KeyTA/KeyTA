@@ -23,13 +23,14 @@ class TestStepsFormset(CustomInlineFormSet):
     def add_fields(self, form, index):
         super().add_fields(form, index)
 
-        execute_field = form.fields['execute']
         to_keyword_field = form.fields['to_keyword']
         window_field = form.fields['window']
 
         # The index of extra forms is None
         if index is None:
-            execute_field.widget.attrs.update({'disabled': 'disabled'})
+            if execute_field := form.fields.get('execute'):
+                execute_field.widget.attrs.update({'disabled': 'disabled'})
+
             window_field.widget = CustomRelatedFieldWidgetWrapper(
                 window_field.widget,
                 None,
