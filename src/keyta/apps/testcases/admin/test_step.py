@@ -103,8 +103,9 @@ class TestStepAdmin(
 
         if test_step.parameters.exists():
             inlines.append(TestStepParametersInline)
+            inlines.append(QuickChangeVariables)
 
         if test_step.return_values.exists():
             inlines.append(ReadOnlyReturnValuesInline)
 
-        return inlines + self.inlines
+        return inlines
