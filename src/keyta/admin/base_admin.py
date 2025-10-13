@@ -13,7 +13,7 @@ from django.http import HttpRequest, HttpResponseRedirect, HttpResponse
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 
-from keyta.widgets import BaseSelect, BaseSelectMultiple
+from keyta.widgets import BaseSelect, BaseSelectMultiple, url_query_parameters
 
 from .field_documentation import DocumentationField
 
@@ -117,10 +117,13 @@ class BaseAdmin(admin.ModelAdmin):
         if 'post' in request.POST and 'ref' in request.GET:
             super().delete_view(request, object_id, extra_context)
 
-            if popup := request.GET.get('_popup'):
-                return HttpResponseRedirect(request.GET['ref'] + '?_popup=' + popup)
+            query_params = {
+                key: value
+                for key, value in request.GET.items()
+                if not key == 'ref'
+            }
 
-            return HttpResponseRedirect(request.GET['ref'])
+            return HttpResponseRedirect(request.GET['ref'] + '?' + url_query_parameters(query_params))
 
         return super().delete_view(request, object_id, extra_context)
 
