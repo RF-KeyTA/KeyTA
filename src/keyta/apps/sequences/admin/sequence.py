@@ -21,6 +21,7 @@ from keyta.apps.keywords.models import KeywordCallReturnValue
 from keyta.apps.windows.models import Window
 from keyta.widgets import (
     CheckboxSelectMultipleSystems,
+    Icon,
     ManyToManySelectOneWidget,
     link,
     url_query_parameters
@@ -159,10 +160,11 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
     @admin.display(description=_('Maske'))
     def window(self, sequence: Sequence):
         window: Window = sequence.windows.first()
+        icon = Icon(settings.FA_ICONS.go_to, styles={'font-size': '0.7rem', 'margin-left': '2px'})
 
         return link(
             window.get_admin_url(),
-            window.name,
+            f'{window.name} {icon}',
             new_page=True
         )
 
