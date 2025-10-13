@@ -174,6 +174,7 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
                     'margin-top': '8px'
                 }
             )
+            icon.attrs['cursor'] = 'default'
             icon.attrs['name'] = 'no-input-no-output'
             return icon
 

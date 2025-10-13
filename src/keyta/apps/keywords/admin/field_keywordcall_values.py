@@ -52,10 +52,15 @@ class KeywordCallValuesField:
                     attrs=htmx_attrs | {'style': 'visibility: hidden'}
                 )
 
+            attrs = {}
+
+            if cursor := icon.attrs.get('cursor'):
+                attrs['style'] = f'cursor: {cursor}'
+
             return open_link_in_modal(
                 url + f'?kw_call_pk={kw_call.pk}',
                 str(icon),
-                attrs=htmx_attrs
+                attrs=attrs | htmx_attrs
             )
 
         KeywordCallValuesField.values = values
