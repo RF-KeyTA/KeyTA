@@ -25,7 +25,6 @@ class KeywordCallValuesField:
 
             htmx_attrs = {
                 'hx-get': url,
-                'hx-on::after-swap': 'presentRelatedObjectModal()',
                 'hx-swap': 'innerHTML',
                 'hx-trigger': f'modal-closed-{kw_call.pk} from:body, modal-closed from:body'
             }
