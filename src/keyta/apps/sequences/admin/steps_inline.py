@@ -25,7 +25,10 @@ class SequenceSteps(StepsInline):
     template = 'sequence_steps_sortable_tabular.html'
 
     def get_fields(self, request, obj=None):
-        return ['execute'] + super().get_fields(request, obj)
+        if self.can_change(request.user, 'sequence'):
+            return ['execute'] + super().get_fields(request, obj)
+
+        return super().get_fields(request, obj)
 
     def formfield_for_dbfield(self, db_field, request, **kwargs):
         field = super().formfield_for_dbfield(db_field, request, **kwargs)
