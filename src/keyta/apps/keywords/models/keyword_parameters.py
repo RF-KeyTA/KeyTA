@@ -130,10 +130,7 @@ class KeywordParameter(CloneMixin, AbstractBaseModel):
 
             KeywordCallParameterSource.objects.create(kw_param=self)
 
-            for kw_call in (
-                self.keyword.uses.keyword_calls() |
-                self.keyword.uses.test_steps()
-            ):
+            for kw_call in self.keyword.uses.keyword_calls():
                 kw_call.add_parameter(self)
         else:
             super().save(force_insert, force_update, using, update_fields)
