@@ -51,12 +51,13 @@ class TestStepAdmin(
     change_form_template = 'test_step_change_form.html'
     # It must be a non-empty list, otherwise the inlines are not shown as tabs.
     inlines = [QuickChangeVariables]
+    orig_inlines = [QuickChangeVariables]
 
     def switch_inlines(self, request):
         if request.method == 'POST':
             self.inlines = []
         else:
-            self.inlines = [QuickChangeVariables]
+            self.inlines = self.orig_inlines
 
     def change_view(self, request, object_id, form_url="", extra_context=None):
         self.switch_inlines(request)
@@ -103,7 +104,7 @@ class TestStepAdmin(
 
         if test_step.parameters.exists():
             inlines.append(TestStepParametersInline)
-            inlines.append(QuickChangeVariables)
+            inlines.extend(self.inlines)
 
         if test_step.return_values.exists():
             inlines.append(ReadOnlyReturnValuesInline)
