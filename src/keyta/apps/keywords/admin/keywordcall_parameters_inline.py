@@ -45,7 +45,7 @@ class KeywordCallParametersInline(BaseTabularInline):
         keywordcall: KeywordCall = obj
 
         if keywordcall and keywordcall.testcase:
-            return self.can_change(request.user, 'testcase')
+            return True
 
         if keywordcall and keywordcall.from_keyword:
             return self.can_change(request.user, 'action') or self.can_change(request.user, 'sequence')

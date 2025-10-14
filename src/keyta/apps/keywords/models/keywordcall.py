@@ -109,14 +109,15 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
     def add_parameter(
         self,
         param: KeywordParameter,
-        user: Optional[AbstractUser]=None
+        user: Optional[AbstractUser]=None,
+        value: JSONValue=None
     ):
         KeywordCallParameter.objects.get_or_create(
             keyword_call=self,
             parameter=param,
             user=user,
             defaults={
-                'value': JSONValue(
+                'value': value.jsonify() or JSONValue(
                     arg_name=None,
                     kw_call_index=None,
                     pk=None,
@@ -163,7 +164,7 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
             return self.from_keyword or self.testcase or self.execution
         return None
 
-    def get_icon(self, user: Optional[AbstractUser] = None) -> Icon|None:
+    def get_icon(self, user: Optional[AbstractUser] = None, default_kw_call_parameter_values: Optional[dict] = None) -> Icon | None:
         def no_input_no_output():
             icon = Icon(
                 settings.FA_ICONS.kw_call_no_input_no_output,
@@ -200,7 +201,7 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
                 return icon
 
         if self.parameters.filter(user=user).count() != to_keyword_parameters_count:
-            self.update_parameters(user)
+            self.update_parameters(user, default_kw_call_parameter_values)
 
         if has_return_values:
             icon = Icon(settings.FA_ICONS.kw_call_input_output)
@@ -352,9 +353,12 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
         for kw_call_param in self.parameters.all():
             kw_call_param.update_value()
 
-    def update_parameters(self, user: Optional[AbstractUser]=None):
+    def update_parameters(self, user: Optional[AbstractUser]=None, values: Optional[dict]=None):
         for param in self.to_keyword.parameters.exclude(type=KeywordParameterType.VARARG):
-            self.add_parameter(param, user)
+            if values:
+                self.add_parameter(param, user, values.get(param.name))
+            else:
+                self.add_parameter(param, user)
 
     class Manager(models.Manager):
         def get_queryset(self):

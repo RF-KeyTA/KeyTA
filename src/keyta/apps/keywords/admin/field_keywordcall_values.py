@@ -15,11 +15,14 @@ class KeywordCallValuesField:
     def get_kw_call(self, obj):
         return obj
 
+    def get_kw_call_parameters(self, kw_call: KeywordCall):
+        return None
+
     def get_readonly_fields(self, request, obj=None):
         @admin.display(description=_('Werte'))
         def values(self, obj):
             kw_call: KeywordCall = self.get_kw_call(obj)
-            icon = kw_call.get_icon(self.get_user(request))
+            icon = kw_call.get_icon(self.get_user(request), self.get_kw_call_parameters(kw_call))
             icon.attrs['style'] |= {'margin-left': '5px'}
             url = kw_call.get_admin_url()
 

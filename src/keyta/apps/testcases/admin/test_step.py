@@ -43,6 +43,9 @@ class TestStepParametersInline(KeywordCallParametersInline):
     fields = ['name', 'value']
     formset = TestStepParameterFormset
 
+    def get_queryset(self, request):
+        return super().get_queryset(request).filter(user=request.user)
+
 
 @admin.register(TestStep)
 class TestStepAdmin(
@@ -110,3 +113,6 @@ class TestStepAdmin(
             inlines.append(ReadOnlyReturnValuesInline)
 
         return inlines
+
+    def has_change_permission(self, request, obj=None):
+        return True

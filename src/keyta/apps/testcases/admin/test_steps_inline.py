@@ -15,9 +15,14 @@ from ..forms import TestStepsFormset
 from ..models import TestCase, TestStep
 
 
+class TestStepValuesField(KeywordCallValuesField):
+    def get_user(self, request):
+        return request.user
+
+
 class TestStepsInline(   
     DeleteRelatedField,
-    KeywordCallValuesField,
+    TestStepValuesField,
     SortableTabularInline
 ):
     model = TestStep
