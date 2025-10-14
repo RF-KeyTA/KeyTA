@@ -36,3 +36,14 @@ class ReturnValueInline(DeleteRelatedField, BaseTabularInline):
 
     def has_change_permission(self, request, obj=None):
         return False
+
+    def has_delete_permission(self, request, obj=None):
+        keyword: Keyword = obj
+
+        if keyword and keyword.is_action:
+            return self.can_change(request.user, 'action')
+
+        if keyword and keyword.is_sequence:
+            return self.can_change(request.user, 'sequence')
+
+        return super().has_delete_permission(request, obj)
