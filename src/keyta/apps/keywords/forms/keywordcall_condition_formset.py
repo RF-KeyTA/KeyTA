@@ -45,7 +45,8 @@ class KeywordCallConditionFormset(UserInputFormset):
             choices=[(None, '')] + ConditionChoices.choices
         )
 
-        form.fields['expected_value'] = user_input_field(
+        if 'expected_value' in form.fields:
+            form.fields['expected_value'] = user_input_field(
             _('Wert auswählen oder eintragen'),
             self.get_user_input(form, index),
             choices=self.ref_choices

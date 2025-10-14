@@ -64,6 +64,16 @@ class KeywordCallCondition(CloneMixin, AbstractBaseModel):
 
         return super().__str__()
 
+    @property
+    def current_expected_value(self):
+        json_value = JSONValue.from_json(self.expected_value)
+
+        if user_input := json_value.user_input:
+            return user_input
+
+        if pk := json_value.pk:
+            return str(KeywordCallParameterSource.objects.get(pk=pk))
+
     def make_clone(self, attrs=None, sub_clone=False, using=None, parent=None):
         clone: KeywordCallCondition = super().make_clone(attrs=attrs, sub_clone=sub_clone, using=using, parent=parent)
 
