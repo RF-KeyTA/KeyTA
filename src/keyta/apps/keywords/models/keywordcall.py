@@ -110,14 +110,14 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
         self,
         param: KeywordParameter,
         user: Optional[AbstractUser]=None,
-        value: JSONValue=None
+        value: str=None
     ):
         KeywordCallParameter.objects.get_or_create(
             keyword_call=self,
             parameter=param,
             user=user,
             defaults={
-                'value': value.jsonify() or JSONValue(
+                'value': value or JSONValue(
                     arg_name=None,
                     kw_call_index=None,
                     pk=None,
