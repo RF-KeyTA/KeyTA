@@ -11,11 +11,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RenameField(
-            model_name='keywordcallreturnvalue',
-            old_name='return_value',
-            new_name='kw_call_return_value',
-        ),
         migrations.AddField(
             model_name='keywordreturnvalue',
             name='typedoc',
