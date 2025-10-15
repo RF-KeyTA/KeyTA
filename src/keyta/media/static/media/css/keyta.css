@@ -20,6 +20,10 @@ a {
     color: var(--keyta-secondary-color) !important;
 }
 
+.alert a {
+    color: white !important;
+}
+
 a.btn-primary {
     color: white !important;
     background-color: var(--keyta-primary-color);
