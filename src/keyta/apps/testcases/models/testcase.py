@@ -1,5 +1,6 @@
 import re
 
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models import Q
 from django.db.models.functions import Lower
@@ -82,7 +83,7 @@ class TestCase(DocumentationMixin, CloneMixin, AbstractBaseModel):
         self.name = re.sub(r"\s{2,}", ' ', self.name)
         super().save(force_insert, force_update, using, update_fields)
 
-    def to_robot(self, get_variable_value, in_execution=False) -> RFTestCase:
+    def to_robot(self, get_variable_value, user: AbstractUser, in_execution=False) -> RFTestCase:
         execute_from = 0
 
         if in_execution:
@@ -95,7 +96,7 @@ class TestCase(DocumentationMixin, CloneMixin, AbstractBaseModel):
             'name': self.name,
             'doc': self.robot_documentation(),
             'steps': [
-                test_step.to_robot(get_variable_value)
+                test_step.to_robot(get_variable_value, user=user)
                 for test_step in test_steps
             ]
         }

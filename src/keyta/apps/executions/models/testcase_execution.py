@@ -103,7 +103,7 @@ class TestCaseExecution(Execution):
             'tables': tables,
             'rows': rows,
             'keywords': list(keywords.values()),
-            'testcases': [self.testcase.to_robot(get_variable_value, in_execution=True)]
+            'testcases': [self.testcase.to_robot(get_variable_value, user, in_execution=True)]
         }
 
     def save(
