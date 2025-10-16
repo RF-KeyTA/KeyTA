@@ -51,8 +51,8 @@ class ActionForm(helpers.ActionForm):
 class BaseAdmin(admin.ModelAdmin):
     actions = [] if settings.DEBUG else None
     action_form = ActionForm
-    list_max_show_all = 50
-    list_per_page = 50
+    list_max_show_all = 10
+    list_per_page = 10
     preserve_filters = False
     # By default, inlines and readonly_fields are tuples, which cannot be combined with a list
     inlines = []
