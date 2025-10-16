@@ -34,6 +34,7 @@ from ..models import (
     SequenceQuickChange
 )
 from .steps_inline import SequenceSteps
+from .uses_inline import UsesInline
 
 
 class WindowListFilter(admin.RelatedFieldListFilter):
@@ -72,7 +73,8 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
     )
     inlines = [
         ParametersInline,
-        SequenceSteps
+        SequenceSteps,
+        UsesInline
     ]
 
     def change_view(self, request: HttpRequest, object_id, form_url="", extra_context=None):
