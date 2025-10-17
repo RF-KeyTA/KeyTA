@@ -37,7 +37,7 @@ from .variables_inline import Variables
 
 @admin.register(Window)
 class WindowAdmin(DocumentationField, BaseAdmin):
-    list_display = ['name', 'preview', 'system_list']
+    list_display = ['preview', 'name', 'system_list']
     list_display_links = ['name']
     list_filter = [
         ('systems', SystemListFilter),

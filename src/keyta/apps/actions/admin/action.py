@@ -3,6 +3,7 @@ from django.contrib import admin
 from django.forms import ModelMultipleChoiceField
 from django.http import HttpResponseRedirect, HttpRequest
 from django.urls import reverse
+from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 
 from model_clone import CloneModelAdminMixin
@@ -54,6 +55,13 @@ class ActionAdminMixin(WindowKeywordAdminMixin):
 class ActionAdmin(ActionAdminMixin, CloneModelAdminMixin, WindowKeywordAdmin):
     def get_list_filter(self, request):
         return super().get_list_filter(request) + ['setup_teardown']
+
+    def get_list_display(self, request):
+        return ['empty'] + super().get_list_display(request)
+
+    @admin.display(description=_(''))
+    def empty(self, obj):
+        return mark_safe('&nbsp;')
 
     form = form_with_select(
         Action,

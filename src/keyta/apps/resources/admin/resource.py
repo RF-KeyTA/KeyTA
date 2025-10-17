@@ -17,7 +17,8 @@ from ..models import Resource
 
 @admin.register(Resource)
 class ResourceAdmin(DocumentationField, BaseAdmin):
-    list_display = ['name', 'update']
+    list_display = ['update', 'name']
+    list_display_links = ['name']
     form = ResourceForm
     fields = ['path']
     readonly_fields = ['documentation']

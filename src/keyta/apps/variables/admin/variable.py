@@ -3,6 +3,7 @@ from django.contrib import admin
 from django.forms import ModelMultipleChoiceField
 from django.http import HttpRequest, HttpResponseRedirect
 from django.urls import reverse
+from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 
 from adminsortable2.admin import SortableAdminBase
@@ -38,6 +39,13 @@ class VariableAdmin(SortableAdminBase, BaseAdmin):
     ]
     search_fields = ['name', 'description']
     search_help_text = _('Name')
+
+    def get_list_display(self, request):
+        return ['empty'] + super().get_list_display(request)
+
+    @admin.display(description=_(''))
+    def empty(self, obj):
+        return mark_safe('&nbsp;')
 
     fields = ['systems', 'name', 'description', 'type']
     form = form_with_select(

@@ -127,6 +127,9 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'project.context_processors.icons'
             ],
+            'libraries': {
+                'filters': 'project.filters'
+            }
         },
     },
 ]

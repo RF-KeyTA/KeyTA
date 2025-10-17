@@ -4,6 +4,7 @@ from django.contrib import admin
 from django.forms import ModelMultipleChoiceField
 from django.http import HttpResponseRedirect, HttpRequest
 from django.urls import reverse
+from django.utils.safestring import mark_safe
 from django.utils.translation import gettext as _
 
 from model_clone import CloneModelAdminMixin
@@ -49,6 +50,13 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
         ('systems', SystemListFilter),
         ('windows', WindowListFilter)
     ]
+
+    def get_list_display(self, request):
+        return ['empty'] + super().get_list_display(request)
+
+    @admin.display(description=_(''))
+    def empty(self, obj):
+        return mark_safe('&nbsp;')
 
     form = forms.modelform_factory(
         Sequence,

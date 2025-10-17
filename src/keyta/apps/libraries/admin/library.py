@@ -26,6 +26,7 @@ from .library_parameters_inline import LibraryParametersInline
 @admin.register(Library)
 class LibraryAdmin(BaseAdmin):
     list_display = ['name', 'version']
+    list_display_links = ['name']
     inlines = [Keywords]
     form = LibraryForm
     errors = set()
@@ -50,7 +51,7 @@ class LibraryAdmin(BaseAdmin):
 
     def get_list_display(self, request):
         if self.can_change(request.user, 'library'):
-            return self.list_display + ['update']
+            return ['update'] + self.list_display
 
         return self.list_display
 

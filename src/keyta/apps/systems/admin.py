@@ -14,6 +14,14 @@ from .models import System
 @admin.register(System)
 class SystemAdmin(BaseAdmin):
     list_display = ['name', 'description']
+    list_display_links = ['name']
+
+    def get_list_display(self, request):
+        return ['empty'] + super().get_list_display(request)
+
+    @admin.display(description='')
+    def empty(self, obj):
+        return mark_safe('&nbsp;')
 
     fields = ['name', 'description', 'library']
 
