@@ -158,6 +158,8 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
+            $('input:text').focus()
+
             const search_button = '#search_group button[type=submit]'
 
             $('select').not('select[name="action"]').on('change', function() {
