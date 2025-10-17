@@ -13,6 +13,9 @@ class UsesInline(BaseTabularInline):
     readonly_fields = ['use']
     verbose_name_plural = _('Verwendungen')
 
+    def get_queryset(self, request):
+        return super().get_queryset(request).order_by('testcase__name')
+
     def has_add_permission(self, request, obj):
         return False
 
