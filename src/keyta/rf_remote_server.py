@@ -1,16 +1,14 @@
 import json
 import os
-import posixpath
 import re
 import subprocess
 import tempfile
 import traceback
 import unicodedata
-import urllib
-
 from http import HTTPStatus
-from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
+
 from robot.running import TestSuite
 
 from .IProcess import IProcess
@@ -94,16 +92,16 @@ def robot_run(
     }
 
 
-class RequestHandler(BaseHTTPRequestHandler):
+class RequestHandler(SimpleHTTPRequestHandler):
     def __init__(self, request, client_address, server_class):
         self.functions = {
             'robot_run': robot_run
         }
-        super().__init__(request, client_address, server_class)
+        super().__init__(request, client_address, server_class, directory=str(Path(__file__).resolve().parent))
 
     def do_GET(self):
         if self.path.endswith('.html'):
-            path = tmp_dir / self.translate_path(self.path)
+            path = Path(str(tmp_dir) + self.path)
 
             if path.exists():
                 self.send_response(HTTPStatus.OK)
@@ -120,6 +118,8 @@ class RequestHandler(BaseHTTPRequestHandler):
                 self.send_header("Content-Length", str(len(message)))
                 self.end_headers()
                 self.wfile.write(message)
+        elif Path(self.path).suffix in {'.css', '.js', '.woff2'}:
+            super().do_GET()
         else:
             self.send_response(HTTPStatus.OK)
             self.send_header("Access-Control-Allow-Origin", '*')
@@ -153,42 +153,6 @@ class RequestHandler(BaseHTTPRequestHandler):
             return json.loads(data, strict=False)
         else:
             return {}
-
-    def translate_path(self, path):
-        """Translate a /-separated PATH to the local filename syntax.
-
-        Components that mean special things to the local file system
-        (e.g. drive or directory names) are ignored.  (XXX They should
-        probably be diagnosed.)
-
-        source: http.server.SimpleHTTPRequestHandler
-        """
-        # abandon query parameters
-        path = path.split('?',1)[0]
-        path = path.split('#',1)[0]
-        # Don't forget explicit trailing slash when normalizing. Issue17324
-        trailing_slash = path.rstrip().endswith('/')
-
-        try:
-            path = urllib.parse.unquote(path, errors='surrogatepass')
-        except UnicodeDecodeError:
-            path = urllib.parse.unquote(path)
-
-        path = posixpath.normpath(path)
-        words = path.split('/')
-        words = filter(None, words)
-        path = ''
-
-        for word in words:
-            if os.path.dirname(word) or word in (os.curdir, os.pardir):
-                # Ignore components that are not a simple file/directory name
-                continue
-            path = os.path.join(path, word)
-
-        if trailing_slash:
-            path += '/'
-
-        return path
 
 
 class RobotRemoteServer(IProcess, ThreadingHTTPServer):

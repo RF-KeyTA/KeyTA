@@ -45,14 +45,10 @@ def generate_log(rf: dict):
     env.filters['translate'] = translate
     log_template = env.get_template('testcase_log.jinja.html')
     cwd = Path(os.path.realpath(__file__)).parent
-    logo = open(cwd / 'assets' / 'RF_Logo.png', mode='rb').read()
+    logo = open(cwd / 'static' / 'RF_Logo.png', mode='rb').read()
     logo_b64 = base64.b64encode(logo).decode('utf-8')
 
     return log_template.render({
-        "bootstrap": {
-            "css": open(cwd / 'assets' / 'bootstrap' / 'css' / 'bootstrap.min.css').read(),
-            "js": open(cwd / 'assets' / 'bootstrap' / 'js' / 'bootstrap.bundle.min.js').read(),
-        },
         "logo": f"data:image/jpg;base64, {logo_b64}",
         "rf": rf,
         "icon": {
