@@ -2,17 +2,6 @@ from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 
 
-class SystemListFilter(admin.RelatedFieldListFilter):
-    def __init__(self, field, request, params, model, model_admin, field_path):
-        super().__init__(field, request, params, model, model_admin, field_path)
-
-        self.title = _('System')
-
-    @property
-    def include_empty_choice(self):
-        return False
-
-
 class DependentListFilter(admin.RelatedFieldListFilter):
     def __init__(self, field, request, params, model, model_admin, field_path):
         super().__init__(field, request, params, model, model_admin, field_path)
@@ -31,6 +20,17 @@ class DependentListFilter(admin.RelatedFieldListFilter):
                 .filter(**filter)
                 .values_list('id', 'name')
             )
+
+
+class SystemListFilter(admin.RelatedFieldListFilter):
+    def __init__(self, field, request, params, model, model_admin, field_path):
+        super().__init__(field, request, params, model, model_admin, field_path)
+
+        self.title = _('System')
+
+    @property
+    def include_empty_choice(self):
+        return False
 
 
 class WindowListFilter(DependentListFilter):
@@ -63,7 +63,7 @@ class WindowListFilter(DependentListFilter):
 
         for pk_val, val in self.lookup_choices:
             yield {
-                "selected": self.lookup_val == str(pk_val),
+                "selected": str(pk_val) in (self.lookup_val or []),
                 "query_string": changelist.get_query_string(
                     {self.lookup_kwarg: pk_val}, [self.lookup_kwarg_isnull]
                 ),
