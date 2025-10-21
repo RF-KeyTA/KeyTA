@@ -146,10 +146,6 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
 
         return inlines
 
-    def get_protected_objects(self, obj):
-        sequence: Sequence = obj
-        return sequence.uses.filter(execution__isnull=True)
-
     def get_readonly_fields(self, request, obj):
         sequence: Sequence = obj
 

@@ -135,10 +135,6 @@ class ActionAdmin(ActionAdminMixin, CloneModelAdminMixin, WindowKeywordAdmin):
 
         return inlines
 
-    def get_protected_objects(self, obj):
-        action: Action = obj
-        return action.uses.exclude(type=KeywordCallType.KEYWORD_EXECUTION)
-
     def has_add_permission(self, request):
         return self.can_add(request.user, 'action')
 

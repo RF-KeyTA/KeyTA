@@ -26,3 +26,7 @@ class WindowKeywordAdmin(WindowKeywordAdminMixin, KeywordAdmin):
 
     def change_view(self, request, object_id, form_url="", extra_context=None):
         return super().changeform_view(request, object_id, form_url, extra_context)
+
+    def get_protected_objects(self, obj):
+        keyword: WindowKeyword = obj
+        return keyword.uses.filter(execution__isnull=True)
