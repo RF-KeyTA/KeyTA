@@ -312,3 +312,7 @@ div.readonly p img {
 input[type=checkbox][id$=execute] {
     margin-top: 10px;
 }
+
+.table td, .table th {
+    border-top: 0 !important;
+}
