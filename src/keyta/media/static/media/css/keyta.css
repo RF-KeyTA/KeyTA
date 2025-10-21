@@ -276,7 +276,7 @@ div.readonly p img {
 }
 
 .card-body.table-responsive {
-    max-height: 60vh;
+    max-height: 57vh;
     overflow-y: auto;
 }
 
