@@ -31,11 +31,10 @@
     </form>
     <div class="ml-1">
     {% if show_result_count %}
-        <span class="small quiet">
-            {% blocktrans count counter=cl.result_count %}{{ counter }} result{% plural %}{{ counter }} results{% endblocktrans %}
-            (<a href="?{% if cl.is_popup %}_popup=1{% endif %}">
+        <span >
+            <a href="?{% if cl.is_popup %}_popup=1{% endif %}">
                 {% trans "Show all" %}
-            </a>)
+            </a>
         </span>
     {% endif %}
     {% admin_extra_filters cl as extra_filters %}
