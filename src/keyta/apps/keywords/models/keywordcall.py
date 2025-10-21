@@ -286,7 +286,7 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
             super().save(force_insert, force_update, using, update_fields)
 
             if not hasattr(self, 'clone'):
-                if self.to_keyword:
+                if self.to_keyword and not self.testcase:
                     self.update_parameters()
 
                     for return_value in self.to_keyword.return_values.all():
