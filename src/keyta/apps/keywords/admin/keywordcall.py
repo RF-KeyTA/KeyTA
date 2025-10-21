@@ -21,7 +21,7 @@ from ..models.keywordcall import KeywordCallType, TestSetupTeardown
 
 class UpdateIconHtmx:
     def update_icon(self, request, kw_call: KeywordCall):
-        if request.GET.get('user'):
+        if request.GET.get('user') or kw_call.testcase:
             icon = kw_call.get_icon(request.user)
         else:
             icon = kw_call.get_icon()
