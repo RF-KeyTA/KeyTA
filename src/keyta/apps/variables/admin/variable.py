@@ -43,7 +43,7 @@ class VariableAdmin(SortableAdminBase, BaseAdmin):
     def get_list_display(self, request):
         return ['empty'] + super().get_list_display(request)
 
-    @admin.display(description=_(''))
+    @admin.display(description='')
     def empty(self, obj):
         return mark_safe('&nbsp;')
 
