@@ -8,7 +8,6 @@ from model_clone import CloneMixin
 
 from keyta.models.base_model import AbstractBaseModel
 
-from .keyword import Keyword
 from .keywordcall_parameter_source import KeywordCallParameterSource
 
 
@@ -63,7 +62,7 @@ class KeywordParameter(CloneMixin, AbstractBaseModel):
         return self.name
 
     @classmethod
-    def create_arg(cls, keyword: Keyword, name: str, position: int, typedoc: list[str]):
+    def create_arg(cls, keyword, name: str, position: int, typedoc: list[str]):
         kw_param, created = KeywordParameter.objects.update_or_create(
             keyword=keyword,
             position=position,
@@ -76,7 +75,7 @@ class KeywordParameter(CloneMixin, AbstractBaseModel):
         kw_param.set_typedoc(typedoc)
 
     @classmethod
-    def create_kwarg(cls, keyword: Keyword, name: str, default_value: str, position: int, typedoc: list[str]):
+    def create_kwarg(cls, keyword, name: str, default_value: str, position: int, typedoc: list[str]):
         kw_param, created = KeywordParameter.objects.update_or_create(
             keyword=keyword,
             name=name,
@@ -89,7 +88,7 @@ class KeywordParameter(CloneMixin, AbstractBaseModel):
         kw_param.set_typedoc(typedoc)
 
     @classmethod
-    def create_vararg(cls, keyword: Keyword, name: str, position: int, typedoc: list[str]):
+    def create_vararg(cls, keyword, name: str, position: int, typedoc: list[str]):
         kw_param, created = KeywordParameter.objects.update_or_create(
             keyword=keyword,
             position=position,
