@@ -8,8 +8,6 @@ from model_clone import CloneMixin
 
 from keyta.models.base_model import AbstractBaseModel
 
-from .keyword import KeywordType
-
 
 class ReturnValueTypeDoc(TypedDict):
     """
@@ -74,7 +72,7 @@ class KeywordReturnValue(CloneMixin, AbstractBaseModel):
         if not self.pk:
             super().save(force_insert, force_update, using, update_fields)
 
-            if not self.keyword.type in {KeywordType.LIBRARY, KeywordType.RESOURCE}:
+            if not self.keyword.type in {'LIBRARY', 'RESOURCE'}:
                 # Exclude keyword execution calls
                 for kw_call in self.keyword.uses.all().exclude(execution__isnull=False):
                     kw_call.add_return_value(self)
