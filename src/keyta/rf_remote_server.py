@@ -9,6 +9,7 @@ from http import HTTPStatus
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
+from robot.libdoc import libdoc_cli
 from robot.running import TestSuite
 
 from .IProcess import IProcess
@@ -77,9 +78,23 @@ def robot_run(
     )
 
     try:
-        suite = TestSuite.from_file_system(robot_file)
-        suite.to_json(output_dir / 'input.json', indent=4)
-        log = generate_log(RobotLog().simplify_output(output_dir / 'input.json', output_dir / 'output.json'))
+        suite = TestSuite.from_file_system(robot_file).to_dict()
+        keywords = suite['resource']['keywords']
+
+        for import_ in suite['resource']['imports']:
+            import_name = import_['name']
+            libdoc_json = str(tmp_dir / f'{import_name}.json')
+            libdoc_cli([import_name, libdoc_json], exit=False)
+
+            with open(libdoc_json, 'r', encoding='utf-8') as file:
+                libdoc_dict = json.load(file)
+                for keyword in libdoc_dict['keywords']:
+                    keywords.append({
+                        'name': f'{import_name.removesuffix(".resource")}.{keyword["name"]}',
+                        'args': [arg['name'] for arg in keyword['args'] if arg['name']]
+                    })
+
+        log = generate_log(RobotLog().simplify_output(keywords, output_dir / 'output.json'))
         log_path = output_dir / 'simple_log.html'
         write_file_to_disk(log_path, log)
     except:

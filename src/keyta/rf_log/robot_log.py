@@ -126,14 +126,14 @@ class RobotLog:
             "keywords": dict()
         }
 
-    def simplify_output(self, input_json: Path, output_json: Path) -> dict:
-        with open(input_json, encoding='utf-8') as file:
-            input = json.load(file)
-            keywords = input['resource']['keywords']
-            for keyword in keywords:
+    def simplify_output(self, keywords: list, output_json: Path) -> dict:
+        for keyword in keywords:
+            name = keyword['name']
+
+            if '::' in keyword['name']:
                 _, name = keyword['name'].split('::')
 
-                self.keyword_args[name] = [unrobot(arg) for arg in keyword.get('args', [])]
+            self.keyword_args[name] = [unrobot(arg) for arg in keyword.get('args', [])]
 
         with open(output_json, encoding='utf-8') as file:
             output = json.load(file, object_pairs_hook=parse_object)
@@ -225,6 +225,8 @@ class RobotLog:
             default_arg_names = ['Param %s' % i for i in range(1, len(step['args']) + 1)]
 
             for arg_name, arg in zip(self.keyword_args.get(name, default_arg_names), step['args']):
+                arg= arg.removeprefix(f'{arg_name}=')
+
                 if assign:
                     args[arg_name] = assign[arg]
                 else:
