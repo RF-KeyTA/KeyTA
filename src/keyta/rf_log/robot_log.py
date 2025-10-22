@@ -222,14 +222,11 @@ class RobotLog:
 
         if 'args' in step:
             args = {}
-            dict_access = re.compile(r'(\${.*})\[(.*)\]')
             default_arg_names = ['Param %s' % i for i in range(1, len(step['args']) + 1)]
 
             for arg_name, arg in zip(self.keyword_args.get(name, default_arg_names), step['args']):
                 if assign:
-                    if match := re.match(dict_access, arg):
-                        dict_, item = match.group(1), match.group(2)
-                        args[arg_name] = assign[dict_][item]
+                    args[arg_name] = assign[arg]
                 else:
                     if level < 2:
                         args[arg_name] = unrobot(arg)
@@ -273,12 +270,7 @@ class RobotLog:
             if step.get('type') == 'FOR':
                 for iter in step['body']:
                     for step in iter['body']:
-                        assign = {
-                            key: json.loads(value.replace("'", '"'))
-                            for key, value in iter['assign'].items()
-                            if value
-                        }
-                        simple_step = self.simplify_step(step, test_id, assign=assign)
+                        simple_step = self.simplify_step(step, test_id, assign=iter['assign'])
                         step_id = simple_step['id']
                         result['steps'].append(step_id)
                         self.items['keywords'][step_id] = simple_step
