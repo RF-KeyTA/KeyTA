@@ -82,6 +82,7 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
     execution_state = models.CharField(
         choices=ExecutionState.choices,
         default=ExecutionState.EXECUTE,
+        max_length=255,
         verbose_name=_('Ausf.')
     )
     index = models.PositiveSmallIntegerField(
