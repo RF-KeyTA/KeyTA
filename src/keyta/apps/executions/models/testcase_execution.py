@@ -122,7 +122,7 @@ class TestCaseExecution(Execution):
             if step.has_no_kw_call():
                 return ValidationError.INCOMPLETE_STEP
 
-            if step.has_empty_arg():
+            if step.has_empty_arg(user):
                 return ValidationError.INCOMPLETE_STEP_PARAMS
 
         test_setup: KeywordCall = self.test_setup()
