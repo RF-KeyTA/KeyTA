@@ -36,6 +36,13 @@ class KeywordCallType(models.TextChoices):
     TEST_STEP = 'TEST_STEP', _('Testschritt')
 
 
+class ExecutionState(models.TextChoices):
+    EXECUTE = 'EXECUTE', '☑ ' + _('Ausführen')
+    DO_NOT_EXECUTE = 'DO_NOT_EXECUTE', '◻ ' + _('Überspringen')
+    BEGIN_EXECUTION = 'BEGIN_EXECUTION', '🔽 ' + _('Ausführen ab')
+    END_EXECUTION = 'END_EXECUTION', '🔼 ' + _('Ausführen bis')
+
+
 class KeywordCall(CloneMixin, AbstractBaseModel):
     from_keyword = models.ForeignKey(
         'keywords.Keyword',
@@ -72,9 +79,10 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
         default=True,
         verbose_name=''
     )
-    execute = models.BooleanField(
-        default=False,
-        verbose_name='▶'
+    execution_state = models.CharField(
+        choices=ExecutionState.choices,
+        default=ExecutionState.EXECUTE,
+        verbose_name=_('Ausf.')
     )
     index = models.PositiveSmallIntegerField(
         default=0,

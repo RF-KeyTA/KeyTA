@@ -9,6 +9,8 @@ from keyta.models.base_model import AbstractBaseModel
 from keyta.models.documentation_mixin import DocumentationMixin
 from keyta.rf_export.keywords import RFKeyword
 
+from .keywordcall import ExecutionState
+
 
 class KeywordType(models.TextChoices):
     LIBRARY = 'LIBRARY', _('Schlüsselwort aus Bibliothek')
@@ -107,12 +109,21 @@ class Keyword(DocumentationMixin, AbstractBaseModel):
         kwargs = self.parameters.kwargs()
         return_values = self.return_values.all()
         execute_from = 0
+        execute_until = self.calls.count()
 
         if in_execution:
-            if execute_step := self.calls.filter(execute=True).first():
+            if execute_step := self.calls.filter(execution_state=ExecutionState.BEGIN_EXECUTION).first():
                 execute_from = execute_step.index
 
-        steps = self.calls.filter(index__gte=execute_from).exclude(Q(to_keyword__isnull=True) | Q(enabled=False))
+            if execute_step := self.calls.filter(execution_state=ExecutionState.END_EXECUTION).first():
+                execute_until = execute_step.index
+
+        steps = (
+            self.calls
+            .filter(index__gte=execute_from)
+            .filter(index__lte=execute_until)
+            .exclude(execution_state=ExecutionState.DO_NOT_EXECUTE)
+        )
 
         return {
             'name': self.id_name,

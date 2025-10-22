@@ -312,3 +312,21 @@ div.readonly p img {
 input[type=checkbox][id$=execute] {
     margin-top: 10px;
 }
+
+select[id$='execution_state'] + .select2.select2-container {
+    min-width: 45px;
+}
+
+select[id$='execution_state'] + .select2.select2-container .select2-selection__arrow {
+    display: none;
+}
+
+select[id$='execution_state'] + .select2-container .select2-selection--single .select2-selection__rendered {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+select[id$='execution_state'] + .select2-container .select2-selection--single {
+    background-color: transparent;
+    border: 0 !important;
+}

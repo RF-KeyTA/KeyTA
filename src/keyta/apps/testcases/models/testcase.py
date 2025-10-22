@@ -9,6 +9,7 @@ from django.utils.translation import gettext_lazy as _
 from model_clone import CloneMixin
 
 from keyta.apps.executions.models import Execution
+from keyta.apps.keywords.models.keywordcall import ExecutionState
 from keyta.apps.libraries.models import Library, LibraryImport
 from keyta.models.base_model import AbstractBaseModel
 from keyta.models.documentation_mixin import DocumentationMixin
@@ -85,12 +86,21 @@ class TestCase(DocumentationMixin, CloneMixin, AbstractBaseModel):
 
     def to_robot(self, get_variable_value, user: AbstractUser, in_execution=False) -> RFTestCase:
         execute_from = 0
+        execute_until = self.steps.count()
 
         if in_execution:
-            if execute_step := self.steps.filter(execute=True).first():
+            if execute_step := self.steps.filter(execution_state=ExecutionState.BEGIN_EXECUTION).first():
                 execute_from = execute_step.index
 
-        test_steps = self.steps.filter(index__gte=execute_from).exclude(Q(to_keyword__isnull=True) | Q(enabled=False))
+            if execute_step := self.steps.filter(execution_state=ExecutionState.END_EXECUTION).first():
+                execute_until = execute_step.index
+
+        test_steps = (
+            self.steps
+            .filter(index__gte=execute_from)
+            .filter(index__lte=execute_until)
+            .exclude(Q(to_keyword__isnull=True) | Q(execution_state=ExecutionState.DO_NOT_EXECUTE))
+        )
 
         return {
             'name': self.name,

@@ -1,6 +1,6 @@
+from django import forms
 from django.contrib import admin
 from django.db.models import Q
-from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 
 from keyta.admin.base_inline import SortableTabularInline
@@ -8,6 +8,7 @@ from keyta.admin.field_delete_related_instance import DeleteRelatedField
 from keyta.apps.keywords.admin.field_keywordcall_values import KeywordCallValuesField
 from keyta.apps.keywords.forms import StepsForm
 from keyta.apps.keywords.models import Keyword, KeywordType
+from keyta.apps.keywords.models.keywordcall import ExecutionState
 from keyta.apps.windows.models import Window
 from keyta.widgets import ModelSelect2AdminWidget
 
@@ -27,7 +28,7 @@ class TestStepsInline(
 ):
     model = TestStep
     fk_name = 'testcase'
-    fields = ['test_step_url', 'execute', 'window', 'to_keyword']
+    fields = ['test_step_url', 'execution_state', 'window', 'to_keyword']
     readonly_fields = ['test_step_url']
     extra = 0 # necessary for saving, since to_keyword is not nullable and is null in an extra
     form = StepsForm
@@ -39,8 +40,14 @@ class TestStepsInline(
         testcase_id = request.resolver_match.kwargs['object_id']
         testcase = TestCase.objects.get(id=testcase_id)
 
-        if db_field.name == 'execute':
-            field.label = mark_safe('<span title="%s">▶</span>' % _('Ausführen ab'))
+        class ExecutionStateSelect(forms.Select):
+            template_name = "select_execution_state.html"
+            option_template_name = "select_option_execution_state.html"
+
+        if db_field.name == 'execution_state':
+            field.widget = ExecutionStateSelect(
+                choices=ExecutionState.choices
+            )
 
         if db_field.name == 'to_keyword':
             field.label = _('Sequenz')
