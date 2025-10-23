@@ -22,7 +22,9 @@
     });
 
     $(document).ready(function () {
-        $('a:contains("{% trans "Schritte" %}")').click()
+        if (!document.location.hash) {
+           $('a:contains("{% trans "Schritte" %}")').click()
+        }
     })
 </script>
 {% endblock %}
