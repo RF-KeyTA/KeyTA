@@ -423,7 +423,12 @@
                                 )
                             }
                             else {
-                                $(save_button).click()
+                                if (event.target.id.endsWith('execution_state')) {
+                                    $.post(url, $('form').serialize() + "&_continue=")
+                                }
+                                else {
+                                    $(save_button).click()
+                                }
                             }
                         })
                     }
