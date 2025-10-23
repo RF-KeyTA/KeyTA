@@ -118,8 +118,26 @@ class TestCaseExecution(Execution):
         if not self.testcase.steps.count():
             return ValidationError.NO_STEPS
 
+        first_step_index = 0
+        first_step: TestStep = self.testcase.steps.filter(execution_state=ExecutionState.BEGIN_EXECUTION).first()
+        last_step_index = self.testcase.steps.count()
+        last_step: TestStep = self.testcase.steps.filter(execution_state=ExecutionState.END_EXECUTION).first()
+
+        if first_step:
+            first_step_index = first_step.index
+
+        if last_step:
+            last_step_index = last_step.index
+
+        steps = (
+            self.testcase.steps
+            .exclude(execution_state=ExecutionState.DO_NOT_EXECUTE)
+            .filter(index__gte=first_step_index)
+            .filter(index__lte=last_step_index)
+        )
+
         step: TestStep
-        for step in self.testcase.steps.exclude(execution_state=ExecutionState.DO_NOT_EXECUTE):
+        for step in steps:
             if step.has_no_kw_call():
                 return ValidationError.INCOMPLETE_STEP
 
