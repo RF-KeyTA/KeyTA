@@ -10,6 +10,7 @@ from keyta.apps.keywords.models import (
     KeywordCallParameter,
     KeywordCallParameterSource
 )
+from keyta.apps.keywords.models.keywordcall import ExecutionState
 from keyta.apps.testcases.models import TestStep
 from keyta.apps.variables.models import Variable
 from keyta.rf_export.testsuite import RFTestSuite
@@ -118,7 +119,7 @@ class TestCaseExecution(Execution):
             return ValidationError.NO_STEPS
 
         step: TestStep
-        for step in self.testcase.steps.all():
+        for step in self.testcase.steps.exclude(execution_state=ExecutionState.DO_NOT_EXECUTE):
             if step.has_no_kw_call():
                 return ValidationError.INCOMPLETE_STEP
 
