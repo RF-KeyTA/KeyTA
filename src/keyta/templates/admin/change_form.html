@@ -410,6 +410,16 @@
                         }
                     }
                     else {
+                        const first_select = selects.first()
+                        const first_select_id = first_select.attr('id')
+                        if (first_select_id && first_select_id.endsWith('execution_state')) {
+                            first_select.on('select2:selecting', function (event) {
+                                if ($(event.target).val() === 'BEGIN_EXECUTION') {
+                                    $('td.field-settings a').first().click()
+                                }
+                            })
+                        }
+
                         selects.on('change', function(event) {
                             const url = window.location.href
 
@@ -425,6 +435,10 @@
                             else {
                                 if (event.target.id.endsWith('execution_state')) {
                                     $.post(url, $('form').serialize() + "&_continue=")
+
+                                    if ($(event.target).val() === 'BEGIN_EXECUTION') {
+                                        $('td.field-settings a').first().click()
+                                    }
                                 }
                                 else {
                                     $(save_button).click()
