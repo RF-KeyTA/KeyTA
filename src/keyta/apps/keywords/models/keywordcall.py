@@ -37,10 +37,10 @@ class KeywordCallType(models.TextChoices):
 
 
 class ExecutionState(models.TextChoices):
-    EXECUTE = 'EXECUTE', '☑ ' + _('Ausführen')
-    DO_NOT_EXECUTE = 'DO_NOT_EXECUTE', '◻ ' + _('Überspringen')
-    BEGIN_EXECUTION = 'BEGIN_EXECUTION', '🔽 ' + _('Ausführen ab')
-    END_EXECUTION = 'END_EXECUTION', '🔼 ' + _('Ausführen bis')
+    EXECUTE = 'EXECUTE', 'EXECUTE'
+    DO_NOT_EXECUTE = 'DO_NOT_EXECUTE', 'DO_NOT_EXECUTE'
+    BEGIN_EXECUTION = 'BEGIN_EXECUTION', 'BEGIN_EXECUTION'
+    END_EXECUTION = 'END_EXECUTION', 'END_EXECUTION'
 
 
 class KeywordCall(CloneMixin, AbstractBaseModel):

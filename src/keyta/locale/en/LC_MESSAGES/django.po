@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-22 18:06+0200\n"
+"POT-Creation-Date: 2025-10-23 10:14+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -69,7 +69,7 @@ msgstr "Window-independent"
 #: .\admin\list_filters.py:43 .\apps\actions\admin\windows_inline.py:20
 #: .\apps\actions\admin\windows_inline.py:30
 #: .\apps\keywords\models\keyword.py:65
-#: .\apps\keywords\models\keywordcall.py:106
+#: .\apps\keywords\models\keywordcall.py:108
 #: .\apps\resources\admin\resource_import.py:20
 #: .\apps\sequences\admin\sequence.py:166
 #: .\apps\variables\admin\windows_inline.py:17
@@ -83,7 +83,7 @@ msgid "All"
 msgstr ""
 
 #: .\apps\actions\admin\action.py:84 .\apps\actions\models\action_step.py:29
-#: .\apps\keywords\models\keywordcall.py:430
+#: .\apps\keywords\models\keywordcall.py:432
 #: .\apps\sequences\admin\sequence.py:89
 #: .\apps\sequences\models\sequence_step.py:10
 #: .\apps\testcases\models\test_step.py:29
@@ -186,7 +186,7 @@ msgid "Aktion"
 msgstr "Action"
 
 #: .\apps\actions\models\action_step.py:28
-#: .\apps\keywords\models\keywordcall.py:429
+#: .\apps\keywords\models\keywordcall.py:431
 #: .\apps\sequences\models\sequence_step.py:9
 #: .\apps\testcases\models\test_step.py:28
 msgid "Schritt"
@@ -241,12 +241,12 @@ msgid "Nachbereitung"
 msgstr "Teardown"
 
 #: .\apps\executions\admin\testcase_execution.py:11
-#: .\apps\keywords\models\keywordcall.py:24
+#: .\apps\keywords\models\keywordcall.py:25
 msgid "Testvorbereitung"
 msgstr "Test Setup"
 
 #: .\apps\executions\admin\testcase_execution.py:15
-#: .\apps\keywords\models\keywordcall.py:25
+#: .\apps\keywords\models\keywordcall.py:26
 msgid "Testnachbereitung"
 msgstr "Test Teardown"
 
@@ -295,7 +295,7 @@ msgid "Die Schritte sind leer."
 msgstr "The steps are incomplete."
 
 #: .\apps\executions\models\execution.py:29
-#: .\apps\keywords\models\keywordcall.py:35
+#: .\apps\keywords\models\keywordcall.py:36
 msgid "Schlüsselwort Ausführung"
 msgstr "Keyword Execution"
 
@@ -411,7 +411,7 @@ msgstr ""
 #: .\apps\keywords\admin\keywordcall_return_value_inline.py:39
 #: .\apps\keywords\models\keyword_return_value.py:33
 #: .\apps\keywords\models\keyword_return_value.py:87
-#: .\apps\keywords\models\keywordcall.py:142
+#: .\apps\keywords\models\keywordcall.py:144
 #: .\apps\keywords\models\keywordcall_return_value.py:84
 msgid "Rückgabewert"
 msgstr "Return Value"
@@ -519,41 +519,23 @@ msgstr ""
 msgid "Standardwert"
 msgstr "Default Value"
 
-#: .\apps\keywords\models\keywordcall.py:29
+#: .\apps\keywords\models\keywordcall.py:30
 msgid "Suitevorbereitung"
 msgstr "Suite Setup"
 
-#: .\apps\keywords\models\keywordcall.py:30
+#: .\apps\keywords\models\keywordcall.py:31
 msgid "Suitenachbereitung"
 msgstr "Suite Teardown"
 
-#: .\apps\keywords\models\keywordcall.py:34
+#: .\apps\keywords\models\keywordcall.py:35
 msgid "Schlüsselwort-Aufruf"
 msgstr "Keyword Call"
 
-#: .\apps\keywords\models\keywordcall.py:36
+#: .\apps\keywords\models\keywordcall.py:37
 msgid "Testschritt"
 msgstr "Test Step"
 
-#: .\apps\keywords\models\keywordcall.py:40
-msgid "Ausführen"
-msgstr "Execute"
-
-#: .\apps\keywords\models\keywordcall.py:41
-msgid "Überspringen"
-msgstr "Skip"
-
-#: .\apps\keywords\models\keywordcall.py:42
-msgid "Ausführen ab"
-msgstr "Execute from this step"
-
-#: .\apps\keywords\models\keywordcall.py:43
-#, fuzzy
-#| msgid "Ausführen ab"
-msgid "Ausführen bis"
-msgstr "Execute until this step"
-
-#: .\apps\keywords\models\keywordcall.py:85
+#: .\apps\keywords\models\keywordcall.py:87
 msgid "Ausf."
 msgstr "Exec."
 
@@ -980,7 +962,7 @@ msgstr ""
 msgid "Please correct the errors below."
 msgstr ""
 
-#: .\templates\admin\change_form.html:346
+#: .\templates\admin\change_form.html:345
 msgid "Sicher?"
 msgstr "Are you sure?"
 
@@ -1071,6 +1053,26 @@ msgstr ""
 #: .\templates\admin\search_form.html:36
 msgid "Show all"
 msgstr ""
+
+#: .\templates\select_execution_state.html:23
+#: .\templates\select_execution_state.html:42
+msgid "Ausführen"
+msgstr "Execute"
+
+#: .\templates\select_execution_state.html:24
+#: .\templates\select_execution_state.html:43
+msgid "Überspringen"
+msgstr "Skip"
+
+#: .\templates\select_execution_state.html:25
+#: .\templates\select_execution_state.html:44
+msgid "Ausführen ab"
+msgstr "Execute from this step"
+
+#: .\templates\select_execution_state.html:26
+#: .\templates\select_execution_state.html:45
+msgid "Ausführen bis"
+msgstr "Execute until this step"
 
 #: .\widgets.py:319
 msgid "Klicke auf das Plus-Symbol"
