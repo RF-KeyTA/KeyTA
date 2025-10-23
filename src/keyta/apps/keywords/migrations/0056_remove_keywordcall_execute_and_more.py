@@ -17,6 +17,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='keywordcall',
             name='execution_state',
-            field=models.CharField(choices=[('EXECUTE', '☑ Execute'), ('DO_NOT_EXECUTE', '◻ Skip'), ('BEGIN_EXECUTION', '🔽 Execute from this step'), ('END_EXECUTION', '🔼 Ausführen bis')], default='EXECUTE', verbose_name='Ausf.'),
+            field=models.CharField(choices=[('EXECUTE', 'EXECUTE'), ('DO_NOT_EXECUTE', 'DO_NOT_EXECUTE'), ('BEGIN_EXECUTION', 'BEGIN_EXECUTION'), ('END_EXECUTION', 'END_EXECUTION')], default='EXECUTE', max_length=255, verbose_name='Ausf.'),
         ),
     ]
