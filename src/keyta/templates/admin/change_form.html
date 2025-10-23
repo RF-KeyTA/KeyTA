@@ -349,30 +349,48 @@
                         }
                     })
 
-                    if (selects.length === 2) {
+                    if (selects.length === 3) {
                         const first_select = django.jQuery(selects[0])
                         const second_select = django.jQuery(selects[1])
+                        const third_select = django.jQuery(selects[2])
 
-                        first_select.on('change', function () {
+                        const first_select_id = first_select.attr('id')
+                        if (first_select_id && first_select_id.endsWith('execution_state')) {
+                            first_select.on('select2:selecting', function (event) {
+                                if ($(event.target).val() === 'BEGIN_EXECUTION') {
+                                    $('td.field-settings a').first().click()
+                                }
+                            })
+
+                            first_select.on('change', function (event) {
+                                $.post(url, $('form').serialize() + "&_continue=")
+
+                                if ($(event.target).val() === 'BEGIN_EXECUTION') {
+                                    $('td.field-settings a').first().click()
+                                }
+                            })
+                        }
+
+                        second_select.on('change', function () {
                             $(save_button).click()
                         })
 
                         if (index === 0) {
-                            second_select.on('change', function () {
+                            third_select.on('change', function () {
                                 $(save_button).click()
                             })
                         }
                         else {
-                            second_select.on('change', function () {
-                                const related_widget_link = second_select.siblings('a').first()
-                                const test_step_url = second_select.closest('tr').find('td.field-test_step_url').text().trim()
+                            third_select.on('change', function () {
+                                const related_widget_link = third_select.siblings('a').first()
+                                const test_step_url = third_select.closest('tr').find('td.field-test_step_url').text().trim()
 
-                                if (second_select.val()) {
+                                if (third_select.val()) {
                                     $.post(
                                         window.location.href,
                                         $('form').serialize() + "&_continue=",
                                         function () {
-                                            second_select.closest('tr').find('td.field-values a').css('visibility', 'visible')
+                                            third_select.closest('tr').find('td.field-values a').css('visibility', 'visible')
                                             $.get(
                                                 test_step_url + '?step-changed',
                                                 function (res) {
@@ -383,7 +401,7 @@
                                             $.get(
                                                 test_step_url + '?update-icon',
                                                 function (res) {
-                                                    second_select.closest('tr').find('td.field-values a > i').replaceWith(res);
+                                                    third_select.closest('tr').find('td.field-values a > i').replaceWith(res);
                                                     presentRelatedObjectModal()
                                                 }
                                             )
@@ -399,7 +417,7 @@
                                                 test_step_url + '?step-empty',
                                                 function (res) {
                                                     related_widget_link.replaceWith(res);
-                                                    second_select.closest('tr').find('td.field-values a').css('visibility', 'hidden')
+                                                    third_select.closest('tr').find('td.field-values a').css('visibility', 'hidden')
                                                     presentRelatedObjectModal()
                                                 }
                                             )
@@ -410,16 +428,6 @@
                         }
                     }
                     else {
-                        const first_select = selects.first()
-                        const first_select_id = first_select.attr('id')
-                        if (first_select_id && first_select_id.endsWith('execution_state')) {
-                            first_select.on('select2:selecting', function (event) {
-                                if ($(event.target).val() === 'BEGIN_EXECUTION') {
-                                    $('td.field-settings a').first().click()
-                                }
-                            })
-                        }
-
                         selects.on('change', function(event) {
                             const url = window.location.href
 
@@ -433,16 +441,7 @@
                                 )
                             }
                             else {
-                                if (event.target.id.endsWith('execution_state')) {
-                                    $.post(url, $('form').serialize() + "&_continue=")
-
-                                    if ($(event.target).val() === 'BEGIN_EXECUTION') {
-                                        $('td.field-settings a').first().click()
-                                    }
-                                }
-                                else {
-                                    $(save_button).click()
-                                }
+                                $(save_button).click()
                             }
                         })
                     }
