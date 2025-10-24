@@ -14,6 +14,7 @@ from keyta.admin.base_admin import (
 from keyta.admin.field_documentation import DocumentationField
 from keyta.admin.list_filters import SystemListFilter
 from keyta.apps.resources.models import Resource
+from keyta.apps.systems.models import System
 from keyta.forms.baseform import form_with_select
 from keyta.widgets import (
     CheckboxSelectMultipleSystems,
@@ -86,6 +87,9 @@ class WindowAdmin(DocumentationField, BaseAdmin):
 
         return super().change_view(request, object_id, form_url, extra_context)
 
+    def first_system(self, request):
+        return System.objects.first()
+
     def formfield_for_dbfield(self, db_field, request, **kwargs):
         field = super().formfield_for_dbfield(db_field, request, **kwargs)
 
@@ -94,6 +98,7 @@ class WindowAdmin(DocumentationField, BaseAdmin):
                 widget=CheckboxSelectMultipleSystems,
                 queryset=field.queryset
             )
+            field.initial = self.first_system(request)
             field.label = _('Systeme')
 
             if window_id := request.resolver_match.kwargs.get('object_id'):

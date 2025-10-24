@@ -9,6 +9,7 @@ from keyta.admin.field_documentation import DocumentationField
 from keyta.admin.list_filters import SystemListFilter
 from keyta.apps.executions.admin import ExecutionInline
 from keyta.apps.executions.models import TestCaseExecution
+from keyta.apps.systems.models import System
 from keyta.widgets import CheckboxSelectMultipleSystems
 
 from ..models import TestCase
@@ -38,6 +39,9 @@ class BaseTestCaseAdmin(DocumentationField, CloneModelAdminMixin, SortableAdminB
         LocalExecution
     ]
 
+    def first_system(self, request):
+        return System.objects.first()
+
     def formfield_for_dbfield(self, db_field, request, **kwargs):
         field = super().formfield_for_dbfield(db_field, request, **kwargs)
 
@@ -46,6 +50,7 @@ class BaseTestCaseAdmin(DocumentationField, CloneModelAdminMixin, SortableAdminB
                 widget=CheckboxSelectMultipleSystems,
                 queryset=field.queryset
             )
+            field.initial = self.first_system(request)
             field.label = _('Systeme')
 
             if testcase_id := request.resolver_match.kwargs.get('object_id'):
