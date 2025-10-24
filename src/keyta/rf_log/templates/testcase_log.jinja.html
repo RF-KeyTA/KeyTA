@@ -12,6 +12,21 @@
             color: #03224c;
         }
 
+        .no-accordion-button {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: var(--bs-accordion-btn-padding-y) var(--bs-accordion-btn-padding-x);
+            font-size: 1rem;
+            color: var(--bs-accordion-btn-color);
+            text-align: left;
+            background-color: #fff;
+            border: 0;
+            border-radius: 0;
+            overflow-anchor: none;
+        }
+
         .table {
             --bs-table-bg: none !important;
         }
@@ -40,8 +55,9 @@
                                 <div class="accordion-item">
                                     <h2 class="accordion-header" id="testcase-{{ loop.index }}">
                                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#testcase-{{ loop.index }}-steps" aria-expanded="false" aria-controls="testcase-{{ loop.index }}-steps">
-                                            <a class="nav-link" data-bs-toggle="list" href="#{{ testcase.id }}">{{ icon.testcase }} {{ testcase.name }}
-                                                <span class="badge {% if testcase.status == 'FAIL' %}text-bg-danger{% elif testcase.status == 'PASS' %}text-bg-success{% endif %}">{{ testcase.status }}</span>
+                                            <span class="badge {% if testcase.status == 'FAIL' %}text-bg-danger{% elif testcase.status == 'PASS' %}text-bg-success{% endif %}">{{ testcase.status }}</span>
+                                            <a class="nav-link" data-bs-toggle="list" href="#{{ testcase.id }}">
+                                                {{ icon.testcase }} {{ testcase.name }}
                                             </a>
                                         </button>
                                     </h2>
@@ -50,12 +66,12 @@
                                             <div class="accordion accordion-flush" id="testSteps">
                                             {% for step_id in testcase.steps %}
                                                 {% set step = rf.keywords[step_id] %}
-
                                                 <div class="accordion-item">
                                                     <h2 class="accordion-header" id="teststep-{{ loop.index }}">
                                                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#testStep-{{ loop.index }}-substeps" aria-expanded="true" aria-controls="testStep-{{ loop.index }}-substeps">
-                                                            <a class="nav-link ms-3" data-bs-toggle="list" href="#{{ step_id }}">{% if step.kind == 'ACTION' %}{{ icon.action }}{% elif step.kind == 'SEQUENCE'%}{{ icon.sequence }}{% endif %} {{ step.name }}
-                                                                <span class="badge {% if step.status == 'FAIL' %}text-bg-danger{% elif step.status == 'PASS' %}text-bg-success{% elif step.status == 'NOT RUN' %}text-bg-info{% endif %}">{{ step.status }}</span>
+                                                            <span class="badge {% if step.status == 'FAIL' %}text-bg-danger{% elif step.status == 'PASS' %}text-bg-success{% elif step.status == 'NOT RUN' %}text-bg-info{% endif %}">{{ step.status }}</span>
+                                                            <a class="nav-link" data-bs-toggle="list" href="#{{ step_id }}">
+                                                                {% if step.kind == 'ACTION' %}{{ icon.action }}{% elif step.kind == 'SEQUENCE'%}{{ icon.sequence }}{% endif %} {{ step.name }}
                                                             </a>
                                                         </button>
                                                     </h2>
@@ -64,9 +80,12 @@
                                                         {% for substep_id in step.steps %}
                                                             {% set substep = rf.keywords[substep_id] %}
                                                             {% if substep.kind == 'ACTION' or substep.kind == 'SEQUENCE' %}
-                                                            <a class="nav-link ms-5" data-bs-toggle="list" href="#{{ substep_id }}">{% if substep.kind == 'ACTION' %}{{ icon.action }}{% elif substep.kind == 'SEQUENCE'%}{{ icon.sequence }}{% endif %} {{ substep.name }}
+                                                            <button class="no-accordion-button">
                                                                 <span class="badge {% if substep.status == 'FAIL' %}text-bg-danger{% elif substep.status == 'PASS' %}text-bg-success{% elif substep.status == 'NOT RUN' %}text-bg-info{% endif %}">{{ substep.status }}</span>
-                                                            </a>
+                                                                <a class="nav-link" data-bs-toggle="list" href="#{{ substep_id }}">
+                                                                    {% if substep.kind == 'ACTION' %}{{ icon.action }}{% elif substep.kind == 'SEQUENCE'%}{{ icon.sequence }}{% endif %} {{ substep.name }}
+                                                                </a>
+                                                            </button>
                                                             {% endif %}
                                                         {% endfor %}
                                                         </div>
