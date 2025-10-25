@@ -23,6 +23,7 @@ from django.urls import path, include
 
 urlpatterns = [
     path('select2/', include("django_select2.urls")),
+    path('taggit/', include('taggit_selectize.urls')),
     path('tinymce/', include('tinymce.urls')),
     path('csrf_token', lambda req: HttpResponse(get_token(req))),
     path('', admin.site.urls),

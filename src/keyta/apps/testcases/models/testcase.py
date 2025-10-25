@@ -7,6 +7,7 @@ from django.db.models.functions import Lower
 from django.utils.translation import gettext_lazy as _
 
 from model_clone import CloneMixin
+from taggit_selectize.managers import TaggableManager
 
 from keyta.apps.executions.models import Execution
 from keyta.apps.keywords.models.keywordcall import ExecutionState
@@ -31,6 +32,7 @@ class TestCase(DocumentationMixin, CloneMixin, AbstractBaseModel):
         related_name='testcases',
         verbose_name=_('Systeme')
     )
+    tags = TaggableManager()
 
     _clone_linked_m2m_fields = ['systems']
     _clone_m2o_or_o2m_fields = ['steps']

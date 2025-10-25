@@ -1,3 +1,7 @@
+from django.contrib import admin
+from django.contrib.admin.options import IncorrectLookupParameters
+from django.core.exceptions import ValidationError
+from django.db.models import Count, Q
 from django.forms import ModelMultipleChoiceField
 from django.utils.translation import gettext_lazy as _
 
@@ -20,17 +24,48 @@ class LocalExecution(ExecutionInline):
     model = TestCaseExecution
 
 
+class TagFilter(admin.RelatedFieldListFilter):
+    template = 'tag_filter.html'
+
+    @property
+    def include_empty_choice(self):
+        return False
+
+    def queryset(self, request, queryset):
+        try:
+            if self.lookup_val_isnull:
+                return queryset.filter(**{self.lookup_kwarg_isnull: True})
+
+            choices = self.lookup_val
+            if not choices:
+                return queryset
+
+            choice_len = len(choices)
+
+            queryset = queryset.alias(
+                nmatch=Count(self.field_path, filter=Q(**{'tags__id__in': choices}), distinct=True)
+            ).filter(nmatch=choice_len)
+
+            return queryset
+
+        except (ValueError, ValidationError) as e:
+            raise IncorrectLookupParameters(e)
+
+
 class BaseTestCaseAdmin(DocumentationField, CloneModelAdminMixin, SortableAdminBase, BaseAdmin):
+    change_list_template = 'testcase_change_list.html'
     list_display = ['name', 'description']
     list_display_links = ['name']
     list_filter = [
         ('systems', SystemListFilter),
+        ('tags', TagFilter)
     ]
     search_fields = ['name']
     search_help_text = _('Name')
 
     fields = [
         'systems',
+        'tags',
         'name',
         'description',
     ]

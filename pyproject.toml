@@ -15,11 +15,13 @@ dependencies = [
     "django-jazzmin~=3.0.0",
     "django-nonrelated-inlines~=0.2",
     "django-select2~=8.4.0",
+    "django-taggit~=6.1.0",
     "django-tinymce~=4.1.0",
     "Jinja2~=3.1.0",
     "Pillow~=11.2.1",
     "pystray~=0.19.0",
-    "robotframework>=7"
+    "robotframework>=7",
+    "taggit-selectize~=2.11.0"
 ]
 requires-python = ">=3.10"
 

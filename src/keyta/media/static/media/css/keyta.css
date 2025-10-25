@@ -330,3 +330,8 @@ select[id$='execution_state'] + .select2-container .select2-selection--single {
     background-color: transparent;
     border: 0 !important;
 }
+
+select[data-name="tags"] + .select2-container .select2-search--inline .select2-search__field {
+    height: 25px !important;
+    padding: 2px !important;
+}
