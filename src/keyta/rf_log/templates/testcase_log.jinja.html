@@ -61,7 +61,7 @@
                                             </a>
                                         </button>
                                     </h2>
-                                    <div id="testcase-{{ loop.index }}-steps" class="accordion-collapse collapse" aria-labelledby="testcase-{{ loop.index }}" data-bs-parent="#testCases">
+                                    <div id="testcase-{{ loop.index }}-steps" class="accordion-collapse collapse" aria-labelledby="testcase-{{ loop.index }}">
                                         <div class="accordion-body">
                                             <div class="accordion accordion-flush" id="testSteps">
                                             {% for step_id in testcase.steps %}
@@ -75,7 +75,7 @@
                                                             </a>
                                                         </button>
                                                     </h2>
-                                                    <div id="testStep-{{ loop.index }}-substeps" class="accordion-collapse collapse" aria-labelledby="teststep-{{ loop.index }}" data-bs-parent="#testSteps">
+                                                    <div id="testStep-{{ loop.index }}-substeps" class="accordion-collapse collapse" aria-labelledby="teststep-{{ loop.index }}">
                                                         <div class="accordion-body">
                                                         {% for substep_id in step.steps %}
                                                             {% set substep = rf.keywords[substep_id] %}
