@@ -68,7 +68,7 @@
                                                 {% set step = rf.keywords[step_id] %}
                                                 <div class="accordion-item">
                                                     <h2 class="accordion-header" id="teststep-{{ loop.index }}">
-                                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#testStep-{{ loop.index }}-substeps" aria-expanded="true" aria-controls="testStep-{{ loop.index }}-substeps">
+                                                        <button class="{% if step.kind == 'ACTION' %}no-accordion-button{% else %}accordion-button{% endif %} collapsed" type="button" {% if not step.kind == 'ACTION' %}data-bs-toggle="collapse"{% endif %} data-bs-target="#testStep-{{ loop.index }}-substeps" aria-expanded="true" aria-controls="testStep-{{ loop.index }}-substeps">
                                                             <span class="badge {% if step.status == 'FAIL' %}text-bg-danger{% elif step.status == 'PASS' %}text-bg-success{% elif step.status == 'NOT RUN' %}text-bg-info{% endif %}">{{ step.status }}</span>
                                                             <a class="nav-link" data-bs-toggle="list" href="#{{ step_id }}">
                                                                 {% if step.kind == 'ACTION' %}{{ icon.action }}{% elif step.kind == 'SEQUENCE'%}{{ icon.sequence }}{% endif %} {{ step.name }}
