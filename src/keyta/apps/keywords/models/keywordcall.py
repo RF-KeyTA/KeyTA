@@ -149,6 +149,19 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
                 kw_call_return_value=return_value.kw_call_return_value
             )
 
+    def delete(self, using=None, keep_parents=False):
+        super().delete(using, keep_parents)
+
+        if self.from_keyword:
+            steps = self.from_keyword.calls.all()
+
+        if self.testcase:
+            steps = self.testcase.steps.all()
+
+        for index, step in enumerate(steps, start=1):
+            step.index = index
+            step.save()
+
     def delete_conditions(self):
         condition: KeywordCallCondition
         for condition in self.conditions.all():
