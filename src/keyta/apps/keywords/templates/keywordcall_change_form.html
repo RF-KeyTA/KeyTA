@@ -85,5 +85,21 @@
 </script>
 {% endblock %}
 
+{% block formset_added_disable_selects %}
+<script type="text/javascript">
+    $(document).ready(function () {
+        document.addEventListener('formset:added', function(event) {
+            const row = django.jQuery(event.target)
+            const selects = django.jQuery('select', row)
+
+            if (selects.length === 3) {
+                $(selects[1]).prop('disabled', true)
+                $(selects[2]).prop('disabled', true)
+            }
+        })
+    })
+</script>
+{% endblock %}
+
 {% block object-tools %}
 {% endblock %}
