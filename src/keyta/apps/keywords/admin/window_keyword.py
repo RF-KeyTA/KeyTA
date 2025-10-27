@@ -24,6 +24,8 @@ class WindowKeywordAdmin(WindowKeywordAdminMixin, KeywordAdmin):
         ('windows', WindowListFilter)
     ]
 
+    change_form_template = 'window_keyword_change_form.html'
+
     def change_view(self, request, object_id, form_url="", extra_context=None):
         return super().changeform_view(request, object_id, form_url, extra_context)
 
