@@ -264,17 +264,7 @@
                     applySelect2()
 
                     const row = django.jQuery(event.target)
-                    const selects = django.jQuery('select', row)
-
                     row.find('input[type=text]').first().focus()
-
-                    if (selects.length === 2) {
-                        $(selects[1]).prop('disabled', true)
-                    }
-
-                    if (selects.length === 3) {
-                        $(selects[2]).prop('disabled', true)
-                    }
 
                     django.jQuery('input[type=text]', row).last().on('change', function() {
                         const url = window.location.href
@@ -473,5 +463,8 @@
             }
         })
     </script>
+
+    {% block formset_added_disable_selects %}
+    {% endblock %}
     <!-- END change_form.html -->
 {% endblock %}
