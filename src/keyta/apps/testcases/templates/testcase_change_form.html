@@ -15,12 +15,6 @@
 {% block extrajs %}
 {{ block.super }}
 <script>
-    const $tabs = $('#content-main form #jazzy-tabs')
-    $('a', $tabs).on('shown.bs.tab', function (e) {
-        location.hash = e.target.hash;
-        $("#export-button").attr("href", "{% add_preserved_filters add_url is_popup to_field %}?export&ref=" + e.target.hash)
-    });
-
     $(document).ready(function () {
         if (!document.location.hash) {
            $('a:contains("{% trans "Schritte" %}")').click()
