@@ -28,3 +28,15 @@
     })
 </script>
 {% endblock %}
+
+{% block formset_added_disable_selects %}
+<script type="text/javascript">
+    $(document).ready(function () {
+        document.addEventListener('formset:added', function(event) {
+            const row = django.jQuery(event.target)
+            const selects = django.jQuery('select', row)
+            selects.last().prop('disabled', true)
+        })
+    })
+</script>
+{% endblock %}
