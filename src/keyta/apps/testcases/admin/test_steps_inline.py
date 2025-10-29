@@ -1,6 +1,8 @@
 from django import forms
+from django.conf import settings
 from django.contrib import admin
 from django.db.models import Q
+from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 
 from keyta.admin.base_inline import SortableTabularInline
@@ -10,7 +12,7 @@ from keyta.apps.keywords.forms import StepsForm
 from keyta.apps.keywords.models import Keyword, KeywordType
 from keyta.apps.keywords.models.keywordcall import ExecutionState
 from keyta.apps.windows.models import Window
-from keyta.widgets import ModelSelect2AdminWidget
+from keyta.widgets import ModelSelect2AdminWidget, Icon
 
 from ..forms import TestStepsFormset
 from ..models import TestCase, TestStep
@@ -45,6 +47,12 @@ class TestStepsInline(
             option_template_name = "select_option_execution_state.html"
 
         if db_field.name == 'execution_state':
+            icon = Icon(
+                settings.FA_ICONS.execute,
+                styles={'font-size': '18px', 'margin-left': '12px'},
+                title=_('Ausführen')
+            )
+            field.label = mark_safe(str(icon))
             field.widget = ExecutionStateSelect(
                 choices=ExecutionState.choices
             )

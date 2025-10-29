@@ -19,6 +19,7 @@ class Icons:
     exec_pass: str = 'fa-solid fa-circle-check'
     exec_settings: str = 'fa-solid fa-gear'
     exec_start: str = 'fa-solid fa-circle-play'
+    execute: str = 'fa-solid fa-flag-checkered'
     go_to: str = 'fa-solid fa-up-right-from-square'
     kw_call_drag_handle: str = 'fa-solid fa-sort'
     kw_call_input_output: str = 'fa-solid fa-arrow-right-arrow-left'
