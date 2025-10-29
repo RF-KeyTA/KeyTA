@@ -29,6 +29,7 @@ class Icons:
     library_import_args: str = 'fa-solid fa-list'
     library_update: str = 'fa-solid fa-circle-arrow-up'
     preview: str = 'fa-solid fa-image'
+    preview_field: str = 'fa-solid fa-eye'
     reset_default_value: str = 'fa-solid fa-rotate-left'
     resource: str = 'fa-solid fa-key'
     save: str = 'fa-regular fa-floppy-disk'

@@ -4,6 +4,7 @@ from django.contrib import admin
 from django.forms import ModelMultipleChoiceField
 from django.http import HttpRequest, HttpResponseRedirect
 from django.urls import reverse
+from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 
 from keyta.admin.base_admin import (
@@ -47,7 +48,13 @@ class WindowAdmin(DocumentationField, BaseAdmin):
     search_fields = ['name']
     search_help_text = _('Name')
 
-    @admin.display(description=_('Vorschau'))
+    preview_icon = Icon(
+        settings.FA_ICONS.preview_field,
+        styles={'font-size': '18px'},
+        title=_('Vorschau')
+    )
+
+    @admin.display(description=mark_safe(str(preview_icon)))
     def preview(self, window: Window):
         return open_link_in_modal(
             WindowDocumentation.objects.get(id=window.pk).get_admin_url(),
