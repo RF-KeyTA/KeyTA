@@ -27,33 +27,6 @@ from .library_parameters_inline import LibraryParametersInline
 class LibraryAdmin(BaseAdmin):
     list_display = ['name', 'version']
     list_display_links = ['name']
-    inlines = [Keywords]
-    form = LibraryForm
-    errors = set()
-    change_form_template = 'library_change_form.html'
-
-    def autocomplete_name(self, name: str, request: HttpRequest):
-        return json.dumps([
-            name
-            for name in
-            self.model.objects.values_list('name', flat=True)
-            .filter(name__icontains=name)
-        ])
-
-    def change_view(self, request, object_id, form_url="", extra_context=None):
-        current_app, model, *route = request.resolver_match.route.split('/')
-        app = settings.MODEL_TO_APP.get(model)
-
-        if app and app != current_app:
-            return HttpResponseRedirect(reverse('admin:%s_%s_change' % (app, model), args=(object_id,)))
-
-        return super().change_view(request, object_id, form_url, extra_context)
-
-    def get_list_display(self, request):
-        if self.can_change(request.user, 'library'):
-            return ['update'] + self.list_display
-
-        return self.list_display
 
     def get_changelist(self, request: HttpRequest, **kwargs):
         if 'update' in request.GET:
@@ -73,6 +46,58 @@ class LibraryAdmin(BaseAdmin):
             messages.warning(request, error)
 
         return super().get_changelist(request, **kwargs)
+
+    def get_list_display(self, request):
+        if self.can_change(request.user, 'library'):
+            return ['update'] + self.list_display
+
+        return self.list_display
+
+    update_icon = Icon(
+        settings.FA_ICONS.update,
+        styles={'font-size': '18px'},
+        title=_('Aktualisierung')
+    )
+
+    @admin.display(description=mark_safe(str(update_icon)))
+    def update(self, library: Library):
+        version = None
+
+        if library.name in Library.ROBOT_LIBRARIES:
+            version = import_module(f'robot.libraries.{library.name}').get_version()
+        else:
+            try:
+                version = getattr(import_module(library.name), '__version__', None)
+            except ModuleNotFoundError as err:
+                self.errors.add(_('Eine Bibliothek ist nicht vorhanden: {err}').format(err=err))
+
+        if version and version != library.version:
+            return link(
+                reverse('admin:libraries_library_changelist') + f'?update&lib_id={library.id}',
+                str(Icon(settings.FA_ICONS.library_update, {'font-size': '18px'}))
+            )
+
+    change_form_template = 'library_change_form.html'
+    errors = set()
+    form = LibraryForm
+    inlines = [Keywords]
+
+    def autocomplete_name(self, name: str, request: HttpRequest):
+        return json.dumps([
+            name
+            for name in
+            self.model.objects.values_list('name', flat=True)
+            .filter(name__icontains=name)
+        ])
+
+    def change_view(self, request, object_id, form_url="", extra_context=None):
+        current_app, model, *route = request.resolver_match.route.split('/')
+        app = settings.MODEL_TO_APP.get(model)
+
+        if app and app != current_app:
+            return HttpResponseRedirect(reverse('admin:%s_%s_change' % (app, model), args=(object_id,)))
+
+        return super().change_view(request, object_id, form_url, extra_context)
 
     @admin.display(description=_('Dokumentation'))
     def dokumentation(self, library: Library):
@@ -130,24 +155,6 @@ class LibraryAdmin(BaseAdmin):
             return library
         else:
             return super().save_form(request, form, change)
-
-    @admin.display(description=_('Aktualisierung'))
-    def update(self, library: Library):
-        version = None
-
-        if library.name in Library.ROBOT_LIBRARIES:
-            version = import_module(f'robot.libraries.{library.name}').get_version()
-        else:
-            try:
-                version = getattr(import_module(library.name), '__version__', None) 
-            except ModuleNotFoundError as err:
-                self.errors.add(_('Eine Bibliothek ist nicht vorhanden: {err}').format(err=err))
-
-        if version and version != library.version:
-            return link(
-                reverse('admin:libraries_library_changelist') + f'?update&lib_id={library.id}',
-                str(Icon(settings.FA_ICONS.library_update, {'font-size': '18px'}))
-            )
 
 
 @admin.register(LibraryInitDocumentation)

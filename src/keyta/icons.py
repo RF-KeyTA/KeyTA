@@ -36,5 +36,6 @@ class Icons:
     system: str = 'fa-solid fa-shapes'
     testcase: str = 'fa-solid fa-list-check'
     unlink_rel: str = 'fa-solid fa-link-slash'
+    update: str = 'fa-solid fa-rotate'
     variable: str = 'fa-solid fa-arrow-up-right-from-square'
     window: str = 'fa-solid fa-layer-group'

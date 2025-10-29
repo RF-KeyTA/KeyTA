@@ -2,6 +2,7 @@ from django.conf import settings
 from django.contrib import admin, messages
 from django.http import HttpRequest
 from django.urls import reverse
+from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 
 from keyta.admin.base_admin import BaseAdmin
@@ -19,17 +20,6 @@ from ..models import Resource
 class ResourceAdmin(DocumentationField, BaseAdmin):
     list_display = ['update', 'name']
     list_display_links = ['name']
-    form = ResourceForm
-    fields = ['path']
-    readonly_fields = ['documentation']
-    inlines = [Keywords]
-
-    @admin.display(description=_('Aktualisierung'))
-    def update(self, resource: Resource):
-        return link(
-            reverse('admin:resources_resource_changelist') + f'?update&resource_id={resource.id}',
-            str(Icon(settings.FA_ICONS.library_update, {'font-size': '18px'}))
-        )
 
     def get_changelist(self, request: HttpRequest, **kwargs):
         if 'update' in request.GET:
@@ -45,6 +35,24 @@ class ResourceAdmin(DocumentationField, BaseAdmin):
                 )
 
         return super().get_changelist(request, **kwargs)
+
+    update_icon = Icon(
+        settings.FA_ICONS.update,
+        styles={'font-size': '18px'},
+        title=_('Aktualisierung')
+    )
+
+    @admin.display(description=mark_safe(str(update_icon)))
+    def update(self, resource: Resource):
+        return link(
+            reverse('admin:resources_resource_changelist') + f'?update&resource_id={resource.id}',
+            str(Icon(settings.FA_ICONS.library_update, {'font-size': '18px'}))
+        )
+
+    form = ResourceForm
+    fields = ['path']
+    readonly_fields = ['documentation']
+    inlines = [Keywords]
 
     def formfield_for_dbfield(self, db_field, request, **kwargs):
         field = super().formfield_for_dbfield(db_field, request, **kwargs)
