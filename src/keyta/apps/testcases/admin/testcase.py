@@ -2,7 +2,6 @@ from django.conf import settings
 from django.contrib import admin, messages
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.urls import reverse
-from django.utils.safestring import mark_safe
 
 from keyta.apps.executions.models import TestCaseExecution
 from keyta.apps.variables.models import VariableValue
@@ -15,13 +14,6 @@ from .base_testcase_admin import BaseTestCaseAdmin
 @admin.register(TestCase)
 class TestCaseAdmin(BaseTestCaseAdmin):
     change_form_template = 'testcase_change_form.html'
-
-    def get_list_display(self, request):
-        return ['empty'] + super().get_list_display(request)
-
-    @admin.display(description='')
-    def empty(self, obj):
-        return mark_safe('&nbsp;')
 
     def change_view(self, request: HttpRequest, object_id, form_url="", extra_context=None):
         if 'export' in request.GET:

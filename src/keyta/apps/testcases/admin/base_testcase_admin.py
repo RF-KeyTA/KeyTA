@@ -1,9 +1,11 @@
+from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin.options import IncorrectLookupParameters
 from django.core.exceptions import ValidationError
 from django.db.models import Count, Q
 from django.forms import ModelMultipleChoiceField
-from django.utils.translation import gettext_lazy as _
+from django.utils.safestring import mark_safe
+from django.utils.translation import gettext as _
 
 from adminsortable2.admin import SortableAdminBase
 from model_clone import CloneModelAdminMixin
@@ -14,7 +16,7 @@ from keyta.admin.list_filters import SystemListFilter
 from keyta.apps.executions.admin import ExecutionInline
 from keyta.apps.executions.models import TestCaseExecution
 from keyta.apps.systems.models import System
-from keyta.widgets import CheckboxSelectMultipleSystems
+from keyta.widgets import CheckboxSelectMultipleSystems, Icon
 
 from ..models import TestCase
 from .test_steps_inline import TestStepsInline
@@ -54,7 +56,7 @@ class TagFilter(admin.RelatedFieldListFilter):
 
 class BaseTestCaseAdmin(DocumentationField, CloneModelAdminMixin, SortableAdminBase, BaseAdmin):
     change_list_template = 'testcase_change_list.html'
-    list_display = ['name', 'description']
+    list_display = ['execute', 'name', 'description']
     list_display_links = ['name']
     list_filter = [
         ('systems', SystemListFilter),
@@ -62,6 +64,15 @@ class BaseTestCaseAdmin(DocumentationField, CloneModelAdminMixin, SortableAdminB
     ]
     search_fields = ['name']
     search_help_text = _('Name')
+
+    @admin.display(description=mark_safe('<span title="%s" style="cursor: default">▶</span>' % _("Ausführung")))
+    def execute(self, obj):
+        testcase: TestCase = obj
+        execution = TestCaseExecution.objects.get(testcase=testcase)
+        url = execution.get_admin_url() + '?start'
+        title = str(Icon(settings.FA_ICONS.exec_start, styles={'font-size': '18px'}))
+
+        return mark_safe(f'<a href="%s" id="exec-btn-{testcase.pk}">%s</a>' % (url, title))
 
     fields = [
         'systems',

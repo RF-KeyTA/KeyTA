@@ -17,9 +17,9 @@
                         {% with num_columns=result_headers|length|subtract:skip_columns %}
                         {% for header in result_headers %}
                         {% if forloop.counter > skip_columns %}
-                        <th class="{% header_class header forloop %}" tabindex="0" rowspan="1" colspan="1" style="width: {% widthratio 1 num_columns 100 %}%; position: sticky; top: 0; background: white; border-bottom: 2px solid #afb7bb;">
+                        <th class="{% header_class header forloop %}" tabindex="0" rowspan="1" colspan="1" style="width: {% widthratio 1 num_columns 100 %}%; position: sticky; top: 0; background: white; border-bottom: 2px solid #afb7bb; z-index: 1">
                         {% else %}
-                        <th class="{% header_class header forloop %}" tabindex="0" rowspan="1" colspan="1"  style="position: sticky; top: 0; background: white; border-bottom: 2px solid #afb7bb">
+                        <th class="{% header_class header forloop %}" tabindex="0" rowspan="1" colspan="1"  style="position: sticky; top: 0; background: white; border-bottom: 2px solid #afb7bb; z-index: 1">
                         {% endif %}
                             <div class="text">
                                 {% if header.sortable %}

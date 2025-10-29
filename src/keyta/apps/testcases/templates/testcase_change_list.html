@@ -18,3 +18,21 @@
         })
     </script>
 {% endblock %}
+
+{% block execution %}
+<script>
+    function after_save_result(result, start_button) {
+        if (result === 'FAIL') {
+            start_button.closest('tr').style.backgroundColor = '#ffcccc'
+        }
+        if (result === 'PASS') {
+            start_button.closest('tr').style.backgroundColor = '#bdecbb'
+        }
+    }
+</script>
+{% include "execution.html" %}
+{% endblock %}
+
+{% block messages %}
+{% include "messages.html" %}
+{% endblock %}
