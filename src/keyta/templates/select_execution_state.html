@@ -11,42 +11,36 @@
     {% endfor %}
 </select>
 <script>
-    function formatResult(data) {
-        const status = {
-           'EXECUTE': '<i class="fa-solid fa-square-check"></i>',
-           'DO_NOT_EXECUTE': '<i class="fa-solid fa-square-minus"></i>',
-           'BEGIN_EXECUTION': '<i class="fa-solid fa-arrow-right-from-bracket"></i>',
-           'END_EXECUTION': '<i class="fa-solid fa-arrow-right-to-bracket"></i>'
-        };
-
-        const trans = {
-            'EXECUTE': "{% trans 'Ausführen' %}",
-            'DO_NOT_EXECUTE': "{% trans 'Überspringen' %}",
-            'BEGIN_EXECUTION': "{% trans 'Ausführen ab' %}",
-            'END_EXECUTION': "{% trans 'Ausführen bis' %}",
-        }
-
-        const template = `<span title="${trans[data.text]}">` + status[data.text] + '</span>'
-        return $(template)
-    }
-
-    function formatSelection(data) {
-        const status = {
+    function status(value) {
+        const status_icon = {
            'EXECUTE': "fa-solid fa-square-check",
            'DO_NOT_EXECUTE': "fa-solid fa-square-minus",
            'BEGIN_EXECUTION': "fa-solid fa-arrow-right-from-bracket",
            'END_EXECUTION': "fa-solid fa-arrow-right-to-bracket"
         };
 
-        const trans = {
+        return status_icon[value];
+    }
+
+    function translate(value) {
+        const translate = {
             'EXECUTE': "{% trans 'Ausführen' %}",
             'DO_NOT_EXECUTE': "{% trans 'Überspringen' %}",
             'BEGIN_EXECUTION': "{% trans 'Ausführen ab' %}",
             'END_EXECUTION': "{% trans 'Ausführen bis' %}",
         }
 
-        const $template = django.jQuery(`<span title="${trans[data.text]}"><i></i><span></span></span>`)
-        $template.find('i').addClass(status[data.text])
+        return translate[value];
+    }
+
+    function formatResult(data) {
+        const template = `<span title="${translate(data.text)}"><i class="${status(data.text)}"></i></span>`
+        return $(template)
+    }
+
+    function formatSelection(data) {
+        const $template = django.jQuery(`<span title="${translate(data.text)}"><i></i><span></span></span>`)
+        $template.find('i').addClass(status(data.text))
         return $template
     }
 
