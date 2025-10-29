@@ -355,11 +355,27 @@
                             })
 
                             first_select.on('change', function (event) {
-                                $.post(url, $('form').serialize() + "&_continue=")
-
                                 if ($(event.target).val() === 'BEGIN_EXECUTION') {
+                                    $('select[id$="execution_state"]').each((index, select) => {
+                                        if (django.jQuery(select).val() === 'BEGIN_EXECUTION' && $(event.target).attr('id') !== django.jQuery(select).attr('id')) {
+                                            django.jQuery(select).val('EXECUTE')
+                                            django.jQuery(select).trigger('change')
+                                        }
+                                    })
+
                                     $('td.field-settings a').first().click()
                                 }
+
+                                if ($(event.target).val() === 'END_EXECUTION') {
+                                    $('select[id$="execution_state"]').each((index, select) => {
+                                        if (django.jQuery(select).val() === 'END_EXECUTION' && $(event.target).attr('id') !== django.jQuery(select).attr('id')) {
+                                            django.jQuery(select).val('EXECUTE')
+                                            django.jQuery(select).trigger('change')
+                                        }
+                                    })
+                                }
+
+                                $.post(url, $('form').serialize() + "&_continue=")
                             })
                         }
 
