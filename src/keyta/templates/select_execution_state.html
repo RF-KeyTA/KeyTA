@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n tags %}
 <select name="{{ widget.name }}"{% include "django/forms/widgets/attrs.html" %}>
     {% for group_name, group_choices, group_index in widget.optgroups %}
         {% if group_name %}<optgroup label="{{ group_name }}">{% endif %}
@@ -13,10 +13,10 @@
 <script>
     function status(value) {
         const status_icon = {
-           'EXECUTE': "fa-solid fa-square-check",
-           'DO_NOT_EXECUTE': "fa-solid fa-square-minus",
-           'BEGIN_EXECUTION': "fa-solid fa-arrow-right-from-bracket",
-           'END_EXECUTION': "fa-solid fa-arrow-right-to-bracket"
+           'EXECUTE': "{% icon 'step_execute' %}",
+           'DO_NOT_EXECUTE': "{% icon 'step_do_not_execute' %}",
+           'BEGIN_EXECUTION': "{% icon 'step_begin_execution' %}",
+           'END_EXECUTION': "{% icon 'step_end_execution' %}"
         };
 
         return status_icon[value];

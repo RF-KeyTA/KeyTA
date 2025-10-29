@@ -126,11 +126,11 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-                'project.context_processors.icons'
+                'django.contrib.messages.context_processors.messages'
             ],
             'libraries': {
-                'filters': 'project.filters'
+                'filters': 'project.filters',
+                'tags': 'project.tags',
             }
         },
     },

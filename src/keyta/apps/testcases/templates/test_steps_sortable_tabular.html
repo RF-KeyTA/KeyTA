@@ -1,4 +1,4 @@
-{% load i18n admin_urls static admin_modify %}
+{% load i18n admin_urls static admin_modify tags %}
 <div class="js-inline-admin-formset inline-group" id="{{ inline_admin_formset.formset.prefix }}-group"
      data-inline-type="tabular"
      data-inline-formset="{{ inline_admin_formset.inline_formset_data }}">
@@ -33,7 +33,7 @@
                             <td class="original">
                                 <p style="font-size: 28px; background-image: none">
                                     {% if inline_admin_form.original and inline_admin_formset.has_change_permission %}
-                                         <i class="{{ kw_call_drag_handle_icon }}"></i>
+                                         <i class="{% icon 'kw_call_drag_handle' %}"></i>
                                     {% endif %}
                                 </p>
                                 {% if inline_admin_form.needs_explicit_pk_field %}{{ inline_admin_form.pk_field.field }}{% endif %}

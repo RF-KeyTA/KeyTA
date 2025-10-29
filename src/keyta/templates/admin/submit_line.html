@@ -1,4 +1,4 @@
-{% load i18n admin_urls jazzmin %}
+{% load i18n admin_urls jazzmin tags %}
 {% get_jazzmin_ui_tweaks as jazzmin_ui %}
 
 {% block submit-row %}
@@ -7,7 +7,7 @@
         <div class="form-group" style="margin-right: 10px">
             <button type="submit" name="_continue" class="button-save">
                 <span class="icon-wrapper">
-                    <i class="action-icon {{ save_icon }}"></i>
+                    <i class="action-icon {% icon 'save' %}"></i>
                 </span>
             </button>
         </div>
@@ -17,7 +17,7 @@
         {% url opts|admin_urlname:'delete' original.pk|admin_urlquote as delete_url %}
         <a href="{% add_preserved_filters delete_url %}" role="button" class="button-delete" style="color:white">
             <span class="icon-wrapper">
-                <i class="action-icon {{ delete_icon }} mr-2"></i>
+                <i class="action-icon {% icon 'delete' %} mr-2"></i>
             </span> 
         </a>
     </div>
