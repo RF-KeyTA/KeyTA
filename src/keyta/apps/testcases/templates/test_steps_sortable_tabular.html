@@ -65,33 +65,3 @@
         </fieldset>
     </div>
 </div>
-<script type="text/javascript">
-    django.jQuery(document).ready(function () {
-        const checkboxes = django.jQuery('.form-row.has_original input[type=checkbox]')
-
-        checkboxes.each((index, checkbox) => {
-            if (checkbox.checked) {
-                checkboxes.each((index2, checkbox) => {
-                    if (index2 !== index)
-                        checkbox.disabled = true;
-                })
-            }
-        })
-
-        checkboxes.each((index, checkbox) => {
-            django.jQuery(checkbox).on('change', function(event) {
-                if (checkbox.checked) {
-                    checkboxes.each((index2, checkbox) => {
-                        if (index2 !== index)
-                            checkbox.disabled = true;
-                    })
-                }
-                else {
-                    checkboxes.each((index2, checkbox) => {
-                        checkbox.disabled = false;
-                    })
-                }
-            })
-        })
-    })
-</script>
