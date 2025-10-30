@@ -147,8 +147,13 @@ SQLITE_DB = KEYTA_DIR / 'db.sqlite3'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'project.sqlite3',
-        'NAME': SQLITE_DB
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': SQLITE_DB,
+        'OPTIONS': {
+            # Solution for the Database locked error
+            # https://blog.pecar.me/django-sqlite-dblock
+            'transaction_mode': 'IMMEDIATE'
+        }
     }
 }
 
