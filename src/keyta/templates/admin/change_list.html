@@ -59,6 +59,7 @@
     {% endblock %}
 
     <div class="col-12">
+        {% block execution_messages %}{% endblock %}
         <div>
             <form id="changelist-form" method="post"{% if cl.formset and cl.formset.is_multipart %}enctype="multipart/form-data"{% endif %} novalidate>{% csrf_token %}
                 <div id="content-main">
@@ -95,8 +96,6 @@
                                         </div>
                                     </div>
                                 {% endif %}
-                                {% block messages %}{% endblock %}
-                                {% block execution %}{% endblock %}
                             {% endblock %}
                         </div>
                     </div>
@@ -107,7 +106,7 @@
                 </div>
             </form>
         </div>
-
+        {% block execution %}{% endblock %}
         <br class="clear"/>
     </div>
 {% endblock %}
