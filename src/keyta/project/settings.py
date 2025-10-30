@@ -16,7 +16,7 @@ from pathlib import Path
 
 from django.contrib import admin
 
-from keyta.icons import Icons
+from keyta.project.icons import Icons
 
 
 def get_home_dir():

@@ -1,4 +1,4 @@
-{% load i18n static %}
+{% load i18n static tags %}
 <div class="related-widget-wrapper {% if can_change_related or can_view_related %} mr-4 {% endif %}" {% if not model_has_limit_choices_to %}data-model-ref="{{ model }}"{% endif %}>
     {{ rendered_widget }}
     {% block links %}
@@ -12,7 +12,7 @@
                {{name}}="{{value}}"
                {% endfor %}
             >
-                <i class="fa-solid fa-circle-plus mr-2"></i>
+                <i class="{% icon 'related_widget_add' %} mr-2"></i>
             </a>
             {% endif %}
             {% if can_change_related %}
@@ -20,7 +20,7 @@
                 data-href-template="{{ change_related_template_url }}?{{ url_params }}"
                 data-popup="yes"
             >
-                <i class="fa-solid fa-magnifying-glass"></i>
+                <i class="{% icon 'related_widget_change' %}"></i>
             </a>
             {% endif %}
             {% if can_delete_related %}
@@ -28,7 +28,7 @@
                 data-href-template="{{ delete_related_template_url }}?{{ url_params }}"
                 data-popup="yes"
             >
-                <i class="fa-solid fa-trash mr-2"></i>
+                <i class="{% icon 'related_widget_delete' %} mr-2"></i>
             </a>
             {% endif %}
             {% if can_view_related %}
@@ -36,7 +36,7 @@
                 data-href-template="{{ change_related_template_url }}?{{ view_related_url_params }}&view"
                 data-popup="yes"
             >
-                <i class="fa-solid fa-eye mr-2"></i>
+                <i class="{% icon 'related_widget_view' %} mr-2"></i>
             </a>
             {% endif %}
         {% endif %}
