@@ -18,7 +18,7 @@
     const log_icon = document.querySelector(".field-log_icon > p")
     const result_icon = document.querySelector(".field-result_icon > p")
 
-    const hide = (elem) => elem.classList.add("hidden")
+    const hide = (elem) => { if(elem) elem.classList.add("hidden") }
     const show = (elem) => elem.classList.remove("hidden")
 
     const error = (message) => {
@@ -51,9 +51,8 @@
         const start_icon = start_button.querySelector("i")
         start_icon.classList.replace("fa-circle-play", "fa-arrows-rotate")
         start_icon.style.animation = "spin 3s linear infinite"
-
-        if (result_icon) hide(result_icon)
-        if (log_icon) hide(log_icon)
+        hide(result_icon)
+        hide(log_icon)
 
         return fetch(
             robot_server + "/robot_run",
@@ -106,7 +105,7 @@
     for (const start_button of start_buttons) {
         start_button.addEventListener('click', function(event) {
             event.preventDefault();
-            if (error_message) {hide(error_message)}
+            hide(error_message)
             start(start_button)
         });
     }
