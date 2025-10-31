@@ -14,7 +14,7 @@
     function status(value) {
         const status_icon = {
            'EXECUTE': "{% icon 'step_execute' %}",
-           'DO_NOT_EXECUTE': "{% icon 'step_do_not_execute' %}",
+           'SKIP_EXECUTION': "{% icon 'step_skip_execution' %}",
            'BEGIN_EXECUTION': "{% icon 'step_begin_execution' %}",
            'END_EXECUTION': "{% icon 'step_end_execution' %}"
         };
@@ -25,7 +25,7 @@
     function translate(value) {
         const translate = {
             'EXECUTE': "{% trans 'Ausführen' %}",
-            'DO_NOT_EXECUTE': "{% trans 'Überspringen' %}",
+            'SKIP_EXECUTION': "{% trans 'Überspringen' %}",
             'BEGIN_EXECUTION': "{% trans 'Ausführen ab' %}",
             'END_EXECUTION': "{% trans 'Ausführen bis' %}",
         }

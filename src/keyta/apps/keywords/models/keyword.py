@@ -122,7 +122,7 @@ class Keyword(DocumentationMixin, AbstractBaseModel):
             self.calls
             .filter(index__gte=execute_from)
             .filter(index__lte=execute_until)
-            .exclude(execution_state=ExecutionState.DO_NOT_EXECUTE)
+            .exclude(execution_state=ExecutionState.SKIP_EXECUTION)
         )
 
         return {
