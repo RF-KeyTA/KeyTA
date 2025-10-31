@@ -93,8 +93,17 @@
 </div>
 
 <script>
-        window.location.reload()
     function after_save_result(exec_url, result, table_row) {
+        const log_icon = $(table_row).find('.field-log_icon > p')
+        const result_icon = $(table_row).find('.field-result_icon > p')
+
+        fetch(exec_url.replace('?start', '?log_icon'))
+            .then(res => res.text())
+            .then(text => {log_icon.html(text); log_icon.show()})
+
+        fetch(exec_url.replace('?start', '?result_icon'))
+            .then(res => res.text())
+            .then(text => {result_icon.html(text); result_icon.show()})
     }
 </script>
 {% include "execution.html" %}

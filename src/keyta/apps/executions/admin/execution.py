@@ -21,7 +21,11 @@ class ExecutionAdmin(BaseAdmin):
         execution: Execution = self.model.objects.get(id=object_id)
 
         if request.method == 'GET':
-            execution.update_imports(request.user)
+            if 'log_icon' in request.GET:
+                return HttpResponse(execution.get_log_icon(request.user))
+
+            if 'result_icon' in request.GET:
+                return HttpResponse(execution.get_result_icon(request.user))
 
             if 'settings' in request.GET:
                 return super().change_view(request, object_id, form_url, extra_context)
