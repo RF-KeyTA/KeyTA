@@ -15,7 +15,6 @@ class ActionForm(BaseForm):
 
         if systems:
             if system := systems.values_list('name', flat=True).exclude(name__in=action_systems).filter(keywords__name__iexact=name).first():
-                print(system)
                 action = self._meta.model.objects.filter(name__iexact=name).filter(systems__name=system).filter(windows__isnull=True)
                 if action.exists():
                     raise forms.ValidationError(
