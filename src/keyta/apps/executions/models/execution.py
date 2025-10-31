@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Optional
 
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -15,6 +16,7 @@ from keyta.models.base_model import AbstractBaseModel
 from keyta.rf_export.rfgenerator import gen_testsuite
 from keyta.rf_export.settings import RFSettings
 from keyta.rf_export.testsuite import RFTestSuite
+from keyta.widgets import Icon
 
 from .user_execution import UserExecution
 
@@ -76,6 +78,36 @@ class Execution(CloneMixin, AbstractBaseModel):
                 dependencies.resources.add(resource)
 
         return dependencies
+
+    def get_log_icon(self, user: AbstractUser):
+        user_exec = self.user_execs.get(user=user)
+
+        if user_exec.result and not user_exec.running:
+            url = 'http://localhost:1471/' + user_exec.log
+            title = str(Icon(settings.FA_ICONS.exec_log))
+            return '<a href="%s" id="log-btn" target="_blank">%s</a>' % (url, title)
+
+        return '-'
+
+    def get_result_icon(self, user: AbstractUser):
+        user_exec = self.user_execs.get(user=user)
+
+        if (result := user_exec.result) and not user_exec.running:
+            if result == 'FAIL':
+                icon = Icon(
+                    settings.FA_ICONS.exec_fail,
+                    {'color': 'red'}
+                )
+                return str(icon)
+
+            if result == 'PASS':
+                icon = Icon(
+                    settings.FA_ICONS.exec_pass,
+                    {'color': 'green'}
+                )
+                return str(icon)
+
+        return '-'
 
     def get_rf_settings(self, get_variable_value, user: AbstractUser) -> RFSettings:
         def maybe_to_robot(keyword_call, user: AbstractUser):

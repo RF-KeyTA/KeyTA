@@ -23,35 +23,11 @@ class ExecutionInline(BaseTabularInline):
     def get_readonly_fields(self, request: HttpRequest, obj=None):
         @admin.display(description=_('Ergebnis'))
         def result_icon(self, execution: Execution):
-            user_exec = execution.user_execs.get(user=request.user)
-
-            if (result := user_exec.result) and not user_exec.running:
-                if result == 'FAIL':
-                    icon = Icon(
-                        settings.FA_ICONS.exec_fail,
-                        {'color': 'red'}
-                    )
-                    return mark_safe(str(icon))
-
-                if result == 'PASS':
-                    icon = Icon(
-                        settings.FA_ICONS.exec_pass,
-                        {'color': 'green'}
-                    )
-                    return mark_safe(str(icon))
-
-            return '-'
+            return mark_safe(execution.get_result_icon(request.user))
 
         @admin.display(description=_('Protokoll'))
         def log_icon(self, execution: Execution):
-            user_exec = execution.user_execs.get(user=request.user)
-
-            if user_exec.result and not user_exec.running:
-                url = 'http://localhost:1471/' + user_exec.log
-                title = str(Icon(settings.FA_ICONS.exec_log))
-                return mark_safe('<a href="%s" id="log-btn" target="_blank">%s</a>' % (url, title))
-
-            return '-'
+            return mark_safe(execution.get_log_icon(request.user))
 
         ExecutionInline.result_icon = result_icon
         ExecutionInline.log_icon = log_icon
@@ -69,4 +45,5 @@ class ExecutionInline(BaseTabularInline):
     def start(self, execution: Execution):
         url = execution.get_admin_url() + '?start'
         title = str(Icon(settings.FA_ICONS.exec_start))
+
         return mark_safe('<a href="%s" id="exec-btn">%s</a>' % (url, title))
