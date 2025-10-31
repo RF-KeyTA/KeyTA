@@ -88,7 +88,7 @@
 {% block change_form_js %}
 <script type="text/javascript">
     $(document).ready(function () {
-        document.addEventListener('formset:added', function(event) {
+        document.addEventListener('formset:added', function (event) {
             const row = django.jQuery(event.target)
             const selects = django.jQuery('select', row)
 
@@ -96,6 +96,25 @@
                 $(selects[1]).prop('disabled', true)
                 $(selects[2]).prop('disabled', true)
             }
+        })
+
+        const formset_forms = django.jQuery('.form-row.has_original')
+        formset_forms.each((index, form) => {
+            // Selects in a saved form of a formset
+            const selects = django.jQuery('select', form)
+            selects.on('change', function (event) {
+                const url = window.location.href
+
+                // Reloading the whole window can be avoided using HTMX
+                // to swap the row
+                $.post(
+                    url,
+                    $('form').serialize() + "&_continue=",
+                    function () {
+                        window.location.reload()
+                    }
+                )
+            })
         })
     })
 </script>
