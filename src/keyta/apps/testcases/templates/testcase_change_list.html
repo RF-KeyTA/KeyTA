@@ -21,12 +21,12 @@
 
 {% block execution %}
 <script>
-    function after_save_result(result, start_button) {
+    function after_save_result(exec_url, result, table_row) {
         if (result === 'FAIL') {
-            start_button.closest('tr').style.backgroundColor = '#ffcccc'
+            table_row.style.backgroundColor = '#ffcccc'
         }
         if (result === 'PASS') {
-            start_button.closest('tr').style.backgroundColor = '#bdecbb'
+            table_row.style.backgroundColor = '#bdecbb'
         }
     }
 </script>

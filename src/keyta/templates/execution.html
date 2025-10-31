@@ -32,7 +32,7 @@
     .then(res => res.text())
     .catch(_ => error(errors.ROBOT_ERROR))
 
-    const save_result = (after_save_result, csrf_token, exec_url, data, start_button) =>
+    const save_result = (after_save_result, csrf_token, exec_url, data, table_row) =>
         fetch(exec_url,
             {
                 method: "PUT",
@@ -40,7 +40,7 @@
                 headers: {'X-CSRFToken': csrf_token, 'Content-Type': 'application/json'}
             }
         )
-        .then(_ => after_save_result(data.result, start_button))
+        .then(_ => after_save_result(exec_url, data.result, table_row))
         .catch(_ => error(errors.ROBOT_ERROR))
 
     const robot_run = (csrf_token, data, exec_url, start_button) => {
@@ -48,6 +48,7 @@
         const start_icon = start_button.querySelector("i")
         start_icon.classList.replace("fa-circle-play", "fa-arrows-rotate")
         start_icon.style.animation = "spin 3s linear infinite"
+        const table_row = start_button.closest('tr')
         $(result_icon).hide()
         $(log_icon).hide()
 
@@ -58,7 +59,7 @@
                 body: JSON.stringify(data)
             })
             .then(res => res.json())
-            .then(json => save_result(after_save_result, csrf_token, exec_url, json, start_button))
+            .then(json => save_result(after_save_result, csrf_token, exec_url, json, table_row))
             .catch(_ => error(errors.ROBOT_ERROR))
             .finally(_ => {
                 $(info_message).hide()
