@@ -2,7 +2,7 @@ from typing import Optional
 
 from django.conf import settings
 from django.db import models
-from django.db.models import Q, QuerySet, UniqueConstraint
+from django.db.models import Q, QuerySet
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 
@@ -442,10 +442,3 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
         ordering = ['index']
         verbose_name = _('Schritt')
         verbose_name_plural = _('Schritte')
-        constraints = [
-            UniqueConstraint(
-                fields=['execution', 'type'],
-                condition=Q(execution__isnull=False),
-                name='unique_keyword_call_type_per_execution'
-            )
-        ]
