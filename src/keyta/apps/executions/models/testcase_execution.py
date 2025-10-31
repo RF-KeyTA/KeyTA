@@ -47,32 +47,6 @@ class TestCaseExecution(Execution):
             .distinct()
         )
 
-    def get_tables_rows(self):
-        table_variables = []
-        row_variables = []
-
-        value_ref_pks = (
-            KeywordCallParameter.objects
-            .filter(keyword_call__in=self.testcase.steps.all())
-            .filter(value_ref__isnull=False)
-            .values_list('value_ref', flat=True)
-        )
-
-        table_pks = (
-            KeywordCallParameterSource.objects
-            .filter(pk__in=value_ref_pks)
-            .filter(table_column__isnull=False)
-            .values_list('table_column__table', flat=True)
-            .distinct()
-        )
-
-        for table in Variable.objects.filter(pk__in=table_pks):
-            table_variable, table_row_variables = table.get_rows()
-            table_variables.append(table_variable)
-            row_variables.extend(table_row_variables)
-
-        return table_variables, row_variables
-
     def get_keyword_calls(self) -> models.QuerySet:
         setup_teardown_calls = KeywordCall.get_substeps(self.keyword_calls)
         test_calls = KeywordCall.unsorted().filter(testcase=self.testcase)
@@ -106,6 +80,32 @@ class TestCaseExecution(Execution):
             'keywords': list(keywords.values()),
             'testcases': [self.testcase.to_robot(get_variable_value, user, in_execution=True)]
         }
+
+    def get_tables_rows(self):
+        table_variables = []
+        row_variables = []
+
+        value_ref_pks = (
+            KeywordCallParameter.objects
+            .filter(keyword_call__in=self.testcase.steps.all())
+            .filter(value_ref__isnull=False)
+            .values_list('value_ref', flat=True)
+        )
+
+        table_pks = (
+            KeywordCallParameterSource.objects
+            .filter(pk__in=value_ref_pks)
+            .filter(table_column__isnull=False)
+            .values_list('table_column__table', flat=True)
+            .distinct()
+        )
+
+        for table in Variable.objects.filter(pk__in=table_pks):
+            table_variable, table_row_variables = table.get_rows()
+            table_variables.append(table_variable)
+            row_variables.extend(table_row_variables)
+
+        return table_variables, row_variables
 
     def save(
         self, force_insert=False, force_update=False, using=None,
