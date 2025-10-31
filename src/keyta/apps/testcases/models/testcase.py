@@ -101,7 +101,7 @@ class TestCase(DocumentationMixin, CloneMixin, AbstractBaseModel):
             self.steps
             .filter(index__gte=execute_from)
             .filter(index__lte=execute_until)
-            .exclude(Q(to_keyword__isnull=True) | Q(execution_state=ExecutionState.DO_NOT_EXECUTE))
+            .exclude(Q(to_keyword__isnull=True) | Q(execution_state=ExecutionState.SKIP_EXECUTION))
         )
 
         return {

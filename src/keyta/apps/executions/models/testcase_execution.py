@@ -131,7 +131,7 @@ class TestCaseExecution(Execution):
 
         steps = (
             self.testcase.steps
-            .exclude(execution_state=ExecutionState.DO_NOT_EXECUTE)
+            .exclude(execution_state=ExecutionState.SKIP_EXECUTION)
             .filter(index__gte=first_step_index)
             .filter(index__lte=last_step_index)
         )
