@@ -9,8 +9,8 @@ from django.utils.translation import gettext_lazy as _
 from model_clone import CloneMixin
 from taggit_selectize.managers import TaggableManager
 
-from keyta.apps.executions.models import Execution
 from keyta.apps.keywords.models.keywordcall import ExecutionState
+from keyta.apps.executions.models import Execution, Setup
 from keyta.apps.libraries.models import Library, LibraryImport
 from keyta.models.base_model import AbstractBaseModel
 from keyta.models.documentation_mixin import DocumentationMixin
@@ -45,6 +45,12 @@ class TestCase(DocumentationMixin, CloneMixin, AbstractBaseModel):
     def create_execution(self):
         library_ids = self.systems.values_list('library', flat=True).distinct()
         execution = Execution.objects.create(testcase=self)
+        Setup.objects.create(
+            execution=execution,
+            to_keyword=self.systems.first().attach_to_system,
+            enabled=False,
+            index=1
+        )
 
         for library in Library.objects.filter(id__in=library_ids):
             LibraryImport.objects.create(
