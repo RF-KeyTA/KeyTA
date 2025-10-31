@@ -8,6 +8,7 @@ from .setup_teardown_inline import SetupInline, TeardownInline
 
 
 class TestSetupInline(SetupInline):
+    max_num = 2
     verbose_name_plural = _('Testvorbereitung')
 
 
