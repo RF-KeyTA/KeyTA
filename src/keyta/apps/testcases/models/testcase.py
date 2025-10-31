@@ -32,7 +32,7 @@ class TestCase(DocumentationMixin, CloneMixin, AbstractBaseModel):
         related_name='testcases',
         verbose_name=_('Systeme')
     )
-    tags = TaggableManager()
+    tags = TaggableManager(blank=True)
 
     _clone_linked_m2m_fields = ['systems']
     _clone_m2o_or_o2m_fields = ['steps']
