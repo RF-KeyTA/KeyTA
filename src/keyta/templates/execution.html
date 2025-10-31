@@ -18,17 +18,14 @@
     const log_icon = document.querySelector(".field-log_icon > p")
     const result_icon = document.querySelector(".field-result_icon > p")
 
-    const hide = (elem) => { if(elem) elem.classList.add("hidden") }
-    const show = (elem) => elem.classList.remove("hidden")
-
     const error = (message) => {
         error_message.querySelector("#error-text").textContent = message
-        show(error_message)
+        $(error_message).show()
     }
 
     const info = (message) => {
         info_message.querySelector("#info-text").textContent = message
-        show(info_message)
+        $(info_message).show()
     }
 
     const get_csrf_token = () => fetch(csrf_token_url)
@@ -51,8 +48,8 @@
         const start_icon = start_button.querySelector("i")
         start_icon.classList.replace("fa-circle-play", "fa-arrows-rotate")
         start_icon.style.animation = "spin 3s linear infinite"
-        hide(result_icon)
-        hide(log_icon)
+        $(result_icon).hide()
+        $(log_icon).hide()
 
         return fetch(
             robot_server + "/robot_run",
@@ -64,7 +61,7 @@
             .then(json => save_result(after_save_result, csrf_token, exec_url, json, start_button))
             .catch(_ => error(errors.ROBOT_ERROR))
             .finally(_ => {
-                hide(info_message)
+                $(info_message).hide()
                 start_icon.classList.replace("fa-arrows-rotate", "fa-circle-play")
                 start_icon.style.animation = null
             })
@@ -105,8 +102,8 @@
     for (const start_button of start_buttons) {
         start_button.addEventListener('click', function(event) {
             event.preventDefault();
-            hide(error_message)
             start(start_button)
+            $(error_message).hide()
         });
     }
 </script>
