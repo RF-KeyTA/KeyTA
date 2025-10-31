@@ -93,7 +93,7 @@ class TestStepsInline(
         return [
             field
             for field in fields
-            if field != 'execute'
+            if field != 'execution_state'
         ]
 
     def get_queryset(self, request):
