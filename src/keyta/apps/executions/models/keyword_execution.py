@@ -88,8 +88,8 @@ class KeywordExecution(Execution):
         return {
             'name': self.keyword.name,
             'settings': self.get_rf_settings(get_variable_value, user),
-            'dict_variables': [],
-            'list_variables': [],
+            'rows': [],
+            'tables': [],
             'keywords': list(keywords.values()),
             'testcases': [{
                 'name': _('Test'),
