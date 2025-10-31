@@ -31,12 +31,15 @@ class ExecutionAdmin(BaseAdmin):
                 execution.update_imports(request.user)
                 return super().change_view(request, object_id, form_url, extra_context)
 
+        if request.method == 'POST':
             if 'to_robot' in request.GET:
-                if err := execution.validate(request.user):
                 execution.update_imports(request.user)
+                execution_state = json.loads(request.body.decode('utf-8'))
+
+                if err := execution.validate(request.user, execution_state):
                     return JsonResponse(err)
 
-                return JsonResponse(self.to_robot(request, execution))
+                return JsonResponse(self.to_robot(request, execution, execution_state))
 
         if request.method == 'PUT':
             result = json.loads(request.body.decode('utf-8'))
@@ -64,7 +67,7 @@ class ExecutionAdmin(BaseAdmin):
     def has_delete_permission(self, request, obj=None):
         return False
 
-    def to_robot(self, request: HttpRequest, execution: Execution):
+    def to_robot(self, request: HttpRequest, execution: Execution, execution_state: dict):
         get_variable_value = lambda pk: VariableValue.objects.get(pk=pk).current_value
 
-        return execution.to_robot(get_variable_value, request.user)
+        return execution.to_robot(get_variable_value, request.user, execution_state)

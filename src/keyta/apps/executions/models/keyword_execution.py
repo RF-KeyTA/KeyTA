@@ -71,19 +71,19 @@ class KeywordExecution(Execution):
         
         return sequence_calls | action_calls | setup_teardown_calls
 
-    def get_rf_testsuite(self, get_variable_value, user: AbstractUser) -> RFTestSuite:
+    def get_rf_testsuite(self, get_variable_value, user: AbstractUser, execution_state: dict) -> RFTestSuite:
         keyword = self.keyword
         keywords = {
-            keyword.pk: keyword.to_robot(get_variable_value, in_execution=True)
+            keyword.pk: keyword.to_robot(get_variable_value, execution_state)
         }
 
         if keyword.is_sequence:
             for keyword in Keyword.objects.filter(pk__in=self.action_ids):
-                keywords[keyword.pk] = keyword.to_robot(get_variable_value)
+                keywords[keyword.pk] = keyword.to_robot(get_variable_value, {})
 
-        if (test_setup := self.test_setup()) and test_setup.enabled:
+        if (test_setup := self.test_setup().first()) and test_setup.enabled:
             if to_keyword := test_setup.to_keyword:
-                keywords[to_keyword.id] = to_keyword.to_robot(get_variable_value)
+                keywords[to_keyword.id] = to_keyword.to_robot(get_variable_value, {})
 
         return {
             'name': self.keyword.name,
@@ -107,7 +107,7 @@ class KeywordExecution(Execution):
         self.type = ExecutionType.KEYWORD
         super().save(force_insert, force_update, using, update_fields)
 
-    def validate(self, user: AbstractUser) -> Optional[dict]:
+    def validate(self, user: AbstractUser, execution_state: dict) -> Optional[dict]:
         if not self.keyword.calls.count():
             return ValidationError.NO_STEPS
 
@@ -117,7 +117,7 @@ class KeywordExecution(Execution):
         if any(call.has_empty_arg() for call in self.keyword.calls.all()):
             return ValidationError.INCOMPLETE_STEP_PARAMS
 
-        test_setup: KeywordCall = self.test_setup()
+        test_setup: KeywordCall = self.test_setup().first()
 
         if not test_setup:
             self.add_attach_to_system(user)

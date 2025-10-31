@@ -348,12 +348,6 @@
 
                         const first_select_id = first_select.attr('id')
                         if (first_select_id && first_select_id.endsWith('execution_state')) {
-                            first_select.on('select2:selecting', function (event) {
-                                if ($(event.target).val() === 'BEGIN_EXECUTION') {
-                                    $('td.field-settings a').first().click()
-                                }
-                            })
-
                             first_select.on('change', function (event) {
                                 if ($(event.target).val() === 'BEGIN_EXECUTION') {
                                     $('select[id$="execution_state"]').each((index, select) => {
@@ -362,8 +356,6 @@
                                             django.jQuery(select).trigger('change')
                                         }
                                     })
-
-                                    $('td.field-settings a').first().click()
                                 }
 
                                 if ($(event.target).val() === 'END_EXECUTION') {
@@ -374,8 +366,6 @@
                                         }
                                     })
                                 }
-
-                                $.post(url, $('form').serialize() + "&_continue=")
                             })
                         }
 

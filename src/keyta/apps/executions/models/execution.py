@@ -4,11 +4,11 @@ from typing import Optional
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.db.models import QuerySet
 from django.utils.translation import gettext_lazy as _
 
 from model_clone import CloneMixin
 
-from keyta.apps.keywords.models import KeywordCall
 from keyta.apps.keywords.models.keyword import KeywordType
 from keyta.apps.libraries.models import Library, LibraryImport
 from keyta.apps.resources.models import Resource, ResourceImport
@@ -127,11 +127,11 @@ class Execution(CloneMixin, AbstractBaseModel):
             ],
             'suite_setup': None,
             'suite_teardown': None,
-            'test_setup': maybe_to_robot(self.test_setup(), user),
-            'test_teardown': maybe_to_robot(self.test_teardown(), user)
+            'test_setup': maybe_to_robot(self.test_setup().filter(enabled=True).first(), user),
+            'test_teardown': maybe_to_robot(self.test_teardown().filter(enabled=True).first(), user)
         }
 
-    def get_rf_testsuite(self, get_variable_value, user: AbstractUser) -> RFTestSuite:
+    def get_rf_testsuite(self, get_variable_value, user: AbstractUser, execution_state: dict) -> RFTestSuite:
         pass
 
     def save(
@@ -172,22 +172,20 @@ class Execution(CloneMixin, AbstractBaseModel):
             .first()
         )
 
-    def test_setup(self) -> KeywordCall:
+    def test_setup(self) -> QuerySet:
         return (
             self.keyword_calls
             .test_setup()
-            .first()
         )
 
-    def test_teardown(self) -> KeywordCall:
+    def test_teardown(self) -> QuerySet:
         return (
             self.keyword_calls
             .test_teardown()
-            .first()
         )
 
-    def to_robot(self, get_variable_value, user: AbstractUser) -> dict:
-        testsuite = self.get_rf_testsuite(get_variable_value, user)
+    def to_robot(self, get_variable_value, user: AbstractUser, execution_state: dict) -> dict:
+        testsuite = self.get_rf_testsuite(get_variable_value, user, execution_state)
 
         return {
             'testsuite_name': testsuite['name'],
@@ -216,7 +214,7 @@ class Execution(CloneMixin, AbstractBaseModel):
         for resource_import in self.resource_imports.exclude(resource_id__in=dependencies.resources):
             resource_import.delete()
 
-    def validate(self, user: AbstractUser) -> Optional[dict]:
+    def validate(self, user: AbstractUser, execution_state: dict) -> Optional[dict]:
         pass
 
     class Meta:

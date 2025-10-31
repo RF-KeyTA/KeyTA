@@ -2,14 +2,13 @@ import re
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.db.models import Q
+from django.db.models import Q, QuerySet
 from django.db.models.functions import Lower
 from django.utils.translation import gettext_lazy as _
 
 from model_clone import CloneMixin
 from taggit_selectize.managers import TaggableManager
 
-from keyta.apps.keywords.models.keywordcall import ExecutionState
 from keyta.apps.executions.models import Execution, Setup
 from keyta.apps.libraries.models import Library, LibraryImport
 from keyta.models.base_model import AbstractBaseModel
@@ -58,6 +57,23 @@ class TestCase(DocumentationMixin, CloneMixin, AbstractBaseModel):
                 library=library
             )
 
+    def executable_steps(self, execution_state: dict) -> QuerySet:
+        execute_from = self.steps.first().index
+        execute_until = self.steps.last().index
+
+        if begin_execution_index := execution_state.get('BEGIN_EXECUTION'):
+            execute_from = begin_execution_index
+
+        if end_execution_pk_index := execution_state.get('END_EXECUTION'):
+            execute_until = end_execution_pk_index
+
+        return (
+            self.steps
+            .filter(index__gte=execute_from)
+            .filter(index__lte=execute_until)
+            .exclude(Q(to_keyword__isnull=True) | Q(index__in=execution_state['SKIP_EXECUTION']))
+        )
+
     @property
     def has_empty_sequence(self):
         return not self.steps.exists() or not self.steps.first().to_keyword
@@ -92,30 +108,13 @@ class TestCase(DocumentationMixin, CloneMixin, AbstractBaseModel):
         self.name = re.sub(r"\s{2,}", ' ', self.name)
         super().save(force_insert, force_update, using, update_fields)
 
-    def to_robot(self, get_variable_value, user: AbstractUser, in_execution=False) -> RFTestCase:
-        execute_from = 0
-        execute_until = self.steps.count()
-
-        if in_execution:
-            if execute_step := self.steps.filter(execution_state=ExecutionState.BEGIN_EXECUTION).first():
-                execute_from = execute_step.index
-
-            if execute_step := self.steps.filter(execution_state=ExecutionState.END_EXECUTION).first():
-                execute_until = execute_step.index
-
-        test_steps = (
-            self.steps
-            .filter(index__gte=execute_from)
-            .filter(index__lte=execute_until)
-            .exclude(Q(to_keyword__isnull=True) | Q(execution_state=ExecutionState.SKIP_EXECUTION))
-        )
-
+    def to_robot(self, get_variable_value, user: AbstractUser, execution_state: dict) -> RFTestCase:
         return {
             'name': self.name,
             'doc': self.robot_documentation(),
             'steps': [
                 test_step.to_robot(get_variable_value, user=user)
-                for test_step in test_steps
+                for test_step in self.executable_steps(execution_state)
             ]
         }
 

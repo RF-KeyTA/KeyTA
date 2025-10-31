@@ -9,8 +9,6 @@ from keyta.models.base_model import AbstractBaseModel
 from keyta.models.documentation_mixin import DocumentationMixin
 from keyta.rf_export.keywords import RFKeyword
 
-from .keywordcall import ExecutionState
-
 
 class KeywordType(models.TextChoices):
     LIBRARY = 'LIBRARY', _('Schlüsselwort aus Bibliothek')
@@ -73,6 +71,23 @@ class Keyword(DocumentationMixin, AbstractBaseModel):
     def __str__(self):
         return self.name
 
+    def executable_steps(self, execution_state: dict):
+        execute_from = self.calls.first().index
+        execute_until = self.calls.last().index
+
+        if begin_execution_index := execution_state.get('BEGIN_EXECUTION'):
+            execute_from = begin_execution_index
+
+        if end_execution_pk_index := execution_state.get('END_EXECUTION'):
+            execute_until = end_execution_pk_index
+
+        return (
+            self.calls
+            .filter(index__gte=execute_from)
+            .filter(index__lte=execute_until)
+            .exclude(Q(to_keyword__isnull=True) | Q(index__in=execution_state.get('SKIP_EXECUTION', [])))
+        )
+
     @property
     def has_empty_sequence(self):
         return not self.calls.exists()
@@ -104,26 +119,10 @@ class Keyword(DocumentationMixin, AbstractBaseModel):
 
         super().save(force_insert, force_update, using, update_fields)
 
-    def to_robot(self, get_variable_value, in_execution=False) -> RFKeyword:
+    def to_robot(self, get_variable_value, execution_state: dict) -> RFKeyword:
         args = self.parameters.args()
         kwargs = self.parameters.kwargs()
         return_values = self.return_values.all()
-        execute_from = 0
-        execute_until = self.calls.count()
-
-        if in_execution:
-            if execute_step := self.calls.filter(execution_state=ExecutionState.BEGIN_EXECUTION).first():
-                execute_from = execute_step.index
-
-            if execute_step := self.calls.filter(execution_state=ExecutionState.END_EXECUTION).first():
-                execute_until = execute_step.index
-
-        steps = (
-            self.calls
-            .filter(index__gte=execute_from)
-            .filter(index__lte=execute_until)
-            .exclude(execution_state=ExecutionState.SKIP_EXECUTION)
-        )
 
         return {
             'name': self.id_name,
@@ -132,7 +131,7 @@ class Keyword(DocumentationMixin, AbstractBaseModel):
             'kwargs': {kwarg.name: kwarg.default_value for kwarg in kwargs},
             'steps': [
                 step.to_robot(get_variable_value)
-                for step in steps
+                for step in self.executable_steps(execution_state)
             ],
             'return_values': [f'${{{return_value}}}' for return_value in return_values]
         }
