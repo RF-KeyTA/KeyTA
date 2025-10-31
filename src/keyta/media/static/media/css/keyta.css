@@ -335,3 +335,8 @@ select[data-name="tags"] + .select2-container .select2-search--inline .select2-s
     height: 25px !important;
     padding: 2px !important;
 }
+
+.selectize-input {
+    /* top | right | bottom | left */
+    padding: 0 0 0 8px !important;
+}
