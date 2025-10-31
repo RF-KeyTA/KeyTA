@@ -28,10 +28,12 @@ class ExecutionAdmin(BaseAdmin):
                 return HttpResponse(execution.get_result_icon(request.user))
 
             if 'settings' in request.GET:
+                execution.update_imports(request.user)
                 return super().change_view(request, object_id, form_url, extra_context)
 
             if 'to_robot' in request.GET:
                 if err := execution.validate(request.user):
+                execution.update_imports(request.user)
                     return JsonResponse(err)
 
                 return JsonResponse(self.to_robot(request, execution))
