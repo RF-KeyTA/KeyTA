@@ -109,7 +109,7 @@ class ActionAdmin(ActionAdminMixin, CloneModelAdminMixin, WindowKeywordAdmin):
                 widget=CheckboxSelectMultipleSystems,
                 queryset=field.queryset
             )
-            field.initial = self.first_system(request)
+            field.initial = [self.first_system(request)]
             field.label = _('Systeme')
 
             if action_id := request.resolver_match.kwargs.get('object_id'):

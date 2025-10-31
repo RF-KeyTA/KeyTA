@@ -105,7 +105,7 @@ class WindowAdmin(DocumentationField, BaseAdmin):
                 widget=CheckboxSelectMultipleSystems,
                 queryset=field.queryset
             )
-            field.initial = self.first_system(request)
+            field.initial = [self.first_system(request)]
             field.label = _('Systeme')
 
             if window_id := request.resolver_match.kwargs.get('object_id'):
