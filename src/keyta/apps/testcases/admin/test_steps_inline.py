@@ -37,6 +37,12 @@ class TestStepsInline(
     formset = TestStepsFormset
     template = 'test_steps_sortable_tabular.html'
 
+    @admin.display(description='')
+    def test_step_url(self, obj):
+        test_step: TestStep = obj
+
+        return test_step.get_admin_url()
+
     def formfield_for_dbfield(self, db_field, request, **kwargs):
         field = super().formfield_for_dbfield(db_field, request, **kwargs)
         testcase_id = request.resolver_match.kwargs['object_id']
@@ -100,9 +106,3 @@ class TestStepsInline(
 
     def has_delete_permission(self, request, obj=None):
         return self.can_change(request.user, 'testcase')
-
-    @admin.display(description='')
-    def test_step_url(self, obj):
-        test_step: TestStep = obj
-
-        return test_step.get_admin_url()
