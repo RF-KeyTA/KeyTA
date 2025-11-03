@@ -43,3 +43,19 @@
     }
 </script>
 {% endblock %}
+
+{% block formset_form %}
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Selects in a saved form of a formset
+        const selects = django.jQuery('.form-row.has_original select')
+        django.jQuery(selects).on('change', function (event) {
+            const url = window.location.href
+            $.post(
+                url,
+                $('form').serialize() + "&_continue=",
+            )
+        })
+    })
+</script>
+{% endblock %}

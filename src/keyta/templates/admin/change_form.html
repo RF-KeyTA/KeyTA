@@ -262,30 +262,6 @@
                     $.post(url, $('form').serialize() + "&_continue=")
                 })
 
-                document.addEventListener('formset:added', function(event) {
-                    applySelect2()
-
-                    const row = django.jQuery(event.target)
-                    row.find('input[type=text]').first().focus()
-
-                    django.jQuery('input[type=text]', row).last().on('change', function() {
-                        const url = window.location.href
-
-                        // Reloading the whole window can be avoided using HTMX
-                        // to swap the row
-                        if (url.includes('_popup')) {
-                            $.post(
-                                url,
-                                $('form').serialize() + "&_continue=",
-                                function() { window.location.reload() }
-                            )
-                        }
-                        else {
-                            $(save_button).click()
-                        }
-                    })
-                })
-
                 // A checkbox in a saved form of a formset
                 django.jQuery('.form-row.has_original input[type=checkbox]').on('change', function() {
                     $.post(url, $('form').serialize() + "&_continue=")
@@ -327,101 +303,6 @@
                     }
                 })
 
-                // Selects in a saved form of a formset
-                const formset_forms = django.jQuery('.form-row.has_original')
-                formset_forms.each((index, form) => {
-                    const selects = django.jQuery('select', form)
-
-                    selects.on('select2:clearing', function (event) {
-                        event.preventDefault()
-                        const result = confirm('{% trans "Sicher?" %}')
-
-                        if (result) {
-                            django.jQuery(event.target).val(null).trigger('change');
-                        }
-                    })
-
-                    if (selects.length === 3) {
-                        const second_select = django.jQuery(selects[1])
-                        const third_select = django.jQuery(selects[2])
-
-                        second_select.on('change', function () {
-                            $(save_button).click()
-                        })
-
-                        if (index === 0) {
-                            third_select.on('change', function () {
-                                $(save_button).click()
-                            })
-                        }
-                        else {
-                            third_select.on('change', function () {
-                                const related_widget_link = third_select.siblings('a').first()
-                                const test_step_id = third_select.closest('tr').find('input[id$="-id"]').attr('value')
-                                const test_step_url = `/testcases/teststep/${test_step_id}/change`
-
-                                if (third_select.val()) {
-                                    $.post(
-                                        window.location.href,
-                                        $('form').serialize() + "&_continue=",
-                                        function () {
-                                            third_select.closest('tr').find('td.field-values a').css('visibility', 'visible')
-                                            $.get(
-                                                test_step_url + '?step-changed',
-                                                function (res) {
-                                                    related_widget_link.replaceWith(res)
-                                                    presentRelatedObjectModal()
-                                                }
-                                            )
-                                            $.get(
-                                                test_step_url + '?update-icon',
-                                                function (res) {
-                                                    third_select.closest('tr').find('td.field-values a > i').replaceWith(res);
-                                                    presentRelatedObjectModal()
-                                                }
-                                            )
-                                        }
-                                    )
-                                }
-                                else {
-                                    $.post(
-                                        window.location.href,
-                                        $('form').serialize() + "&_continue=",
-                                        function() {
-                                            $.get(
-                                                test_step_url + '?step-empty',
-                                                function (res) {
-                                                    related_widget_link.replaceWith(res);
-                                                    third_select.closest('tr').find('td.field-values a').css('visibility', 'hidden')
-                                                    presentRelatedObjectModal()
-                                                }
-                                            )
-                                        }
-                                    )
-                                }
-                            })
-                        }
-                    }
-                    else {
-                        selects.on('change', function(event) {
-                            const url = window.location.href
-
-                            // Reloading the whole window can be avoided using HTMX
-                            // to swap the row
-                            if (url.includes('_popup')) {
-                                $.post(
-                                    url,
-                                    $('form').serialize() + "&_continue=",
-                                    function() { window.location.reload() }
-                                )
-                            }
-                            else {
-                                $(save_button).click()
-                            }
-                        })
-                    }
-                })
-
                 // Selects in an extra form of a formset
                 const extra_selects = django.jQuery('select', django.jQuery('.form-row').not('.has_original'))
                 extra_selects.on('change', function(event) {
@@ -449,7 +330,63 @@
         })
     </script>
 
-    {% block change_form_js %}
+    {% block formset_added %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            document.addEventListener('formset:added', function(event) {
+                applySelect2()
+
+                const row = django.jQuery(event.target)
+                const input_texts = django.jQuery('input[type=text]', row)
+
+                input_texts.first().focus()
+                input_texts.last().on('change', function() {
+                    const url = window.location.href
+
+                    // Reloading the whole window can be avoided using HTMX
+                    // to swap the row
+                    if (url.includes('_popup')) {
+                        $.post(
+                            url,
+                            $('form').serialize() + "&_continue=",
+                            function() { window.location.reload() }
+                        )
+                    }
+                    else {
+                        $('.button-save').click()
+                    }
+                })
+            })
+        })
+    </script>
+    {% endblock %}
+
+    {% block formset_form %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // Selects in a saved form of a formset
+            const formset_forms = django.jQuery('.form-row.has_original')
+            formset_forms.each((index, form) => {
+                const selects = django.jQuery('select', form)
+                selects.on('change', function(event) {
+                    const url = window.location.href
+
+                    // Reloading the whole window can be avoided using HTMX
+                    // to swap the row
+                    if (url.includes('_popup')) {
+                        $.post(
+                            url,
+                            $('form').serialize() + "&_continue=",
+                            function() { window.location.reload() }
+                        )
+                    }
+                    else {
+                        $('.button-save').click()
+                    }
+                })
+            })
+        })
+    </script>
     {% endblock %}
     <!-- END change_form.html -->
 {% endblock %}

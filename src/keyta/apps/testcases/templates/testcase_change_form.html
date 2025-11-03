@@ -23,13 +23,95 @@
 </script>
 {% endblock %}
 
-{% block change_form_js %}
+{% block formset_added %}
 <script type="text/javascript">
     $(document).ready(function () {
         document.addEventListener('formset:added', function(event) {
             const row = django.jQuery(event.target)
-            const selects = django.jQuery('select', row)
-            selects.last().prop('disabled', true)
+            const to_keyword_select = django.jQuery('select[name$=-to_keyword]', row)
+            to_keyword_select.prop('disabled', true)
+        })
+    })
+</script>
+{% endblock %}
+
+{% block formset_form %}
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Selects in a saved form of a formset
+        const formset_forms = django.jQuery('.form-row.has_original')
+        formset_forms.each((index, form) => {
+            const window_select = django.jQuery('select[name$="-window"]', form)
+            const to_keyword_select = django.jQuery('select[name$="-to_keyword"]', form)
+
+            window_select.on('change', function () {
+                $('.button-save').click()
+            })
+
+            to_keyword_select.on('select2:clearing', function (event) {
+                event.preventDefault()
+                const result = confirm('{% trans "Sicher?" %}')
+
+                if (result) {
+                    django.jQuery(event.target).val(null).trigger('change');
+                }
+            })
+
+            if (index === 0) {
+                // When the first step is added reload the page in order to add the tab 'Execution'
+                to_keyword_select.on('change', function () {
+                    $('.button-save').click()
+                })
+            }
+            else {
+                to_keyword_select.on('change', function () {
+                    const related_widget_link = to_keyword_select.siblings('a').first()
+                    const test_step_id = to_keyword_select.closest('tr').find('input[id$="-id"]').attr('value')
+                    const test_step_url = `/testcases/teststep/${test_step_id}/change`
+                    const values_link = to_keyword_select.closest('tr').find('td.field-values a')
+                    const values_icon = values_link.find('i')
+
+                    if (to_keyword_select.val()) {
+                        $.post(
+                            window.location.href,
+                            $('form').serialize() + "&_continue=",
+                            function () {
+                                values_link.css('visibility', 'visible')
+                                $.get(
+                                    test_step_url + '?step-changed',
+                                    function (res) {
+                                        related_widget_link.replaceWith(res)
+                                        presentRelatedObjectModal()
+                                    }
+                                )
+                                $.get(
+                                    test_step_url + '?update-icon',
+                                    function (res) {
+                                        values_icon.replaceWith(res);
+                                        presentRelatedObjectModal()
+                                    }
+                                )
+                            }
+                        )
+                    }
+                    else {
+                        $.post(
+                            window.location.href,
+                            $('form').serialize() + "&_continue=",
+                            function () {
+                                values_link.css('visibility', 'hidden')
+                                $.get(
+                                    test_step_url + '?step-empty',
+                                    function (res) {
+                                        related_widget_link.replaceWith(res);
+                                        presentRelatedObjectModal()
+                                    }
+                                )
+                            }
+                        )
+                    }
+                })
+            }
         })
     })
 </script>
