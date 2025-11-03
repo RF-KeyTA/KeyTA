@@ -44,12 +44,13 @@ class TestCase(DocumentationMixin, CloneMixin, AbstractBaseModel):
     def create_execution(self):
         library_ids = self.systems.values_list('library', flat=True).distinct()
         execution = Execution.objects.create(testcase=self)
-        Setup.objects.create(
+        setup = Setup.objects.create(
             execution=execution,
             to_keyword=self.systems.first().attach_to_system,
-            enabled=False,
-            index=1
+            enabled=False
         )
+        setup.index = 0
+        setup.save()
 
         for library in Library.objects.filter(id__in=library_ids):
             LibraryImport.objects.create(
