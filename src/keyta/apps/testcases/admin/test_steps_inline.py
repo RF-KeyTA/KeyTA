@@ -1,4 +1,3 @@
-from django.contrib import admin
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 
@@ -28,18 +27,11 @@ class TestStepsInline(
 ):
     model = TestStep
     fk_name = 'testcase'
-    fields = ['test_step_url', 'execution_state', 'window', 'to_keyword']
-    readonly_fields = ['test_step_url']
+    fields = ['window', 'to_keyword']
     extra = 0 # necessary for saving, since to_keyword is not nullable and is null in an extra
     form = StepsForm
     formset = TestStepsFormset
     template = 'test_steps_sortable_tabular.html'
-
-    @admin.display(description='')
-    def test_step_url(self, obj):
-        test_step: TestStep = obj
-
-        return test_step.get_admin_url()
 
     def formfield_for_dbfield(self, db_field, request, **kwargs):
         field = super().formfield_for_dbfield(db_field, request, **kwargs)

@@ -381,7 +381,8 @@
                         else {
                             third_select.on('change', function () {
                                 const related_widget_link = third_select.siblings('a').first()
-                                const test_step_url = third_select.closest('tr').find('td.field-test_step_url').text().trim()
+                                const test_step_id = third_select.closest('tr').find('input[id$="-id"]').attr('value')
+                                const test_step_url = `/testcases/teststep/${test_step_id}/change`
 
                                 if (third_select.val()) {
                                     $.post(
