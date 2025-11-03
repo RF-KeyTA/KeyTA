@@ -342,32 +342,8 @@
                     })
 
                     if (selects.length === 3) {
-                        const first_select = django.jQuery(selects[0])
                         const second_select = django.jQuery(selects[1])
                         const third_select = django.jQuery(selects[2])
-
-                        const first_select_id = first_select.attr('id')
-                        if (first_select_id && first_select_id.endsWith('execution_state')) {
-                            first_select.on('change', function (event) {
-                                if ($(event.target).val() === 'BEGIN_EXECUTION') {
-                                    $('select[id$="execution_state"]').each((index, select) => {
-                                        if (django.jQuery(select).val() === 'BEGIN_EXECUTION' && $(event.target).attr('id') !== django.jQuery(select).attr('id')) {
-                                            django.jQuery(select).val('EXECUTE')
-                                            django.jQuery(select).trigger('change')
-                                        }
-                                    })
-                                }
-
-                                if ($(event.target).val() === 'END_EXECUTION') {
-                                    $('select[id$="execution_state"]').each((index, select) => {
-                                        if (django.jQuery(select).val() === 'END_EXECUTION' && $(event.target).attr('id') !== django.jQuery(select).attr('id')) {
-                                            django.jQuery(select).val('EXECUTE')
-                                            django.jQuery(select).trigger('change')
-                                        }
-                                    })
-                                }
-                            })
-                        }
 
                         second_select.on('change', function () {
                             $(save_button).click()

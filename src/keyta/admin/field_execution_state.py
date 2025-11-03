@@ -17,45 +17,42 @@ class ExecutionStateField:
     def exec_state(self, obj):
         step = obj
         idx = step.index
-
+        options = {
+            'EXECUTE': {'icon': settings.FA_ICONS.step_execute, 'title': _('Ausführen')},
+            'SKIP_EXECUTION': {'icon': settings.FA_ICONS.step_skip_execution, 'title': _('Überspringen')},
+            'BEGIN_EXECUTION': {'icon': settings.FA_ICONS.step_begin_execution, 'title': _('Ausführen ab')},
+            'END_EXECUTION': {'icon': settings.FA_ICONS.step_end_execution, 'title': _('Ausführen bis')},
+        }
+        data = {
+            'idx': idx,
+            'options': options
+        }
         template = """
         <select name="steps-{{idx}}-execution_state" id="id_steps-{{idx}}-execution_state" tabindex="-1" aria-hidden="true">
-            <option value="EXECUTE" selected="" data-select2-id="select2-data-2-f8ae">EXECUTE</option>
-            <option value="SKIP_EXECUTION">SKIP_EXECUTION</option>
-            <option value="BEGIN_EXECUTION">BEGIN_EXECUTION</option>
-            <option value="END_EXECUTION">END_EXECUTION</option>
+            {% for option in options %}
+            <option value="{{ option }}" {% if option == 'EXECUTE' %}selected{% endif %}>{{ option }}</option>
+            {% endfor %}
         </select>
         <script>
-            function status(value) {
-                const status_icon = {
-                   'EXECUTE': "{{icon_execute}}",
-                   'SKIP_EXECUTION': "{{icon_skip_execution}}",
-                   'BEGIN_EXECUTION': "{{icon_begin_execution}}",
-                   'END_EXECUTION': "{{icon_end_execution}}"
-                };
-
-                return status_icon[value];
-            }
-
-            function translate(value) {
-                const translate = {
-                    'EXECUTE': "{{execute}}",
-                    'SKIP_EXECUTION': "{{skip_execution}}",
-                    'BEGIN_EXECUTION': "{{begin_execution}}",
-                    'END_EXECUTION': "{{end_execution}}",
-                }
-
-                return translate[value];
+            function options(option) {
+                const options = {{ options }}
+                return options[option]
             }
 
             function formatResult(data) {
-                const template = '<span title="' + translate(data.text) + '"><i class="' + status(data.text) + '"></i></span>'
+                const option = options(data.text)
+                if (!option) return data.text
+                
+                const template = '<span title="' + option.title + '"><i class="' + option.icon + '"></i></span>'
                 return $(template)
             }
 
             function formatSelection(data) {
-                const $template = django.jQuery('<span title="' + translate(data.text) + '"><i></i><span></span></span>')
-                $template.find('i').addClass(status(data.text))
+                const option = options(data.text)
+                if (!option) return data.text
+                
+                const $template = django.jQuery('<span title="' + option.title + '"><i></i><span></span></span>')
+                $template.find('i').addClass(option.icon)
                 return $template
             }
 
@@ -65,20 +62,36 @@ class ExecutionStateField:
                 templateSelection: formatSelection,
                 width: 'element'
             })
+            
+            django.jQuery('#id_steps-{{idx}}-execution_state').on('change', function (event) {
+                const value = $(event.target).val()
+                const id = $(event.target).attr('id')
+                const selects = $('select[id$="execution_state"]')
+            
+                if (value === 'BEGIN_EXECUTION') {
+                    selects.each((index, select) => {
+                        const otherSelect = django.jQuery(select)
+                    
+                        if (otherSelect.val() === 'BEGIN_EXECUTION' && otherSelect.attr('id') !== id) {
+                            otherSelect.val('EXECUTE')
+                            otherSelect.trigger('change')
+                        }
+                    })
+                }
+
+                if (value === 'END_EXECUTION') {
+                    selects.each((index, select) => {
+                        const otherSelect = django.jQuery(select)
+                    
+                        if (otherSelect.val() === 'END_EXECUTION' && otherSelect.attr('id') !== id) {
+                            otherSelect.val('EXECUTE')
+                            otherSelect.trigger('change')
+                        }
+                    })
+                }
+            })
         </script>
         """
-
-        data = {
-            'idx': idx,
-            'execute': _('Ausführen'),
-            'skip_execution': _('Überspringen'),
-            'begin_execution': _('Ausführen ab'),
-            'end_execution': _('Ausführen bis'),
-            'icon_execute': settings.FA_ICONS.step_execute,
-            'icon_skip_execution': settings.FA_ICONS.step_skip_execution,
-            'icon_begin_execution': settings.FA_ICONS.step_begin_execution,
-            'icon_end_execution': settings.FA_ICONS.step_end_execution
-        }
 
         return mark_safe(Template(template).render(**data))
 
