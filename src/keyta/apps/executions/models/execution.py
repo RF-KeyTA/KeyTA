@@ -110,9 +110,8 @@ class Execution(CloneMixin, AbstractBaseModel):
         return '-'
 
     def get_rf_settings(self, get_variable_value, user: AbstractUser) -> RFSettings:
-        def maybe_to_robot(keyword_call, user: AbstractUser):
-            if keyword_call and keyword_call.enabled:
-                return keyword_call.to_robot(get_variable_value, user)
+        test_setup = self.test_setup().filter(enabled=True).first()
+        test_teardown = self.test_teardown().filter(enabled=True).first()
 
         return {
             'library_imports': [
@@ -127,8 +126,8 @@ class Execution(CloneMixin, AbstractBaseModel):
             ],
             'suite_setup': None,
             'suite_teardown': None,
-            'test_setup': maybe_to_robot(self.test_setup().filter(enabled=True).first(), user),
-            'test_teardown': maybe_to_robot(self.test_teardown().filter(enabled=True).first(), user)
+            'test_setup': test_setup.to_robot(get_variable_value, user) if test_setup else None,
+            'test_teardown': test_teardown.to_robot(get_variable_value, user) if test_teardown else None
         }
 
     def get_rf_testsuite(self, get_variable_value, user: AbstractUser, execution_state: dict) -> RFTestSuite:
