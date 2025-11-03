@@ -187,7 +187,7 @@ class SequenceQuickChangeSteps(SequenceSteps):
         return [
             field
             for field in fields
-            if field != 'execute'
+            if field != 'exec_state'
         ]
 
 

@@ -1,16 +1,15 @@
-from django import forms
 from django.utils.translation import gettext_lazy as _
 
+from keyta.admin.field_execution_state import ExecutionStateField
 from keyta.apps.keywords.admin import StepsInline
 from keyta.apps.keywords.forms import StepsForm
 from keyta.apps.keywords.models import KeywordCall
-from keyta.apps.keywords.models.keywordcall import ExecutionState
 from keyta.forms import form_with_select
 
 from ..forms import SequenceStepsFormset
 
 
-class SequenceSteps(StepsInline):
+class SequenceSteps(ExecutionStateField, StepsInline):
     model = KeywordCall
     form = form_with_select(
         KeywordCall,
@@ -24,23 +23,3 @@ class SequenceSteps(StepsInline):
     )
     formset = SequenceStepsFormset
     template = 'sequence_steps_sortable_tabular.html'
-
-    def get_fields(self, request, obj=None):
-        if self.can_change(request.user, 'sequence'):
-            return ['execution_state'] + super().get_fields(request, obj)
-
-        return super().get_fields(request, obj)
-
-    def formfield_for_dbfield(self, db_field, request, **kwargs):
-        field = super().formfield_for_dbfield(db_field, request, **kwargs)
-
-        class ExecutionStateSelect(forms.Select):
-            template_name = "select_execution_state.html"
-            option_template_name = "select_option_execution_state.html"
-
-        if db_field.name == 'execution_state':
-            field.widget = ExecutionStateSelect(
-                choices=ExecutionState.choices
-            )
-
-        return field

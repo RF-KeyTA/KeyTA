@@ -1,18 +1,15 @@
-from django import forms
-from django.conf import settings
 from django.contrib import admin
 from django.db.models import Q
-from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 
+from admin.field_execution_state import ExecutionStateField
 from keyta.admin.base_inline import SortableTabularInline
 from keyta.admin.field_delete_related_instance import DeleteRelatedField
 from keyta.apps.keywords.admin.field_keywordcall_values import KeywordCallValuesField
 from keyta.apps.keywords.forms import StepsForm
 from keyta.apps.keywords.models import Keyword, KeywordType
-from keyta.apps.keywords.models.keywordcall import ExecutionState
 from keyta.apps.windows.models import Window
-from keyta.widgets import ModelSelect2AdminWidget, Icon
+from keyta.widgets import ModelSelect2AdminWidget
 
 from ..forms import TestStepsFormset
 from ..models import TestCase, TestStep
@@ -23,7 +20,8 @@ class TestStepValuesField(KeywordCallValuesField):
         return request.user
 
 
-class TestStepsInline(   
+class TestStepsInline(
+    ExecutionStateField,
     DeleteRelatedField,
     TestStepValuesField,
     SortableTabularInline
@@ -48,21 +46,6 @@ class TestStepsInline(
         testcase_id = request.resolver_match.kwargs['object_id']
         testcase = TestCase.objects.get(id=testcase_id)
 
-        class ExecutionStateSelect(forms.Select):
-            template_name = "select_execution_state.html"
-            option_template_name = "select_option_execution_state.html"
-
-        if db_field.name == 'execution_state':
-            icon = Icon(
-                settings.FA_ICONS.execute,
-                styles={'font-size': '18px', 'margin-left': '12px'},
-                title=_('Ausführen')
-            )
-            field.label = mark_safe(str(icon))
-            field.widget = ExecutionStateSelect(
-                choices=ExecutionState.choices
-            )
-
         if db_field.name == 'to_keyword':
             field.label = _('Sequenz')
             field.queryset = field.queryset.filter(Q(type=KeywordType.SEQUENCE) | Q(resource__isnull=False))
@@ -83,18 +66,6 @@ class TestStepsInline(
             )
 
         return field
-
-    def get_fields(self, request, obj=None):
-        fields = super().get_fields(request, obj)
-
-        if self.can_change(request.user, 'testcase'):
-            return fields
-
-        return [
-            field
-            for field in fields
-            if field != 'execution_state'
-        ]
 
     def get_queryset(self, request):
         return (
