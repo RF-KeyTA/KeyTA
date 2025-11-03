@@ -9,13 +9,11 @@ from keyta.widgets import Icon
 
 
 class ExecutionStateField:
-    icon = Icon(
+    @admin.display(description=mark_safe(str(Icon(
         settings.FA_ICONS.execute,
         styles={'font-size': '18px', 'margin-left': '12px'},
         title=_('Ausführen')
-    )
-
-    @admin.display(description=mark_safe(str(icon)))
+    ))))
     def exec_state(self, obj):
         step = obj
         idx = step.index
