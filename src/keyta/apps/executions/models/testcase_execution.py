@@ -73,8 +73,14 @@ class TestCaseExecution(Execution):
             if to_keyword := test_setup.to_keyword:
                 keywords[to_keyword.id] = to_keyword.to_robot(get_variable_value, {})
 
-        if test_teardown := self.test_teardown().filter(enabled=True).first():
-            if to_keyword := test_teardown.to_keyword:
+        if test_teardown := self.test_teardown().first():
+            if execution_state.get('BEGIN_EXECUTION') or execution_state.get('END_EXECUTION'):
+                test_teardown.enabled = False
+                test_teardown.save()
+            else:
+                test_teardown.enabled = True
+                test_teardown.save()
+                to_keyword = test_teardown.to_keyword
                 keywords[to_keyword.id] = to_keyword.to_robot(get_variable_value, {})
 
         tables, rows = self.get_tables_rows()
