@@ -9,10 +9,8 @@
             <table class="table table-hover text-nowrap">
                 <thead>
                     <tr>
-                        <th class="original" style="width: 5%">
-                            <span class="sort">
-                                
-                            </span>
+                        <th class="original" style="width: 45px">
+                            <span class="sort"></span>
                         </th>
                         {% for field in inline_admin_formset.fields %}
                         {% if not field.widget.is_hidden %}
@@ -23,9 +21,6 @@
                         {% endblock %}
                         {% endif %}
                         {% endfor %}
-                        {% if inline_admin_formset.formset.can_delete and inline_admin_formset.has_delete_permission %}
-                        <th class="delete pb-1" style="font-size: 20px; padding-left: 1.2pc"></th>
-                        {% endif %}
                     </tr>
                 </thead>
                 <tbody id="{{ inline_admin_formset.formset.prefix }}-sortable">
@@ -57,9 +52,6 @@
                                     {% endfor %}
                                 {% endfor %}
                             {% endfor %}
-                            {% if inline_admin_formset.formset.can_delete and inline_admin_formset.has_delete_permission %}
-                            <td class="delete"></td>
-                            {% endif %}
                         </tr>
                     {% endfor %}
                 </tbody>
