@@ -1,9 +1,9 @@
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 
-from admin.field_execution_state import ExecutionStateField
 from keyta.admin.base_inline import SortableTabularInline
 from keyta.admin.field_delete_related_instance import DeleteRelatedField
+from keyta.admin.field_execution_state import ExecutionStateField
 from keyta.apps.keywords.admin.field_keywordcall_values import KeywordCallValuesField
 from keyta.apps.keywords.forms import StepsForm
 from keyta.apps.keywords.models import Keyword, KeywordType
