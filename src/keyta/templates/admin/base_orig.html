@@ -13,7 +13,7 @@
     <!--  Prevent admin panel being crawled by search engines -->
     <meta name="robots" content="none, noarchive">
 
-    <title>{% block title %}{{ title }} | {{ jazzmin_settings.site_title }}{% endblock %}</title>
+    <title>{% block title %}{% firstof original.name title %} | {{ jazzmin_settings.site_title }}{% endblock %}</title>
 
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="{% static "vendor/fontawesome-free/css/all.min.css" %}">
