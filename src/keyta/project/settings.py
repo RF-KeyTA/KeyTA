@@ -30,7 +30,7 @@ KEYTA_DIR = get_home_dir() / 'KeyTA'
 KEYTA_DIR.mkdir(exist_ok=True)
 
 
-admin.AdminSite.index_title = 'KeyTA'
+admin.AdminSite.index_title = 'Dashboard'
 
 def has_permission(self, request):
     from django.contrib.auth.models import User
