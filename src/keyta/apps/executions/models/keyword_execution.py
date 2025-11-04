@@ -87,7 +87,7 @@ class KeywordExecution(Execution):
 
         return {
             'name': self.keyword.name,
-            'settings': self.get_rf_settings(get_variable_value, user),
+            'settings': self.get_rf_settings(get_variable_value, user, execution_state),
             'rows': [],
             'tables': [],
             'keywords': list(keywords.values()),

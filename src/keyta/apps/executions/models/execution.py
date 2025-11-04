@@ -109,9 +109,16 @@ class Execution(CloneMixin, AbstractBaseModel):
 
         return '-'
 
-    def get_rf_settings(self, get_variable_value, user: AbstractUser) -> RFSettings:
+    def get_rf_settings(self, get_variable_value, user: AbstractUser, execution_state: dict) -> RFSettings:
         test_setup = self.test_setup().filter(enabled=True).first()
         test_teardown = self.test_teardown().filter(enabled=True).first()
+
+        def teardown_disabled():
+            return (
+                execution_state.get('BEGIN_EXECUTION') or
+                execution_state.get('END_EXECUTION') or
+                test_teardown.disabled
+            )
 
         return {
             'library_imports': [
@@ -127,7 +134,7 @@ class Execution(CloneMixin, AbstractBaseModel):
             'suite_setup': None,
             'suite_teardown': None,
             'test_setup': test_setup.to_robot(get_variable_value, user) if test_setup else None,
-            'test_teardown': test_teardown.to_robot(get_variable_value, user) if test_teardown else None
+            'test_teardown': test_teardown.to_robot(get_variable_value, user) if test_teardown and not teardown_disabled() else None
         }
 
     def get_rf_testsuite(self, get_variable_value, user: AbstractUser, execution_state: dict) -> RFTestSuite:
