@@ -1,4 +1,5 @@
 import re
+from collections import defaultdict
 
 from django.db import models
 from django.db.models import Q
@@ -83,6 +84,9 @@ class Keyword(DocumentationMixin, AbstractBaseModel):
 
         return (
             self.calls
+            .prefetch_related('conditions')
+            .prefetch_related('return_values')
+            .prefetch_related('to_keyword')
             .filter(index__gte=execute_from)
             .filter(index__lte=execute_until)
             .exclude(Q(to_keyword__isnull=True) | Q(index__in=execution_state.get('SKIP_EXECUTION', [])))
@@ -120,8 +124,17 @@ class Keyword(DocumentationMixin, AbstractBaseModel):
         super().save(force_insert, force_update, using, update_fields)
 
     def to_robot(self, get_variable_value, execution_state: dict) -> RFKeyword:
-        args = self.parameters.args()
-        kwargs = self.parameters.kwargs()
+        parameters = defaultdict(list)
+
+        for param in self.parameters.all():
+            if param.type == 'ARG':
+                parameters['args'].append(param)
+
+            if param.type == 'KWARG':
+                parameters['kwargs'].append(param)
+
+        args = parameters['args']
+        kwargs = parameters['kwargs']
         return_values = self.return_values.all()
 
         return {
