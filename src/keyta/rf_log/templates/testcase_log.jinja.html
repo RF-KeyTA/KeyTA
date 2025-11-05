@@ -125,11 +125,6 @@
                 <div>
                     {{ testcase.name }} <span class="badge {% if testcase.status == 'PASS' %}text-bg-success{% else %}text-bg-danger{% endif %}">{{ testcase.status }}</span>
                 </div>
-                <div>
-                    <a class="btn" onclick="showSaveFilePicker({suggestedName: '{{ testcase.name }}.html'})">
-                        {{ icon.download }}
-                    </a>
-                </div>
             </div>
         </h3>
         <div class="row pt-3 pb-3">
