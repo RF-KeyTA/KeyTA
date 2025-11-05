@@ -110,6 +110,8 @@
         start_button.addEventListener('click', function(event) {
             event.preventDefault();
 
+            start_button.closest('tr').style.backgroundColor = ''
+
             const execution_state = {
                 'BEGIN_EXECUTION': null,
                 'END_EXECUTION': null,
