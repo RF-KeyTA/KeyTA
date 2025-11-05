@@ -19,20 +19,17 @@ from .execution import Execution, ExecutionType
 
 
 class TestCaseExecution(Execution):
-    @property
-    def action_ids(self):
+    def action_ids(self, sequence_pks):
         return (
             KeywordCall.objects
-            .filter(from_keyword__in=self.sequence_ids)
+            .filter(from_keyword__in=sequence_pks)
             .filter(to_keyword__resource__isnull=True)
             .values_list('to_keyword', flat=True)
         )
 
-    @property
-    def sequence_ids(self):
+    def sequence_ids(self, test_steps):
         return (
-            KeywordCall.objects
-            .filter(testcase_id=self.testcase.pk)
+            test_steps
             .filter(to_keyword__resource__isnull=True)
             .values_list('to_keyword', flat=True)
         )
@@ -55,10 +52,16 @@ class TestCaseExecution(Execution):
         return setup_teardown_calls | test_calls | sequence_calls | action_calls
 
     def get_rf_testsuite(self, get_variable_value, user: AbstractUser, execution_state: dict) -> RFTestSuite:
+        sequence_pks = self.sequence_ids(self.testcase.executable_steps(execution_state))
+
         keywords = {
             keyword.pk: keyword.to_robot(get_variable_value, {})
             for keyword in
-            Keyword.objects.filter(pk__in=self.sequence_ids|self.action_ids)
+            Keyword.objects
+            .prefetch_related('parameters')
+            .prefetch_related('return_values')
+            .prefetch_related('calls')
+            .filter(pk__in=sequence_pks | self.action_ids(sequence_pks))
         }
         attach_to_running_system = self.test_setup().first()
 
