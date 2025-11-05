@@ -72,7 +72,7 @@ class ExecutionStateField:
                     selects.each((index, select) => {
                         const otherSelect = django.jQuery(select)
                     
-                        if (otherSelect.val() === 'BEGIN_EXECUTION' && otherSelect.attr('id') !== id) {
+                        if ((otherSelect.val() === 'BEGIN_EXECUTION' && otherSelect.attr('id') !== id) || otherSelect.val() === 'END_EXECUTION') {
                             otherSelect.val('EXECUTE')
                             otherSelect.trigger('change')
                         }
