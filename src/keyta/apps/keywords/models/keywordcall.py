@@ -319,7 +319,12 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
             super().save(force_insert, force_update, using, update_fields)
 
     def to_robot(self, get_variable_value, user: Optional[AbstractUser]=None) -> RFKeywordCall:
-        parameters = self.parameters.filter(user=user)
+        parameters = (
+            self.parameters
+           .prefetch_related('parameter')
+           .prefetch_related('value_ref')
+           .filter(user=user)
+        )
         varargs = parameters.filter(parameter__type=KeywordParameterType.VARARG)
 
         params = []
