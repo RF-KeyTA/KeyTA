@@ -40,8 +40,8 @@
                 headers: {'X-CSRFToken': csrf_token, 'Content-Type': 'application/json'}
             }
         )
-        .catch(_ => error(errors.ROBOT_ERROR))
         .then(_ => after_save_result(exec_url, robot_server, data, start_button))
+        .catch(e => {console.log(e); error(errors.ROBOT_ERROR)})
 
     const robot_run = (csrf_token, data, exec_url, start_button) => {
         info("{% translate 'Robot Framework wird ausgeführt.' %}")
@@ -58,8 +58,8 @@
                 body: JSON.stringify(data)
             })
             .then(res => res.json())
-            .catch(_ => error(errors.ROBOT_ERROR))
             .then(json => save_result(after_save_result, csrf_token, exec_url, json, start_button))
+            .catch(e => {console.log(e); error(errors.ROBOT_ERROR)})
             .finally(_ => {
                 $(info_message).hide()
                 start_icon.classList.replace("fa-arrows-rotate", "fa-circle-play")
@@ -83,14 +83,14 @@
             if (json.error) error(json.error)
             else robot_run(csrf_token, json, exec_url, start_button)
         })
-        .catch(_ => error(errors.ROBOT_ERROR))
+        .catch(e => {console.log(e); error(errors.ROBOT_ERROR)})
     }
 
     const start = (start_button, execution_state) => {
         fetch(robot_server)
         .then(_ => get_csrf_token())
         .then(csrf_token => to_robot(csrf_token, start_button, execution_state))
-        .catch(_ => error(errors.EXEC_NO_KEYTA))
+        .catch(e => {console.log(e); error(errors.EXEC_NO_KEYTA)})
     }
 
     const log_button = document.getElementById("log-btn")
@@ -100,7 +100,7 @@
 
             fetch(robot_server)
             .then(_ => window.open(log_button.getAttribute("href"), '_blank'))
-            .catch(_ => error(errors.LOG_NO_KEYTA))
+            .catch(e => {console.log(e); error(errors.LOG_NO_KEYTA)})
         });
     }
 
