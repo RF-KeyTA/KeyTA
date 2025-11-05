@@ -58,10 +58,11 @@ def robot_run(
     testsuite_name: str,
     testsuite: str
 ):
-    base_dir = tmp_dir / slugify(testsuite_name)
+    testsuite_fs_name = slugify(testsuite_name)
+    base_dir = tmp_dir / testsuite_fs_name
     base_dir.mkdir(parents=True, exist_ok=True)
     output_dir = base_dir / 'output'
-    robot_file = base_dir / 'Testsuite.robot'
+    robot_file = base_dir / f'{testsuite_fs_name}.robot'
     write_file_to_disk(robot_file, testsuite)
 
     robot_kwargs = {
@@ -115,12 +116,15 @@ class RequestHandler(SimpleHTTPRequestHandler):
         super().__init__(request, client_address, server_class, directory=str(Path(__file__).resolve().parent))
 
     def do_GET(self):
-        if self.path.endswith('.html'):
+        if self.path.endswith('.html') or self.path.endswith('.robot'):
             path = Path(str(tmp_dir) + self.path)
 
             if path.exists():
                 self.send_response(HTTPStatus.OK)
-                self.send_header("Content-type", 'text/html')
+                if self.path.endswith('.html'):
+                    self.send_header("Content-type", 'text/html')
+                if self.path.endswith('.robot'):
+                    self.send_header("Content-type", 'text/plain')
                 self.send_header("Content-Length", str(os.stat(path).st_size))
                 self.end_headers()
 
