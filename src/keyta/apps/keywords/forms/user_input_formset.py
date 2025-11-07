@@ -3,6 +3,7 @@ import re
 from django import forms
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.db.models import QuerySet
 from django.utils.translation import gettext_lazy as _
 
 from keyta.widgets import BaseSelect
@@ -88,23 +89,6 @@ class BaseSelectWithIcons(BaseSelect):
         return option
 
 
-def user_input_field(placeholder: str, user_input: tuple, choices: list = None):
-    return DynamicChoiceField(
-        widget=BaseSelectWithIcons(
-            placeholder,
-            choices=(
-                [(None, _('Kein Wert'))] +
-                [[_('Eingabe'), [user_input, empty_input]]] +
-                (choices or [])
-            ),
-            attrs={
-                # Allow manual input
-                'data-tags': 'true',
-            }
-        )
-    )
-
-
 class UserInputFormset(forms.BaseInlineFormSet):
     def __init__(
         self,
@@ -121,6 +105,7 @@ class UserInputFormset(forms.BaseInlineFormSet):
         self.ref_choices = self.get_ref_choices(instance)
         self.enable_user_input = True
         self.parent: KeywordCall = instance
+        self.ajax_url = self.parent.get_admin_url()
         if library := self.parent.to_keyword.library:
             self.typedocs = library.get_typedocs()
 
@@ -140,3 +125,22 @@ class UserInputFormset(forms.BaseInlineFormSet):
                 return json_value.jsonify(), user_input
 
         return no_input
+
+    def user_input_attrs(self):
+        return {
+            # Allow manual input
+            'data-tags': 'true'
+        }
+
+    def user_input_field(self, placeholder: str, user_input: tuple, choices: list = None):
+        return DynamicChoiceField(
+            widget=BaseSelectWithIcons(
+                placeholder,
+                choices=(
+                    [(None, _('Kein Wert'))] +
+                    [[_('Eingabe'), [user_input, empty_input]]] +
+                    (choices or [])
+                ),
+                attrs=self.user_input_attrs()
+            )
+        )

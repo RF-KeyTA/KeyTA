@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.http import HttpResponseRedirect, HttpResponse
+from django.http.request import HttpRequest
 
 from keyta.admin.base_admin import BaseAdmin
 from keyta.apps.actions.admin.library_keyword_call_vararg_parameters_inline import VarargParametersInline
@@ -9,14 +10,15 @@ from keyta.apps.sequences.models import SequenceStep
 from keyta.apps.testcases.models import TestStep
 from keyta.widgets import url_query_parameters
 
+from ..json_value import JSONValue
 from ..models import (
     ExecutionKeywordCall,
     KeywordCall,
     KeywordParameterType
 )
+from ..models.keywordcall import KeywordCallType, TestSetupTeardown
 from .keywordcall_parameters_inline import KeywordCallParametersInline
 from .keywordcall_return_value_inline import KeywordCallReturnValueInline, ReadOnlyReturnValuesInline
-from ..models.keywordcall import KeywordCallType, TestSetupTeardown
 
 
 class UpdateIconHtmx:
@@ -98,6 +100,53 @@ class KeywordCallAdmin(UpdateIconHtmx, BaseAdmin):
             inlines.append(KeywordCallReturnValueInline)
 
         return inlines
+
+    def get_select2_choices(self, request: HttpRequest, kw_call: KeywordCall, group_choices):
+        results = [
+            {
+                'text': text,
+                'children': [
+                    {
+                        'id': id,
+                        'text': text,
+                        'icon': choices_group['icon']
+                    }
+                    for id, text in choices
+                ]
+            }
+            for choices_group in group_choices
+            for text, choices in choices_group['group']
+        ]
+
+        if term := request.GET.get('term'):
+            results = [
+                {
+                    'text': 'Eingabe',
+                    'children': [
+                        {
+                            'id': JSONValue.user_input(term),
+                            'text': term,
+                            'selected': True
+                        }
+                    ]
+                }
+            ]
+
+        if param := kw_call.parameters.filter(user=request.user).first():
+            if user_input := param.json_value.user_input:
+                results = [
+                    {
+                        'text': 'Eingabe',
+                        'children': [
+                            {
+                                'id': param.value,
+                                'text': user_input
+                            }
+                        ]
+                    }
+                ] + results
+
+        return results
 
     def has_change_permission(self, request, obj=None):
         keywordcall: KeywordCall = obj

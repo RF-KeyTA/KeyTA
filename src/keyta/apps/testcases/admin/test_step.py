@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.contrib import admin
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 
 from keyta.apps.keywords.admin import (
@@ -8,39 +8,41 @@ from keyta.apps.keywords.admin import (
     KeywordCallParametersInline,
     ReadOnlyReturnValuesInline
 )
-from keyta.apps.keywords.forms import KeywordCallParameterFormsetWithErrors
 from keyta.apps.keywords.forms.keywordcall_parameter_formset import (
-    get_prev_return_values,
-    get_variables_choices
+    KeywordCallParameterFormsetWithErrors, get_prev_return_values, get_window_variables
 )
-from keyta.apps.keywords.models import KeywordCall
-from keyta.apps.variables.models import Variable
 from keyta.widgets import Icon, open_link_in_modal, url_query_parameters
 
 from ..models import TestStep
 from .quick_change_variables_inline import QuickChangeVariables
 
 
-def get_window_variables(kw_call: KeywordCall):
-    variables = (
-        Variable.objects
-        .filter(
-            windows__in=[kw_call.window],
-            systems__in=kw_call.testcase.systems.all()
-        )
-        .exclude(table__isnull=False)
-    )
+def get_choices_groups(test_step: TestStep):
+    choices = []
+    systems = test_step.testcase.systems.all()
+    window = test_step.window
 
-    return get_variables_choices(variables)
+    if prev_return_values := get_prev_return_values(test_step):
+        choices.append({
+            'icon': settings.FA_ICONS.arg_return_value,
+            'group': prev_return_values
+        })
+
+    if window_variables := get_window_variables(systems, window):
+        choices.append({
+            'icon': settings.FA_ICONS.arg_variable,
+            'group': window_variables
+        })
+
+    return choices
 
 
 class TestStepParameterFormset(KeywordCallParameterFormsetWithErrors):
-    def get_ref_choices(self, kw_call: KeywordCall):
-        return get_prev_return_values(kw_call) + get_window_variables(kw_call)
+    def get_choices_groups(self, test_step: TestStep):
+        return get_choices_groups(test_step)
 
 
 class TestStepParametersInline(KeywordCallParametersInline):
-    fields = ['name', 'value']
     formset = TestStepParameterFormset
 
     def get_queryset(self, request):
@@ -66,6 +68,11 @@ class TestStepAdmin(
         self.switch_inlines(request)
 
         test_step = TestStep.objects.get(pk=object_id)
+
+        if _type := request.GET.get('_type') == 'query':
+            return JsonResponse({
+                'results': self.get_select2_choices(request, test_step, get_choices_groups(test_step))
+            })
 
         if 'step-changed' in request.GET:
             return HttpResponse(open_link_in_modal(

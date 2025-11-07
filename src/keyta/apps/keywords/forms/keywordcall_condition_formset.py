@@ -6,7 +6,7 @@ from ..json_value import JSONValue
 from ..models import KeywordCall, KeywordCallParameterSource, KeywordCallCondition
 from ..models.keywordcall_condition import ConditionChoices
 from .keywordcall_parameter_formset import get_keyword_parameters
-from .user_input_formset import BaseSelectWithIcons, UserInputFormset, user_input_field
+from .user_input_formset import BaseSelectWithIcons, UserInputFormset
 
 
 class KeywordCallConditionFormset(UserInputFormset):
@@ -46,17 +46,17 @@ class KeywordCallConditionFormset(UserInputFormset):
         )
 
         if 'expected_value' in form.fields:
-            form.fields['expected_value'] = user_input_field(
+            form.fields['expected_value'] = self.user_input_field(
             _('Wert auswählen oder eintragen'),
             self.get_user_input(form, index),
             choices=self.ref_choices
         )
-
-    def get_ref_choices(self, kw_call: KeywordCall):
-        return get_keyword_parameters(kw_call)
 
     def get_json_value(self, form):
         kw_call_condition: KeywordCallCondition = form.instance
 
         if kw_call_condition.expected_value:
             return JSONValue.from_json(kw_call_condition.expected_value)
+
+    def get_ref_choices(self, kw_call: KeywordCall):
+        return get_keyword_parameters(kw_call)

@@ -1,11 +1,11 @@
+import json
 import re
-from collections import defaultdict
 
-from django.db.models import QuerySet, Q
+from django.db.models import QuerySet
 from django.forms.utils import ErrorDict, ErrorList
 from django.utils.translation import gettext_lazy as _
 
-from keyta.apps.variables.models import Variable, VariableValue
+from keyta.apps.variables.models import Variable
 
 from ..json_value import JSONValue
 from ..models import (
@@ -14,7 +14,7 @@ from ..models import (
     KeywordCallParameter,
     KeywordCallReturnValue
 )
-from .user_input_formset import UserInputFormset, user_input_field
+from .user_input_formset import UserInputFormset
 
 
 def get_global_variables(system_ids: list[int]):
@@ -122,6 +122,19 @@ def get_variables_choices(variables: QuerySet):
     ]
 
 
+def get_window_variables(systems: QuerySet, window):
+    variables = (
+        Variable.objects
+        .filter(
+            windows__in=[window],
+            systems__in=systems
+        )
+        .exclude(table__isnull=False)
+    )
+
+    return get_variables_choices(variables)
+
+
 class ErrorsMixin:
     def add_fields(self, form, index):
         super().add_fields(form, index)
@@ -149,18 +162,36 @@ class KeywordCallParameterFormset(UserInputFormset):
         if index is None:
             return
 
-        form.fields['value'] = user_input_field(
+        form.fields['value'] = self.user_input_field(
             _('Wert auswählen oder eintragen'),
             self.get_user_input(form, index),
             choices=self.ref_choices
         )
 
-    def get_ref_choices(self, kw_call: KeywordCall):
-        return get_keyword_parameters(kw_call) + get_prev_return_values(kw_call)
+    def get_choices_groups(self, kw_call: KeywordCall):
+        return []
 
     def get_json_value(self, form):
         kw_call_parameter: KeywordCallParameter = form.instance
         return kw_call_parameter.json_value
+
+    def get_ref_choices(self, kw_call: KeywordCall):
+        choices = []
+
+        for choices_group in self.get_choices_groups(kw_call):
+            choices.extend(choices_group['group'])
+
+        return choices
+
+    def user_input_attrs(self):
+        attrs = {
+            'data-ajax': json.dumps({
+                'url': self.ajax_url,
+                'dataType': 'json'
+            })
+        }
+
+        return super().user_input_attrs() | attrs
 
 
 class KeywordCallParameterFormsetWithErrors(ErrorsMixin, KeywordCallParameterFormset):

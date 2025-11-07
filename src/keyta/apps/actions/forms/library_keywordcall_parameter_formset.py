@@ -9,7 +9,7 @@ from keyta.apps.keywords.forms.keywordcall_parameter_formset import (
     get_global_variables,
     get_keyword_parameters
 )
-from keyta.apps.keywords.forms.user_input_formset import DynamicChoiceField, invert_dictionary, user_input_field
+from keyta.apps.keywords.forms.user_input_formset import DynamicChoiceField, invert_dictionary
 
 
 class LibraryKeywordCallParameterFormset(KeywordCallParameterFormset):
@@ -81,7 +81,7 @@ class LibraryKeywordCallParameterFormset(KeywordCallParameterFormset):
                             if value in enum_values:
                                 user_input = None, _('Kein Wert')
 
-                        form.fields['value'] = user_input_field(
+                        form.fields['value'] = self.user_input_field(
                             _('Wert auswählen oder eintragen'),
                             user_input,
                             choices=list(choices.items()) + self.ref_choices

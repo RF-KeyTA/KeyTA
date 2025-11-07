@@ -15,7 +15,13 @@
         if (state.id && state.text.match(regex))
             return state.text.replace('$', '').replace('{', '').replace('}[', '.').replace(']', '');
 
-        return state.text
+        const $template = $('<span><i></i><span></span></span>')
+        if (state.icon) {
+            $template.find('i').addClass(state.icon).addClass('mr-3')
+        }
+        $template.find('span').text(state.text)
+
+        return $template
     }
 
     function formatSelection(state) {
@@ -23,7 +29,7 @@
         const element = state.element
 
         if (element) {
-            const icon = state.element.attributes['icon'];
+            const icon = element.attributes['icon'];
             const $template = $('<span><i></i><span></span></span>')
 
             if (icon) {
@@ -52,14 +58,26 @@
         const selects = django.jQuery('select').not(noSelect2)
 
         selects.each(function (index, select) {
+            let ajax = select.getAttribute('data-ajax')
             let tags = select.getAttribute('data-tags')
+
+            let select2Options = {
+                width: 'element',
+                templateResult: formatResult,
+                templateSelection: formatSelection
+            }
+
+            if (ajax) {
+                select2Options = {
+                    ...select2Options,
+                    ajax: JSON.parse(ajax)
+                }
+            }
 
             if (tags === 'true') {
                 django.jQuery(select).select2({
-                    width: 'element',
+                    ...select2Options,
                     matcher: matchCustom,
-                    templateResult: formatResult,
-                    templateSelection: formatSelection
                 });
 
                 // Automatically fill the search field with the currently selected value
@@ -74,10 +92,8 @@
             }
             else {
                 django.jQuery(select).select2({
-                    width: 'element',
-                    minimumResultsForSearch: Infinity,
-                    templateResult: formatResult,
-                    templateSelection: formatSelection
+                    ...select2Options,
+                    minimumResultsForSearch: Infinity
                 });
             }
         })
