@@ -30,7 +30,11 @@ def dict_as_kwargs(dic):
 
 
 def escape_backslashes(text: str):
-    return re.sub(r"\\(\w)", r"\\\\\1", text)
+    return re.sub(
+        r"\\(\w)",
+        r"\\\\\1",
+        text.replace(r'\n', '##BACKSLASH_N##')
+    ).replace('##BACKSLASH_N##', r'\n')
 
 
 def escape_spaces(text: str):
