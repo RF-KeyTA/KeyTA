@@ -85,8 +85,7 @@ class TestCaseExecution(Execution):
         return {
             'name': self.testcase.name,
             'settings': self.get_rf_settings(get_variable_value, user, execution_state),
-            'tables': tables,
-            'rows': rows,
+            'variables': [*tables, *rows],
             'keywords': list(keywords.values()),
             'testcases': [self.testcase.to_robot(get_variable_value, user, execution_state)]
         }

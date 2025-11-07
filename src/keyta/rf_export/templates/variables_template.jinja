@@ -1,8 +1,4 @@
 *** Variables ***
-{%- for table_name, row_names in tables %}
-{{ table_name }}    {{ rf_join(row_names) }}
-{%- endfor %}
-
-{%- for row_name, values in rows %}
-{{ row_name }}    {{ rf_join(values) }}
+{%- for name, values in variables %}
+{{ name }}    {{ rf_join(values) }}
 {%- endfor %}
