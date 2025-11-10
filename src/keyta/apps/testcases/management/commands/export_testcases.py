@@ -48,11 +48,11 @@ class Command(BaseCommand):
         app, model = settings.AUTH_USER_MODEL.split('.')
         user_model = apps.get_model(app, model)
         user = user_model.objects.first()
+        base_dir = Path('tests') / 'RF'
+        base_dir.mkdir(parents=True, exist_ok=True)
 
         execution: TestCaseExecution
         for execution in TestCaseExecution.objects.all():
             testsuite = execution.get_rf_testsuite(get_variable_value, user, {})
             robot_file = slugify(testsuite['name']) + '.robot'
-            base_dir = Path('tests') / 'RF'
-            base_dir.mkdir(parents=True, exist_ok=True)
             write_file_to_disk(base_dir / robot_file, gen_testsuite(testsuite))
