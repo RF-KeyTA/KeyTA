@@ -9,6 +9,7 @@ from django.utils.translation import gettext_lazy as _
 
 from model_clone import CloneMixin
 
+from keyta.apps.keywords.models import KeywordCall
 from keyta.apps.keywords.models.keyword import KeywordType
 from keyta.apps.libraries.models import Library, LibraryImport
 from keyta.apps.resources.models import Resource, ResourceImport
@@ -110,14 +111,14 @@ class Execution(CloneMixin, AbstractBaseModel):
         return '-'
 
     def get_rf_settings(self, get_variable_value, user: AbstractUser, execution_state: dict) -> RFSettings:
-        test_setup = self.test_setup().filter(enabled=True).first()
-        test_teardown = self.test_teardown().filter(enabled=True).first()
+        test_setup: KeywordCall = self.test_setup().filter(enabled=True).first()
+        test_teardown: KeywordCall = self.test_teardown().filter(enabled=True).first()
 
         def teardown_disabled():
             return (
                 execution_state.get('BEGIN_EXECUTION') or
                 execution_state.get('END_EXECUTION') or
-                test_teardown.disabled
+                not test_teardown.enabled
             )
 
         return {
