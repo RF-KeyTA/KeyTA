@@ -19,6 +19,7 @@ from keyta.apps.keywords.admin import (
     WindowKeywordAdminMixin,
 )
 from keyta.apps.keywords.models import KeywordCallReturnValue
+from keyta.apps.systems.models import System
 from keyta.apps.windows.models import Window
 from keyta.widgets import (
     CheckboxSelectMultipleSystems,

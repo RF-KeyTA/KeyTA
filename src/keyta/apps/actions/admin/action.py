@@ -97,9 +97,6 @@ class ActionAdmin(ActionAdminMixin, CloneModelAdminMixin, WindowKeywordAdmin):
 
         return super().change_view(request, object_id, form_url=form_url, extra_context=extra_context)
 
-    def first_system(self, request):
-        return System.objects.first()
-
     def formfield_for_dbfield(self, db_field, request, **kwargs):
         field = super().formfield_for_dbfield(db_field, request, **kwargs)
 
@@ -108,7 +105,9 @@ class ActionAdmin(ActionAdminMixin, CloneModelAdminMixin, WindowKeywordAdmin):
                 widget=CheckboxSelectMultipleSystems,
                 queryset=field.queryset
             )
-            field.initial = [self.first_system(request)]
+            if System.objects.count() == 1:
+                field.initial = [System.objects.first()]
+
             field.label = _('Systeme')
 
             if action_id := request.resolver_match.kwargs.get('object_id'):
