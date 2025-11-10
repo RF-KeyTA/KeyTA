@@ -51,7 +51,7 @@ class Command(BaseCommand):
 
         execution: TestCaseExecution
         for execution in TestCaseExecution.objects.all():
-            testsuite = execution.get_rf_testsuite(get_variable_value, user)
+            testsuite = execution.get_rf_testsuite(get_variable_value, user, {})
             robot_file = slugify(testsuite['name']) + '.robot'
             base_dir = Path('tests') / 'RF'
             base_dir.mkdir(parents=True, exist_ok=True)
