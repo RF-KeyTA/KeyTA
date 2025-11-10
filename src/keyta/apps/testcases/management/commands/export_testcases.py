@@ -47,7 +47,7 @@ class Command(BaseCommand):
         get_variable_value = lambda pk: VariableValue.objects.get(pk=pk).current_value
         app, model = settings.AUTH_USER_MODEL.split('.')
         user_model = apps.get_model(app, model)
-        user = user_model.objects.get(username='keyta')
+        user = user_model.objects.first()
 
         execution: TestCaseExecution
         for execution in TestCaseExecution.objects.all():
