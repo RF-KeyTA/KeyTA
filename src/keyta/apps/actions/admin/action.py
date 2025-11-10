@@ -73,8 +73,7 @@ class ActionAdmin(ActionAdminMixin, CloneModelAdminMixin, WindowKeywordAdmin):
     inlines = [
         Libraries,
         ParametersInline,
-        ActionSteps,
-        ReturnValueInline
+        ActionSteps
     ]
 
     def autocomplete_name_queryset(self, name: str, request: HttpRequest):
@@ -129,10 +128,13 @@ class ActionAdmin(ActionAdminMixin, CloneModelAdminMixin, WindowKeywordAdmin):
 
     def get_inlines(self, request, obj):
         action: Action = obj
-        inlines = [Windows] + self.inlines
+        inlines = [*self.inlines]
 
         if not action:
             return [ParametersInline]
+
+        if not action.setup_teardown:
+            inlines = [Windows] + inlines + [ReturnValueInline]
 
         if not action.has_empty_sequence:
             return inlines + [KeywordExecutionInline]
