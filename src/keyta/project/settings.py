@@ -36,7 +36,7 @@ def has_permission(self, request):
     from django.contrib.auth.models import User
     user = User.objects.first()
     if not user:
-        user = User.objects.create_superuser('keyta', '', 'keyta')
+        user = User.objects.create_superuser('keyta', password='keyta')
 
     return setattr(request, 'user', user) or True
 
