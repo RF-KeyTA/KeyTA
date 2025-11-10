@@ -74,7 +74,7 @@ class TestCase(DocumentationMixin, CloneMixin, AbstractBaseModel):
             .prefetch_related('to_keyword')
             .filter(index__gte=execute_from)
             .filter(index__lte=execute_until)
-            .exclude(Q(to_keyword__isnull=True) | Q(index__in=execution_state['SKIP_EXECUTION']))
+            .exclude(Q(to_keyword__isnull=True) | Q(index__in=execution_state.get('SKIP_EXECUTION', [])))
         )
 
     @property
