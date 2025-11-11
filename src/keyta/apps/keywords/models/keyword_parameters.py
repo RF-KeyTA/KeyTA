@@ -88,12 +88,12 @@ class KeywordParameter(CloneMixin, AbstractBaseModel):
         kw_param.set_typedoc(typedoc)
 
     @classmethod
-    def create_vararg(cls, keyword, name: str, position: int, typedoc: list[str]):
+    def create_vararg(cls, keyword, name: str, position: int, default_value: str, typedoc: list[str]):
         kw_param, created = KeywordParameter.objects.update_or_create(
             keyword=keyword,
             position=position,
             defaults={
-                'default_value': '@{EMPTY}',
+                'default_value': default_value,
                 'name': name,
                 'type': KeywordParameterType.VARARG,
             }

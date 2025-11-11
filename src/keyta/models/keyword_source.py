@@ -374,11 +374,20 @@ class KeywordSource(AbstractBaseModel):
                         typedoc=get_type(arg)
                     )
                 else:
-                    if arg["kind"] == 'VAR_POSITIONAL':
+                    if arg["kind"] in {'VAR_NAMED', 'VAR_POSITIONAL'}:
+                        default_value = None
+
+                        if arg["kind"] == 'VAR_NAMED':
+                            default_value = '&{EMPTY}'
+
+                        if arg["kind"] == 'VAR_POSITIONAL':
+                            default_value = '@{EMPTY}'
+
                         KeywordParameter.create_vararg(
                             keyword=kw,
                             name=name,
                             position=idx,
+                            default_value=default_value,
                             typedoc=get_type(arg)
                         )
                     else:
