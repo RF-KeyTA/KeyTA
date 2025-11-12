@@ -1,5 +1,5 @@
 *** Keywords ***
-{%- for keyword in keywords %}
+{%- for keyword in keywords.values() %}
 {{ keyword.name }}
     [Arguments]        {{ keyword_arguments(keyword.args, keyword.kwargs) }}
     [Documentation]    {%- for line in keyword.doc|splitlines %}

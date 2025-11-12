@@ -8,6 +8,5 @@ from keyta.rf_export.testcases import RFTestCase
 class RFTestSuite(TypedDict):
     name: str
     settings: RFSettings
-    variables: list[tuple[str, list[str]]]
-    keywords: list[RFKeyword]
+    keywords: dict[int, RFKeyword]
     testcases: list[RFTestCase]

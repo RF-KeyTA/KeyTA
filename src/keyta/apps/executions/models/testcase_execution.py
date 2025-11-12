@@ -4,14 +4,8 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from keyta.apps.keywords.models import (
-    Keyword,
-    KeywordCall,
-    KeywordCallParameter,
-    KeywordCallParameterSource
-)
+from keyta.apps.keywords.models import Keyword, KeywordCall
 from keyta.apps.testcases.models import TestStep
-from keyta.apps.variables.models import Variable
 from keyta.rf_export.testsuite import RFTestSuite
 
 from ..errors import ValidationError
@@ -63,6 +57,7 @@ class TestCaseExecution(Execution):
             .prefetch_related('calls')
             .filter(pk__in=sequence_pks | self.action_ids(sequence_pks))
         }
+
         attach_to_running_system = self.test_setup().first()
 
         if execution_state.get('BEGIN_EXECUTION'):
@@ -80,41 +75,14 @@ class TestCaseExecution(Execution):
             if to_keyword := test_teardown.to_keyword:
                 keywords[to_keyword.id] = to_keyword.to_robot(get_variable_value, {})
 
-        tables, rows = self.get_tables_rows()
-
         return {
             'name': self.testcase.name,
-            'settings': self.get_rf_settings(get_variable_value, user, execution_state),
-            'variables': [*tables, *rows],
-            'keywords': list(keywords.values()),
-            'testcases': [self.testcase.to_robot(get_variable_value, user, execution_state)]
+            'settings': self.get_rf_settings(user),
+            'keywords': keywords,
+            'testcases': [
+                self.testcase.to_robot(get_variable_value, user, execution_state, test_setup, test_teardown)
+            ]
         }
-
-    def get_tables_rows(self):
-        table_variables = []
-        row_variables = []
-
-        value_ref_pks = (
-            KeywordCallParameter.objects
-            .filter(keyword_call__in=self.testcase.steps.all())
-            .filter(value_ref__isnull=False)
-            .values_list('value_ref', flat=True)
-        )
-
-        table_pks = (
-            KeywordCallParameterSource.objects
-            .filter(pk__in=value_ref_pks)
-            .filter(table_column__isnull=False)
-            .values_list('table_column__table', flat=True)
-            .distinct()
-        )
-
-        for table in Variable.objects.filter(pk__in=table_pks):
-            table_variable, table_row_variables = table.get_rows()
-            table_variables.append(table_variable)
-            row_variables.extend(table_row_variables)
-
-        return table_variables, row_variables
 
     def save(
         self, force_insert=False, force_update=False, using=None,

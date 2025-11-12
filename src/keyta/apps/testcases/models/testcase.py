@@ -10,7 +10,9 @@ from model_clone import CloneMixin
 from taggit_selectize.managers import TaggableManager
 
 from keyta.apps.executions.models import Execution, Setup
+from keyta.apps.keywords.models import KeywordCallParameter, KeywordCallParameterSource
 from keyta.apps.libraries.models import Library, LibraryImport
+from keyta.apps.variables.models import Variable
 from keyta.models.base_model import AbstractBaseModel
 from keyta.models.documentation_mixin import DocumentationMixin
 from keyta.rf_export.testcases import RFTestCase
@@ -77,6 +79,32 @@ class TestCase(DocumentationMixin, CloneMixin, AbstractBaseModel):
             .exclude(Q(to_keyword__isnull=True) | Q(index__in=execution_state.get('SKIP_EXECUTION', [])))
         )
 
+    def get_tables_rows(self):
+        table_variables = []
+        row_variables = []
+
+        value_ref_pks = (
+            KeywordCallParameter.objects
+            .filter(keyword_call__in=self.steps.all())
+            .filter(value_ref__isnull=False)
+            .values_list('value_ref', flat=True)
+        )
+
+        table_pks = (
+            KeywordCallParameterSource.objects
+            .filter(pk__in=value_ref_pks)
+            .filter(table_column__isnull=False)
+            .values_list('table_column__table', flat=True)
+            .distinct()
+        )
+
+        for table in Variable.objects.filter(pk__in=table_pks):
+            table_variable, table_row_variables = table.get_rows()
+            table_variables.append(table_variable)
+            row_variables.extend(table_row_variables)
+
+        return table_variables, row_variables
+
     @property
     def has_empty_sequence(self):
         return not self.steps.exists() or not self.steps.first().to_keyword
@@ -111,14 +139,26 @@ class TestCase(DocumentationMixin, CloneMixin, AbstractBaseModel):
         self.name = re.sub(r"\s{2,}", ' ', self.name)
         super().save(force_insert, force_update, using, update_fields)
 
-    def to_robot(self, get_variable_value, user: AbstractUser, execution_state: dict) -> RFTestCase:
+    def to_robot(self, get_variable_value, user: AbstractUser, execution_state: dict, setup, teardown) -> RFTestCase:
+        tables, rows = self.get_tables_rows()
+
+        def teardown_disabled():
+            return (
+                execution_state.get('BEGIN_EXECUTION') or
+                execution_state.get('END_EXECUTION') or
+                not teardown.enabled
+            )
+
         return {
             'name': self.name,
             'doc': self.robot_documentation(),
+            'setup': setup.to_robot(get_variable_value, user) if setup else None,
             'steps': [
                 test_step.to_robot(get_variable_value, user=user)
                 for test_step in self.executable_steps(execution_state)
-            ]
+            ],
+            'teardown': teardown.to_robot(get_variable_value, user) if teardown and not teardown_disabled() else None,
+            'variables': [*rows, *tables]
         }
 
     class Meta:

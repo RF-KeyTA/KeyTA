@@ -81,21 +81,23 @@ class KeywordExecution(Execution):
             for keyword in Keyword.objects.filter(pk__in=self.action_ids):
                 keywords[keyword.pk] = keyword.to_robot(get_variable_value, {})
 
-        if (test_setup := self.test_setup().first()) and test_setup.enabled:
+        if test_setup := self.test_setup().filter(enabled=True).first():
             if to_keyword := test_setup.to_keyword:
                 keywords[to_keyword.id] = to_keyword.to_robot(get_variable_value, {})
 
         return {
             'name': self.keyword.name,
-            'settings': self.get_rf_settings(get_variable_value, user, execution_state),
-            'variables': [],
-            'keywords': list(keywords.values()),
+            'settings': self.get_rf_settings(user),
+            'keywords': keywords,
             'testcases': [{
                 'name': _('Test'),
                 'doc': None,
+                'setup': test_setup.to_robot(get_variable_value, user) if test_setup else None,
                 'steps': [
                     self.execution_keyword_call.to_robot(get_variable_value, user)
-                ]
+                ],
+                'teardown': None,
+                'variables': []
             }]
         }
 

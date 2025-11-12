@@ -9,7 +9,6 @@ from django.utils.translation import gettext_lazy as _
 
 from model_clone import CloneMixin
 
-from keyta.apps.keywords.models import KeywordCall
 from keyta.apps.keywords.models.keyword import KeywordType
 from keyta.apps.libraries.models import Library, LibraryImport
 from keyta.apps.resources.models import Resource, ResourceImport
@@ -110,32 +109,20 @@ class Execution(CloneMixin, AbstractBaseModel):
 
         return '-'
 
-    def get_rf_settings(self, get_variable_value, user: AbstractUser, execution_state: dict) -> RFSettings:
-        test_setup: KeywordCall = self.test_setup().filter(enabled=True).first()
-        test_teardown: KeywordCall = self.test_teardown().filter(enabled=True).first()
-
-        def teardown_disabled():
-            return (
-                execution_state.get('BEGIN_EXECUTION') or
-                execution_state.get('END_EXECUTION') or
-                not test_teardown.enabled
-            )
-
+    def get_rf_settings(self, user: AbstractUser) -> RFSettings:
         return {
-            'library_imports': [
-                lib_import.to_robot(user)
+            'library_imports': {
+                lib_import.library.pk: lib_import.to_robot(user)
                 for lib_import
                 in self.library_imports.all()
-            ],
-            'resource_imports': [
-                resource_import.to_robot(user)
+            },
+            'resource_imports': {
+                resource_import.resource.pk: resource_import.to_robot(user)
                 for resource_import
                 in self.resource_imports.all()
-            ],
+            },
             'suite_setup': None,
             'suite_teardown': None,
-            'test_setup': test_setup.to_robot(get_variable_value, user) if test_setup else None,
-            'test_teardown': test_teardown.to_robot(get_variable_value, user) if test_teardown and not teardown_disabled() else None
         }
 
     def get_rf_testsuite(self, get_variable_value, user: AbstractUser, execution_state: dict) -> RFTestSuite:
