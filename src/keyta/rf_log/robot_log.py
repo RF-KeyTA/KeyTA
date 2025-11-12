@@ -87,7 +87,7 @@ def save_log(html):
 
 
 def unrobot(token):
-    if token in ['${EMPTY}', '${None}']:
+    if token == '${EMPTY}':
         return ''
 
     dict_access = re.compile(r'\${(.*)}\[(.*)\]')
