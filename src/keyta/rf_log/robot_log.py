@@ -289,6 +289,9 @@ class RobotLog:
             result.update({'setup': setup})
 
         for step in test['body']:
+            if step.get('type') == 'VAR':
+                continue
+
             if 'name' in step:
                 simple_step = self.simplify_step(step, test_id)
                 step_id = simple_step['id']
