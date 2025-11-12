@@ -222,18 +222,44 @@ class RobotLog:
 
         if 'args' in step:
             args = {}
-            default_arg_names = ['Param %s' % i for i in range(1, len(step['args']) + 1)]
+            keyword_args = self.keyword_args[name]
 
-            for arg_name, arg in zip(self.keyword_args.get(name, default_arg_names), step['args']):
-                arg= arg.removeprefix(f'{arg_name}=')
-
+            def get_arg_value(arg):
                 if assign:
-                    args[arg_name] = assign[arg]
+                    return assign[arg]
+
+                if level < 2:
+                    return unrobot(arg)
+
+                return arg
+
+            global arg_idx
+            arg_idx = 0
+
+            for idx, kw_arg in enumerate(keyword_args):
+                if kw_arg.startswith('**'):
+                    break
+
+                if kw_arg.startswith('*'):
+                    arg_idx = idx
+
+                    for arg in step['args'][idx:]:
+                        if '=' in arg:
+                            break
+
+                        if kw_arg in args:
+                            args[kw_arg].append(get_arg_value(arg))
+                        else:
+                            args[kw_arg] = [get_arg_value(arg)]
+
+                        arg_idx += 1
                 else:
-                    if level < 2:
-                        args[arg_name] = unrobot(arg)
-                    else:
-                        args[arg_name] = arg
+                    args[kw_arg] = get_arg_value(step['args'][idx])
+                    arg_idx = idx + 1
+
+            for arg in step['args'][arg_idx:]:
+                name, value = arg.split('=')
+                args[name] = get_arg_value(value)
 
             result.update({'args': args})
 

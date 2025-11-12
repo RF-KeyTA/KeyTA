@@ -89,10 +89,23 @@ def robot_run(
 
             with open(libdoc_json, 'r', encoding='utf-8') as file:
                 libdoc_dict = json.load(file)
+
                 for keyword in libdoc_dict['keywords']:
+                    args = []
+                    for arg in keyword['args']:
+                        if arg['name']:
+                            if arg['required']:
+                                args.append(arg['name'])
+
+                            if arg['kind'] == 'VAR_POSITIONAL':
+                                args.append('*' + arg['name'])
+
+                            if arg['kind'] == 'VAR_NAMED':
+                                args.append('**' + arg['name'])
+
                     keywords.append({
                         'name': f'{import_name.removesuffix(".resource")}.{keyword["name"]}',
-                        'args': [arg['name'] for arg in keyword['args'] if arg['name']]
+                        'args': args
                     })
 
         log = generate_log(RobotLog().simplify_output(keywords, output_dir / 'output.json'))
