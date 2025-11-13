@@ -121,6 +121,7 @@ def parse_object(pairs):
 class RobotLog:
     def __init__(self):
         self.keyword_args = {}
+        self.keyword_kwargs = {}
         self.items = {
             "test_cases": [],
             "keywords": dict()
@@ -134,6 +135,7 @@ class RobotLog:
                 _, name = keyword['name'].split('::')
 
             self.keyword_args[name] = [unrobot(arg) for arg in keyword.get('args', [])]
+            self.keyword_kwargs[name] = [unrobot(kwarg) for kwarg in keyword.get('kwargs', [])]
 
         with open(output_json, encoding='utf-8') as file:
             output = json.load(file, object_pairs_hook=parse_object)
@@ -223,6 +225,7 @@ class RobotLog:
         if 'args' in step:
             args = {}
             keyword_args = self.keyword_args[name]
+            keyword_kwargs = self.keyword_kwargs[name]
 
             def get_arg_value(arg):
                 if assign:
@@ -237,14 +240,11 @@ class RobotLog:
             arg_idx = 0
 
             for idx, kw_arg in enumerate(keyword_args):
-                if kw_arg.startswith('**'):
-                    break
-
                 if kw_arg.startswith('*'):
                     arg_idx = idx
 
                     for arg in step['args'][idx:]:
-                        if '=' in arg:
+                        if any(arg.startswith(kwarg + '=') for kwarg in keyword_kwargs):
                             break
 
                         if kw_arg in args:
@@ -258,8 +258,11 @@ class RobotLog:
                     arg_idx = idx + 1
 
             for arg in step['args'][arg_idx:]:
-                name, value = arg.split('=')
-                args[name] = get_arg_value(value)
+                for kwarg in keyword_kwargs:
+                    if arg.startswith(kwarg + '='):
+                        name, value = arg.split(kwarg + '=')
+                        args[kwarg] = get_arg_value(value)
+                        break
 
             result.update({'args': args})
 

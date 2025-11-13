@@ -92,20 +92,22 @@ def robot_run(
 
                 for keyword in libdoc_dict['keywords']:
                     args = []
+                    kwargs = []
                     for arg in keyword['args']:
                         if arg['name']:
                             if arg['required']:
                                 args.append(arg['name'])
-
-                            if arg['kind'] == 'VAR_POSITIONAL':
+                            elif arg['kind'] == 'VAR_POSITIONAL':
                                 args.append('*' + arg['name'])
-
-                            if arg['kind'] == 'VAR_NAMED':
-                                args.append('**' + arg['name'])
+                            elif arg['kind'] == 'VAR_NAMED':
+                                kwargs.append('**' + arg['name'])
+                            else:
+                                kwargs.append(arg['name'])
 
                     keywords.append({
                         'name': f'{import_name.removesuffix(".resource")}.{keyword["name"]}',
-                        'args': args
+                        'args': args,
+                        'kwargs': kwargs
                     })
 
         log = generate_log(RobotLog().simplify_output(keywords, output_dir / 'output.json'))
