@@ -69,5 +69,6 @@ class ExecutionAdmin(BaseAdmin):
 
     def to_robot(self, request: HttpRequest, execution: Execution, execution_state: dict):
         get_variable_value = lambda pk: VariableValue.objects.get(pk=pk).current_value
+        testsuite = execution.get_rf_testsuite(get_variable_value, request.user, execution_state)
 
-        return execution.to_robot(get_variable_value, request.user, execution_state)
+        return execution.to_robot(testsuite)

@@ -178,9 +178,7 @@ class Execution(CloneMixin, AbstractBaseModel):
             .test_teardown()
         )
 
-    def to_robot(self, get_variable_value, user: AbstractUser, execution_state: dict) -> dict:
-        testsuite = self.get_rf_testsuite(get_variable_value, user, execution_state)
-
+    def to_robot(self, testsuite: RFTestSuite) -> dict:
         return {
             'testsuite_name': testsuite['name'],
             'testsuite': gen_testsuite(testsuite)
