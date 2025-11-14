@@ -59,7 +59,7 @@ class TagFilter(admin.RelatedFieldListFilter):
             raise IncorrectLookupParameters(e)
 
 
-def get_rf_testsuite(testcases: QuerySet, get_variable_value, user) -> RFTestSuite:
+def get_rf_testsuite(testcases: QuerySet, testcase_to_testsuite) -> RFTestSuite:
     testsuite = {
         'name': 'Testsuite',
         'settings': {
@@ -73,8 +73,7 @@ def get_rf_testsuite(testcases: QuerySet, get_variable_value, user) -> RFTestSui
     }
 
     for testcase in testcases.all():
-        execution = TestCaseExecution.objects.get(testcase_id=testcase.id)
-        rf_testsuite = execution.get_rf_testsuite(get_variable_value, user, {})
+        rf_testsuite = testcase_to_testsuite(testcase)
         testsuite['settings']['library_imports'].update(rf_testsuite['settings']['library_imports'])
         testsuite['settings']['resource_imports'].update(rf_testsuite['settings']['resource_imports'])
         testsuite['keywords'].update(rf_testsuite['keywords'])
@@ -85,8 +84,13 @@ def get_rf_testsuite(testcases: QuerySet, get_variable_value, user) -> RFTestSui
 
 @admin.action(description=_('Ausgewählte Testfälle exportieren'))
 def export_testcases(model_admin, request: HttpRequest, testcases: QuerySet):
-    get_variable_value = lambda pk: VariableValue.objects.get(pk=pk).current_value
-    testsuite = get_rf_testsuite(testcases, get_variable_value, request.user)
+    def testcase_to_testsuite(testcase):
+        execution = TestCaseExecution.objects.get(testcase_id=testcase.id)
+        get_variable_value = lambda pk: VariableValue.objects.get(pk=pk).current_value
+
+        return execution.get_rf_testsuite(get_variable_value, request.user, {})
+
+    testsuite = get_rf_testsuite(testcases, testcase_to_testsuite)
     robot_file = request.GET.get('testsuite', 'Testsuite') + '.robot'
 
     return HttpResponse(
