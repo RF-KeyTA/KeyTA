@@ -33,13 +33,7 @@ class ExecutionAdmin(BaseAdmin):
 
         if request.method == 'POST':
             if 'to_robot' in request.GET:
-                execution.update_imports(request.user)
-                execution_state = json.loads(request.body.decode('utf-8'))
-
-                if err := execution.validate(request.user, execution_state):
-                    return JsonResponse(err)
-
-                return JsonResponse(self.to_robot(request, execution, execution_state))
+                return self.handle_to_robot(execution, request)
 
         if request.method == 'PUT':
             result = json.loads(request.body.decode('utf-8'))
@@ -63,6 +57,15 @@ class ExecutionAdmin(BaseAdmin):
             inlines += [ResourceImportsInline]
 
         return inlines + self.inlines
+
+    def handle_to_robot(self, execution: Execution, request: HttpRequest):
+        execution.update_imports(request.user)
+        execution_state = json.loads(request.body.decode('utf-8'))
+
+        if err := execution.validate(request.user, execution_state):
+            return JsonResponse(err)
+
+        return JsonResponse(self.to_robot(request, execution, execution_state))
 
     def has_delete_permission(self, request, obj=None):
         return False
