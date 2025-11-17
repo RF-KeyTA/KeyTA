@@ -90,7 +90,7 @@ class KeywordExecution(Execution):
             'settings': self.get_rf_settings(user),
             'keywords': keywords,
             'testcases': [{
-                'name': _('Test'),
+                'name': self.keyword.name,
                 'doc': None,
                 'setup': test_setup.to_robot(get_variable_value, user) if test_setup else None,
                 'steps': [
