@@ -59,9 +59,9 @@ class TagFilter(admin.RelatedFieldListFilter):
             raise IncorrectLookupParameters(e)
 
 
-def get_rf_testsuite(testcases: QuerySet, testcase_to_testsuite) -> RFTestSuite:
+def make_rf_testsuite(name: str, testcases: QuerySet, testcase_to_testsuite) -> RFTestSuite:
     testsuite = {
-        'name': 'Testsuite',
+        'name': name,
         'settings': {
             'library_imports': {},
             'resource_imports': {},
@@ -90,7 +90,7 @@ def export_testcases(model_admin, request: HttpRequest, testcases: QuerySet):
 
         return execution.get_rf_testsuite(get_variable_value, request.user, {})
 
-    testsuite = get_rf_testsuite(testcases, testcase_to_testsuite)
+    testsuite = make_rf_testsuite('Testsuite', testcases, testcase_to_testsuite)
     robot_file = request.GET.get('testsuite', 'Testsuite') + '.robot'
 
     return HttpResponse(
