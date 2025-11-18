@@ -111,6 +111,7 @@ class Execution(CloneMixin, AbstractBaseModel):
 
     def get_rf_settings(self, user: AbstractUser) -> RFSettings:
         return {
+            'documentation': None,
             'library_imports': {
                 lib_import.library.pk: lib_import.to_robot(user)
                 for lib_import

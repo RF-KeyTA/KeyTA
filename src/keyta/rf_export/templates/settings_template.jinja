@@ -1,4 +1,7 @@
 *** Settings ***
+{%- if settings.documentation %}
+Documentation    {{ settings.documentation }}
+{%- endif -%}
 {%- for lib_import in settings.library_imports.values() %}
 Library    {{ lib_import.library }}    {{ kwargs_list(lib_import.kwargs) }}
 {%- endfor %}
