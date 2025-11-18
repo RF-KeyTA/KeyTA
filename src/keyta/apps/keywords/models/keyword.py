@@ -7,7 +7,7 @@ from django.db.models.functions import Lower
 from django.utils.translation import gettext_lazy as _
 
 from keyta.models.base_model import AbstractBaseModel
-from keyta.models.documentation_mixin import DocumentationMixin
+from keyta.models.html2text import HTML2Text
 from keyta.rf_export.keywords import RFKeyword
 
 
@@ -20,7 +20,7 @@ class KeywordType(models.TextChoices):
     SEQUENCE = 'SEQUENCE', _('Sequenz')
 
 
-class Keyword(DocumentationMixin, AbstractBaseModel):
+class Keyword(AbstractBaseModel):
     library = models.ForeignKey(
         'libraries.Library',
         null=True,
@@ -123,7 +123,12 @@ class Keyword(DocumentationMixin, AbstractBaseModel):
 
         super().save(force_insert, force_update, using, update_fields)
 
-    def to_robot(self, get_variable_value, execution_state: dict) -> RFKeyword:
+    def to_robot(self, get_variable_value, execution_state: dict, include_doc=False) -> RFKeyword:
+        if include_doc:
+            documentation = HTML2Text.parse(self.documentation)
+        else:
+            documentation = self.get_admin_url(absolute=True) + '?steps_tab'
+
         parameters = defaultdict(list)
 
         for param in self.parameters.all():
@@ -139,7 +144,7 @@ class Keyword(DocumentationMixin, AbstractBaseModel):
 
         return {
             'name': self.id_name,
-            'doc': self.robot_documentation() + '?steps_tab',
+            'doc': documentation,
             'args': [arg.name for arg in args],
             'kwargs': {kwarg.name: kwarg.default_value for kwarg in kwargs},
             'steps': [

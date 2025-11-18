@@ -71,8 +71,8 @@ class KeywordExecution(Execution):
         
         return sequence_calls | action_calls | setup_teardown_calls
 
-    def get_rf_testsuite(self, get_variable_value, user: AbstractUser, execution_state: dict) -> RFTestSuite:
-        keyword = self.keyword
+    def get_rf_testsuite(self, get_variable_value, user: AbstractUser, execution_state: dict, include_doc: bool) -> RFTestSuite:
+        keyword: Keyword = self.keyword
         keywords = {
             keyword.pk: keyword.to_robot(get_variable_value, execution_state)
         }

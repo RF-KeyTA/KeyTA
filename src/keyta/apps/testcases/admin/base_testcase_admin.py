@@ -88,7 +88,7 @@ def export_testcases(model_admin, request: HttpRequest, testcases: QuerySet):
         execution = TestCaseExecution.objects.get(testcase_id=testcase.id)
         get_variable_value = lambda pk: VariableValue.objects.get(pk=pk).current_value
 
-        return execution.get_rf_testsuite(get_variable_value, request.user, {})
+        return execution.get_rf_testsuite(get_variable_value, request.user, {}, include_doc=True)
 
     testsuite = make_rf_testsuite('Testsuite', testcases, testcase_to_testsuite)
     robot_file = request.GET.get('testsuite', 'Testsuite') + '.robot'

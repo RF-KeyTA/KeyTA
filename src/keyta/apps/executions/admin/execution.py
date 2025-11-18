@@ -65,13 +65,10 @@ class ExecutionAdmin(BaseAdmin):
         if err := execution.validate(request.user, execution_state):
             return JsonResponse(err)
 
-        return JsonResponse(self.to_robot(request, execution, execution_state))
+        get_variable_value = lambda pk: VariableValue.objects.get(pk=pk).current_value
+        testsuite = execution.get_rf_testsuite(get_variable_value, request.user, execution_state, include_doc=False)
+
+        return JsonResponse(execution.to_robot(testsuite))
 
     def has_delete_permission(self, request, obj=None):
         return False
-
-    def to_robot(self, request: HttpRequest, execution: Execution, execution_state: dict):
-        get_variable_value = lambda pk: VariableValue.objects.get(pk=pk).current_value
-        testsuite = execution.get_rf_testsuite(get_variable_value, request.user, execution_state)
-
-        return execution.to_robot(testsuite)

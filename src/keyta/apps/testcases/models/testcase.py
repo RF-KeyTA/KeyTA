@@ -14,11 +14,11 @@ from keyta.apps.keywords.models import KeywordCallParameter, KeywordCallParamete
 from keyta.apps.libraries.models import Library, LibraryImport
 from keyta.apps.variables.models import Variable
 from keyta.models.base_model import AbstractBaseModel
-from keyta.models.documentation_mixin import DocumentationMixin
+from keyta.models.html2text import HTML2Text
 from keyta.rf_export.testcases import RFTestCase
 
 
-class TestCase(DocumentationMixin, CloneMixin, AbstractBaseModel):
+class TestCase(CloneMixin, AbstractBaseModel):
     name = models.CharField(max_length=255, unique=True, verbose_name=_('Name'))
     documentation = models.TextField(blank=True, verbose_name=_('Dokumentation'))
 
@@ -129,9 +129,6 @@ class TestCase(DocumentationMixin, CloneMixin, AbstractBaseModel):
 
         return super().make_clone(attrs=attrs, sub_clone=sub_clone, using=using, parent=parent)
 
-    def robot_documentation(self):
-        return super().plaintext_documentation()
-
     def save(
         self, force_insert=False, force_update=False, using=None,
             update_fields=None
@@ -139,7 +136,12 @@ class TestCase(DocumentationMixin, CloneMixin, AbstractBaseModel):
         self.name = re.sub(r"\s{2,}", ' ', self.name)
         super().save(force_insert, force_update, using, update_fields)
 
-    def to_robot(self, get_variable_value, user: AbstractUser, execution_state: dict, setup, teardown) -> RFTestCase:
+    def to_robot(self, get_variable_value, user: AbstractUser, execution_state: dict, setup, teardown, include_doc=False) -> RFTestCase:
+        if include_doc:
+            documentation = HTML2Text.parse(self.documentation)
+        else:
+            documentation = self.get_admin_url(absolute=True) + '?steps_tab'
+
         tables, rows = self.get_tables_rows()
 
         def teardown_disabled():
@@ -151,7 +153,7 @@ class TestCase(DocumentationMixin, CloneMixin, AbstractBaseModel):
 
         return {
             'name': self.name,
-            'doc': self.robot_documentation(),
+            'doc': documentation,
             'setup': setup.to_robot(get_variable_value, user) if setup else None,
             'steps': [
                 test_step.to_robot(get_variable_value, user=user)

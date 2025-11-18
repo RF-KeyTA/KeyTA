@@ -45,11 +45,12 @@ class TestCaseExecution(Execution):
         
         return setup_teardown_calls | test_calls | sequence_calls | action_calls
 
-    def get_rf_testsuite(self, get_variable_value, user: AbstractUser, execution_state: dict) -> RFTestSuite:
+    def get_rf_testsuite(self, get_variable_value, user: AbstractUser, execution_state: dict, include_doc: bool) -> RFTestSuite:
         sequence_pks = self.sequence_ids(self.testcase.executable_steps(execution_state))
 
+        keyword: Keyword
         keywords = {
-            keyword.pk: keyword.to_robot(get_variable_value, {})
+            keyword.pk: keyword.to_robot(get_variable_value, {}, include_doc=include_doc)
             for keyword in
             Keyword.objects
             .prefetch_related('parameters')
@@ -69,18 +70,18 @@ class TestCaseExecution(Execution):
 
         if test_setup := self.test_setup().filter(enabled=True).first():
             if to_keyword := test_setup.to_keyword:
-                keywords[to_keyword.id] = to_keyword.to_robot(get_variable_value, {})
+                keywords[to_keyword.id] = to_keyword.to_robot(get_variable_value, {}, include_doc=include_doc)
 
         if test_teardown := self.test_teardown().first():
             if to_keyword := test_teardown.to_keyword:
-                keywords[to_keyword.id] = to_keyword.to_robot(get_variable_value, {})
+                keywords[to_keyword.id] = to_keyword.to_robot(get_variable_value, {}, include_doc=include_doc)
 
         return {
             'name': self.testcase.name,
             'settings': self.get_rf_settings(user),
             'keywords': keywords,
             'testcases': [
-                self.testcase.to_robot(get_variable_value, user, execution_state, test_setup, test_teardown)
+                self.testcase.to_robot(get_variable_value, user, execution_state, test_setup, test_teardown, include_doc=include_doc)
             ]
         }
 

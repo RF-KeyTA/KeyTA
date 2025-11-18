@@ -125,7 +125,7 @@ class Execution(CloneMixin, AbstractBaseModel):
             'suite_teardown': None,
         }
 
-    def get_rf_testsuite(self, get_variable_value, user: AbstractUser, execution_state: dict) -> RFTestSuite:
+    def get_rf_testsuite(self, get_variable_value, user: AbstractUser, execution_state: dict, include_doc: bool) -> RFTestSuite:
         pass
 
     def save(

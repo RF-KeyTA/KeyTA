@@ -26,7 +26,7 @@ class TestCaseAdmin(BaseTestCaseAdmin):
                 get_variable_value = lambda pk: VariableValue.objects.get(pk=pk).current_value
 
                 execution.update_imports(request.user)
-                testsuite = execution.get_rf_testsuite(get_variable_value, request.user)
+                testsuite = execution.get_rf_testsuite(get_variable_value, request.user, {}, include_doc=True)
                 robot_file = testsuite['name'] + '.robot'
 
                 return HttpResponse(
