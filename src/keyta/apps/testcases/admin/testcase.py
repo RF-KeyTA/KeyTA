@@ -19,7 +19,7 @@ class TestCaseAdmin(BaseTestCaseAdmin):
         if 'export' in request.GET:
             execution = TestCaseExecution.objects.get(testcase_id=object_id)
 
-            if err := execution.validate(request.user):
+            if err := execution.validate(request.user, {}):
                 messages.warning(request, err['error'])
                 return HttpResponseRedirect(request.path)
             else:
