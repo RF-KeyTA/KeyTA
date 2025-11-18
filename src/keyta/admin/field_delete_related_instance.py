@@ -7,10 +7,7 @@ from keyta.widgets import link, Icon, url_query_parameters
 
 
 class DeleteRelatedField:
-    icon = Icon(
-        settings.FA_ICONS.delete_rel,
-        {'font-size': '30px', 'margin-top': '5px'}
-    )
+    icon = settings.FA_ICONS.delete_rel
 
     def get_fields(self, request, obj=None):
         fields = super().get_fields(request, obj)
@@ -31,7 +28,11 @@ class DeleteRelatedField:
 
             return link(
                 inline_obj.get_delete_url() + '?' + query_params + tab_url,
-                str(self.icon)
+                str(Icon(
+                    self.icon,
+                    {'font-size': '1.5em', 'margin-top': '5px'}
+                    )
+                )
             )
 
         DeleteRelatedField.delete = delete
@@ -44,7 +45,4 @@ class DeleteRelatedField:
 
 
 class UnlinkRelatedField(DeleteRelatedField):
-    icon = Icon(
-        settings.FA_ICONS.unlink_rel,
-        {'font-size': '30px', 'margin-top': '5px'}
-    )
+    icon = settings.FA_ICONS.unlink_rel
