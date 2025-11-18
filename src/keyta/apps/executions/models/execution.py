@@ -137,12 +137,6 @@ class Execution(CloneMixin, AbstractBaseModel):
             if self.keyword:
                 self.type = ExecutionType.KEYWORD
 
-        if self.type == ExecutionType.TESTCASE:
-            self.keyword = None
-
-        if self.type == ExecutionType.KEYWORD:
-            self.testcase = None
-
         super().save(force_insert, force_update, using, update_fields)
 
     def save_execution_result(self, user: AbstractUser, robot_result: dict):
