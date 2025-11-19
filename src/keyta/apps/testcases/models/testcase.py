@@ -154,6 +154,7 @@ class TestCase(CloneMixin, AbstractBaseModel):
         return {
             'name': self.name,
             'doc': documentation,
+            'tags': list(self.tags.values_list('name', flat=True)),
             'setup': setup.to_robot(get_variable_value, user) if setup else None,
             'steps': [
                 test_step.to_robot(get_variable_value, user=user)

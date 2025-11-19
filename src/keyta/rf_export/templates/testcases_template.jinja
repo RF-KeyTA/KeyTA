@@ -6,6 +6,9 @@
     ...  {{ line }}
     {%- endfor %}
     {%- endif %}
+    {%- if testcase.tags %}
+    [Tags]    {{ rf_join(testcase.tags) }}
+    {%- endif %}
     {%- if testcase.setup %}
     [Setup]    {{ call_keyword(testcase.setup) }}
     {%- endif %}
