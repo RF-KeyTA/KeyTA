@@ -82,7 +82,7 @@ class Execution(CloneMixin, AbstractBaseModel):
     def get_log_icon(self, user: AbstractUser):
         user_exec = self.user_execs.get(user=user)
 
-        if user_exec.result and not user_exec.running:
+        if user_exec.result:
             url = 'http://localhost:1471/' + user_exec.log
             title = str(Icon(settings.FA_ICONS.exec_log))
             return '<a href="%s" id="log-btn" target="_blank">%s</a>' % (url, title)
@@ -92,7 +92,7 @@ class Execution(CloneMixin, AbstractBaseModel):
     def get_result_icon(self, user: AbstractUser):
         user_exec = self.user_execs.get(user=user)
 
-        if (result := user_exec.result) and not user_exec.running:
+        if result := user_exec.result:
             if result == 'FAIL':
                 icon = Icon(
                     settings.FA_ICONS.exec_fail,

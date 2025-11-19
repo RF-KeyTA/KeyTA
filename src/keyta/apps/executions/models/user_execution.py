@@ -30,7 +30,6 @@ class UserExecution(AbstractBaseModel):
         blank=True,
         verbose_name=_('Ergebnis')
     )
-    running = models.BooleanField(default=False)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
