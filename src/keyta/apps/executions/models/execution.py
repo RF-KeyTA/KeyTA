@@ -129,6 +129,17 @@ class Execution(CloneMixin, AbstractBaseModel):
     def get_rf_testsuite(self, get_variable_value, user: AbstractUser, execution_state: dict, include_doc: bool) -> RFTestSuite:
         pass
 
+    def make_clone(self, attrs=None, sub_clone=False, using=None, parent=None):
+        clone: Execution = super().make_clone(attrs, sub_clone, using, parent)
+        
+        if clone.type == ExecutionType.KEYWORD:
+            clone.testcase = None
+
+        if clone.type == ExecutionType.TESTCASE:
+            clone.keyword = None
+
+        return clone
+
     def save(
         self, force_insert=False, force_update=False, using=None, update_fields=None
     ):
