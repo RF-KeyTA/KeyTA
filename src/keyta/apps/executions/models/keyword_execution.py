@@ -92,6 +92,7 @@ class KeywordExecution(Execution):
             'testcases': [{
                 'name': self.keyword.name,
                 'doc': None,
+                'tags': [],
                 'setup': test_setup.to_robot(get_variable_value, user) if test_setup else None,
                 'steps': [
                     self.execution_keyword_call.to_robot(get_variable_value, user)
