@@ -4,9 +4,9 @@ from django.utils.translation import gettext_lazy as _
 
 from model_clone import CloneMixin
 
-from . import KeywordCall
 from .execution_keywordcall import ExecutionKeywordCall
 from .keyword import Keyword
+from .keywordcall import KeywordCallType
 from .keyword_return_value import KeywordReturnValue
 
 
@@ -57,7 +57,7 @@ class WindowKeyword(CloneMixin, Keyword):
             clone_return_value.kw_call_return_value = clone_kw_call_return_values[clone_return_value.kw_call_index][str(clone_return_value.kw_call_return_value)]
             clone_return_value.save()
 
-        execution_kw_call: KeywordCall = clone.execution.keyword_calls.first()
+        execution_kw_call: ExecutionKeywordCall = clone.execution.keyword_calls.get(type=KeywordCallType.KEYWORD_EXECUTION)
         execution_kw_call.to_keyword = clone
         execution_kw_call.save()
 
