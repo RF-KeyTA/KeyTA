@@ -83,7 +83,7 @@ class Execution(CloneMixin, AbstractBaseModel):
         user_exec = self.user_execs.get(user=user)
 
         if user_exec.result:
-            url = 'http://localhost:1471/' + user_exec.log
+            url = settings.RF_SERVER + '/' + user_exec.log
             title = str(Icon(settings.FA_ICONS.exec_log))
             return '<a href="%s" id="log-btn" target="_blank">%s</a>' % (url, title)
 

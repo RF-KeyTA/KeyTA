@@ -28,6 +28,7 @@ def get_home_dir():
 
 KEYTA_DIR = get_home_dir() / 'KeyTA'
 KEYTA_DIR.mkdir(exist_ok=True)
+RF_SERVER = f'http://localhost:1471'
 
 
 admin.AdminSite.index_title = 'Dashboard'
