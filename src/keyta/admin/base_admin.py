@@ -11,7 +11,7 @@ from django.contrib.auth.models import AbstractUser
 from django.forms import SelectMultiple, CheckboxSelectMultiple
 from django.http import HttpRequest, HttpResponseRedirect, HttpResponse
 from django.utils.safestring import mark_safe
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_lazy as _, gettext
 
 from keyta.widgets import BaseSelect, BaseSelectMultiple, url_query_parameters
 
@@ -181,6 +181,19 @@ class BaseAdmin(admin.ModelAdmin):
 
     def get_related_objects(self, obj):
         return []
+
+    def render_change_form(
+        self, request, context, add=False, change=False, form_url="", obj=None
+    ):
+        template = super().render_change_form(request, context, add, change, form_url, obj)
+        inline_formsets = template.context_data['inline_admin_formsets']
+
+        for formset in inline_formsets:
+            formset_data = json.loads(formset.inline_formset_data())
+            formset_data['options']['saveText'] = gettext('Save')
+            formset.inline_formset_data = json.dumps(formset_data)
+
+        return template
 
     def save_form(self, request, form, change):
         messages.set_level(request, messages.WARNING)
