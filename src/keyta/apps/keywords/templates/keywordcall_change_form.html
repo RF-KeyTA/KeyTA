@@ -85,27 +85,9 @@
 </script>
 {% endblock %}
 
-{% block formset_added %}
-{{ block.super }}
-<script type="text/javascript">
-    $(document).ready(function () {
-        document.addEventListener('formset:added', function (event) {
-            const row = django.jQuery(event.target)
-            const selects = django.jQuery('select', row)
-
-            if (selects.length === 3) {
-                $(selects[1]).prop('disabled', true)
-                $(selects[2]).prop('disabled', true)
-            }
-        })
-    })
-</script>
-{% endblock %}
-
 {% block formset_form %}
 <script type="text/javascript">
     $(document).ready(function () {
-        // Selects in a saved form of a formset
         const formset_forms = django.jQuery('.form-row.has_original')
         formset_forms.each((index, form) => {
             // Selects in a saved form of a formset
