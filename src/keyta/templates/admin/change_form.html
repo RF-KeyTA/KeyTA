@@ -275,21 +275,12 @@
                 // Input texts in a saved form of a formset
                 const inputs = django.jQuery('.form-row.has_original input:text')
                 inputs.on('change', function(event) {
-                    const input = $(this)
                     const url = window.location.href
 
-                    // Reload the page when the name changes in order to validate the form
-                    // This can be avoided using HTMX to swap the inline form
-                    if (url.includes('_popup')) {
-                         $.post(
-                             url,
-                             $('form').serialize() + "&_continue=",
-                             function() { window.location.reload() }
-                         )
-                     }
-                     else {
-                         $(save_button).click()
-                     }
+                     $.post(
+                         url,
+                         $('form').serialize() + "&_continue="
+                     )
                 })
 
                 // An Input text in a form
