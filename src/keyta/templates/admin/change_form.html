@@ -340,22 +340,6 @@
                 const input_texts = django.jQuery('input[type=text]', row)
 
                 input_texts.first().focus()
-                input_texts.last().on('change', function() {
-                    const url = window.location.href
-
-                    // Reloading the whole window can be avoided using HTMX
-                    // to swap the row
-                    if (url.includes('_popup')) {
-                        $.post(
-                            url,
-                            $('form').serialize() + "&_continue=",
-                            function() { window.location.reload() }
-                        )
-                    }
-                    else {
-                        $('.button-save').click()
-                    }
-                })
             })
         })
     </script>
