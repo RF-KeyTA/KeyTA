@@ -303,25 +303,6 @@
                     }
                 })
 
-                // Selects in an extra form of a formset
-                const extra_selects = django.jQuery('select', django.jQuery('.form-row').not('.has_original'))
-                extra_selects.on('change', function(event) {
-                    const url = window.location.href
-
-                    // Reloading the whole window can be avoided using HTMX
-                    // to swap the row
-                    if (url.includes('_popup')) {
-                        $.post(
-                            url,
-                            $('form').serialize() + "&_continue=",
-                            function() { window.location.reload() }
-                        )
-                    }
-                    else {
-                        $(save_button).click()
-                    }
-                })
-
                 // A select in a form
                 django.jQuery('.form-group select').on('change', function() {
                     $(save_button).click()
