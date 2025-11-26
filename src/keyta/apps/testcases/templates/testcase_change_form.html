@@ -23,18 +23,6 @@
 </script>
 {% endblock %}
 
-{% block formset_added %}
-<script type="text/javascript">
-    $(document).ready(function () {
-        document.addEventListener('formset:added', function(event) {
-            const row = django.jQuery(event.target)
-            const to_keyword_select = django.jQuery('select[name$=-to_keyword]', row)
-            to_keyword_select.prop('disabled', true)
-        })
-    })
-</script>
-{% endblock %}
-
 {% block formset_form %}
 <script type="text/javascript">
     $(document).ready(function () {
