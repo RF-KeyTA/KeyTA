@@ -37,12 +37,6 @@ class Values(DeleteRelatedField, SortableTabularInline):
                 'style': 'width: 100%',
             })
 
-        if db_field.name == 'value':
-            field.widget = forms.TextInput(attrs={
-                'style': 'width: 100%',
-                'placeholder': _('Wert eintragen, anschließend Tab drücken')
-            })
-
         return field
 
     def get_fields(self, request, obj=None):
