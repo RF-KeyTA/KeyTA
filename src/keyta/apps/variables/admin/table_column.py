@@ -23,7 +23,7 @@ class Values(DeleteRelatedField, SortableTabularInline):
         if db_field.name == 'value':
             field.widget = forms.TextInput(attrs={
                 'style': 'width: 100%',
-                'placeholder': _('Wert eintragen, anschließend Tab drücken')
+                'placeholder': _('Wert eintragen, anschließend Enter drücken')
             })
 
         return field

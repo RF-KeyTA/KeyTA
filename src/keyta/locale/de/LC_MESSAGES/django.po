@@ -116,7 +116,7 @@ msgstr ""
 #: .\apps\actions\admin\library_keyword_call_vararg_parameters_inline.py:40
 #: .\apps\variables\admin\table_column.py:26
 #: .\apps\variables\admin\values_inline.py:43
-msgid "Wert eintragen, anschließend Tab drücken"
+msgid "Wert eintragen, anschließend Enter drücken"
 msgstr ""
 
 #: .\apps\actions\admin\steps_inline.py:22
@@ -376,7 +376,7 @@ msgstr "Parameter"
 #: .\apps\keywords\admin\keyword_parameters_inline.py:35
 #: .\apps\keywords\admin\keywordcall_return_value_inline.py:49
 #: .\apps\variables\admin\table_columns_inline.py:38
-msgid "Name eintragen, anschließend Tab drücken"
+msgid "Name eintragen, anschließend Enter drücken"
 msgstr ""
 
 #: .\apps\keywords\admin\keywordcall_conditions_inline.py:20

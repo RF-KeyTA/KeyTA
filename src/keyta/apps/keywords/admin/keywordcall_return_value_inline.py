@@ -46,7 +46,7 @@ class KeywordCallReturnValueInline(DeleteRelatedField, ReturnValueTypeField, Bas
         if db_field.name == 'name':
             field.widget = forms.TextInput(attrs={
                 'style': 'width: 100%',
-                'placeholder': _('Name eintragen, anschließend Tab drücken')
+                'placeholder': _('Name eintragen, anschließend Enter drücken')
             })
 
         return field
