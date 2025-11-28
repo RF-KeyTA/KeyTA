@@ -16,6 +16,7 @@ class ExecutionInline(BaseTabularInline):
     max_num = 1
     can_delete = False
     template = 'execution_inline_tabular.html'
+    rf_server = settings.RF_SERVER
 
     def get_fields(self, request, obj=None):
         return self.get_readonly_fields(request, obj)
@@ -27,7 +28,7 @@ class ExecutionInline(BaseTabularInline):
 
         @admin.display(description=_('Protokoll'))
         def log_icon(self, execution: Execution):
-            return mark_safe(execution.get_log_icon(request.user))
+            return mark_safe(execution.get_log_icon(self.rf_server, request.user))
 
         ExecutionInline.result_icon = result_icon
         ExecutionInline.log_icon = log_icon

@@ -79,11 +79,11 @@ class Execution(CloneMixin, AbstractBaseModel):
 
         return dependencies
 
-    def get_log_icon(self, user: AbstractUser):
+    def get_log_icon(self, server_url: str, user: AbstractUser):
         user_exec = self.user_execs.get(user=user)
 
         if user_exec.result:
-            url = settings.RF_SERVER + '/' + user_exec.log
+            url = server_url + '/' + user_exec.log
             title = str(Icon(settings.FA_ICONS.exec_log))
             return '<a href="%s" id="log-btn" target="_blank">%s</a>' % (url, title)
 

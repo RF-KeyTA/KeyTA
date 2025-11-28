@@ -1,5 +1,6 @@
 import json
 
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.http import HttpRequest, JsonResponse, HttpResponse
 
@@ -22,7 +23,7 @@ class ExecutionAdmin(BaseAdmin):
         execution: Execution = self.model.objects.get(id=object_id)
 
         if 'log_icon' in request.GET:
-            return HttpResponse(execution.get_log_icon(request.user))
+            return HttpResponse(execution.get_log_icon(settings.RF_SERVER, request.user))
 
         if 'result_icon' in request.GET:
             return HttpResponse(execution.get_result_icon(request.user))
