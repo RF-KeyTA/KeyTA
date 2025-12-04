@@ -32,7 +32,10 @@ class DeleteRelatedField:
                     self.icon,
                     {'font-size': '1.5em', 'margin-top': '5px'}
                     )
-                )
+                ),
+                attrs={
+                    'onclick': "window.onbeforeunload = function(e) {localStorage.setItem('scrollpos', window.scrollY)}"
+                }
             )
 
         DeleteRelatedField.delete = delete
