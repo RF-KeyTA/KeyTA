@@ -16,6 +16,12 @@
 {{ block.super }}
 <script>
     $(document).ready(function () {
+        setTimeout(function () {
+            var scrollpos = localStorage.getItem('scrollpos');
+            if (scrollpos) window.scrollTo(0, scrollpos);
+            localStorage.removeItem('scrollpos');
+        }, 300)
+
         if (!document.location.hash) {
            $('a:contains("{% trans "Schritte" %}")').click()
         }
