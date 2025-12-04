@@ -145,7 +145,12 @@
             $.post(
                 url,
                 $('form').serialize() + "&_continue=",
-                function() { window.location.reload() }
+                function() {
+                    window.onbeforeunload = function(e) {
+                        localStorage.setItem('scrollpos', window.scrollY);
+                    };
+                    window.location.reload()
+                }
             )
         }
 
