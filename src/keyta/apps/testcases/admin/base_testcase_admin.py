@@ -20,7 +20,7 @@ from keyta.apps.executions.models import TestCaseExecution
 from keyta.apps.systems.models import System
 from keyta.apps.variables.models import VariableValue
 from keyta.rf_export.rfgenerator import gen_testsuite
-from keyta.rf_export.testsuite import RFTestSuite
+from keyta.rf_export.testsuite import make_rf_testsuite
 from keyta.widgets import CheckboxSelectMultipleSystems, Icon
 
 from ..models import TestCase
@@ -57,29 +57,6 @@ class TagFilter(admin.RelatedFieldListFilter):
 
         except (ValueError, ValidationError) as e:
             raise IncorrectLookupParameters(e)
-
-
-def make_rf_testsuite(name: str, testcases: QuerySet, testcase_to_testsuite) -> RFTestSuite:
-    testsuite = {
-        'name': name,
-        'settings': {
-            'library_imports': {},
-            'resource_imports': {},
-            'suite_setup': None,
-            'suite_teardown': None
-        },
-        'keywords': {},
-        'testcases': []
-    }
-
-    for testcase in testcases.all():
-        rf_testsuite = testcase_to_testsuite(testcase)
-        testsuite['settings']['library_imports'].update(rf_testsuite['settings']['library_imports'])
-        testsuite['settings']['resource_imports'].update(rf_testsuite['settings']['resource_imports'])
-        testsuite['keywords'].update(rf_testsuite['keywords'])
-        testsuite['testcases'].extend(rf_testsuite['testcases'])
-
-    return testsuite
 
 
 @admin.action(description=_('Ausgewählte Testfälle exportieren'))
