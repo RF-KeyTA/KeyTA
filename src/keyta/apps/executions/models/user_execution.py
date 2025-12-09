@@ -39,9 +39,9 @@ class UserExecution(AbstractBaseModel):
     def __str__(self):
         return str(self.execution)
 
-    def save_execution_result(self, robot_result: dict):
-        self.log = robot_result['log']
-        self.result = robot_result['result']
+    def save_execution_result(self, log: str, result: str):
+        self.log = log
+        self.result = result
         self.save()
 
     class Meta:

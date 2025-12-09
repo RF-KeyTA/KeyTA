@@ -37,7 +37,7 @@ class ExecutionAdmin(BaseAdmin):
 
         if request.method == 'PUT':
             result = json.loads(request.body.decode('utf-8'))
-            execution.save_execution_result(request.user, result)
+            execution.save_execution_result(request.user, result['log'], result['result'])
             return HttpResponse()
 
         return super().change_view(request, object_id, form_url, extra_context)
