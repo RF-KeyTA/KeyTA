@@ -150,7 +150,7 @@ class Keyword(AbstractBaseModel):
             'steps': [
                 step.to_robot(get_variable_value)
                 for step in self.executable_steps(execution_state)
-            ],
+            ] if self.calls.exists() else [],
             'return_values': [f'${{{return_value}}}' for return_value in return_values]
         }
 
