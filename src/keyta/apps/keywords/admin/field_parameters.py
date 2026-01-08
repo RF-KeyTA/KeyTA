@@ -3,7 +3,7 @@ from django.utils.safestring import mark_safe
 
 from keyta.widgets import attrs_to_string
 
-from ..models import KeywordCall, KeywordCallParameter
+from ..models import KeywordCall
 
 
 class ParameterFields:
@@ -14,11 +14,9 @@ class ParameterFields:
             'hx-swap': 'innerHTML',
             'hx-trigger': f'modal-closed-{pk} from:body, modal-closed from:body'
         }
-        params = list(kw_call.parameters.all())
         position0 = position - 1
 
-        if len(params) > position0:
-            param: KeywordCallParameter = params[position0]
+        if param := kw_call.get_parameter(position0):
             value = param.current_value or ''
             htmx_attrs['hx-get'] += f'?update-param={position0}'
 

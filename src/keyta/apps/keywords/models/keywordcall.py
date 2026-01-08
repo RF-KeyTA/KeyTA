@@ -241,10 +241,13 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
             .filter(from_keyword__in=kw_calls.values_list('to_keyword'))
         )
 
-    def get_parameter_value(self, param_index: int):
+    def get_parameter(self, param_index: int):
         params = list(self.parameters.all())
-        param = params[param_index]
-        return param.current_value
+
+        if param_index < len(params):
+            return params[param_index]
+
+        return None
 
     def get_previous_return_values(self) -> QuerySet:
         previous_kw_calls = []
