@@ -181,7 +181,7 @@ class CheckboxSelectMultipleSystems(CheckboxSelectMultiple):
     ):
         option = super().create_option(name, value, label, selected, index, subindex, attrs)
 
-        if hasattr(self, 'in_use') and value in self.in_use:
+        if hasattr(self, 'in_use') and selected and value in self.in_use:
             option['attrs'].update({'onClick': 'return false'})
 
         return option
