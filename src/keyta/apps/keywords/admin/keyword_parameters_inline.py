@@ -39,8 +39,8 @@ class ParameterForm(forms.ModelForm):
         orig_name = self.initial.get('name')
         current_name = self.cleaned_data.get('name')
 
-        if orig_name != current_name:
-            parameter: KeywordParameter = self.instance
+        if orig_name and orig_name != current_name:
+            parameter: KeywordParameter = instance
             kw_call_param_sources = KeywordCallParameterSource.objects.filter(kw_param=parameter)
 
             for kw_call_param in KeywordCallParameter.objects.filter(value_ref__in=kw_call_param_sources):
