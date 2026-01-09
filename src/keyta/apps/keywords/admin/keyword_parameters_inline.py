@@ -6,7 +6,7 @@ from adminsortable2.admin import CustomInlineFormSet
 from keyta.admin.field_delete_related_instance import DeleteRelatedField
 from keyta.admin.base_inline import SortableTabularInline
 
-from ..models import Keyword, KeywordParameter
+from ..models import Keyword, KeywordParameter, KeywordCallParameter, KeywordCallParameterSource
 
 
 class ParameterFormset(CustomInlineFormSet):
@@ -32,6 +32,21 @@ class ParameterForm(forms.ModelForm):
             raise forms.ValidationError("Doppelpunkt ist im Parameternamen nicht zulässig")
 
         return name
+
+    def save(self, commit=True):
+        instance = super().save(commit)
+
+        orig_name = self.initial.get('name')
+        current_name = self.cleaned_data.get('name')
+
+        if orig_name != current_name:
+            parameter: KeywordParameter = self.instance
+            kw_call_param_sources = KeywordCallParameterSource.objects.filter(kw_param=parameter)
+
+            for kw_call_param in KeywordCallParameter.objects.filter(value_ref__in=kw_call_param_sources):
+                kw_call_param.update_arg_name(current_name)
+
+        return instance
 
 
 class ParametersInline(DeleteRelatedField, SortableTabularInline):

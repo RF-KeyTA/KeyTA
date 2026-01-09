@@ -139,6 +139,12 @@ class KeywordCallParameter(CloneMixin, AbstractBaseModel):
         else:
             return JSONValue.from_json(self.value).user_input
 
+    def update_arg_name(self, arg_name):
+        json_value = self.json_value
+        json_value.arg_name = arg_name
+        self.value = json_value.jsonify()
+        self.save()
+
     def update_value(self):
         if self.value_ref:
             self.value = self.value_ref.get_value().jsonify()
