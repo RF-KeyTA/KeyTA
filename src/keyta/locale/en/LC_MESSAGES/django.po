@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-26 16:18+0100\n"
+"POT-Creation-Date: 2026-01-09 08:35+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -60,7 +60,7 @@ msgstr "Execute from this step"
 msgid "Ausführen bis"
 msgstr "Execute until this step"
 
-#: .\admin\keywords_inline.py:15 .\apps\keywords\models\keyword.py:192
+#: .\admin\keywords_inline.py:15 .\apps\keywords\models\keyword.py:196
 msgid "Schlüsselwörter"
 msgstr "Keywords"
 
@@ -69,7 +69,7 @@ msgstr "Keywords"
 #: .\apps\keywords\models\keyword.py:40
 #: .\apps\keywords\models\keyword_parameters.py:28
 #: .\apps\libraries\models\library_parameter.py:20 .\apps\systems\models.py:12
-#: .\apps\testcases\admin\base_testcase_admin.py:115
+#: .\apps\testcases\admin\base_testcase_admin.py:92
 #: .\apps\testcases\models\testcase.py:22 .\apps\variables\admin\variable.py:42
 #: .\apps\variables\models\variable.py:19
 #: .\apps\variables\models\variable_value.py:17
@@ -92,8 +92,8 @@ msgstr "Window-independent"
 #: .\apps\keywords\models\keywordcall.py:101
 #: .\apps\resources\admin\resource_import.py:20
 #: .\apps\sequences\admin\sequence.py:167
-#: .\apps\variables\admin\windows_inline.py:17
-#: .\apps\variables\admin\windows_inline.py:29 .\apps\windows\models.py:58
+#: .\apps\variables\admin\windows_inline.py:21
+#: .\apps\variables\admin\windows_inline.py:32 .\apps\windows\models.py:58
 #: .\apps\windows\models.py:72 .\apps\windows\models.py:79
 msgid "Maske"
 msgstr "Window"
@@ -103,19 +103,19 @@ msgid "All"
 msgstr ""
 
 #: .\apps\actions\admin\action.py:83 .\apps\actions\models\action_step.py:29
-#: .\apps\keywords\models\keywordcall.py:443
+#: .\apps\keywords\models\keywordcall.py:446
 #: .\apps\keywords\templates\window_keyword_change_form.html:9
 #: .\apps\sequences\admin\sequence.py:90
 #: .\apps\sequences\models\sequence_step.py:10
 #: .\apps\testcases\models\test_step.py:29
-#: .\apps\testcases\templates\testcase_change_form.html:20
+#: .\apps\testcases\templates\testcase_change_form.html:26
 msgid "Schritte"
 msgstr "Steps"
 
 #: .\apps\actions\admin\action.py:111 .\apps\keywords\models\keyword.py:69
 #: .\apps\sequences\admin\sequence.py:67 .\apps\sequences\admin\sequence.py:115
 #: .\apps\systems\apps.py:8 .\apps\systems\models.py:37
-#: .\apps\testcases\admin\base_testcase_admin.py:147
+#: .\apps\testcases\admin\base_testcase_admin.py:124
 #: .\apps\testcases\models\testcase.py:34 .\apps\variables\admin\variable.py:63
 #: .\apps\variables\admin\variable.py:99 .\apps\variables\models\variable.py:25
 #: .\apps\windows\admin\variables_inline.py:24
@@ -136,7 +136,6 @@ msgstr "reset"
 
 #: .\apps\actions\admin\library_keyword_call_vararg_parameters_inline.py:40
 #: .\apps\variables\admin\table_column.py:26
-#: .\apps\variables\admin\values_inline.py:43
 msgid "Wert eintragen, anschließend Enter drücken"
 msgstr "Enter a value and then press Enter"
 
@@ -145,7 +144,7 @@ msgid "Schlüsselwort auswählen"
 msgstr "Select a Keyword"
 
 #: .\apps\actions\admin\steps_inline.py:24
-#: .\apps\keywords\models\keyword.py:191
+#: .\apps\keywords\models\keyword.py:195
 msgid "Schlüsselwort"
 msgstr "Keyword"
 
@@ -158,8 +157,8 @@ msgstr "Select a Window"
 
 #: .\apps\actions\admin\windows_inline.py:31
 #: .\apps\keywords\admin\keyword.py:25
-#: .\apps\variables\admin\windows_inline.py:16
-#: .\apps\variables\admin\windows_inline.py:18
+#: .\apps\variables\admin\windows_inline.py:31
+#: .\apps\variables\admin\windows_inline.py:33
 #: .\apps\variables\models\variable.py:38 .\apps\windows\apps.py:8
 #: .\apps\windows\models.py:59 .\apps\windows\models.py:73
 #: .\apps\windows\models.py:80
@@ -208,7 +207,7 @@ msgid "Aktion"
 msgstr "Action"
 
 #: .\apps\actions\models\action_step.py:28
-#: .\apps\keywords\models\keywordcall.py:442
+#: .\apps\keywords\models\keywordcall.py:445
 #: .\apps\sequences\models\sequence_step.py:9
 #: .\apps\testcases\models\test_step.py:28
 msgid "Schritt"
@@ -222,17 +221,17 @@ msgstr "Relationship to Window"
 msgid "Zuweisungen zu Masken"
 msgstr "Relationships to Windows"
 
-#: .\apps\executions\admin\execution_inline.py:24
+#: .\apps\executions\admin\execution_inline.py:25
 #: .\apps\executions\models\user_execution.py:31
 msgid "Ergebnis"
 msgstr "Result"
 
-#: .\apps\executions\admin\execution_inline.py:28
+#: .\apps\executions\admin\execution_inline.py:29
 #: .\apps\executions\models\user_execution.py:23
 msgid "Protokoll"
 msgstr "Log"
 
-#: .\apps\executions\admin\execution_inline.py:37
+#: .\apps\executions\admin\execution_inline.py:38
 #: .\apps\libraries\admin\library_import.py:57
 #: .\apps\libraries\admin\library_import_inline.py:21
 #: .\apps\libraries\admin\library_import_parameters_inline.py:16
@@ -240,7 +239,7 @@ msgstr "Log"
 msgid "Einstellungen"
 msgstr "Settings"
 
-#: .\apps\executions\admin\execution_inline.py:44
+#: .\apps\executions\admin\execution_inline.py:45
 #: .\apps\executions\models\execution.py:219
 #: .\apps\executions\models\execution.py:220
 #: .\apps\executions\models\keyword_execution.py:144
@@ -249,7 +248,7 @@ msgstr "Settings"
 #: .\apps\executions\models\testcase_execution.py:130
 #: .\apps\libraries\models\library_import.py:46
 #: .\apps\resources\models\resource_import.py:46
-#: .\apps\testcases\admin\base_testcase_admin.py:117
+#: .\apps\testcases\admin\base_testcase_admin.py:94
 msgid "Ausführung"
 msgstr "Execution"
 
@@ -362,13 +361,17 @@ msgstr ""
 msgid "Werte"
 msgstr "Values"
 
-#: .\apps\keywords\admin\keyword_parameters_inline.py:26
+#: .\apps\keywords\admin\keyword_parameters_inline.py:23
+msgid "Beim Hinzufügen eines Parameters darf der Standardwert nicht leer sein."
+msgstr "The default value cannot be empty when adding a parameter."
+
+#: .\apps\keywords\admin\keyword_parameters_inline.py:43
 #: .\apps\keywords\models\keyword_parameters.py:149
 #: .\apps\libraries\models\library_import_parameter.py:36
 msgid "Parameter"
 msgstr "Parameter"
 
-#: .\apps\keywords\admin\keyword_parameters_inline.py:27
+#: .\apps\keywords\admin\keyword_parameters_inline.py:44
 #: .\apps\keywords\forms\keywordcall_condition_formset.py:23
 #: .\apps\keywords\forms\keywordcall_parameter_formset.py:34
 #: .\apps\keywords\models\keyword_parameters.py:150
@@ -377,7 +380,11 @@ msgstr "Parameter"
 msgid "Parameters"
 msgstr "Parameters"
 
-#: .\apps\keywords\admin\keyword_parameters_inline.py:35
+#: .\apps\keywords\admin\keyword_parameters_inline.py:50
+msgid "Standardwert (optional)"
+msgstr "Default Value (optional)"
+
+#: .\apps\keywords\admin\keyword_parameters_inline.py:55
 #: .\apps\keywords\admin\keywordcall_return_value_inline.py:49
 #: .\apps\variables\admin\table_columns_inline.py:38
 msgid "Name eintragen, anschließend Enter drücken"
@@ -762,7 +769,7 @@ msgstr "Attach to a running system"
 msgid "Automatisierung"
 msgstr "Automation"
 
-#: .\apps\testcases\admin\base_testcase_admin.py:85
+#: .\apps\testcases\admin\base_testcase_admin.py:62
 msgid "Ausgewählte Testfälle exportieren"
 msgstr "Export selected Test Cases"
 
@@ -774,7 +781,12 @@ msgstr "Select a Sequence"
 msgid "Testfälle"
 msgstr "Test Cases"
 
-#: .\apps\testcases\templates\testcase_change_form.html:41
+#: .\apps\testcases\templates\test_step_tabs.html:2
+#: .\templates\jazzmin\includes\horizontal_tabs.html:2
+msgid "General"
+msgstr ""
+
+#: .\apps\testcases\templates\testcase_change_form.html:47
 msgid "Sicher?"
 msgstr "Are you sure?"
 
@@ -1065,10 +1077,6 @@ msgstr "Robot Framework could not be executed."
 #: .\templates\execution.html:47
 msgid "Robot Framework wird ausgeführt."
 msgstr "Robot Framework is running."
-
-#: .\templates\jazzmin\includes\horizontal_tabs.html:2
-msgid "General"
-msgstr ""
 
 #: .\widgets.py:319
 msgid "Klicke auf das Plus-Symbol"
