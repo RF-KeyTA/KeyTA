@@ -66,10 +66,10 @@ class KeywordParameter(CloneMixin, AbstractBaseModel):
         kw_param, created = KeywordParameter.objects.update_or_create(
             keyword=keyword,
             position=position,
-            type=KeywordParameterType.ARG,
             defaults={
                 'default_value': None,
-                'name': name
+                'name': name,
+                'type': KeywordParameterType.ARG
             }
         )
         kw_param.set_typedoc(typedoc)
@@ -79,10 +79,10 @@ class KeywordParameter(CloneMixin, AbstractBaseModel):
         kw_param, created = KeywordParameter.objects.update_or_create(
             keyword=keyword,
             name=name,
-            type=KeywordParameterType.KWARG,
             defaults={
                 'default_value': default_value,
                 'position': position,
+                'type': KeywordParameterType.KWARG
             }
         )
         kw_param.set_typedoc(typedoc)
