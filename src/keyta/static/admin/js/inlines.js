@@ -141,17 +141,11 @@
         const inlineSaveHandler = function(e1) {
             e1.preventDefault();
 
-            const url = window.location.href
-            $.post(
-                url,
-                $('form').serialize() + "&_continue=",
-                function() {
-                    window.onbeforeunload = function(e) {
-                        localStorage.setItem('scrollpos', window.scrollY);
-                    };
-                    window.location.reload()
-                }
-            )
+            window.onbeforeunload = function(e) {
+                localStorage.setItem('scrollpos', window.scrollY);
+            };
+
+            $('.button-save').click();
         }
 
         const inlineDeleteHandler = function(e1) {
