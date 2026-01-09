@@ -361,10 +361,10 @@ class KeywordSource(AbstractBaseModel):
                         break
 
             kwarg_names = set()
-            for idx, arg, in enumerate(keyword["args"]):
+            kw_args = [arg for arg in keyword['args'] if arg['name']]
+
+            for idx, arg, in enumerate(kw_args):
                 name = arg["name"]
-                if not name:
-                    continue
 
                 if arg["required"]:
                     KeywordParameter.create_arg(
