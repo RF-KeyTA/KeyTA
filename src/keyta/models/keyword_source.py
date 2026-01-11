@@ -4,7 +4,7 @@ import subprocess
 import tempfile
 from abc import abstractmethod
 from pathlib import Path
-from typing import TypedDict, Literal
+from typing import TypedDict
 
 from jinja2 import Template
 
@@ -22,18 +22,10 @@ from .base_model import AbstractBaseModel
 
 
 class TypeDoc(TypedDict):
-    """
     name: str
     doc: str
     items: list[str]
-    type: Literal['Enum', 'TypedDict']
-    """
-
-    name: str
-    doc: str
-    items: list[str]
-    type: Literal['Enum', 'TypedDict']
-
+    type: str
 
 
 def args_table(libdoc_args: list[dict], typedocs: dict[str, TypeDoc]):
@@ -254,8 +246,9 @@ def get_typedocs(libdoc_typedocs: list[dict]) -> dict[str, TypeDoc]:
 
     for typedoc in libdoc_typedocs:
         name = typedoc['name']
+        type_ = typedoc['type']
 
-        if typedoc['type'] == 'Enum':
+        if type_ == 'Enum':
             typedocs[name] = TypeDoc(
                 name=name,
                 doc=typedoc['doc'],
@@ -263,10 +256,9 @@ def get_typedocs(libdoc_typedocs: list[dict]) -> dict[str, TypeDoc]:
                     member['name']
                     for member in typedoc['members']
                 ],
-                type='Enum'
+                type=type_
             )
-
-        if typedoc['type'] == 'TypedDict':
+        elif type_ == 'TypedDict':
             typedocs[name] = TypeDoc(
                 name=name,
                 doc=typedoc['doc'],
@@ -274,7 +266,14 @@ def get_typedocs(libdoc_typedocs: list[dict]) -> dict[str, TypeDoc]:
                     item['key']
                     for item in typedoc['items']
                 ],
-                type='TypedDict'
+                type=type_
+            )
+        else:
+            typedocs[name] = TypeDoc(
+                name=name,
+                doc=typedoc['doc'],
+                items=[],
+                type=type_
             )
 
     return typedocs
