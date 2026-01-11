@@ -205,7 +205,8 @@ def get_return_type(return_type: dict | None) -> list:
 
 
 def get_type(arg: dict) -> list[str]:
-    type_hint_regex = re.compile(r'[*]*\w+: ([\w|\[\]\s,]+)')
+    type_hint_regex = re.compile(r"[*]*\w+: ([\w|\[\]\s,']+)")
+
     if type_hint := type_hint_regex.match(arg['repr']):
         union_type = type_hint.group(1).split('|')
         return [
