@@ -15,13 +15,14 @@ class ParameterFormset(CustomInlineFormSet):
         self.keyword: Keyword = kwargs.get('instance')
 
     def clean(self):
-        for form in self.extra_forms:
-            default_value = form.cleaned_data.get('default_value')
+        if self.keyword.pk:
+            for form in self.extra_forms:
+                default_value = form.cleaned_data.get('default_value')
 
-            if not default_value and self.keyword.is_in_use:
-                raise forms.ValidationError(
-                    _('Beim Hinzufügen eines Parameters darf der Standardwert nicht leer sein.')
-                )
+                if not default_value and self.keyword.is_in_use:
+                    raise forms.ValidationError(
+                        _('Beim Hinzufügen eines Parameters darf der Standardwert nicht leer sein.')
+                    )
 
 
 class ParameterForm(forms.ModelForm):
