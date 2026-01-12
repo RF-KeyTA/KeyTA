@@ -106,7 +106,7 @@ class Keyword(AbstractBaseModel):
 
     @property
     def is_in_use(self):
-        return self.uses.exclude(Q(execution__isnull=False) & Q(to_keyword=self)).count() > 0
+        return self.uses.exclude(Q(execution__isnull=False) & Q(to_keyword=self)).count() > 1
 
     @property
     def is_sequence(self):
