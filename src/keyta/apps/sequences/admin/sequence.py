@@ -82,8 +82,7 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
     )
     inlines = [
         ParametersInline,
-        SequenceSteps,
-        UsesInline
+        SequenceSteps
     ]
 
     def change_view(self, request: HttpRequest, object_id, form_url="", extra_context=None):
@@ -143,7 +142,10 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
             inlines += [ReturnValueInline]
 
         if not sequence.has_empty_sequence:
-            return inlines + [KeywordExecutionInline]
+            inlines += [KeywordExecutionInline]
+
+        if sequence.in_use > 0:
+            inlines +=  [UsesInline]
 
         return inlines
 
