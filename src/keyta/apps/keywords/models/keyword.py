@@ -105,8 +105,8 @@ class Keyword(AbstractBaseModel):
         return self.type == KeywordType.ACTION
 
     @property
-    def is_in_use(self):
-        return self.uses.exclude(Q(execution__isnull=False) & Q(to_keyword=self)).count() > 1
+    def in_use(self):
+        return self.uses.exclude(Q(execution__isnull=False) & Q(to_keyword=self)).count()
 
     @property
     def is_sequence(self):
