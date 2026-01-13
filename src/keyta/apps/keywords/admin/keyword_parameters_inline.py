@@ -19,7 +19,7 @@ class ParameterFormset(CustomInlineFormSet):
             for form in self.extra_forms:
                 default_value = form.cleaned_data.get('default_value')
 
-                if not default_value and self.keyword.is_in_use:
+                if not default_value and self.keyword.in_use > 1:
                     raise forms.ValidationError(
                         _('Beim Hinzufügen eines Parameters darf der Standardwert nicht leer sein.')
                     )
@@ -76,7 +76,7 @@ class ParametersInline(DeleteRelatedField, SortableTabularInline):
     def get_fields(self, request, obj=None):
         keyword: Keyword = obj
 
-        if keyword and keyword.is_in_use:
+        if keyword and keyword.in_use > 1:
             return self.fields + ['default_value', 'delete']
 
         return super().get_fields(request, obj)
