@@ -250,14 +250,6 @@
                     iframe.contents().find('input[type=text]').first().focus()
                 })
 
-                $('form').on('keydown', function(e) {
-                    const url = window.location.href
-
-                    if (url.includes('_popup') && e.keyCode === 13) {
-                        return false;
-                    }
-                })
-
                 $('.form-row.has_original').on('dragend', function() {
                     $.post(url, $('form').serialize() + "&_continue=")
                 })
