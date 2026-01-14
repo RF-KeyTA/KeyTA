@@ -14,7 +14,6 @@ class VariableValueAdmin(BaseAdmin):
 
         return list(
             KeywordCallParameter.objects.filter(
-                Q(value_ref__variable_value=variable_value) |
-                Q(value_ref__table_column=variable_value.variable)
+                Q(value_ref__variable_value=variable_value)
             )
         )
