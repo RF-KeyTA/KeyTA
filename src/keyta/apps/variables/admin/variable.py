@@ -67,7 +67,7 @@ class VariableAdmin(SortableAdminBase, BaseAdmin):
         )
 
     def autocomplete_name_queryset(self, name: str, request: HttpRequest):
-        return super().autocomplete_name_queryset(name, request).filter(windows__isnull=True)
+        return super().autocomplete_name_queryset(name, request)
 
     def change_view(self, request: HttpRequest, object_id, form_url="", extra_context=None):
         if 'quick_change' in request.GET:
