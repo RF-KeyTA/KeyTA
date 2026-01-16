@@ -18,13 +18,13 @@ EMPTY = rf_var('EMPTY')
 
 
 def call_keyword(keyword_call: RFKeywordCall):
-    params = [escape_spaces(param) for param in keyword_call['params']]
+    params = [escape_spaces(escape_backslashes(param)) for param in keyword_call['params']]
     return rf_join([keyword_call['keyword'], *params])
 
 
 def dict_as_kwargs(dic):
     return [
-        escape_spaces(f'{key}={val or EMPTY}')
+        escape_spaces(escape_backslashes(f'{key}={val or EMPTY}'))
         for key, val in dic.items()
     ]
 
@@ -76,11 +76,11 @@ env.globals['rf_join'] = rf_join
 env.filters['splitlines'] = splitlines
 
 
-def gen_testsuite(testsuite: RFTestSuite) -> str:
-    robot_template = env.get_template('template.robot.jinja')
-    return escape_backslashes(robot_template.render(testsuite))
-
-
 def gen_resource(resource: RFResource) -> str:
     resource_template = env.get_template('template.resource.jinja')
-    return escape_backslashes(resource_template.render(resource))
+    return resource_template.render(resource)
+
+
+def gen_testsuite(testsuite: RFTestSuite) -> str:
+    robot_template = env.get_template('template.robot.jinja')
+    return robot_template.render(testsuite)
