@@ -131,13 +131,17 @@ class RequestHandler(SimpleHTTPRequestHandler):
         super().__init__(request, client_address, server_class, directory=str(Path(__file__).resolve().parent))
 
     def do_GET(self):
-        if self.path.endswith('.html') or self.path.endswith('.robot'):
+        if self.path.endswith('.html') or self.path.endswith('.jpg') or self.path.endswith('.png') or self.path.endswith('.robot'):
             path = Path(str(tmp_dir) + self.path)
 
             if path.exists():
                 self.send_response(HTTPStatus.OK)
                 if self.path.endswith('.html'):
                     self.send_header("Content-type", 'text/html')
+                if self.path.endswith('.jpg'):
+                    self.send_header("Content-type", 'image/jpeg')
+                if self.path.endswith('.png'):
+                    self.send_header("Content-type", 'image/png')
                 if self.path.endswith('.robot'):
                     self.send_header("Content-type", 'text/plain')
                 self.send_header("Content-Length", str(os.stat(path).st_size))
