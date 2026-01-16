@@ -209,7 +209,7 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
                  # For a Library/Resource keyword the icon is necessary to set the return value
                  icon = Icon(settings.FA_ICONS.kw_call_only_output)
                  icon.attrs['name'] = 'only-output'
-                 icon.attrs['style'].update({'filter': 'hue-rotate(150deg)'})
+                 icon.attrs['style'].update({'color': 'gray'})
                  return icon
             else:
                 icon = Icon(settings.FA_ICONS.kw_call_only_output, {'color': 'var(--keyta-secondary-color)'})
