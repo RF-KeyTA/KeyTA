@@ -1,11 +1,10 @@
 import re
-from collections import defaultdict
 
-from django.db.models import QuerySet, Q
+from django.db.models import QuerySet
 from django.forms.utils import ErrorDict, ErrorList
 from django.utils.translation import gettext_lazy as _
 
-from keyta.apps.variables.models import Variable, VariableValue
+from keyta.apps.variables.models import Variable
 
 from ..json_value import JSONValue
 from ..models import (
