@@ -38,7 +38,7 @@ class LibraryKeywordCallParameterFormset(KeywordCallParameterFormset):
                     for type_ in type_list:
                         if type_ == 'None':
                             choices['None'] = [
-                                (JSONValue.user_input('${None}'), '${None}')
+                                (JSONValue.user_input('${None}'), 'None')
                             ]
                         elif type_ == 'bool':
                             choices['bool'] = [
