@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-09 08:35+0100\n"
+"POT-Creation-Date: 2026-01-19 11:25+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -91,7 +91,7 @@ msgstr "Window-independent"
 #: .\apps\keywords\models\keyword.py:64
 #: .\apps\keywords\models\keywordcall.py:101
 #: .\apps\resources\admin\resource_import.py:20
-#: .\apps\sequences\admin\sequence.py:167
+#: .\apps\sequences\admin\sequence.py:169
 #: .\apps\variables\admin\windows_inline.py:21
 #: .\apps\variables\admin\windows_inline.py:32 .\apps\windows\models.py:58
 #: .\apps\windows\models.py:72 .\apps\windows\models.py:79
@@ -105,7 +105,7 @@ msgstr ""
 #: .\apps\actions\admin\action.py:83 .\apps\actions\models\action_step.py:29
 #: .\apps\keywords\models\keywordcall.py:446
 #: .\apps\keywords\templates\window_keyword_change_form.html:9
-#: .\apps\sequences\admin\sequence.py:90
+#: .\apps\sequences\admin\sequence.py:89
 #: .\apps\sequences\models\sequence_step.py:10
 #: .\apps\testcases\models\test_step.py:29
 #: .\apps\testcases\templates\testcase_change_form.html:26
@@ -113,7 +113,7 @@ msgid "Schritte"
 msgstr "Steps"
 
 #: .\apps\actions\admin\action.py:111 .\apps\keywords\models\keyword.py:69
-#: .\apps\sequences\admin\sequence.py:67 .\apps\sequences\admin\sequence.py:115
+#: .\apps\sequences\admin\sequence.py:67 .\apps\sequences\admin\sequence.py:114
 #: .\apps\systems\apps.py:8 .\apps\systems\models.py:37
 #: .\apps\testcases\admin\base_testcase_admin.py:124
 #: .\apps\testcases\models\testcase.py:34 .\apps\variables\admin\variable.py:63
@@ -170,18 +170,6 @@ msgstr "Windows"
 #: .\apps\windows\admin\actions_inline.py:30
 msgid "Aktionen"
 msgstr "Actions"
-
-#: .\apps\actions\forms\action.py:22
-#, python-brace-format
-msgid "Eine Aktion mit diesem Namen existiert bereits im System \"{system}\""
-msgstr "An action with this name already exists in the system \"{system}\""
-
-#: .\apps\actions\forms\action.py:37
-#, python-brace-format
-msgid ""
-"Eine Aktion mit diesem Namen existiert bereits in der Maske \"{window.name}\""
-msgstr ""
-"An action with this name already exists in the window \"{window.name}\""
 
 #: .\apps\actions\forms\library_keywordcall_parameter_formset.py:82
 #: .\apps\keywords\forms\user_input_formset.py:51
@@ -361,30 +349,30 @@ msgstr ""
 msgid "Werte"
 msgstr "Values"
 
-#: .\apps\keywords\admin\keyword_parameters_inline.py:23
+#: .\apps\keywords\admin\keyword_parameters_inline.py:24
 msgid "Beim Hinzufügen eines Parameters darf der Standardwert nicht leer sein."
 msgstr "The default value cannot be empty when adding a parameter."
 
-#: .\apps\keywords\admin\keyword_parameters_inline.py:43
+#: .\apps\keywords\admin\keyword_parameters_inline.py:59
 #: .\apps\keywords\models\keyword_parameters.py:149
 #: .\apps\libraries\models\library_import_parameter.py:36
 msgid "Parameter"
 msgstr "Parameter"
 
-#: .\apps\keywords\admin\keyword_parameters_inline.py:44
+#: .\apps\keywords\admin\keyword_parameters_inline.py:60
 #: .\apps\keywords\forms\keywordcall_condition_formset.py:23
 #: .\apps\keywords\forms\keywordcall_parameter_formset.py:34
 #: .\apps\keywords\models\keyword_parameters.py:150
 #: .\apps\libraries\models\library_import_parameter.py:37
-#: .\models\keyword_source.py:43
+#: .\models\keyword_source.py:35
 msgid "Parameters"
 msgstr "Parameters"
 
-#: .\apps\keywords\admin\keyword_parameters_inline.py:50
+#: .\apps\keywords\admin\keyword_parameters_inline.py:66
 msgid "Standardwert (optional)"
 msgstr "Default Value (optional)"
 
-#: .\apps\keywords\admin\keyword_parameters_inline.py:55
+#: .\apps\keywords\admin\keyword_parameters_inline.py:71
 #: .\apps\keywords\admin\keywordcall_return_value_inline.py:49
 #: .\apps\variables\admin\table_columns_inline.py:38
 msgid "Name eintragen, anschließend Enter drücken"
@@ -457,7 +445,7 @@ msgid "Eingabe"
 msgstr "Input"
 
 #: .\apps\keywords\models\execution_keywordcall.py:36
-#: .\apps\keywords\models\keywordcall_parameters.py:150
+#: .\apps\keywords\models\keywordcall_parameters.py:156
 msgid "Eingabewerte"
 msgstr "Input values"
 
@@ -594,7 +582,7 @@ msgstr "Parameter reference"
 msgid "Parameter-Referenzen"
 msgstr "Parameter references"
 
-#: .\apps\keywords\models\keywordcall_parameters.py:149
+#: .\apps\keywords\models\keywordcall_parameters.py:155
 msgid "Eingabewert"
 msgstr "Input value"
 
@@ -636,16 +624,6 @@ msgstr "A library is not available: {err}"
 msgid "Bibliotheken"
 msgstr "Libraries"
 
-#: .\apps\libraries\forms\library_form.py:21
-#, python-brace-format
-msgid "\"{name}\" ist keine Robot Framework Bibliothek"
-msgstr "\"{name}\" is not a Robot Framework library"
-
-#: .\apps\libraries\forms\library_form.py:23
-#, fuzzy, python-brace-format
-msgid "Die Bibliothek \"{name}\" ist im PYTHONPATH nicht vorhanden."
-msgstr "The library \"{name}\" is not in PYTHONPATH."
-
 #: .\apps\libraries\management\commands\import_library.py:22
 #, fuzzy, python-brace-format
 msgid "Die Bibliothek \"{library}\" wurde erfolgreich importiert."
@@ -676,11 +654,6 @@ msgstr "Library Imports"
 msgid "Einstellung"
 msgstr "Setting"
 
-#: .\apps\resources\admin\resource.py:34
-#, fuzzy, python-brace-format
-msgid "Die Ressource \"{resource.name}\" wurde erfolgreich aktualisiert"
-msgstr "The Resource \"{resource.name}\" has been updated successfully."
-
 #: .\apps\resources\admin\resource.py:62
 msgid "Dateipfad wie beim Importieren einer Ressource in einer .robot Datei"
 msgstr "Filepath just like when importing a Resource in a .robot file"
@@ -699,16 +672,6 @@ msgstr "Resources"
 #: .\apps\resources\forms.py:15
 msgid "Der Dateipfad muss mit .resource enden"
 msgstr "The file path must end with .resource"
-
-#: .\apps\resources\forms.py:18
-#, fuzzy, python-brace-format
-msgid "Die Ressource \"{filepath}\" ist bereits vorhanden."
-msgstr "The Resource \"{filepath}\" was already imported."
-
-#: .\apps\resources\models\resource.py:30
-#, fuzzy, python-brace-format
-msgid "Die Ressource \"{filepath}\" ist nicht im PYTHONPATH vorhanden."
-msgstr "The Resource \"{filepath}\" is not in PYTHONPATH."
 
 #: .\apps\resources\models\resource_import.py:17
 msgid "Aus einer Maske"
@@ -732,14 +695,6 @@ msgstr "Uses"
 #: .\apps\windows\admin\sequences_inline.py:30
 msgid "Sequenzen"
 msgstr "Sequences"
-
-#: .\apps\sequences\forms\sequence.py:26 .\apps\sequences\forms\sequence.py:41
-#, python-brace-format
-msgid ""
-"Eine Sequenz mit diesem Namen existiert bereits in der Maske \"{window."
-"name}\""
-msgstr ""
-"A sequence with this name already exists in the window \"{window.name}\""
 
 #: .\apps\sequences\forms\sequence_steps_formset.py:29
 msgid "Globale Aktionen"
@@ -807,19 +762,6 @@ msgstr "The names must be unique."
 msgid "Referenzwerte"
 msgstr "Reference Values"
 
-#: .\apps\variables\forms\variable.py:22
-#, python-brace-format
-msgid "Eine Variable mit diesem Namen existiert bereits im System \"{system}\""
-msgstr "A variable with this name alredy exists in the system \"{system}\""
-
-#: .\apps\variables\forms\variable.py:37 .\apps\variables\forms\windows.py:18
-#, python-brace-format
-msgid ""
-"Eine Variable mit diesem Namen existiert bereits in der Maske \"{window."
-"name}\""
-msgstr ""
-"A variable with this name alredy exists in the window \"{window.name}\""
-
 #: .\apps\variables\models\variable.py:13
 msgid "Formular"
 msgstr "Form"
@@ -853,11 +795,6 @@ msgstr "Preview"
 msgid "System hinzufügen"
 msgstr "Add a System"
 
-#: .\apps\windows\forms\window_form.py:20
-#, python-brace-format
-msgid "Eine Maske mit diesem Namen existiert bereits im System \"{system}\""
-msgstr "A window with this name already exists in the system \"{system}\""
-
 #: .\apps\windows\models.py:65
 msgid "Dokumentation der Maske"
 msgstr "Window documentation"
@@ -874,13 +811,17 @@ msgstr "Relationship to System"
 msgid "Beziehungen zu Systemen"
 msgstr "Relationships to Systems"
 
-#: .\models\keyword_source.py:175
+#: .\models\keyword_source.py:167
 msgid "Diese Bibliothek hat keine Einstellungen"
 msgstr "This library has no settings"
 
 #: .\models\keyword_source.py:287
 msgid "Rückgabetyp"
 msgstr "Return type"
+
+#: .\templates\admin\actions.html:5
+msgid "Massenverarbeitung"
+msgstr "Batch Processing"
 
 #: .\templates\admin\actions.html:11
 msgid "Run the selected action"
