@@ -1,4 +1,5 @@
 from django import forms
+from django.utils.translation import gettext_lazy as _
 
 from keyta.widgets import BaseSelect
 
@@ -9,54 +10,77 @@ class LibraryParameterFormSet(forms.BaseInlineFormSet):
     def add_fields(self, form, index):
         super().add_fields(form, index)
 
-        # The index of extra forms is None
-        if index is not None:
-            import_param = None
-            kwarg: LibraryParameter = form.instance
+        import_param = None
+        library_parameter: LibraryParameter = form.instance
 
-            if isinstance(form.instance, LibraryImportParameter):
-                import_param = form.instance
-                kwarg: LibraryParameter = import_param.library_parameter
+        if isinstance(form.instance, LibraryImportParameter) and form.instance.pk:
+            import_param = form.instance
+            library_parameter: LibraryParameter = import_param.library_parameter
 
-            kwarg_type = kwarg.get_typedoc()
-            typedocs = kwarg.library.get_typedocs()
-            choices = dict()
-            user_input = False
+        if library_parameter.pk:
+            typedocs = library_parameter.library.get_typedocs()
 
-            if kwarg_type:
-                for type_ in kwarg_type:
-                    if type_ == 'bool':
-                        choices['True'] = 'True'
-                        choices['False'] = 'False'
+            if type_list := library_parameter.get_typedoc():
+                if type_list == ['bool']:
+                    choices = [
+                        ('True', 'True'),
+                        ('False', 'False')
+                    ]
 
-                    if any([
-                        type_ in {'int', 'str', 'timedelta'},
-                        type_.startswith('dict'),
-                        type_.startswith('list')
-                    ]):
-                        if import_param:
-                            choices[import_param.value] = import_param.value
+                    form.fields['value'].widget = BaseSelect(
+                        '',
+                        choices=choices
+                    )
+                else:
+                    choices = []
+                    enable_user_input = False
+
+                    for type_ in type_list:
+                        if type_ == 'None':
+                            choices.append(('${None}', 'None'))
+                        elif type_ == 'bool':
+                            choices.extend([
+                                ('True', 'True'),
+                                ('False', 'False')
+                            ])
+                        elif type_ in typedocs:
+                            typedoc = typedocs[type_]
+
+                            if typedoc['type'] == 'Enum':
+                                for item in typedoc['items']:
+                                    if item.lower() not in {'true', 'false'}:
+                                        choices.append((item, item))
+                            elif typedoc['type'] == 'TypedDict':
+                                enable_user_input = True
+                            else:
+                                enable_user_input = True
                         else:
-                            choices[kwarg.value] = kwarg.value
-                        user_input = True
+                            enable_user_input = True
 
-                    if type_ in typedocs:
-                        typedoc = typedocs[type_]
-                        if typedoc['type'] == 'Enum':
-                            for item in typedoc['items']:
-                                if item.lower() not in {'true', 'false'}:
-                                    choices[item] = item
+                    if enable_user_input:
+                        if import_param:
+                            user_input = import_param.value, import_param.value
+                        else:
+                            user_input = library_parameter.value, library_parameter.value
 
-                        if typedoc['type'] == 'TypedDict':
-                            user_input = True
-            else:
-                choices[kwarg.value] = kwarg.value
-                user_input = True
+                        if user_input == ('${None}', '${None}'):
+                            user_input = ('${None}', 'None')
 
-            form.fields['value'].widget = BaseSelect(
-                '',
-                choices=choices.items(),
-                attrs={
-                    'data-tags': str(user_input).lower()
-                }
-            )
+                        if user_input in set(choices):
+                            user_input = None, _('Kein Wert')
+
+                        form.fields['value'].widget = BaseSelect(
+                            '',
+                            choices=(
+                                [(_('Eingabe'), [user_input])] +
+                                choices
+                            ),
+                            attrs={
+                                'data-tags': 'true'
+                            }
+                        )
+                    else:
+                        form.fields['value'].widget = BaseSelect(
+                            '',
+                            choices=choices
+                        )
