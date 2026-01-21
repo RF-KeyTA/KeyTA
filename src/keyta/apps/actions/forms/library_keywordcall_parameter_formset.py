@@ -9,7 +9,7 @@ from keyta.apps.keywords.forms.keywordcall_parameter_formset import (
     get_global_variables,
     get_keyword_parameters
 )
-from keyta.apps.keywords.forms.user_input_formset import DynamicChoiceField, invert_dictionary, user_input_field
+from keyta.apps.keywords.forms.user_input_formset import DynamicChoiceField, user_input_field
 
 
 class LibraryKeywordCallParameterFormset(KeywordCallParameterFormset):
@@ -32,26 +32,23 @@ class LibraryKeywordCallParameterFormset(KeywordCallParameterFormset):
                         )
                     )
                 else:
-                    choices = dict()
+                    choices = []
                     enable_user_input = False
 
                     for type_ in type_list:
                         if type_ == 'None':
-                            choices['None'] = [
+                            choices.append(
                                 (JSONValue.user_input('${None}'), 'None')
-                            ]
+                            )
                         elif type_ == 'bool':
-                            choices['bool'] = [
+                            choices.extend([
                                 (JSONValue.user_input('True'), 'True'),
-                                (JSONValue.user_input('False'), 'False'),
-                            ]
+                                (JSONValue.user_input('False'), 'False')
+                            ])
                         elif type_ in self.typedocs:
                             typedoc = self.typedocs[type_]
 
                             if typedoc['type'] == 'Enum':
-                                enum_name = typedoc['name']
-                                choices[enum_name] = dict()
-
                                 sorted_members = sorted(typedoc['items'])
                                 members = (
                                     list(filter(lambda x: x[0].isalpha(), sorted_members)) +
@@ -59,9 +56,7 @@ class LibraryKeywordCallParameterFormset(KeywordCallParameterFormset):
                                 )
                                 for member in members:
                                     if member.lower() not in {'true', 'false'}:
-                                        choices[enum_name][JSONValue.user_input(member)] = member
-
-                                choices[enum_name] = list(choices[enum_name].items())
+                                        choices.append((JSONValue.user_input(member), member))
                             else:
                                 enable_user_input = True
                         else:
@@ -71,27 +66,26 @@ class LibraryKeywordCallParameterFormset(KeywordCallParameterFormset):
                         user_input = self.get_user_input(form, index)
 
                         if choices:
-                            enum_values = {
-                                key
-                                for value in list(choices.values())
-                                for key in invert_dictionary(dict(value))
+                            values = {
+                                repr
+                                for value, repr in choices
                             }
                             json_value, value = user_input
 
-                            if value in enum_values:
+                            if value in values:
                                 user_input = None, _('Kein Wert')
 
                         form.fields['value'] = user_input_field(
                             _('Wert auswählen oder eintragen'),
                             user_input,
-                            choices=list(choices.items()) + self.ref_choices
+                            choices=choices + self.ref_choices
                         )
                     else:
                         if choices:
                             form.fields['value'] = DynamicChoiceField(
                                 widget=BaseSelect(
                                     '',
-                                    choices=list(choices.items())
+                                    choices=choices
                                 )
                             )
 
