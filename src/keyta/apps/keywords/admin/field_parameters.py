@@ -17,8 +17,11 @@ class ParameterFields:
         position0 = position - 1
 
         if param := kw_call.get_parameter(position0):
-            value = param.current_value or ''
-            
+            name, value = param
+
+            if value is None:
+                value = ''
+
             if value == '${None}':
                 value = 'None'
 
@@ -27,7 +30,7 @@ class ParameterFields:
             return mark_safe(f"""
             <span {attrs_to_string(htmx_attrs)}>{value}</span>
             <br>
-            <i style="color: gray">{param.name}</i>
+            <i style="color: gray">{name}</i>
             """)
         else:
             return ''

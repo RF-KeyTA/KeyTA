@@ -242,10 +242,27 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
         )
 
     def get_parameter(self, param_index: int):
-        params = list(self.parameters.all())
+        kwcall_params = {}
 
-        if param_index < len(params):
-            return params[param_index]
+        kwcall_param: KeywordCallParameter
+        for kwcall_param in self.parameters.all():
+            name = kwcall_param.name
+            param = kwcall_param.parameter
+            value = kwcall_param.current_value
+
+            if param.is_arg or param.is_kwarg:
+                kwcall_params[name] = value
+            
+            if param.is_vararg:
+                if name in kwcall_params:
+                    kwcall_params[name].append(value)
+                else:
+                    kwcall_params[name] = [value]
+
+        kwcall_params = list(kwcall_params.items())
+
+        if param_index < len(kwcall_params):
+            return kwcall_params[param_index]
 
         return None
 
