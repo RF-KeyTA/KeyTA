@@ -46,7 +46,8 @@ class KeywordCallAdmin(UpdateIconHtmx, BaseAdmin):
 
         if param_position := request.GET.get('update-param'):
             if param := kw_call.get_parameter(int(param_position)):
-                return HttpResponse(param.current_value or '')
+                name, value = param
+                return HttpResponse(value or '')
 
             return HttpResponse('')
 
