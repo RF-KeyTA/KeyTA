@@ -18,6 +18,10 @@ class ParameterFields:
 
         if param := kw_call.get_parameter(position0):
             value = param.current_value or ''
+            
+            if value == '${None}':
+                value = 'None'
+
             htmx_attrs['hx-get'] += f'?update-param={position0}'
 
             return mark_safe(f"""
