@@ -28,9 +28,11 @@ class ParameterFields:
             htmx_attrs['hx-get'] += f'?update-param={position0}'
 
             return mark_safe(f"""
-            <span {attrs_to_string(htmx_attrs)}>{value}</span>
+            <div {attrs_to_string(htmx_attrs)}>
+            <span>{value}</span>
             <br>
             <i style="color: gray">{name}</i>
+            </div>
             """)
         else:
             return ''
