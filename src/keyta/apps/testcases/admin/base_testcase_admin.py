@@ -1,11 +1,11 @@
 from django.conf import settings
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.contrib.admin.options import IncorrectLookupParameters
 from django.core.exceptions import ValidationError
 from django.db.models import Count, Q, QuerySet
 from django.forms import ModelMultipleChoiceField
 from django.http.request import HttpRequest
-from django.http.response import HttpResponse
+from django.http.response import HttpResponse, HttpResponseRedirect
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext as _
 
@@ -61,6 +61,11 @@ class TagFilter(admin.RelatedFieldListFilter):
 
 @admin.action(description=_('Ausgewählte Testfälle exportieren'))
 def export_testcases(model_admin, request: HttpRequest, testcases: QuerySet):
+    for testcase in testcases.all():
+        if not testcase.steps.exists():
+            messages.warning(request, _('Der Testfall "{testcase_name}" hat keine Schritte.').format(testcase_name=testcase.name))
+            return HttpResponseRedirect(request.path_info)
+
     def testcase_to_testsuite(testcase):
         execution = TestCaseExecution.objects.get(testcase_id=testcase.id)
         get_variable_value = lambda pk: VariableValue.objects.get(pk=pk).current_value

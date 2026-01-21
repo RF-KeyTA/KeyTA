@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-19 11:25+0100\n"
+"POT-Creation-Date: 2026-01-21 16:12+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -69,7 +69,7 @@ msgstr "Keywords"
 #: .\apps\keywords\models\keyword.py:40
 #: .\apps\keywords\models\keyword_parameters.py:28
 #: .\apps\libraries\models\library_parameter.py:20 .\apps\systems\models.py:12
-#: .\apps\testcases\admin\base_testcase_admin.py:92
+#: .\apps\testcases\admin\base_testcase_admin.py:97
 #: .\apps\testcases\models\testcase.py:22 .\apps\variables\admin\variable.py:42
 #: .\apps\variables\models\variable.py:19
 #: .\apps\variables\models\variable_value.py:17
@@ -103,7 +103,7 @@ msgid "All"
 msgstr ""
 
 #: .\apps\actions\admin\action.py:83 .\apps\actions\models\action_step.py:29
-#: .\apps\keywords\models\keywordcall.py:446
+#: .\apps\keywords\models\keywordcall.py:463
 #: .\apps\keywords\templates\window_keyword_change_form.html:9
 #: .\apps\sequences\admin\sequence.py:89
 #: .\apps\sequences\models\sequence_step.py:10
@@ -115,7 +115,7 @@ msgstr "Steps"
 #: .\apps\actions\admin\action.py:111 .\apps\keywords\models\keyword.py:69
 #: .\apps\sequences\admin\sequence.py:67 .\apps\sequences\admin\sequence.py:114
 #: .\apps\systems\apps.py:8 .\apps\systems\models.py:37
-#: .\apps\testcases\admin\base_testcase_admin.py:124
+#: .\apps\testcases\admin\base_testcase_admin.py:129
 #: .\apps\testcases\models\testcase.py:34 .\apps\variables\admin\variable.py:63
 #: .\apps\variables\admin\variable.py:99 .\apps\variables\models\variable.py:25
 #: .\apps\windows\admin\variables_inline.py:24
@@ -171,15 +171,16 @@ msgstr "Windows"
 msgid "Aktionen"
 msgstr "Actions"
 
-#: .\apps\actions\forms\library_keywordcall_parameter_formset.py:82
+#: .\apps\actions\forms\library_keywordcall_parameter_formset.py:76
 #: .\apps\keywords\forms\user_input_formset.py:51
 #: .\apps\keywords\forms\user_input_formset.py:96
+#: .\apps\libraries\forms\library_parameter_formset.py:70
 msgid "Kein Wert"
 msgstr "No Value"
 
-#: .\apps\actions\forms\library_keywordcall_parameter_formset.py:85
+#: .\apps\actions\forms\library_keywordcall_parameter_formset.py:79
 #: .\apps\keywords\forms\keywordcall_condition_formset.py:50
-#: .\apps\keywords\forms\keywordcall_parameter_formset.py:153
+#: .\apps\keywords\forms\keywordcall_parameter_formset.py:152
 msgid "Wert auswählen oder eintragen"
 msgstr "Select or enter a Value"
 
@@ -195,7 +196,7 @@ msgid "Aktion"
 msgstr "Action"
 
 #: .\apps\actions\models\action_step.py:28
-#: .\apps\keywords\models\keywordcall.py:445
+#: .\apps\keywords\models\keywordcall.py:462
 #: .\apps\sequences\models\sequence_step.py:9
 #: .\apps\testcases\models\test_step.py:28
 msgid "Schritt"
@@ -236,7 +237,7 @@ msgstr "Settings"
 #: .\apps\executions\models\testcase_execution.py:130
 #: .\apps\libraries\models\library_import.py:46
 #: .\apps\resources\models\resource_import.py:46
-#: .\apps\testcases\admin\base_testcase_admin.py:94
+#: .\apps\testcases\admin\base_testcase_admin.py:99
 msgid "Ausführung"
 msgstr "Execution"
 
@@ -361,7 +362,7 @@ msgstr "Parameter"
 
 #: .\apps\keywords\admin\keyword_parameters_inline.py:60
 #: .\apps\keywords\forms\keywordcall_condition_formset.py:23
-#: .\apps\keywords\forms\keywordcall_parameter_formset.py:34
+#: .\apps\keywords\forms\keywordcall_parameter_formset.py:33
 #: .\apps\keywords\models\keyword_parameters.py:150
 #: .\apps\libraries\models\library_import_parameter.py:37
 #: .\models\keyword_source.py:35
@@ -424,7 +425,7 @@ msgid "Vorbedingung"
 msgstr "Precondition"
 
 #: .\apps\keywords\forms\keywordcall_condition_formset.py:30
-#: .\apps\keywords\forms\keywordcall_parameter_formset.py:87
+#: .\apps\keywords\forms\keywordcall_parameter_formset.py:86
 msgid "Vorherige Rückgabewerte"
 msgstr "Previous Return Values"
 
@@ -441,6 +442,7 @@ msgid "leer"
 msgstr "empty"
 
 #: .\apps\keywords\forms\user_input_formset.py:97
+#: .\apps\libraries\forms\library_parameter_formset.py:75
 msgid "Eingabe"
 msgstr "Input"
 
@@ -727,6 +729,11 @@ msgstr "Automation"
 #: .\apps\testcases\admin\base_testcase_admin.py:62
 msgid "Ausgewählte Testfälle exportieren"
 msgstr "Export selected Test Cases"
+
+#: .\apps\testcases\admin\base_testcase_admin.py:66
+#, python-brace-format
+msgid "Der Testfall \"{testcase_name}\" hat keine Schritte."
+msgstr "The Test Case \"{testcase_name}\" has no steps."
 
 #: .\apps\testcases\admin\test_steps_inline.py:45
 msgid "Sequenz auswählen"
