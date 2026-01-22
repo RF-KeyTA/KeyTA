@@ -135,6 +135,10 @@ def format_return_type(return_type: list, typedocs: dict[str, TypeDoc]) -> str:
 def format_type(type: list, typedocs: dict[str, TypeDoc]) -> str:
     formatted_type = []
 
+    if type[0] == 'Literal':
+        Literal, *values = type
+        return " | ".join(values)
+
     for type_ in type:
         if isinstance(type_, list):
             list_type = type_[0]
@@ -205,6 +209,12 @@ def get_return_type(return_type: dict | None) -> list:
 
 
 def get_type(arg: dict) -> list[str]:
+    if arg['type']['name'] == 'Literal':
+        return ['Literal'] + [
+            value['name'].replace("'", "").replace('"', '')
+            for value in arg['type']['nested']
+        ]
+
     type_hint_regex = re.compile(r"[*]*\w+: ([\w|\[\]\s,']+)")
 
     if type_hint := type_hint_regex.match(arg['repr']):
