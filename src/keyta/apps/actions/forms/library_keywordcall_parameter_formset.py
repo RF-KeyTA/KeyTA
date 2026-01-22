@@ -19,7 +19,20 @@ class LibraryKeywordCallParameterFormset(KeywordCallParameterFormset):
         kw_call_parameter: KeywordCallParameter = form.instance
         if kw_call_parameter.pk:
             if type_list := kw_call_parameter.parameter.get_typedoc():
-                if type_list == ['bool']:
+                if type_list[0] == 'Literal':
+                    Literal, *values = type_list
+                    choices = [
+                        (JSONValue.user_input(value), value)
+                        for value in values
+                    ]
+
+                    form.fields['value'] = DynamicChoiceField(
+                        widget=BaseSelect(
+                            '',
+                            choices=choices + get_keyword_parameters(kw_call_parameter.keyword_call)
+                        )
+                    )
+                elif type_list == ['bool']:
                     choices = [
                         (JSONValue.user_input('True'), 'True'),
                         (JSONValue.user_input('False'), 'False'),
