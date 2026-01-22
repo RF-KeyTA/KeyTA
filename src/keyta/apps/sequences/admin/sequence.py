@@ -19,7 +19,6 @@ from keyta.apps.keywords.admin import (
     WindowKeywordAdminMixin,
 )
 from keyta.apps.keywords.models import KeywordCallReturnValue
-from keyta.apps.systems.models import System
 from keyta.apps.windows.models import Window
 from keyta.widgets import (
     CheckboxSelectMultipleSystems,
@@ -148,6 +147,10 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
             inlines +=  [UsesInline]
 
         return inlines
+
+    def get_protected_objects(self, obj):
+        sequence: Sequence = obj
+        return sequence.uses.filter(execution__isnull=True)
 
     def get_readonly_fields(self, request, obj):
         sequence: Sequence = obj
