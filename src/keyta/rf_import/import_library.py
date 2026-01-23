@@ -32,7 +32,7 @@ def import_library(name: str):
         for init_arg in init_args:
             name = init_arg["name"]
 
-            if name == '_':
+            if name == '_' or init_arg['repr'].startswith('**'):
                 continue
 
             init_args_names.add(name)
