@@ -135,7 +135,7 @@ def format_return_type(return_type: list, typedocs: dict[str, TypeDoc]) -> str:
 def format_type(type: list, typedocs: dict[str, TypeDoc]) -> str:
     formatted_type = []
 
-    if type[0] == 'Literal':
+    if type and type[0] == 'Literal':
         Literal, *values = type
         return " | ".join(values)
 
@@ -209,7 +209,7 @@ def get_return_type(return_type: dict | None) -> list:
 
 
 def get_type(arg: dict) -> list[str]:
-    if arg['type']['name'] == 'Literal':
+    if isinstance(arg['type'], dict) and arg['type']['name'] == 'Literal':
         return ['Literal'] + [
             value['name'].replace("'", "").replace('"', '')
             for value in arg['type']['nested']
