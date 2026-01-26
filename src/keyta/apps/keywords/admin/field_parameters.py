@@ -22,7 +22,7 @@ def repr_param(param):
     if icon:
         html = f"""
         <span class="input-group-prepend">
-            <span class="{icon} input-group-text" style="background-color: var(--keyta-primary-color); border-color: var(--keyta-primary-color)"></span>
+            <span class="{icon} input-group-text" style="align-content: center; background-color: var(--keyta-primary-color); border-color: var(--keyta-primary-color)"></span>
         </span>
         <span class="input-group-append">
             {value_span}
