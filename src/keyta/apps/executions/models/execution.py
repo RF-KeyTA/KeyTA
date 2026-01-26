@@ -176,7 +176,7 @@ class Execution(CloneMixin, AbstractBaseModel):
         return (
             self.keyword_calls
             .test_setup()
-            .order_by('id')
+            .order_by('index')
         )
 
     def test_teardown(self) -> QuerySet:
