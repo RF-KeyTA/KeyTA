@@ -12,7 +12,7 @@ def repr_param(param):
     value = param['value']
 
     if value is None:
-        value = ''
+        value = len(name)*'&nbsp;'
 
     if value == '${None}':
         value = 'None'
