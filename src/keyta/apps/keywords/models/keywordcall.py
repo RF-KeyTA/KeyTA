@@ -14,6 +14,7 @@ from keyta.widgets import Icon
 
 from ..json_value import JSONValue
 from .keywordcall_condition import KeywordCallCondition
+from .keywordcall_parameter_source import KeywordCallParameterSourceType
 from .keywordcall_parameters import KeywordCallParameter
 from .keywordcall_return_value import KeywordCallReturnValue
 from .keyword_parameters import KeywordParameter, KeywordParameterType
@@ -248,21 +249,38 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
         for kwcall_param in self.parameters.all():
             name = kwcall_param.name
             param = kwcall_param.parameter
+            type = None
             value = kwcall_param.current_value
+            icon = ''
+
+            if value_ref := kwcall_param.value_ref:
+                type = value_ref.type
+
+            if type == KeywordCallParameterSourceType.KEYWORD_PARAMETER:
+                icon = settings.FA_ICONS.arg_kw_param
+
+            if type == KeywordCallParameterSourceType.KW_CALL_RETURN_VALUE:
+                icon = settings.FA_ICONS.arg_return_value
+
+            if type == KeywordCallParameterSourceType.VARIABLE_VALUE:
+                icon = settings.FA_ICONS.arg_variable
+                
+            kwcall_params[name] = {'name': name, 'icon': icon}
 
             if param.is_arg or param.is_kwarg:
-                kwcall_params[name] = value
+                kwcall_params[name].update({'value': value})
             
             if param.is_vararg:
-                if name in kwcall_params:
-                    kwcall_params[name].append(value)
+                if not kwcall_params[name].get('value'):
+                    kwcall_params[name].update({'value': [value]})
                 else:
-                    kwcall_params[name] = [value]
+                    kwcall_params[name]['value'].append(value)
 
-        kwcall_params = list(kwcall_params.items())
+        kwcall_params_keys = list(kwcall_params.keys())
 
-        if param_index < len(kwcall_params):
-            return kwcall_params[param_index]
+        if param_index < len(kwcall_params_keys):
+            key = kwcall_params_keys[param_index]
+            return kwcall_params[key]
 
         return None
 

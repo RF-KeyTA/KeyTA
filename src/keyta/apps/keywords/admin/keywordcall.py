@@ -14,9 +14,11 @@ from ..models import (
     KeywordCall,
     KeywordParameterType
 )
+from ..models.keywordcall import KeywordCallType, TestSetupTeardown
+
+from .field_parameters import repr_param
 from .keywordcall_parameters_inline import KeywordCallParametersInline
 from .keywordcall_return_value_inline import KeywordCallReturnValueInline, ReadOnlyReturnValuesInline
-from ..models.keywordcall import KeywordCallType, TestSetupTeardown
 
 
 class UpdateIconHtmx:
@@ -46,20 +48,7 @@ class KeywordCallAdmin(UpdateIconHtmx, BaseAdmin):
 
         if param_position := request.GET.get('update-param'):
             if param := kw_call.get_parameter(int(param_position)):
-                name, value = param
-
-                if value is None:
-                    value = ''
-
-                if value == '${None}':
-                    value = 'None'
-
-                response = f"""
-                <span>{value}</span>
-                <br>
-                <i style="color: gray">{name}</i>
-                """
-                return HttpResponse(response)
+                return HttpResponse(repr_param(param))
 
             return HttpResponse('')
 

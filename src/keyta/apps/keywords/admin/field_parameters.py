@@ -6,6 +6,39 @@ from keyta.widgets import attrs_to_string
 from ..models import KeywordCall
 
 
+def repr_param(param):
+    icon = param['icon']
+    name = param['name']
+    value = param['value']
+
+    if value is None:
+        value = ''
+
+    if value == '${None}':
+        value = 'None'
+
+    value_span = f'<span class="input-group-text bg-white" style="border-color: var(--keyta-primary-color)">{value}</span>'
+    
+    if icon:
+        html = f"""
+        <span class="input-group-prepend">
+            <span class="{icon} input-group-text" style="background-color: var(--keyta-primary-color); border-color: var(--keyta-primary-color)"></span>
+        </span>
+        <span class="input-group-append">
+            {value_span}
+        </span>
+        """
+    else:
+        html = value_span
+
+    return f"""
+        <span class="input-group flex-nowrap">
+            {html}
+        </span>
+        <i style="color: gray">{name}</i>
+    """
+
+
 class ParameterFields:
     def show_parameter(self, kw_call: KeywordCall, position: int):
         pk = kw_call.pk
@@ -17,21 +50,11 @@ class ParameterFields:
         position0 = position - 1
 
         if param := kw_call.get_parameter(position0):
-            name, value = param
-
-            if value is None:
-                value = ''
-
-            if value == '${None}':
-                value = 'None'
-
             htmx_attrs['hx-get'] += f'?update-param={position0}'
 
             return mark_safe(f"""
             <span {attrs_to_string(htmx_attrs)}>
-            <span>{value}</span>
-            <br>
-            <i style="color: gray">{name}</i>
+                {repr_param(param)}
             </span>
             """)
         else:
