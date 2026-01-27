@@ -117,6 +117,9 @@
             }
             // Add delete handler for each row.
             row.find("a." + options.deleteCssClass).on('click', inlineDeleteHandler.bind(this));
+            row.find("a." + options.deleteCssClass).addClass('btn')
+            row.find("a." + options.deleteCssClass).width('80px');
+            row.find("a." + options.deleteCssClass).css('margin', '3px');
         };
 
         const addInlineSaveButton = function(row) {
@@ -135,7 +138,9 @@
             }
             // Add delete handler for each row.
             row.find("a." + options.saveCssClass).on('click', inlineSaveHandler.bind(this));
-            row.find("a." + options.saveCssClass).addClass('btn btn-primary pl-3 pr-3 ml-2 mb-2')
+            row.find("a." + options.saveCssClass).addClass('btn btn-primary')
+            row.find("a." + options.saveCssClass).width('80px');
+            row.find("a." + options.saveCssClass).css('margin', '3px');
         };
 
         const inlineSaveHandler = function(e1) {

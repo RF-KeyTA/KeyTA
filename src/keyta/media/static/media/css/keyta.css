@@ -340,7 +340,3 @@ select[data-name="tags"] + .select2-container .select2-search--inline .select2-s
     /* top | right | bottom | left */
     padding: 0 0 0 8px !important;
 }
-
-a.inline-deletelink {
-    margin: 7px !important;
-}
