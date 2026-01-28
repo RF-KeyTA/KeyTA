@@ -21,8 +21,10 @@ class Setup(KeywordCall):
         self, force_insert=False, force_update=False,
         using=None, update_fields=None
     ):
-        self.index = 1
-        self.type = TestSetupTeardown.TEST_SETUP
+        if not self.pk:
+            self.index = 1
+            self.type = TestSetupTeardown.TEST_SETUP
+
         super().save(force_insert, force_update, using, update_fields)
 
     class Meta:
