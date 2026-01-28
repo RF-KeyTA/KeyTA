@@ -264,15 +264,16 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
 
             if type == KeywordCallParameterSourceType.VARIABLE_VALUE:
                 icon = settings.FA_ICONS.arg_variable
-                
-            kwcall_params[name] = {'name': name, 'icon': icon}
+
+            if not name in kwcall_params:
+                kwcall_params[name] = {'name': name, 'icon': icon}
 
             if param.is_arg or param.is_kwarg:
                 kwcall_params[name].update({'value': value})
             
             if param.is_vararg:
                 if not kwcall_params[name].get('value'):
-                    kwcall_params[name].update({'value': [value]})
+                    kwcall_params[name]['value'] = [value]
                 else:
                     kwcall_params[name]['value'].append(value)
 
