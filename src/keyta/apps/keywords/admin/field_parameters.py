@@ -17,6 +17,9 @@ def repr_param(param):
     if value == '${None}':
         value = 'None'
 
+    if isinstance(value, list):
+        value = (4*'&nbsp;').join(value)
+
     value_span = f'<span class="input-group-text bg-white" style="border-color: var(--keyta-primary-color)">{value}</span>'
     
     if icon:
