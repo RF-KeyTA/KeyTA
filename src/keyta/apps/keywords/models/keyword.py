@@ -10,6 +10,8 @@ from keyta.models.base_model import AbstractBaseModel
 from keyta.models.html2text import HTML2Text
 from keyta.rf_export.keywords import RFKeyword
 
+from .keywordcall import KeywordCallType
+
 
 class KeywordType(models.TextChoices):
     LIBRARY = 'LIBRARY', _('Schlüsselwort aus Bibliothek')
@@ -106,7 +108,7 @@ class Keyword(AbstractBaseModel):
 
     @property
     def in_use(self):
-        return self.uses.exclude(Q(execution__isnull=False) & Q(to_keyword=self)).count()
+        return self.uses.exclude(type=KeywordCallType.KEYWORD_EXECUTION).count()
 
     @property
     def is_sequence(self):
