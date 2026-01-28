@@ -165,6 +165,5 @@ class TestCase(CloneMixin, AbstractBaseModel):
         }
 
     class Meta:
-        ordering = [Lower('name')]
         verbose_name = _('Testfall')
         verbose_name_plural = _('Testfälle')

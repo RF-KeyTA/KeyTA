@@ -3,6 +3,7 @@ from django.contrib import admin, messages
 from django.contrib.admin.options import IncorrectLookupParameters
 from django.core.exceptions import ValidationError
 from django.db.models import Count, Q, QuerySet
+from django.db.models.functions import Lower
 from django.forms import ModelMultipleChoiceField
 from django.http.request import HttpRequest
 from django.http.response import HttpResponse, HttpResponseRedirect
@@ -146,6 +147,9 @@ class BaseTestCaseAdmin(DocumentationField, CloneModelAdminMixin, SortableAdminB
             return [TestStepsInline]
 
         return self.inlines
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).order_by(Lower('name'))
 
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
