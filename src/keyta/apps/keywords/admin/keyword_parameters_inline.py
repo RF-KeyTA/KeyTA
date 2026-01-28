@@ -64,6 +64,9 @@ class ParametersInline(DeleteRelatedField, SortableTabularInline):
 
         if db_field.name == 'default_value':
             field.label = _('Standardwert (optional)')
+            field.widget = forms.TextInput(attrs={
+                'style': 'width: 100%'
+            })
 
         if db_field.name == 'name':
             field.widget = forms.TextInput(attrs={
