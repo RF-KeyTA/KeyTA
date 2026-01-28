@@ -308,7 +308,7 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
 
     def has_empty_arg(self, user: Optional[AbstractUser]=None) -> bool:
         first_arg = self.to_keyword.parameters.first()
-        if not self.parameters.filter(user=user).exists() and first_arg.is_vararg:
+        if first_arg and first_arg.is_vararg and not self.parameters.filter(user=user).exists():
             return True
 
         args: QuerySet = self.parameters.filter(user=user).args()
