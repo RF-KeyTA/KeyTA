@@ -31,7 +31,11 @@ class DynamicChoiceField(forms.CharField):
             raise ValidationError(self.default_error_messages['required'])
 
         if value.startswith('{') and value.endswith('}'):
-            return value
+            try:
+                JSONValue.from_json(value)
+                return value
+            except:
+                pass
 
         return JSONValue(
             arg_name=None,
