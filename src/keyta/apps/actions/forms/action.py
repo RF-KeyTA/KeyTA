@@ -7,11 +7,19 @@ from keyta.forms import BaseForm
 class ActionForm(BaseForm):
     def clean(self):
         name = self.cleaned_data.get('name')
+        orig_name = self.initial.get('name')
         systems = self.cleaned_data.get('systems')
         action_systems = [
             system.name
             for system in self.initial.get('systems', [])
         ]
+
+        if orig_name and orig_name.startswith(name + _(' Kopie')):
+            raise forms.ValidationError(
+                {
+                    "name": _('Eine Aktion mit diesem Namen existiert bereits')
+                }
+            )
 
         if systems:
             if system := systems.values_list('name', flat=True).exclude(name__in=action_systems).filter(keywords__name__iexact=name).first():
