@@ -6,6 +6,7 @@ from keyta.admin.base_inline import TabularInlineWithDelete
 from keyta.apps.windows.models import Window
 from keyta.widgets import ModelSelect2AdminWidget
 
+from ..forms import WindowsForm
 from ..models import Action, ActionWindowRelation
 
 
@@ -15,6 +16,7 @@ class Windows(TabularInlineWithDelete):
     fields = ['window']
     form = forms.modelform_factory(
         ActionWindowRelation,
+        form=WindowsForm,
         fields=['window'],
         labels={
             'window': _('Maske')
