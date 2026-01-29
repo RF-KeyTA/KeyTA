@@ -15,6 +15,6 @@ class WindowsForm(BaseForm):
         if window.variables.filter(name__iexact=variable.name).exists():
             raise forms.ValidationError(
                 {
-                    "window": _(f'Eine Variable mit diesem Namen existiert bereits in der Maske "{window.name}"')
+                    "window": _(f'Ein Referenzwert mit diesem Namen existiert bereits in der Maske "{window.name}"')
                 }
             )

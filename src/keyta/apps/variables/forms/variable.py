@@ -19,7 +19,7 @@ class VariableForm(BaseForm):
                 if variable.exists():
                     raise forms.ValidationError(
                         {
-                            "name": _(f'Eine Variable mit diesem Namen existiert bereits im System "{system}"')
+                            "name": _(f'Ein Referenzwert mit diesem Namen existiert bereits im System "{system}"')
                         }
                     )
 
@@ -34,6 +34,6 @@ class VariableQuickAddForm(BaseForm):
             if window.variables.filter(name__iexact=name).exists():
                 raise forms.ValidationError(
                     {
-                        "name": _(f'Eine Variable mit diesem Namen existiert bereits in der Maske "{window.name}"')
+                        "name": _(f'Ein Referenzwert mit diesem Namen existiert bereits in der Maske "{window.name}"')
                     }
                 )
