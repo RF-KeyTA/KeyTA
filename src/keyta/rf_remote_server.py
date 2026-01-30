@@ -1,40 +1,86 @@
+import io
 import json
 import os
 import re
-import subprocess
 import tempfile
-import traceback
 import unicodedata
 from http import HTTPStatus
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
+from zlib import crc32
 
 from robot.libdoc import libdoc_cli
+from robot.run import run
 from robot.running import TestSuite
 
 from .IProcess import IProcess
-from .rf_log import generate_log, RobotLog
+from .rf_log import save_log
 
 
 tmp_dir = Path(tempfile.gettempdir()) / 'KeyTA'
 
 
-def read_file_from_disk(path):
-    with open(path, 'r', encoding='utf-8') as file_handle:
-        return file_handle.read()
+def export_robot_file(testsuite: str, dest_dir: Path) -> Path:
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    robot_file = dest_dir / 'Testsuite.robot'
+
+    with open(robot_file, 'w', encoding='utf-8') as file_handle:
+        file_handle.write(testsuite)
+
+    return robot_file
 
 
-def robot_run(
-    testsuite_name: str,
-    testsuite: str
-):
-    testsuite_fs_name = slugify(testsuite_name)
-    base_dir = tmp_dir / testsuite_fs_name
-    base_dir.mkdir(parents=True, exist_ok=True)
-    output_dir = base_dir / 'output'
-    robot_file = base_dir / f'{testsuite_fs_name}.robot'
-    write_file_to_disk(robot_file, testsuite)
+def format_filename(testsuite_name: str):
+    slug = slugify(testsuite_name)
 
+    if len(slug) > 64:
+        return f'{slug[:64]}_{crc32(slug.encode())}'
+
+    return slug
+
+
+def get_keywords(robot_file: Path) -> list:
+    suite = TestSuite.from_file_system(robot_file).to_dict()
+    keywords = suite['resource']['keywords']
+    tmp_dir = Path(tempfile.gettempdir()) / 'KeyTA'
+
+    for import_ in suite['resource']['imports']:
+        import_name = import_['name']
+        libdoc_json = str(tmp_dir / f'{import_name}.json')
+        libdoc_cli([import_name, libdoc_json], exit=False)
+
+        with open(libdoc_json, 'r', encoding='utf-8') as file:
+            libdoc_dict = json.load(file)
+
+            for keyword in libdoc_dict['keywords']:
+                args = []
+                kwargs = []
+                for arg in keyword['args']:
+                    if arg['name']:
+                        if arg['required']:
+                            args.append(arg['name'])
+                        elif arg['kind'] == 'VAR_POSITIONAL':
+                            args.append('*' + arg['name'])
+                        elif arg['kind'] == 'VAR_NAMED':
+                            kwargs.append('**' + arg['name'])
+                        else:
+                            kwargs.append(arg['name'])
+
+                keywords.append({
+                    'name': f'{import_name.removesuffix(".resource")}.{keyword["name"]}',
+                    'args': args,
+                    'kwargs': kwargs
+                })
+
+    return keywords
+
+
+def robot_run(testsuite_name: str, testsuite: str):
+    testsuite_fs_name = format_filename(testsuite_name)
+    dest_dir = tmp_dir / testsuite_fs_name
+    robot_file = export_robot_file(testsuite, dest_dir)
+    output_dir = dest_dir / 'output'
+    output_file = output_dir / 'output.json'
     robot_kwargs = {
         'listener': 'keyta.Listener',
         'maxassignlength': '1000', # RF truncates return values larger than this in the log
@@ -42,54 +88,12 @@ def robot_run(
         'output': 'output.json'
     }
 
-    result = subprocess.run(
-        ' '.join(['robot', *to_cli_kwargs(robot_kwargs), str(robot_file)]),
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE
-    )
-
-    try:
-        suite = TestSuite.from_file_system(robot_file).to_dict()
-        keywords = suite['resource']['keywords']
-
-        for import_ in suite['resource']['imports']:
-            import_name = import_['name']
-            libdoc_json = str(tmp_dir / f'{import_name}.json')
-            libdoc_cli([import_name, libdoc_json], exit=False)
-
-            with open(libdoc_json, 'r', encoding='utf-8') as file:
-                libdoc_dict = json.load(file)
-
-                for keyword in libdoc_dict['keywords']:
-                    args = []
-                    kwargs = []
-                    for arg in keyword['args']:
-                        if arg['name']:
-                            if arg['required']:
-                                args.append(arg['name'])
-                            elif arg['kind'] == 'VAR_POSITIONAL':
-                                args.append('*' + arg['name'])
-                            elif arg['kind'] == 'VAR_NAMED':
-                                kwargs.append('**' + arg['name'])
-                            else:
-                                kwargs.append(arg['name'])
-
-                    keywords.append({
-                        'name': f'{import_name.removesuffix(".resource")}.{keyword["name"]}',
-                        'args': args,
-                        'kwargs': kwargs
-                    })
-
-        log = generate_log(RobotLog().simplify_output(keywords, output_dir / 'output.json'))
-        log_path = output_dir / 'simple_log.html'
-        write_file_to_disk(log_path, log)
-    except:
-        traceback.print_exc()
-        log_path = output_dir / 'log.html'
+    result = run(str(robot_file), **robot_kwargs, stdout=io.StringIO(), stderr=io.StringIO())
+    log_file = save_log(testsuite_fs_name, testsuite_name, str(output_file), get_keywords(robot_file))
 
     return {
-        'log': os.path.relpath(log_path, tmp_dir).replace('\\', '/'),
-        'result': 'PASS' if result.returncode == 0 else 'FAIL'
+        'log': str(log_file.relative_to(tmp_dir)),
+        'result': 'PASS' if result == 0 else 'FAIL'
     }
 
 
@@ -109,18 +113,6 @@ def slugify(value, allow_unicode=False):
         value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode('ascii')
     value = re.sub(r'[^\w\s-]', '', value.lower())
     return re.sub(r'[-\s]+', '_', value).strip('-_')
-
-
-def to_cli_kwargs(kwargs: dict[str, str]):
-    return [
-        f'--{key}={value}'
-        for key, value in kwargs.items()
-    ]
-
-
-def write_file_to_disk(path, file_contents: str):
-    with open(path, 'w', encoding='utf-8') as file_handle:
-        file_handle.write(file_contents)
 
 
 class RequestHandler(SimpleHTTPRequestHandler):

@@ -1,1 +1,1 @@
-from .robot_log import RobotLog, generate_log
+from .robot_log import RobotLog, save_log
