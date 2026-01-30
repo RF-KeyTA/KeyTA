@@ -19,39 +19,9 @@ from .rf_log import generate_log, RobotLog
 tmp_dir = Path(tempfile.gettempdir()) / 'KeyTA'
 
 
-def slugify(value, allow_unicode=False):
-    """
-    Convert to ASCII if 'allow_unicode' is False. Convert spaces or repeated
-    dashes to single dashes. Remove characters that aren't alphanumerics,
-    underscores, or hyphens. Convert to lowercase. Also strip leading and
-    trailing whitespace, dashes, and underscores.
-
-    source: django.utils.text.slugify
-    """
-    value = str(value)
-    if allow_unicode:
-        value = unicodedata.normalize('NFKC', value)
-    else:
-        value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode('ascii')
-    value = re.sub(r'[^\w\s-]', '', value.lower())
-    return re.sub(r'[-\s]+', '_', value).strip('-_')
-
-
 def read_file_from_disk(path):
     with open(path, 'r', encoding='utf-8') as file_handle:
         return file_handle.read()
-
-
-def write_file_to_disk(path, file_contents: str):
-    with open(path, 'w', encoding='utf-8') as file_handle:
-        file_handle.write(file_contents)
-
-
-def to_cli_kwargs(kwargs: dict[str, str]):
-    return [
-        f'--{key}={value}'
-        for key, value in kwargs.items()
-    ]
 
 
 def robot_run(
@@ -121,6 +91,36 @@ def robot_run(
         'log': os.path.relpath(log_path, tmp_dir).replace('\\', '/'),
         'result': 'PASS' if result.returncode == 0 else 'FAIL'
     }
+
+
+def slugify(value, allow_unicode=False):
+    """
+    Convert to ASCII if 'allow_unicode' is False. Convert spaces or repeated
+    dashes to single dashes. Remove characters that aren't alphanumerics,
+    underscores, or hyphens. Convert to lowercase. Also strip leading and
+    trailing whitespace, dashes, and underscores.
+
+    source: django.utils.text.slugify
+    """
+    value = str(value)
+    if allow_unicode:
+        value = unicodedata.normalize('NFKC', value)
+    else:
+        value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode('ascii')
+    value = re.sub(r'[^\w\s-]', '', value.lower())
+    return re.sub(r'[-\s]+', '_', value).strip('-_')
+
+
+def to_cli_kwargs(kwargs: dict[str, str]):
+    return [
+        f'--{key}={value}'
+        for key, value in kwargs.items()
+    ]
+
+
+def write_file_to_disk(path, file_contents: str):
+    with open(path, 'w', encoding='utf-8') as file_handle:
+        file_handle.write(file_contents)
 
 
 class RequestHandler(SimpleHTTPRequestHandler):
