@@ -250,6 +250,8 @@ class RobotLog:
             args = {}
             vararg_name = None
             varargs = []
+            varkwarg_name = None
+            varkwargs = []
 
             def format_arg_value(arg_name, arg_value):
                 value = arg_value.removeprefix(f'{arg_name}=')
@@ -262,7 +264,11 @@ class RobotLog:
                 arg_name = arg_names[arg_name_index]
 
                 if arg_name.startswith('**'):
-                    pass
+                    varkwargs.append(arg)
+
+                    if arg_name not in args:
+                        varkwarg_name = arg_name
+                        args[varkwarg_name] = []
                 elif arg_name.startswith('*'):
                     if match := re.match(r'(\w+)=', arg):
                         arg_name_index += 2
@@ -272,14 +278,17 @@ class RobotLog:
                         varargs.append(arg)
 
                         if arg_name not in args:
-                            args[arg_name] = []
                             vararg_name = arg_name
+                            args[vararg_name] = []
                 else:
                     arg_name_index += 1
                     args[arg_name] = format_arg_value(arg_name, arg)
 
             if vararg_name:
                 args[vararg_name] = (4 * '&nbsp;').join(varargs)
+
+            if varkwarg_name:
+                args[varkwarg_name] = (4 * '&nbsp;').join(varkwargs)
 
             result.update({'args': args})
 
