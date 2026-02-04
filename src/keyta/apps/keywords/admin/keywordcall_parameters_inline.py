@@ -33,7 +33,7 @@ class KeywordCallParametersInline(BaseTabularInline):
         return ['name', 'value']
 
     def get_queryset(self, request):
-        return super().get_queryset(request).exclude(parameter__type=KeywordParameterType.VARARG)
+        return super().get_queryset(request).exclude(parameter__type__in=[KeywordParameterType.VAR_ARG, KeywordParameterType.VAR_KWARG])
 
     def get_readonly_fields(self, request, obj=None):
         if not self.has_change_permission(request, obj):

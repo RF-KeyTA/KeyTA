@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-04 09:09+0100\n"
+"POT-Creation-Date: 2026-02-04 14:48+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -67,7 +67,7 @@ msgstr "Keywords"
 #: .\admin\keywords_inline.py:23 .\apps\keywords\admin\keyword.py:23
 #: .\apps\keywords\admin\keywordcall_return_value_inline.py:83
 #: .\apps\keywords\models\keyword.py:42
-#: .\apps\keywords\models\keyword_parameters.py:28
+#: .\apps\keywords\models\keyword_parameters.py:29
 #: .\apps\libraries\models\library_parameter.py:20 .\apps\systems\models.py:12
 #: .\apps\testcases\admin\base_testcase_admin.py:98
 #: .\apps\testcases\models\testcase.py:22 .\apps\variables\admin\variable.py:42
@@ -103,7 +103,7 @@ msgid "All"
 msgstr ""
 
 #: .\apps\actions\admin\action.py:82 .\apps\actions\models\action_step.py:29
-#: .\apps\keywords\models\keywordcall.py:488
+#: .\apps\keywords\models\keywordcall.py:481
 #: .\apps\keywords\templates\window_keyword_change_form.html:9
 #: .\apps\sequences\admin\sequence.py:88
 #: .\apps\sequences\models\sequence_step.py:10
@@ -134,7 +134,11 @@ msgstr "Select a Library"
 msgid "zurücksetzen"
 msgstr "reset"
 
-#: .\apps\actions\admin\library_keyword_call_vararg_parameters_inline.py:40
+#: .\apps\actions\admin\library_keyword_call_vararg_parameters_inline.py:24
+msgid "Das Eingabefeld darf nicht leer bleiben."
+msgstr "The value field cannot be left empty."
+
+#: .\apps\actions\admin\library_keyword_call_vararg_parameters_inline.py:57
 #: .\apps\variables\admin\table_column.py:26
 msgid "Wert eintragen, anschließend Enter drücken"
 msgstr "Enter a value and then press Enter"
@@ -218,7 +222,7 @@ msgid "Aktion"
 msgstr "Action"
 
 #: .\apps\actions\models\action_step.py:28
-#: .\apps\keywords\models\keywordcall.py:487
+#: .\apps\keywords\models\keywordcall.py:480
 #: .\apps\sequences\models\sequence_step.py:9
 #: .\apps\testcases\models\test_step.py:28
 msgid "Schritt"
@@ -251,12 +255,12 @@ msgid "Einstellungen"
 msgstr "Settings"
 
 #: .\apps\executions\admin\execution_inline.py:45
-#: .\apps\executions\models\execution.py:220
-#: .\apps\executions\models\execution.py:221
+#: .\apps\executions\models\execution.py:215
+#: .\apps\executions\models\execution.py:216
 #: .\apps\executions\models\keyword_execution.py:144
 #: .\apps\executions\models\keyword_execution.py:145
-#: .\apps\executions\models\testcase_execution.py:131
-#: .\apps\executions\models\testcase_execution.py:132
+#: .\apps\executions\models\testcase_execution.py:136
+#: .\apps\executions\models\testcase_execution.py:137
 #: .\apps\libraries\models\library_import.py:46
 #: .\apps\resources\models\resource_import.py:46
 #: .\apps\testcases\admin\base_testcase_admin.py:100
@@ -278,14 +282,10 @@ msgstr "Teardown"
 msgid "Testvorbereitung"
 msgstr "Test Setup"
 
-#: .\apps\executions\admin\testcase_execution.py:29
+#: .\apps\executions\admin\testcase_execution.py:32
 #: .\apps\keywords\models\keywordcall.py:26
 msgid "Testnachbereitung"
 msgstr "Test Teardown"
-
-#: .\apps\executions\admin\testcase_execution.py:37
-msgid "Ausführungseinstellungen"
-msgstr "Execution Settings"
 
 #: .\apps\executions\errors.py:15
 msgid "Die Aufrufparameter (Werte) sind unvollständig."
@@ -331,12 +331,12 @@ msgstr ""
 msgid "Die Schritte sind leer."
 msgstr "The steps are incomplete."
 
-#: .\apps\executions\models\execution.py:31
+#: .\apps\executions\models\execution.py:29
 #: .\apps\keywords\models\keywordcall.py:36
 msgid "Schlüsselwort Ausführung"
 msgstr "Keyword Execution"
 
-#: .\apps\executions\models\execution.py:32
+#: .\apps\executions\models\execution.py:30
 msgid "Testfall Ausführung"
 msgstr "Test Case Execution"
 
@@ -385,7 +385,7 @@ msgid "Beim Hinzufügen eines Parameters darf der Standardwert nicht leer sein."
 msgstr "The default value cannot be empty when adding a parameter."
 
 #: .\apps\keywords\admin\keyword_parameters_inline.py:59
-#: .\apps\keywords\models\keyword_parameters.py:149
+#: .\apps\keywords\models\keyword_parameters.py:167
 #: .\apps\libraries\models\library_import_parameter.py:36
 msgid "Parameter"
 msgstr "Parameter"
@@ -393,7 +393,7 @@ msgstr "Parameter"
 #: .\apps\keywords\admin\keyword_parameters_inline.py:60
 #: .\apps\keywords\forms\keywordcall_condition_formset.py:23
 #: .\apps\keywords\forms\keywordcall_parameter_formset.py:33
-#: .\apps\keywords\models\keyword_parameters.py:150
+#: .\apps\keywords\models\keyword_parameters.py:168
 #: .\apps\libraries\models\library_import_parameter.py:37
 #: .\models\keyword_source.py:35
 msgid "Parameters"
@@ -409,15 +409,8 @@ msgstr "Default Value (optional)"
 msgid "Name eintragen, anschließend Enter drücken"
 msgstr "Enter a name and then press Enter"
 
-#: .\apps\keywords\admin\keywordcall_conditions_inline.py:20
-msgid "Dieses Feld ist zwingend erforderlich."
-msgstr "This field is required."
-
-#: .\apps\keywords\admin\keywordcall_conditions_inline.py:60
-#: .\apps\keywords\models\keywordcall_condition.py:34
-msgid "Soll Wert"
-msgstr "Expected Value"
-
+#: .\apps\keywords\admin\keywordcall.py:98
+#: .\apps\keywords\admin\keywordcall.py:104
 #: .\apps\keywords\admin\keywordcall_parameters_inline.py:55
 #: .\apps\keywords\models\keywordcall_condition.py:24
 #: .\apps\keywords\models\keywordcall_parameters.py:31
@@ -426,6 +419,15 @@ msgstr "Expected Value"
 #: .\apps\variables\models\variable_value.py:47
 msgid "Wert"
 msgstr "Value"
+
+#: .\apps\keywords\admin\keywordcall_conditions_inline.py:20
+msgid "Dieses Feld ist zwingend erforderlich."
+msgstr "This field is required."
+
+#: .\apps\keywords\admin\keywordcall_conditions_inline.py:60
+#: .\apps\keywords\models\keywordcall_condition.py:34
+msgid "Soll Wert"
+msgstr "Expected Value"
 
 #: .\apps\keywords\admin\keywordcall_return_value_inline.py:27
 msgid "Type"
@@ -536,7 +538,11 @@ msgstr "Optional Argument"
 msgid "Variadic Argument"
 msgstr ""
 
-#: .\apps\keywords\models\keyword_parameters.py:38
+#: .\apps\keywords\models\keyword_parameters.py:18
+msgid "Variadic Named Argument"
+msgstr ""
+
+#: .\apps\keywords\models\keyword_parameters.py:39
 #: .\apps\libraries\models\library_parameter.py:24
 msgid "Standardwert"
 msgstr "Default Value"

@@ -1,8 +1,9 @@
 from django.contrib import admin
 from django.http import HttpResponseRedirect, HttpResponse
+from django.utils.translation import gettext_lazy as _
 
 from keyta.admin.base_admin import BaseAdmin
-from keyta.apps.actions.admin.library_keyword_call_vararg_parameters_inline import VarargParametersInline
+from keyta.apps.actions.admin.library_keyword_call_vararg_parameters_inline import VarargParametersInline, VarkwargParametersInline
 from keyta.apps.actions.models import ActionStep
 from keyta.apps.executions.models import Setup, Teardown
 from keyta.apps.sequences.models import SequenceStep
@@ -89,12 +90,20 @@ class KeywordCallAdmin(UpdateIconHtmx, BaseAdmin):
         kw_call: KeywordCall = obj
 
         inlines = []
-
-        if kw_call.parameters.exclude(parameter__type=KeywordParameterType.VARARG).exists():
+        if kw_call.parameters.exclude(parameter__type__in=[KeywordParameterType.VAR_ARG, KeywordParameterType.VAR_KWARG]).exists():
             inlines.append(self.parameters_inline)
 
-        if vararg := kw_call.to_keyword.parameters.filter(type=KeywordParameterType.VARARG).first():
-            inlines.append(VarargParametersInline)
+        if var_arg := kw_call.to_keyword.parameters.filter(type=KeywordParameterType.VAR_ARG).first():
+            inline = VarargParametersInline
+            inline.verbose_name = _('Wert')
+            inline.verbose_name_plural = var_arg.name
+            inlines.append(inline)
+
+        if var_kwarg := kw_call.to_keyword.parameters.filter(type=KeywordParameterType.VAR_KWARG).first():
+            inline = VarkwargParametersInline
+            inline.verbose_name = _('Wert')
+            inline.verbose_name_plural = var_kwarg.name
+            inlines.append(inline)
 
         if kw_call.return_values.exists() and (kw_call.to_keyword.is_action or kw_call.to_keyword.is_sequence):
             inlines.append(ReadOnlyReturnValuesInline)

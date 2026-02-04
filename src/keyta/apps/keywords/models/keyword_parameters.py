@@ -14,7 +14,8 @@ from .keywordcall_parameter_source import KeywordCallParameterSource
 class KeywordParameterType(models.TextChoices):
     ARG = 'ARG', _('Positional Argument')
     KWARG = 'KWARG', _('Optional Argument')
-    VARARG = 'VARARG', _('Variadic Argument')
+    VAR_ARG = 'VAR_ARG', _('Variadic Argument')
+    VAR_KWARG = 'VAR_KWARG', _('Variadic Named Argument')
 
 
 class KeywordParameter(CloneMixin, AbstractBaseModel):
@@ -88,14 +89,27 @@ class KeywordParameter(CloneMixin, AbstractBaseModel):
         kw_param.set_typedoc(typedoc)
 
     @classmethod
-    def create_vararg(cls, keyword, name: str, position: int, default_value: str, typedoc: list[str]):
+    def create_vararg(cls, keyword, name: str, position: int, typedoc: list[str]):
         kw_param, created = KeywordParameter.objects.update_or_create(
             keyword=keyword,
             position=position,
             defaults={
-                'default_value': default_value,
+                'default_value': '@{EMPTY}',
                 'name': name,
-                'type': KeywordParameterType.VARARG,
+                'type': KeywordParameterType.VAR_ARG,
+            }
+        )
+        kw_param.set_typedoc(typedoc)
+
+    @classmethod
+    def create_varkwarg(cls, keyword, name: str, position: int, typedoc: list[str]):
+        kw_param, created = KeywordParameter.objects.update_or_create(
+            keyword=keyword,
+            position=position,
+            defaults={
+                'default_value': '&{EMPTY}',
+                'name': name,
+                'type': KeywordParameterType.VAR_KWARG,
             }
         )
         kw_param.set_typedoc(typedoc)
@@ -113,7 +127,11 @@ class KeywordParameter(CloneMixin, AbstractBaseModel):
 
     @property
     def is_vararg(self):
-        return self.type == KeywordParameterType.VARARG
+        return self.type == KeywordParameterType.VAR_ARG
+
+    @property
+    def is_varkwarg(self):
+        return self.type == KeywordParameterType.VAR_KWARG
 
     def save(
         self, force_insert=False, force_update=False, using=None,

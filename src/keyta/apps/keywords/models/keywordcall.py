@@ -271,7 +271,7 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
             if param.is_arg or param.is_kwarg:
                 kwcall_params[name].update({'value': value})
             
-            if param.is_vararg:
+            if param.is_vararg or param.is_varkwarg:
                 if not kwcall_params[name].get('value'):
                     kwcall_params[name]['value'] = [value]
                 else:
@@ -370,7 +370,6 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
            .prefetch_related('value_ref')
            .filter(user=user)
         )
-        varargs = parameters.filter(parameter__type=KeywordParameterType.VARARG)
 
         params = []
         table_var = None
@@ -379,17 +378,11 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
         for param in parameters:
             value = param.to_robot(get_variable_value) or '${EMPTY}'
 
-            if param.parameter.is_arg or param.parameter.is_vararg:
+            if param.parameter.is_arg or param.parameter.is_vararg or param.parameter.is_varkwarg:
                 params.append(value)
 
             if param.parameter.is_kwarg:
-                if varargs.exists():
-                    if param.parameter.position > varargs.first().parameter.position:
-                        params.append('%s=%s' % (param.name, value))
-                    else:
-                        params.append(value)
-                else:
-                    params.append('%s=%s' % (param.name, value))
+                params.append('%s=%s' % (param.name, value))
 
             if param.value_ref and param.value_ref.table_column:
                 table_columns.append('${%s}' % str(param.value_ref))
@@ -420,7 +413,7 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
             kw_call_param.update_value()
 
     def update_parameters(self, user: Optional[AbstractUser]=None, values: Optional[dict]=None):
-        for param in self.to_keyword.parameters.exclude(type=KeywordParameterType.VARARG):
+        for param in self.to_keyword.parameters.exclude(type__in=[KeywordParameterType.VAR_ARG, KeywordParameterType.VAR_KWARG]):
             if values:
                 self.add_parameter(param, user, values.get(param.name))
             else:

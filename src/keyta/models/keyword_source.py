@@ -385,21 +385,21 @@ class KeywordSource(AbstractBaseModel):
                     )
                 else:
                     if arg["kind"] in {'VAR_NAMED', 'VAR_POSITIONAL'}:
-                        default_value = None
-
                         if arg["kind"] == 'VAR_NAMED':
-                            default_value = '&{EMPTY}'
+                            KeywordParameter.create_varkwarg(
+                                keyword=kw,
+                                name=name,
+                                position=idx,
+                                typedoc=get_type(arg)
+                            )
 
                         if arg["kind"] == 'VAR_POSITIONAL':
-                            default_value = '@{EMPTY}'
-
-                        KeywordParameter.create_vararg(
-                            keyword=kw,
-                            name=name,
-                            position=idx,
-                            default_value=default_value,
-                            typedoc=get_type(arg)
-                        )
+                            KeywordParameter.create_vararg(
+                                keyword=kw,
+                                name=name,
+                                position=idx,
+                                typedoc=get_type(arg)
+                            )
                     else:
                         kwarg_names.add(name)
                         default_value = get_default_value(arg["defaultValue"])
