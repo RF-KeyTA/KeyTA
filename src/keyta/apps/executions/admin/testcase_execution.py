@@ -1,8 +1,9 @@
 from django.contrib import admin
+from django.contrib.admin import StackedInline
 from django.utils.translation import gettext_lazy as _
 
 from ..forms import SetupTeardownFormset
-from ..models import TestCaseExecution
+from ..models import TestCaseExecution, UserExecution
 from .execution import ExecutionAdmin
 from .setup_teardown_inline import SetupInline, TeardownInline
 
@@ -28,12 +29,34 @@ class TestTeardownInline(TeardownInline):
     verbose_name_plural = _('Testnachbereitung')
 
 
+class UserExecutionInline(StackedInline):
+    model = UserExecution
+    fields = ['stop_on_failure']
+    max_num = 1
+    template = 'execution_user_settings.html'
+    verbose_name_plural = ''
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).filter(user=request.user)
+
+    def has_change_permission(self, request, obj=None):
+        return True
+
+
 @admin.register(TestCaseExecution)
 class TestCaseExecutionAdmin(ExecutionAdmin):
     inlines = [
         TestSetupInline,
         TestTeardownInline
     ]
+
+    def get_inlines(self, request, obj):
+        UserExecution.objects.get_or_create(
+            execution=obj,
+            user=request.user
+        )
+
+        return super().get_inlines(request, obj) + [UserExecutionInline]
 
     def has_change_permission(self, request, obj=None):
         return self.can_change(request.user, 'testcase')

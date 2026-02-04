@@ -136,7 +136,7 @@ class TestCase(CloneMixin, AbstractBaseModel):
         self.name = re.sub(r"\s{2,}", ' ', self.name)
         super().save(force_insert, force_update, using, update_fields)
 
-    def to_robot(self, get_variable_value, user: AbstractUser, execution_state: dict, setup, teardown, include_doc=False) -> RFTestCase:
+    def to_robot(self, get_variable_value, user: AbstractUser, execution_state: dict, setup, teardown, stop_on_failure: bool, include_doc=False) -> RFTestCase:
         if include_doc:
             documentation = HTML2Text.parse(self.documentation)
         else:
@@ -151,10 +151,15 @@ class TestCase(CloneMixin, AbstractBaseModel):
                 not teardown.enabled
             )
 
+        tags = list(self.tags.values_list('name', flat=True))
+
+        if not stop_on_failure:
+            tags.append('robot:recursive-continue-on-failure')
+
         return {
             'name': self.name,
             'doc': documentation,
-            'tags': list(self.tags.values_list('name', flat=True)),
+            'tags': tags,
             'setup': setup.to_robot(get_variable_value, user) if setup else None,
             'steps': [
                 test_step.to_robot(get_variable_value, user=user)

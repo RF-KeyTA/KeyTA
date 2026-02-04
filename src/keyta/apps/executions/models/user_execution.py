@@ -30,6 +30,10 @@ class UserExecution(AbstractBaseModel):
         blank=True,
         verbose_name=_('Ergebnis')
     )
+    stop_on_failure = models.BooleanField(
+        default=True,
+        verbose_name=_('Beim 1. Fehler abbrechen')
+    )
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,

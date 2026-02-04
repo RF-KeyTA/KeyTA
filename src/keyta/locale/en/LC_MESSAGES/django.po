@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-29 14:39+0100\n"
+"POT-Creation-Date: 2026-02-04 09:09+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -255,8 +255,8 @@ msgstr "Settings"
 #: .\apps\executions\models\execution.py:221
 #: .\apps\executions\models\keyword_execution.py:144
 #: .\apps\executions\models\keyword_execution.py:145
-#: .\apps\executions\models\testcase_execution.py:129
-#: .\apps\executions\models\testcase_execution.py:130
+#: .\apps\executions\models\testcase_execution.py:131
+#: .\apps\executions\models\testcase_execution.py:132
 #: .\apps\libraries\models\library_import.py:46
 #: .\apps\resources\models\resource_import.py:46
 #: .\apps\testcases\admin\base_testcase_admin.py:100
@@ -273,15 +273,19 @@ msgstr "Attach to a running system"
 msgid "Nachbereitung"
 msgstr "Teardown"
 
-#: .\apps\executions\admin\testcase_execution.py:24
+#: .\apps\executions\admin\testcase_execution.py:25
 #: .\apps\keywords\models\keywordcall.py:25
 msgid "Testvorbereitung"
 msgstr "Test Setup"
 
-#: .\apps\executions\admin\testcase_execution.py:28
+#: .\apps\executions\admin\testcase_execution.py:29
 #: .\apps\keywords\models\keywordcall.py:26
 msgid "Testnachbereitung"
 msgstr "Test Teardown"
+
+#: .\apps\executions\admin\testcase_execution.py:37
+msgid "Ausführungseinstellungen"
+msgstr "Execution Settings"
 
 #: .\apps\executions\errors.py:15
 msgid "Die Aufrufparameter (Werte) sind unvollständig."
@@ -349,15 +353,19 @@ msgstr "Successful"
 msgid "Fehlgeschlagen"
 msgstr "Failed"
 
-#: .\apps\executions\models\user_execution.py:36
+#: .\apps\executions\models\user_execution.py:35
+msgid "Beim 1. Fehler abbrechen"
+msgstr "Stop after first error"
+
+#: .\apps\executions\models\user_execution.py:40
 msgid "Benutzer"
 msgstr "Users"
 
-#: .\apps\executions\models\user_execution.py:48
+#: .\apps\executions\models\user_execution.py:52
 msgid "Benutzer-bezogene Ausführung"
 msgstr "User-related execution"
 
-#: .\apps\executions\models\user_execution.py:49
+#: .\apps\executions\models\user_execution.py:53
 msgid "Benutzer-bezogene Ausführungen"
 msgstr "User-related executions"
 
@@ -694,7 +702,7 @@ msgstr "Filepath just like when importing a Resource in a .robot file"
 
 #: .\apps\resources\admin\resource_import.py:61
 #: .\apps\sequences\admin\uses_inline.py:22
-#: .\apps\testcases\models\testcase.py:168
+#: .\apps\testcases\models\testcase.py:173
 msgid "Testfall"
 msgstr "Test Case"
 
@@ -789,7 +797,7 @@ msgstr "The Test Case \"{testcase_name}\" has no steps."
 msgid "Sequenz auswählen"
 msgstr "Select a Sequence"
 
-#: .\apps\testcases\apps.py:8 .\apps\testcases\models\testcase.py:169
+#: .\apps\testcases\apps.py:8 .\apps\testcases\models\testcase.py:174
 msgid "Testfälle"
 msgstr "Test Cases"
 
@@ -823,7 +831,8 @@ msgstr "Reference Values"
 #, python-brace-format
 msgid ""
 "Ein Referenzwert mit diesem Namen existiert bereits im System \"{system}\""
-msgstr "A Reference Value with this name already exists in the System \"{system}\""
+msgstr ""
+"A Reference Value with this name already exists in the System \"{system}\""
 
 #: .\apps\variables\forms\variable.py:37 .\apps\variables\forms\windows.py:18
 #, python-brace-format
@@ -831,7 +840,8 @@ msgid ""
 "Ein Referenzwert mit diesem Namen existiert bereits in der Maske \"{window."
 "name}\""
 msgstr ""
-"A Reference Value with this name already exists in the Window \"{window.name}\""
+"A Reference Value with this name already exists in the Window \"{window."
+"name}\""
 
 #: .\apps\variables\models\variable.py:13
 msgid "Formular"

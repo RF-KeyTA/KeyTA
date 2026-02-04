@@ -10,6 +10,7 @@ from keyta.rf_export.testsuite import RFTestSuite
 
 from ..errors import ValidationError
 from .execution import Execution, ExecutionType
+from .user_execution import UserExecution
 
 
 class TestCaseExecution(Execution):
@@ -76,12 +77,18 @@ class TestCaseExecution(Execution):
             if to_keyword := test_teardown.to_keyword:
                 keywords[to_keyword.id] = to_keyword.to_robot(get_variable_value, {}, include_doc=include_doc)
 
+        user_exec, _ = UserExecution.objects.get_or_create(
+            execution=self,
+            user=user
+        )
+        stop_on_failure = user_exec.stop_on_failure
+
         return {
             'name': self.testcase.name,
             'settings': self.get_rf_settings(user),
             'keywords': keywords,
             'testcases': [
-                self.testcase.to_robot(get_variable_value, user, execution_state, test_setup, test_teardown, include_doc=include_doc)
+                self.testcase.to_robot(get_variable_value, user, execution_state, test_setup, test_teardown, stop_on_failure, include_doc=include_doc)
             ]
         }
 
