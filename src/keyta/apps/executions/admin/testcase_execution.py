@@ -24,9 +24,15 @@ class TestSetupInline(SetupInline):
     max_num = 2
     verbose_name_plural = _('Testvorbereitung')
 
+    def has_change_permission(self, request, obj=None):
+        return self.can_change(request.user, 'testcase')
+
 
 class TestTeardownInline(TeardownInline):
     verbose_name_plural = _('Testnachbereitung')
+
+    def has_change_permission(self, request, obj=None):
+        return self.can_change(request.user, 'testcase')
 
 
 class UserExecutionInline(StackedInline):
@@ -57,6 +63,3 @@ class TestCaseExecutionAdmin(ExecutionAdmin):
         )
 
         return super().get_inlines(request, obj) + [UserExecutionInline]
-
-    def has_change_permission(self, request, obj=None):
-        return self.can_change(request.user, 'testcase')
