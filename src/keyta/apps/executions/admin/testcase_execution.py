@@ -57,9 +57,4 @@ class TestCaseExecutionAdmin(ExecutionAdmin):
     ]
 
     def get_inlines(self, request, obj):
-        UserExecution.objects.get_or_create(
-            execution=obj,
-            user=request.user
-        )
-
         return super().get_inlines(request, obj) + [UserExecutionInline]

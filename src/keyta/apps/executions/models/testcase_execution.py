@@ -77,10 +77,7 @@ class TestCaseExecution(Execution):
             if to_keyword := test_teardown.to_keyword:
                 keywords[to_keyword.id] = to_keyword.to_robot(get_variable_value, {}, include_doc=include_doc)
 
-        user_exec, _ = UserExecution.objects.get_or_create(
-            execution=self,
-            user=user
-        )
+        user_exec = self.user_execs.get(user=user)
         stop_on_failure = user_exec.stop_on_failure
 
         return {
