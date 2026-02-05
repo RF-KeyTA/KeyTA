@@ -14,6 +14,11 @@
             #changelist table thead th:first-child {width: inherit}
         </style>
     {% endif %}
+    <style>
+        #changelist .table td, .table th {
+            border-top: 0 !important;
+        }
+    </style>
 {% endblock %}
 
 {% block extrahead %}
@@ -25,7 +30,7 @@
 
 {% block breadcrumbs %}
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{% url 'admin:index' %}">{% trans 'Home' %}</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'admin:index' %}">{% trans 'Dashboard' %}</a></li>
         <li class="breadcrumb-item active">{{ cl.opts.verbose_name_plural|capfirst }}</li>
     </ol>
 {% endblock %}
@@ -35,7 +40,7 @@
 {% block coltype %}flex{% endblock %}
 
 {% block page_actions %}
-    <div class="col-12 col-md-auto d-flex align-items-center justify-content-end page-actions">
+    <div class="col-3 col-md-auto d-flex align-items-center justify-content-end">
         {% block object-tools %}
             {% block object-tools-items %}
                 {% change_list_object_tools %}
@@ -54,6 +59,7 @@
     {% endblock %}
 
     <div class="col-12">
+        {% block execution_messages %}{% endblock %}
         <div>
             <form id="changelist-form" method="post"{% if cl.formset and cl.formset.is_multipart %}enctype="multipart/form-data"{% endif %} novalidate>{% csrf_token %}
                 <div id="content-main">
@@ -100,13 +106,12 @@
                 </div>
             </form>
         </div>
-
         <br class="clear"/>
     </div>
 {% endblock %}
 
 {% block extrajs %}
-    {{  block.super }}
+    {{ block.super }}
     <script type="text/javascript" src="{% static 'vendor/select2/js/select2.min.js' %}"></script>
     <script>
         {% comment %} set filterInputLength default and custom values {% endcomment %}
@@ -118,4 +123,55 @@
         }
     </script>
     <script type="text/javascript" src="{% static 'jazzmin/js/change_list.js' %}"></script>
+    {% if jazzmin_settings.related_modal_active %}
+    <script type="text/javascript" src="{% static 'jazzmin/plugins/bootstrap-show-modal/bootstrap-show-modal.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'jazzmin/js/related-modal.js' %}"></script>
+    {% endif %}
+
+    <script type="text/javascript">
+        // From jazzmin/static/js/change_list.js
+        $.fn.search_filters = function () {
+            $(this).change(function () {
+                const $field = $(this);
+                const $option = $field.find('option:selected');
+                const select_name = $option.data('name');
+                if (select_name) {
+                    $field.attr('name', select_name);
+                } else {
+                    $field.removeAttr('name');
+                }
+            });
+            $(this).trigger('change');
+        };
+
+        function getMinimuInputLength(element) {
+            return window.filterInputLength[element.data('name')] ?? window.filterInputLengthDefault;
+        }
+    </script>
+
+    {% block select2 %}
+    <script type="text/javascript">
+        // Make search filters select2 and ensure they work for filtering
+        const $ele = $('.search-filter');
+        $ele.search_filters();
+        $ele.each(function () {
+            const $this = $(this);
+            $this.select2({  width: '100%', minimumInputLength: getMinimuInputLength($this) });
+        });
+    </script>
+    {% endblock %}
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('input:text').focus()
+
+            const search_button = '#search_group button[type=submit]'
+
+            $('select').not('select[name="action"]').on('change', function() {
+                $(search_button).click()
+            })
+        })
+    </script>
+
+    {% block execution %}{% endblock %}
 {% endblock %}

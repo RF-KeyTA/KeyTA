@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.http import HttpRequest, HttpResponseRedirect
 
-from apps.libraries.models import LibraryParameter
+from ..models import LibraryParameter
 
 
 @admin.register(LibraryParameter)

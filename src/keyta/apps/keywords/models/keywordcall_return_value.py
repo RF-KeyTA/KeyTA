@@ -1,5 +1,9 @@
 from django.db import models
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext, gettext_lazy as _
+
+from model_clone import CloneMixin
+
+from keyta.models.base_model import AbstractBaseModel
 
 from .keywordcall_parameter_source import (
     KeywordCallParameterSource,
@@ -7,14 +11,21 @@ from .keywordcall_parameter_source import (
 )
 
 
-class KeywordCallReturnValue(models.Model):
+class KeywordCallReturnValue(CloneMixin, AbstractBaseModel):
     keyword_call = models.ForeignKey(
         'keywords.KeywordCall',
         on_delete=models.CASCADE,
-        related_name='return_value'
+        related_name='return_values'
+    )
+    kw_call_return_value = models.ForeignKey(
+        'keywords.KeywordCallReturnValue',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        default=None
     )
     return_value = models.ForeignKey(
-        'keywords.KeywordCallReturnValue',
+        'keywords.KeywordReturnValue',
         on_delete=models.CASCADE,
         null=True,
         blank=True,
@@ -31,14 +42,30 @@ class KeywordCallReturnValue(models.Model):
         if self.name:
             return self.name
 
-        if self.return_value:
-            return str(self.return_value)
+        if self.kw_call_return_value:
+            return str(self.kw_call_return_value)
 
-        return _('Kein Rückgabewert')
+        return gettext('Kein Rückgabewert')
 
     @property
     def is_set(self):
-        return self.name or self.return_value
+        return self.name or self.kw_call_return_value
+
+    @property
+    def type(self):
+        if self.return_value:
+            return self.return_value.type
+
+        if self.kw_call_return_value:
+            return self.kw_call_return_value.type
+
+    @property
+    def typedoc(self):
+        if self.return_value:
+            return self.return_value.get_typedoc()
+
+        if self.kw_call_return_value:
+            return self.kw_call_return_value.typedoc
 
     def save(
         self, force_insert=False, force_update=False, using=None, update_fields=None
@@ -54,5 +81,5 @@ class KeywordCallReturnValue(models.Model):
             super().save(force_insert, force_update, using, update_fields)
 
     class Meta:
-        constraints = []
         verbose_name = _('Rückgabewert')
+        verbose_name_plural = _('Rückgabewerte')

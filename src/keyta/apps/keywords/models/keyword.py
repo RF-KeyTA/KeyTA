@@ -1,24 +1,16 @@
 import re
-from html.parser import HTMLParser
+from collections import defaultdict
 
 from django.db import models
 from django.db.models import Q
-from django.utils.translation import gettext as _
+from django.db.models.functions import Lower
+from django.utils.translation import gettext_lazy as _
 
-from apps.common.abc import AbstractBaseModel
-from apps.rf_export.keywords import RFKeyword
+from keyta.models.base_model import AbstractBaseModel
+from keyta.models.html2text import HTML2Text
+from keyta.rf_export.keywords import RFKeyword
 
-
-class HTML2Text(HTMLParser):
-    def __init__(self, *, convert_charrefs = True):
-        self.texts = []
-        super().__init__(convert_charrefs=convert_charrefs)
-
-    def handle_data(self, data):
-        self.texts.append(data)
-
-    def get_text(self):
-        return '\n'.join(self.texts)
+from .keywordcall import KeywordCallType
 
 
 class KeywordType(models.TextChoices):
@@ -45,12 +37,23 @@ class Keyword(AbstractBaseModel):
         related_name='keywords',
         verbose_name=_('Ressource')
     )
-    name = models.CharField(max_length=255, verbose_name=_('Name'))
-    short_doc = models.CharField(max_length=255, blank=True,
-                                 verbose_name=_('Beschreibung'))
-    args_doc = models.TextField(blank=True, verbose_name=_('Parameters'))
-    documentation = models.TextField(blank=True, verbose_name=_('Dokumentation'))
-    type = models.CharField(max_length=255, choices=KeywordType.choices)
+    name = models.CharField(
+        max_length=255,
+        verbose_name=_('Name')
+    )
+    short_doc = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name=_('Beschreibung')
+    )
+    documentation = models.TextField(
+        blank=True,
+        verbose_name=_('Dokumentation')
+    )
+    type = models.CharField(
+        max_length=255,
+        choices=KeywordType.choices
+    )
 
     # ---Customization--
     setup_teardown = models.BooleanField(
@@ -71,6 +74,26 @@ class Keyword(AbstractBaseModel):
     def __str__(self):
         return self.name
 
+    def executable_steps(self, execution_state: dict):
+        execute_from = self.calls.first().index
+        execute_until = self.calls.last().index
+
+        if begin_execution_index := execution_state.get('BEGIN_EXECUTION'):
+            execute_from = begin_execution_index
+
+        if end_execution_pk_index := execution_state.get('END_EXECUTION'):
+            execute_until = end_execution_pk_index
+
+        return (
+            self.calls
+            .prefetch_related('conditions')
+            .prefetch_related('return_values')
+            .prefetch_related('to_keyword')
+            .filter(index__gte=execute_from)
+            .filter(index__lte=execute_until)
+            .exclude(Q(to_keyword__isnull=True) | Q(index__in=execution_state.get('SKIP_EXECUTION', [])))
+        )
+
     @property
     def has_empty_sequence(self):
         return not self.calls.exists()
@@ -79,32 +102,62 @@ class Keyword(AbstractBaseModel):
     def id_name(self):
         return f'{self.type[0]}{self.id}::{self.name}'
 
+    @property
+    def is_action(self):
+        return self.type == KeywordType.ACTION
+
+    @property
+    def in_use(self):
+        return self.uses.exclude(type=KeywordCallType.KEYWORD_EXECUTION).count()
+
+    @property
+    def is_sequence(self):
+        return self.type == KeywordType.SEQUENCE
+
     def save(
         self, force_insert=False, force_update=False, using=None,
         update_fields=None
     ):
         self.name = re.sub(r"\s{2,}", " ", self.name)
+
+        if not self.pk:
+            if self.library:
+                self.type = KeywordType.LIBRARY
+
+            if self.resource:
+                self.type = KeywordType.RESOURCE
+
         super().save(force_insert, force_update, using, update_fields)
 
-    def to_robot(self) -> RFKeyword:
-        args = self.parameters.args()
-        kwargs = self.parameters.kwargs()
-        return_value = self.return_value.first()
+    def to_robot(self, get_variable_value, execution_state: dict, include_doc=False) -> RFKeyword:
+        if include_doc:
+            documentation = HTML2Text.parse(self.documentation)
+        else:
+            documentation = self.get_admin_url(absolute=True) + '?steps_tab'
 
-        html_parser = HTML2Text()
-        html_parser.feed(self.documentation)
+        parameters = defaultdict(list)
+
+        for param in self.parameters.all():
+            if param.type == 'ARG':
+                parameters['args'].append(param)
+
+            if param.type == 'KWARG':
+                parameters['kwargs'].append(param)
+
+        args = parameters['args']
+        kwargs = parameters['kwargs']
+        return_values = self.return_values.all()
 
         return {
             'name': self.id_name,
-            'doc': html_parser.get_text(),
+            'doc': documentation,
             'args': [arg.name for arg in args],
             'kwargs': {kwarg.name: kwarg.default_value for kwarg in kwargs},
             'steps': [
-                step.to_robot()
-                for step in self.calls.all()
-                if step.enabled
-            ],
-            'return_value': f'${{{return_value}}}' if return_value else None
+                step.to_robot(get_variable_value)
+                for step in self.executable_steps(execution_state)
+            ] if self.calls.exists() else [],
+            'return_values': [f'${{{return_value}}}' for return_value in return_values]
         }
 
     @property
@@ -128,39 +181,21 @@ class Keyword(AbstractBaseModel):
     objects = QuerySet.as_manager()
 
     class Meta:
+        ordering = [Lower('name')]
         constraints = [
             models.UniqueConstraint(
                 fields=["library", "name"],
+                condition=Q(library__isnull=False),
                 name="unique_keyword_per_library"
             ),
             models.UniqueConstraint(
                 fields=["resource", "name"],
+                condition=Q(resource__isnull=False),
                 name="unique_keyword_per_resource"
-            ),
-
-            # Customization #
-            models.CheckConstraint(
-                name='keyword_sum_type',
-                check=
-                (Q(type=KeywordType.LIBRARY) &
-                 Q(library__isnull=False) &
-                 Q(resource__isnull=True))
-                |
-                (Q(type=KeywordType.RESOURCE) &
-                 Q(resource__isnull=False) &
-                 Q(library__isnull=True))
-
-                # Customization #
-                |
-                (Q(type=KeywordType.ACTION) &
-                 Q(library__isnull=True) &
-                 Q(resource__isnull=True))
-                |
-                (Q(type=KeywordType.SEQUENCE) &
-                 Q(library__isnull=True) &
-                 Q(resource__isnull=True))
             )
         ]
+        verbose_name = _('Schlüsselwort')
+        verbose_name_plural = _('Schlüsselwörter')
 
 
 class KeywordDocumentation(Keyword):

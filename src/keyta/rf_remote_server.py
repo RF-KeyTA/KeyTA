@@ -1,87 +1,170 @@
+import io
 import json
+import os
+import re
 import tempfile
+import unicodedata
 from http import HTTPStatus
-from http.server import HTTPServer, BaseHTTPRequestHandler
-from io import StringIO
+from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
+from zlib import crc32
 
-from robot.run import run # type: ignore
+from robot.libdoc import libdoc_cli
+from robot.run import run
+from robot.running import TestSuite
 
 from .IProcess import IProcess
+from .rf_log import save_log
 
 
-def valid_dirname(dirname: str):
-    subs = {
-        ":": " -",
-        "\"": "",
-        "/": "",
-        "\\": "",
-        "?": "",
-        "*": "",
-        "|": "",
-        "<": "",
-        ">": ""
+tmp_dir = Path(tempfile.gettempdir()) / 'KeyTA'
+
+
+def export_robot_file(testsuite: str, dest_dir: Path) -> Path:
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    robot_file = dest_dir / 'Testsuite.robot'
+
+    with open(robot_file, 'w', encoding='utf-8') as file_handle:
+        file_handle.write(testsuite)
+
+    return robot_file
+
+
+def format_filename(testsuite_name: str):
+    slug = slugify(testsuite_name)
+
+    if len(slug) > 64:
+        return f'{slug[:64]}_{crc32(slug.encode())}'
+
+    return slug
+
+
+def get_keywords(robot_file: Path) -> list:
+    suite = TestSuite.from_file_system(robot_file).to_dict()
+    keywords = suite['resource']['keywords']
+    tmp_dir = Path(tempfile.gettempdir()) / 'KeyTA'
+
+    for import_ in suite['resource']['imports']:
+        import_name = import_['name']
+        libdoc_json = str(tmp_dir / f'{import_name}.json')
+        libdoc_cli([import_name, libdoc_json], exit=False)
+
+        with open(libdoc_json, 'r', encoding='utf-8') as file:
+            libdoc_dict = json.load(file)
+
+            for keyword in libdoc_dict['keywords']:
+                args = []
+                kwargs = []
+                for arg in keyword['args']:
+                    if arg['name']:
+                        if arg['required']:
+                            args.append(arg['name'])
+                        elif arg['kind'] == 'VAR_POSITIONAL':
+                            args.append('*' + arg['name'])
+                        elif arg['kind'] == 'VAR_NAMED':
+                            kwargs.append('**' + arg['name'])
+                        else:
+                            kwargs.append(arg['name'])
+
+                keywords.append({
+                    'name': f'{import_name.removesuffix(".resource")}.{keyword["name"]}',
+                    'args': args,
+                    'kwargs': kwargs
+                })
+
+    return keywords
+
+
+def robot_run(testsuite_name: str, testsuite: str):
+    testsuite_fs_name = format_filename(testsuite_name)
+    dest_dir = tmp_dir / testsuite_fs_name
+    robot_file = export_robot_file(testsuite, dest_dir)
+    output_dir = dest_dir / 'output'
+    output_file = output_dir / 'output.json'
+    robot_kwargs = {
+        'listener': 'keyta.Listener',
+        'maxassignlength': '1000', # RF truncates return values larger than this in the log
+        'outputdir': output_dir,
+        'output': 'output.json'
     }
 
-    return ''.join([
-        subs.get(c,c ) for c in dirname
-    ])
-
-
-def read_file_from_disk(path):
-    with open(path, 'r', encoding='utf-8') as file_handle:
-        return file_handle.read()
-
-
-def write_file_to_disk(path, file_contents: str):
-    with open(path, 'w', encoding='utf-8') as file_handle:
-        file_handle.write(file_contents)
-
-
-def robot_run(
-        testsuite_name: str,
-        testsuite: str,
-        robot_args: dict[str, str]
-):
-    tmp_dir = Path(tempfile.gettempdir()) / 'KeyTA' / valid_dirname(testsuite_name)
-    tmp_dir.mkdir(parents=True, exist_ok=True)
-    output_dir = tmp_dir / 'output'
-    robot_file = tmp_dir / 'Testsuite.robot'
-    write_file_to_disk(robot_file, testsuite)
-
-    stdout = StringIO()
-    stderr = StringIO()
-    ret_code = run(
-        robot_file,
-        stdout=stdout,
-        stderr=stderr,
-        outputdir=str(output_dir),
-        **robot_args
-    )
+    result = run(str(robot_file), **robot_kwargs, stdout=io.StringIO(), stderr=io.StringIO())
+    log_file = save_log(testsuite_fs_name, testsuite_name, str(output_file), get_keywords(robot_file))
 
     return {
-        'log': read_file_from_disk(output_dir / 'log.html'),
-        'result': 'PASS' if ret_code == 0 else 'FAIL'
+        'log': str(log_file.relative_to(tmp_dir)),
+        'result': 'PASS' if result == 0 else 'FAIL'
     }
 
 
-class RequestHandler(BaseHTTPRequestHandler):
+def slugify(value, allow_unicode=False):
+    """
+    Convert to ASCII if 'allow_unicode' is False. Convert spaces or repeated
+    dashes to single dashes. Remove characters that aren't alphanumerics,
+    underscores, or hyphens. Convert to lowercase. Also strip leading and
+    trailing whitespace, dashes, and underscores.
+
+    source: django.utils.text.slugify
+    """
+    value = str(value)
+    if allow_unicode:
+        value = unicodedata.normalize('NFKC', value)
+    else:
+        value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode('ascii')
+    value = re.sub(r'[^\w\s-]', '', value.lower())
+    return re.sub(r'[-\s]+', '_', value).strip('-_')
+
+
+class RequestHandler(SimpleHTTPRequestHandler):
     def __init__(self, request, client_address, server_class):
         self.functions = {
             'robot_run': robot_run
         }
-        super().__init__(request, client_address, server_class)
+        super().__init__(request, client_address, server_class, directory=str(Path(__file__).resolve().parent))
 
     def do_GET(self):
-        self.send_response(HTTPStatus.OK)
-        self.send_header("Access-Control-Allow-Origin", '*')
+        if self.path.endswith('.html') or self.path.endswith('.jpg') or self.path.endswith('.png') or self.path.endswith('.robot'):
+            path = Path(str(tmp_dir) + self.path)
+
+            if path.exists():
+                self.send_response(HTTPStatus.OK)
+                if self.path.endswith('.html'):
+                    self.send_header("Content-type", 'text/html')
+                if self.path.endswith('.jpg'):
+                    self.send_header("Content-type", 'image/jpeg')
+                if self.path.endswith('.png'):
+                    self.send_header("Content-type", 'image/png')
+                if self.path.endswith('.robot'):
+                    self.send_header("Content-type", 'text/plain')
+                self.send_header("Content-Length", str(os.stat(path).st_size))
+                self.end_headers()
+
+                with open(path, 'rb') as file:
+                    self.wfile.write(file.read())
+            else:
+                message = f"The file '{path}' does not exist.".encode('utf-8')
+                self.send_response(HTTPStatus.NOT_FOUND)
+                self.send_header("Content-type", 'text/plain')
+                self.send_header("Content-Length", str(len(message)))
+                self.end_headers()
+                self.wfile.write(message)
+        elif Path(self.path).suffix in {'.css', '.js', '.woff2'}:
+            super().do_GET()
+        else:
+            self.send_response(HTTPStatus.OK)
+            self.send_header("Access-Control-Allow-Origin", '*')
+            self.end_headers()
+
+    def do_OPTIONS(self):
+        self.send_response(HTTPStatus.NO_CONTENT)
+        self.send_header('Access-Control-Allow-Methods', self.headers.get('Access-Control-Request-Method'))
+        self.send_header('Access-Control-Allow-Origin', self.headers.get('Origin'))
+        self.send_header('Access-Control-Max-Age', '3600')
         self.end_headers()
 
     def do_POST(self):
         function = self.path.lstrip('/')
-        content_len = int(self.headers.get('content-length'))
-        data = self.rfile.read(content_len).decode('utf-8')
-        kwargs = json.loads(data, strict=False)
+        kwargs = self.get_request_body()
         result = self.functions[function](**kwargs)
         response = json.dumps(result).encode('utf-8')
 
@@ -92,8 +175,17 @@ class RequestHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(response)
 
+    def get_request_body(self) -> dict:
+        content_len = int(self.headers.get('content-length'))
+        data = self.rfile.read(content_len).decode('utf-8')
 
-class RobotRemoteServer(IProcess, HTTPServer):
+        if data:
+            return json.loads(data, strict=False)
+        else:
+            return {}
+
+
+class RobotRemoteServer(IProcess, ThreadingHTTPServer):
     def __init__(self, host: str, port: int):
         super().__init__((host, port), RequestHandler)
 

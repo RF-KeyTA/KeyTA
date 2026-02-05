@@ -26,7 +26,7 @@ class Migration(migrations.Migration):
                 'indexes': [],
                 'constraints': [],
             },
-            bases=('windows.windowkeyword',),
+            bases=('keywords.windowkeyword',),
         ),
         migrations.CreateModel(
             name='ActionExecution',

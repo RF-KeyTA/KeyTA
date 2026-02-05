@@ -1,162 +1,166 @@
-import json
-from typing import Callable
+import re
 
-from django import forms
-from django.conf import settings
-from django.contrib.admin.widgets import get_select2_language
-from django.core.exceptions import ValidationError
-from django.utils.translation import gettext as _
+from django.db.models import QuerySet
+from django.forms.utils import ErrorDict, ErrorList
+from django.utils.translation import gettext_lazy as _
 
-from apps.keywords.models import (
+from keyta.apps.variables.models import Variable
+
+from ..json_value import JSONValue
+from ..models import (
     KeywordCall,
     KeywordCallParameterSource,
-    KeywordCallParameter
+    KeywordCallParameter,
+    KeywordCallReturnValue
 )
-from apps.keywords.models.keywordcall_parameters import jsonify
+from .user_input_formset import UserInputFormset, user_input_field
 
 
-def show_value(json_str: str) -> tuple:
-    value_pk = json.loads(json_str)
-    value = value_pk['value']
+def get_global_variables(system_ids: list[int]):
+    variables = Variable.objects.filter(
+        systems__in=system_ids,
+        windows__isnull=True
+    ).distinct()
 
-    if value:
-        return json_str, value
-    else:
-        return None, _('Kein Wert')
-
-
-class DynamicChoiceField(forms.CharField):
-    def to_python(self, value: str):
-        if not value:
-            raise ValidationError(_('Das Feld darf nicht leer sein'))
-
-        if value.startswith('{') and value.endswith('}'):
-            return value
-
-        return jsonify(value, None)
+    return get_variables_choices(variables)
 
 
-class KeywordCallParameterFormset(forms.BaseInlineFormSet):
-    def prev_return_values(self):
-        kw_call = self.instance
+def get_keyword_parameters(kw_call: KeywordCall):
+    if not kw_call.from_keyword or not kw_call.from_keyword.parameters.exists():
+        return []
 
-        return [[
-            _('Vorherige Rückgabewerte'),
+    return [[
+        _('Parameters'),
+        [
+            (source.get_value().jsonify(), str(source))
+            for source in KeywordCallParameterSource.objects
+            .filter(kw_param__keyword=kw_call.from_keyword)
+        ]
+    ]]
+
+
+def natural_sort(l):
+    convert = lambda text: int(text) if text.isdigit() else text.lower()
+    alphanum_key = lambda key: [convert(c) for c in re.split('([0-9]+)', key)]
+    return sorted(l, key=lambda x: alphanum_key(unrobot(x[1])))
+
+
+def unrobot(token):
+    dict_access = re.compile(r'\${(.*)}\[(.*)\]')
+
+    if match := re.match(dict_access, token):
+        return f'{match.group(1)}.{match.group(2)}'
+
+    return token
+
+
+def get_prev_return_values(kw_call: KeywordCall):
+    prev_return_values = kw_call.get_previous_return_values()
+
+    if not prev_return_values.exists():
+        return []
+
+    return_value_keys = []
+    return_value_refs = []
+
+    return_value: KeywordCallReturnValue
+    for return_value in prev_return_values:
+        if typedoc := return_value.typedoc:
+            for key in typedoc['keys']:
+                value = '${%s}[%s]' % (str(return_value), key)
+                json_value = JSONValue(
+                    arg_name=None,
+                    kw_call_index=None,
+                    pk=None,
+                    user_input=value
+                ).jsonify()
+                return_value_keys.append((json_value, value))
+        else:
+            return_value_refs.append(return_value)
+
+    sources = KeywordCallParameterSource.objects.filter(
+        kw_call_ret_val__in=return_value_refs
+    )
+
+    return [[
+        _('Vorherige Rückgabewerte'),
+        # Sort the return values by their string representation
+        natural_sort(
+            return_value_keys +
             [
-                (jsonify(None, source.pk), str(source))
-                for source in
-                KeywordCallParameterSource.objects
-                .filter(
-                    kw_call_ret_val__in=kw_call.get_previous_return_values()
-                )
+                (source.get_value().jsonify(), str(source))
+                for source in sources
             ]
-        ]]
+        )
+    ]]
 
-    def get_variables(
-            self,
-            window_ids: list[int],
-            system_ids: list[int],
-            show: Callable[[KeywordCallParameterSource], str]
-    ):
-        window_variables = [[
-            _('Referenzwerte'),
-            [
-                (jsonify(None, source.pk), show(source))
-                for source in
-                KeywordCallParameterSource.objects
-                .filter(variable_value__variable__windows__in=window_ids)
-                .filter(variable_value__variable__systems__in=system_ids)
-                .distinct()
-            ]
-        ]]
 
-        window_indep_variables = [[
-            _('Globale Referenzwerte'),
-            [
-                (jsonify(None, source.pk), show(source))
-                for source in
-                KeywordCallParameterSource.objects
-                .filter(variable_value__variable__systems__in=system_ids)
-                .filter(variable_value__variable__windows__isnull=True)
-            ]
-        ]]
+def get_variables_choices(variables: QuerySet):
+    def sources_to_choices(sources: QuerySet):
+        return [
+            ((source.get_value().jsonify(), str(source)))
+            for source in sources
+        ]
 
-        return window_variables + window_indep_variables
+    grouped_variable_values = {}
 
-    def get_choices(self, obj: KeywordCall):
-        calling_keyword = obj.from_keyword
-        kw_params = [[
-            _('Parameters'),
-            [
-                (jsonify(None, source.pk), str(source))
-                for source in KeywordCallParameterSource.objects
-                .filter(kw_param__keyword=calling_keyword)
-            ]
-        ]]
+    for variable in variables:
+        if variable.is_table():
+            sources = KeywordCallParameterSource.objects.filter(table_column__in=variable.columns.all())
+        else:
+            sources = KeywordCallParameterSource.objects.filter(variable_value__in=variable.values.all())
 
-        return kw_params + self.prev_return_values()
+        grouped_variable_values[variable.name] = sources_to_choices(sources)
 
+    return [
+        [
+            variable,
+            sorted(values, key=lambda value: value[1].lower())
+        ]
+        for variable, values in sorted(grouped_variable_values.items(), key=lambda kv: kv[0].lower())
+    ]
+
+
+class ErrorsMixin:
     def add_fields(self, form, index):
         super().add_fields(form, index)
 
-        class CustomSelect(forms.Select):
-            template_name = 'admin/keywordcall/select.html'
-
-            @property
-            def media(self):
-                self.i18n_name = get_select2_language()
-                extra = "" if settings.DEBUG else ".min"
-                i18n_file = (
-                    ("admin/js/vendor/select2/i18n/%s.js" % self.i18n_name,)
-                    if self.i18n_name
-                    else ()
-                )
-                return forms.Media(
-                    js=(
-                           "admin/js/vendor/jquery/jquery%s.js" % extra,
-                           "admin/js/vendor/select2/select2.full%s.js" % extra,
-                       )
-                       + i18n_file
-                       + (
-                           "admin/js/jquery.init.js",
-                           "admin/js/autocomplete.js",
-                       ),
-                    css={
-                        "screen": (
-                            "admin/css/vendor/select2/select2%s.css" % extra,
-                            "admin/css/autocomplete.css",
-                        ),
-                    },
-                )
-
         if index is not None:
-            kw_call_parameter: KeywordCallParameter = form.instance
-            current_value = kw_call_parameter.value
-            value, displayed_value = show_value(current_value)
+            json_value = self.get_json_value(form)
 
-            if value and displayed_value in {'True', 'False'}:
-                choices = [
-                    (jsonify('True', None), 'True'), 
-                    (jsonify('False', None), 'False'), 
-                ]
-            else:
-                choices = (
-                        [(None, '')] +
-                        [[_('Eingabe'), [show_value(current_value)]]] +
-                        self.get_choices(self.instance)
-                )
+            if not json_value.user_input and not json_value.pk:
+                form._errors = ErrorDict()
+                form._errors['value'] = ErrorList([
+                    form.fields['value'].default_error_messages['required']
+                ])
 
-            form.fields['value'] = DynamicChoiceField(
-                widget=CustomSelect(
-                    choices=choices,
-                    attrs={
-                        # Allow manual input
-                        'data-tags': 'true',
-                        'data-width': '60%',
-                        'data-placeholder': _('Wert auswählen oder eintragen')
-                    }
-                )
-            )
+    # This is necessary in order to be able to save the formset
+    # despite the errors that were added in form._errors
+    def is_valid(self):
+        return True
 
-            if kw_call_parameter.parameter.is_list:
-                form.fields['value'].help_text = _('Wert 1, Wert 2, ...')
+
+class KeywordCallParameterFormset(UserInputFormset):
+    def add_fields(self, form, index):
+        super().add_fields(form, index)
+
+        # The index of extra forms is None
+        if index is None:
+            return
+
+        form.fields['value'] = user_input_field(
+            _('Wert auswählen oder eintragen'),
+            self.get_user_input(form, index),
+            choices=self.ref_choices
+        )
+
+    def get_ref_choices(self, kw_call: KeywordCall):
+        return get_keyword_parameters(kw_call) + get_prev_return_values(kw_call)
+
+    def get_json_value(self, form):
+        kw_call_parameter: KeywordCallParameter = form.instance
+        return kw_call_parameter.json_value
+
+
+class KeywordCallParameterFormsetWithErrors(ErrorsMixin, KeywordCallParameterFormset):
+    pass

@@ -1,0 +1,139 @@
+{% load i18n %}
+
+<style>
+    @keyframes spin { 100% { transform:rotate(360deg); } }
+</style>
+
+<script>
+    const errors = {
+        EXEC_NO_KEYTA: "{% translate 'Die Ausführung ist nur möglich, wenn das KeyTA-Symbol in der Taskleiste angezeigt wird.' %}",
+        LOG_NO_KEYTA: "{% translate 'Das Protokoll ist nur verfügbar, wenn das KeyTA-Symbol in der Taskleiste angezeigt wird.' %}",
+        ROBOT_ERROR: "{% translate 'Robot Framework konnte nicht ausgeführt werden.' %}"
+    }
+    const csrf_token_url = window.location.origin + "/csrf_token"
+    const robot_server = "http://localhost:1471"
+
+    const error_message = document.querySelector("#error-message")
+    const info_message = document.querySelector("#info-message")
+    const log_icon = document.querySelector(".field-log_icon > p")
+    const result_icon = document.querySelector(".field-result_icon > p")
+
+    const error = (message) => {
+        error_message.querySelector("#error-text").textContent = message
+        $(error_message).show()
+    }
+
+    const info = (message) => {
+        info_message.querySelector("#info-text").textContent = message
+        $(info_message).show()
+    }
+
+    const get_csrf_token = () => fetch(csrf_token_url)
+    .then(res => res.text())
+    .catch(_ => error(errors.ROBOT_ERROR))
+
+    const save_result = (after_save_result, csrf_token, exec_url, data, start_button) =>
+        fetch(exec_url,
+            {
+                method: "PUT",
+                body: JSON.stringify(data),
+                headers: {'X-CSRFToken': csrf_token, 'Content-Type': 'application/json'}
+            }
+        )
+        .then(_ => after_save_result(exec_url, robot_server, data, start_button))
+        .catch(e => {console.log(e); error(errors.ROBOT_ERROR)})
+
+    const robot_run = (csrf_token, data, exec_url, start_button) => {
+        info("{% translate 'Robot Framework wird ausgeführt.' %}")
+        const start_icon = start_button.querySelector("i")
+        start_icon.classList.replace("fa-circle-play", "fa-arrows-rotate")
+        start_icon.style.animation = "spin 3s linear infinite"
+        $(result_icon).hide()
+        $(log_icon).hide()
+
+        return fetch(
+            robot_server + "/robot_run",
+            {
+                method: "POST",
+                body: JSON.stringify(data)
+            })
+            .then(res => res.json())
+            .then(json => save_result(after_save_result, csrf_token, exec_url, json, start_button))
+            .catch(e => {console.log(e); error(errors.ROBOT_ERROR)})
+            .finally(_ => {
+                $(info_message).hide()
+                start_icon.classList.replace("fa-arrows-rotate", "fa-circle-play")
+                start_icon.style.animation = null
+            })
+    }
+
+    const to_robot = (csrf_token, start_button, execution_state) => {
+        const exec_url = document.location.origin + start_button.getAttribute("href")
+        const to_robot_url = exec_url.replace("?start", "?to_robot")
+        fetch(
+            to_robot_url,
+            {
+                method: "POST",
+                body: JSON.stringify(execution_state),
+                headers: {'X-CSRFToken': csrf_token, 'Content-Type': 'application/json'}
+            }
+        )
+        .then(res => res.json())
+        .then(json => {
+            if (json.error) error(json.error)
+            else robot_run(csrf_token, json, exec_url, start_button)
+        })
+        .catch(e => {console.log(e); error(errors.ROBOT_ERROR)})
+    }
+
+    const start = (start_button, execution_state) => {
+        fetch(robot_server)
+        .then(_ => get_csrf_token())
+        .then(csrf_token => to_robot(csrf_token, start_button, execution_state))
+        .catch(e => {console.log(e); error(errors.EXEC_NO_KEYTA)})
+    }
+
+    const log_button = document.getElementById("log-btn")
+    if (log_button) {
+        log_button.addEventListener('click', function(event) {
+            event.preventDefault();
+
+            fetch(robot_server)
+            .then(_ => window.open(log_button.getAttribute("href"), '_blank'))
+            .catch(e => {console.log(e); error(errors.LOG_NO_KEYTA)})
+        });
+    }
+
+    const start_buttons = document.querySelectorAll('a[id^="exec-btn"]')
+
+    for (const start_button of start_buttons) {
+        start_button.addEventListener('click', function(event) {
+            event.preventDefault();
+
+            start_button.closest('tr').style.backgroundColor = ''
+
+            const execution_state = {
+                'BEGIN_EXECUTION': null,
+                'END_EXECUTION': null,
+                'SKIP_EXECUTION': []
+            }
+
+            $('select[id$="execution_state"]').each((index0, select) => {
+                if (django.jQuery(select).val() === 'BEGIN_EXECUTION') {
+                    execution_state['BEGIN_EXECUTION'] = index0 + 1
+                }
+
+                if (django.jQuery(select).val() === 'END_EXECUTION') {
+                    execution_state['END_EXECUTION'] = index0 + 1
+                }
+
+                if (django.jQuery(select).val() === 'SKIP_EXECUTION') {
+                    execution_state['SKIP_EXECUTION'].push(index0 + 1)
+                }
+            })
+
+            start(start_button, execution_state)
+            $(error_message).hide()
+        });
+    }
+</script>

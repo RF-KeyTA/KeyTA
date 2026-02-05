@@ -1,16 +1,96 @@
-from django.utils.translation import gettext as _
+from django import forms
+from django.utils.translation import gettext_lazy as _
 
-from apps.common.admin.base_inline import SortableTabularInlineWithDelete
+from adminsortable2.admin import CustomInlineFormSet
 
-from ..models import KeywordParameter
+from keyta.admin.field_delete_related_instance import DeleteRelatedField
+from keyta.admin.base_inline import SortableTabularInline
+
+from ..models import Keyword, KeywordParameter, KeywordCallParameter, KeywordCallParameterSource
 
 
-class Parameters(SortableTabularInlineWithDelete):
+class ParameterFormset(CustomInlineFormSet):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.keyword: Keyword = kwargs.get('instance')
+
+    def clean(self):
+        if self.keyword.pk:
+            for form in self.extra_forms:
+                default_value = form.cleaned_data.get('default_value')
+
+                if not default_value and self.keyword.in_use > 1:
+                    raise forms.ValidationError(
+                        _('Beim Hinzufügen eines Parameters darf der Standardwert nicht leer sein.')
+                    )
+
+
+class ParameterForm(forms.ModelForm):
+    def clean_name(self):
+        name = self.cleaned_data.get('name')
+
+        if ':' in name:
+            raise forms.ValidationError("Doppelpunkt ist im Parameternamen nicht zulässig")
+
+        return name
+
+    def save(self, commit=True):
+        instance = super().save(commit)
+
+        orig_name = self.initial.get('name')
+        current_name = self.cleaned_data.get('name')
+
+        if orig_name and orig_name != current_name:
+            parameter: KeywordParameter = instance
+            kw_call_param_sources = KeywordCallParameterSource.objects.filter(kw_param=parameter)
+
+            for kw_call_param in KeywordCallParameter.objects.filter(value_ref__in=kw_call_param_sources):
+                kw_call_param.update_arg_name(current_name)
+
+        return instance
+
+
+class ParametersInline(DeleteRelatedField, SortableTabularInline):
     model = KeywordParameter
-    fields = ['name']
-    extra = 1
+    fields = ['position', 'name']
+    form = ParameterForm
+    formset = ParameterFormset
+    extra = 0
     verbose_name = _('Parameter')
     verbose_name_plural = _('Parameters')
 
-    def get_queryset(self, request):
-        return super().get_queryset(request).order_by('position')
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        field = super().formfield_for_dbfield(db_field, request, **kwargs)
+
+        if db_field.name == 'default_value':
+            field.label = _('Standardwert (optional)')
+            field.widget = forms.TextInput(attrs={
+                'style': 'width: 100%'
+            })
+
+        if db_field.name == 'name':
+            field.widget = forms.TextInput(attrs={
+                'style': 'width: 100%',
+                'placeholder': _('Name eintragen, anschließend Enter drücken')
+            })
+
+        return field
+
+    def get_fields(self, request, obj=None):
+        keyword: Keyword = obj
+
+        if keyword and keyword.in_use > 1:
+            return self.fields + ['default_value', 'delete']
+
+        return super().get_fields(request, obj)
+
+    def has_delete_permission(self, request, obj=None):
+        keyword: Keyword = obj
+
+        if keyword and keyword.is_action:
+            return self.can_change(request.user, 'action')
+
+        if keyword and keyword.is_sequence:
+            return self.can_change(request.user, 'sequence')
+
+        return super().has_delete_permission(request, obj)

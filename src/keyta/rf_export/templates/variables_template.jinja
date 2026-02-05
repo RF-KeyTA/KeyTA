@@ -1,0 +1,4 @@
+*** Variables ***
+{%- for name, values in variables %}
+{{ name }}    {{ rf_join(values) }}
+{%- endfor %}

@@ -1,40 +1,44 @@
-{% load i18n static %}
+{% load i18n static tags %}
 <div class="related-widget-wrapper {% if can_change_related or can_view_related %} mr-4 {% endif %}" {% if not model_has_limit_choices_to %}data-model-ref="{{ model }}"{% endif %}>
     {{ rendered_widget }}
     {% block links %}
         {% spaceless %}
         {% if not is_hidden %}
-        {% if can_change_related %}
-        <a class="related-widget-wrapper-link change-related" id="change_id_{{ name }}"
-            data-href-template="{{ change_related_template_url }}?{{ url_params }}"
-            data-popup="yes"
-        >
-            <i class="fa-solid fa-pencil"></i>
-        </a>
-        {% endif %}
-        {% if can_add_related %}
-        <a class="related-widget-wrapper-link add-related" id="add_id_{{ name }}"
-            data-popup="yes"
-            href="{{ add_related_url }}?{{ url_params }}"
-        >
-            <i class="fa-solid fa-circle-plus"></i>
-        </a>
-        {% endif %}
-        {% if can_delete_related %}
-        <a class="related-widget-wrapper-link delete-related" id="delete_id_{{ name }}"
-            data-href-template="{{ delete_related_template_url }}?{{ url_params }}"
-            data-popup="yes"
-        >
-            <i class="fa-solid fa-trash"></i>
-        </a>
-        {% endif %}
-        {% if can_view_related %}
-          <a class="related-widget-wrapper-link view-related" id="view_id_{{ name }}"
-             data-href-template="{{ change_related_template_url }}?{{ view_related_url_params }}"
-          >
-             <i class="fa-solid fa-eye"></i>
-          </a>
-        {% endif %}
+            {% if can_add_related %}
+            <a class="related-widget-wrapper-link add-related" id="add_id_{{ name }}"
+               href="{{ add_related_url }}?{{ url_params }}"
+               data-popup="yes"
+               {% for name, value in htmx_attrs.items %}
+               {{name}}="{{value}}"
+               {% endfor %}
+            >
+                <i class="{% icon 'related_widget_add' %} mr-2"></i>
+            </a>
+            {% endif %}
+            {% if can_change_related %}
+            <a class="related-widget-wrapper-link change-related" id="change_id_{{ name }}"
+                data-href-template="{{ change_related_template_url }}?{{ url_params }}"
+                data-popup="yes"
+            >
+                <i class="{% icon 'related_widget_change' %}"></i>
+            </a>
+            {% endif %}
+            {% if can_delete_related %}
+            <a class="related-widget-wrapper-link delete-related" id="delete_id_{{ name }}"
+                data-href-template="{{ delete_related_template_url }}?{{ url_params }}"
+                data-popup="yes"
+            >
+                <i class="{% icon 'related_widget_delete' %} mr-2"></i>
+            </a>
+            {% endif %}
+            {% if can_view_related %}
+            <a class="related-widget-wrapper-link view-related" id="view_id_{{ name }}"
+                data-href-template="{{ change_related_template_url }}?{{ view_related_url_params }}&view"
+                data-popup="yes"
+            >
+                <i class="{% icon 'related_widget_view' %} mr-2"></i>
+            </a>
+            {% endif %}
         {% endif %}
         {% endspaceless %}
     {% endblock %}

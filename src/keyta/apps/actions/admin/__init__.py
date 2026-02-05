@@ -1,4 +1,4 @@
-from .action import ActionAdmin, ActionDocumentationAdmin, WindowActionAdmin
-from .execution import ActionExecutionAdmin
-from .library_import import ActionLibraryImportAdmin
-from .robot_keywordcall import RobotKeywordCall
+from .action import ActionAdmin, ActionQuickAddAdmin, ActionQuickChangeAdmin
+from .action_step import ActionStepAdmin
+from .action_window_relation import ActionWindowRelationAdmin
+from .library_keyword_call_parameter import LibraryKeywordCallParameterAdmin

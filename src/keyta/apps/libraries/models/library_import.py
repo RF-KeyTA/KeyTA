@@ -1,14 +1,12 @@
 from typing import Optional
-from django.contrib.auth.models import User
+
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models import Q
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
-from apps.common.abc import AbstractBaseModel
-from apps.rf_export.settings import RFLibraryImport
-
-from .library import Library
-from .library_import_parameter import LibraryImportParameter
+from keyta.models.base_model import AbstractBaseModel
+from keyta.rf_export.settings import RFLibraryImport
 
 
 __all__ = ['LibraryImport', 'LibraryImportType']
@@ -37,23 +35,26 @@ class LibraryImport(AbstractBaseModel):
         related_name='library_imports'
     )
     library = models.ForeignKey(
-        Library,
-        on_delete=models.CASCADE,
+        'libraries.Library',
+        on_delete=models.PROTECT,
         verbose_name=_('Bibliothek')
     )
     type = models.CharField(max_length=255, choices=LibraryImportType.choices)
 
     def __str__(self):
-        return f'{self.execution or self.keyword} -> {self.library}'
+        if self.execution:
+            return _('Ausführung') + f' {self.execution} -> {self.library}'
 
-    def add_parameters(self, user: Optional[User]=None):
+        return f'{self.library}'
+
+    def add_parameters(self, user: Optional[AbstractUser]=None):
         for kwarg in self.library.kwargs.all():
-            LibraryImportParameter.objects.get_or_create(
+            self.kwargs.get_or_create(
                 library_import=self,
                 user=user,
                 library_parameter=kwarg,
                 defaults={
-                    'value': kwarg.default_value,
+                    'value': kwarg.value,
                 }
             )
 
@@ -74,35 +75,25 @@ class LibraryImport(AbstractBaseModel):
         else:
             super().save(force_insert, force_update, using, update_fields)
 
-    def to_robot(self, user: Optional[User]=None) -> RFLibraryImport:
+    def to_robot(self, user: Optional[AbstractUser]=None) -> RFLibraryImport:
         kwargs = self.kwargs.filter(user=user).all()
 
         return {
             'library': str(self.library),
-            'kwargs': {kwarg.name: kwarg.value for kwarg in kwargs}
+            'kwargs': {str(kwarg): kwarg.value for kwarg in kwargs}
         }
 
     class QuerySet(models.QuerySet):
         def library_ids(self):
-            return self.values_list('library', flat=True)
+            return self.values_list('library', flat=True).distinct()
 
     objects = QuerySet.as_manager()
 
     class Meta:
+        ordering = ['library__name']
         verbose_name = _('Bibliothek-Import')
         verbose_name_plural = _('Bibliothek-Imports')
         constraints = [
-            models.CheckConstraint(
-                name='library_import_sum_type',
-                check=
-                (Q(type=LibraryImportType.FROM_EXECUTION) &
-                 Q(execution__isnull=False) &
-                 Q(keyword__isnull=True))
-                |
-                (Q(type=LibraryImportType.FROM_ACTION) &
-                 Q(execution__isnull=True) &
-                 Q(keyword__isnull=False))
-            ),
             models.UniqueConstraint(
                 name='unique_execution_library_import',
                 condition=Q(execution__isnull=False),

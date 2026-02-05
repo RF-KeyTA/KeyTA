@@ -1,29 +1,36 @@
+from django.conf import settings
 from django.contrib import admin
-from django.http import HttpRequest
-from django.utils.translation import gettext as _
+from django.forms import ModelMultipleChoiceField
+from django.http import HttpResponseRedirect, HttpRequest
+from django.urls import reverse
+from django.utils.safestring import mark_safe
+from django.utils.translation import gettext_lazy as _
 
-from apps.common.admin import BaseAdmin, BaseAddAdmin, TabularInlineWithDelete
-from apps.common.forms.baseform import form_with_select
-from apps.executions.admin import KeywordExecutionInline
-from apps.keywords.admin import KeywordDocumentationAdmin
-from apps.libraries.models import Library
-from apps.windows.admin import (
-    WindowKeywordParameters,
+from model_clone import CloneModelAdminMixin
+
+from keyta.admin.base_admin import BaseQuickAddAdmin
+from keyta.apps.executions.admin import KeywordExecutionInline
+from keyta.apps.keywords.admin import (
+    ParametersInline,
+    ReturnValueInline,
     WindowKeywordAdmin,
-    WindowKeywordAdminMixin,
-    WindowKeywordReturnValues
+    WindowKeywordAdminMixin
 )
-from apps.windows.models import Window
+from keyta.apps.keywords.models import KeywordCallReturnValue
+from keyta.apps.libraries.models import Library, LibraryImport
+from keyta.apps.systems.models import System
+from keyta.forms import form_with_select
+from keyta.widgets import CheckboxSelectMultipleSystems, url_query_parameters
 
+from ..forms import ActionForm, QuickAddActionForm
 from ..models import (
     Action,
-    ActionDocumentation,
-    ActionExecution,
-    ActionLibraryImport,
-    ActionWindow,
-    WindowAction
+    ActionQuickAdd,
+    ActionQuickChange
 )
+from .libraries_inline import Libraries
 from .steps_inline import ActionSteps
+from .windows_inline import Windows
 
 
 class ActionAdminMixin(WindowKeywordAdminMixin):
@@ -34,138 +41,163 @@ class ActionAdminMixin(WindowKeywordAdminMixin):
             form.save_m2m()
 
             action: Action = obj
-            library_ids = set(action.systems.values_list('library', flat=True))
-            for library_id in library_ids:
-                ActionLibraryImport.objects.create(
+            library_ids = action.systems.values_list('library', flat=True).distinct()
+            
+            for library in Library.objects.filter(id__in=library_ids):
+                LibraryImport.objects.create(
                     keyword=action,
-                    library=Library.objects.get(id=library_id),
+                    library=library,
                 )
 
 
-class Execution(KeywordExecutionInline):
-    model = ActionExecution
-
-
-class Windows(TabularInlineWithDelete):
-    model = ActionWindow
-    fields = ['window']
-    extra = 0
-    tab_name = _('Masken').lower()
-    verbose_name = _('Maske')
-    verbose_name_plural = _('Masken')
-
-    form = form_with_select(
-        ActionWindow,
-        'window',
-        _('Maske auswählen'),
-        labels={
-            'window': _('Maske')
-        }
-    )
-
-    def get_formset(self, request, obj=None, **kwargs):
-        formset = super().get_formset(request, obj, **kwargs)
-        action: Action = obj
-        action_systems = action.systems.all()
-        windows = Window.objects.filter(systems__in=action_systems).distinct()
-        formset.form.base_fields['window'].label = 'Maske'
-        formset.form.base_fields['window'].queryset = windows
-        return formset
-
-    def has_change_permission(self, request: HttpRequest, obj) -> bool:
-        return False
-
-
-class Libraries(TabularInlineWithDelete):
-    fk_name = 'keyword'
-    model = ActionLibraryImport
-    fields = ['library']
-    extra = 0
-    form = form_with_select(
-        ActionLibraryImport,
-        'library',
-        _('Bibliothek auswählen')
-    )
-    tab_name = _('Bibliotheken').lower()
-    verbose_name = _('Bibliothek')
-    verbose_name_plural = _('Bibliotheken')
-
-    def get_max_num(self, request, obj=None, **kwargs):
-        return Library.objects.count()
-
-    def get_field_queryset(self, db, db_field, request: HttpRequest):
-        action_id = request.resolver_match.kwargs['object_id']
-        field_queryset = super().get_field_queryset(db, db_field, request)
-        imported_libraries = (
-            self.get_queryset(request)
-            .filter(keyword_id__in=[action_id])
-            .values_list('library_id', flat=True)
-        )
-
-        return field_queryset.exclude(id__in=imported_libraries)
-
-    def has_change_permission(self, request: HttpRequest, obj) -> bool:
-        return False
-
-
 @admin.register(Action)
-class ActionAdmin(ActionAdminMixin, WindowKeywordAdmin):
+class ActionAdmin(ActionAdminMixin, CloneModelAdminMixin, WindowKeywordAdmin):
+    def get_list_filter(self, request):
+        return super().get_list_filter(request) + ['setup_teardown']
+
+    def get_list_display(self, request):
+        return ['empty'] + super().get_list_display(request)
+
+    @admin.display(description='')
+    def empty(self, obj):
+        return mark_safe('&nbsp;')
+
     form = form_with_select(
         Action,
         'systems',
         _('System auswählen'),
+        form_class=ActionForm,
         select_many=True
     )
     inlines = [
         Libraries,
-        WindowKeywordParameters,
+        ParametersInline,
         ActionSteps
     ]
 
+    def autocomplete_name_queryset(self, name: str, request: HttpRequest):
+        return super().autocomplete_name_queryset(name, request).filter(windows__isnull=True)
+
+    def change_view(self, request, object_id, form_url="", extra_context=None):
+        steps_tab = '#%s-tab' % _('Schritte').lower()
+
+        if 'steps_tab' in request.GET:
+            return HttpResponseRedirect(request.path_info + steps_tab)
+
+        if '_popup' in request.GET:
+            action = ActionQuickChange.objects.get(pk=object_id)
+            return HttpResponseRedirect(action.get_admin_url() + '?' + url_query_parameters(request.GET) + steps_tab)
+
+        current_app, model, *route = request.resolver_match.route.split('/')
+        app = settings.MODEL_TO_APP.get(model)
+
+        if app and app != current_app:
+            return HttpResponseRedirect(reverse('admin:%s_%s_change' % (app, model), args=(object_id,)))
+
+        return super().change_view(request, object_id, form_url=form_url, extra_context=extra_context)
+
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        field = super().formfield_for_dbfield(db_field, request, **kwargs)
+
+        if db_field.name == 'systems':
+            field = ModelMultipleChoiceField(
+                widget=CheckboxSelectMultipleSystems,
+                queryset=field.queryset
+            )
+            if System.objects.count() == 1:
+                field.initial = [System.objects.first()]
+
+            field.label = _('Systeme')
+
+            if action_id := request.resolver_match.kwargs.get('object_id'):
+                action = Action.objects.get(id=action_id)
+                attach_to_systems = System.objects.filter(attach_to_system=action).values_list('pk', flat=True)
+
+                if attach_to_systems.exists():
+                    field.widget.in_use = set(attach_to_systems)
+
+        return field
+
     def get_fields(self, request, obj=None):
         action: Action = obj
-
-        fields =  super().get_fields(request, obj)
+        fields =  super().get_fields(request, action)
 
         return ['setup_teardown', 'systems'] + fields
 
     def get_inlines(self, request, obj):
         action: Action = obj
+        inlines = [*self.inlines]
 
         if not action:
-            return [WindowKeywordParameters]
+            return [ParametersInline]
 
-        inlines = [Windows] + self.inlines
+        if not action.setup_teardown:
+            inlines = [Windows] + inlines + [ReturnValueInline]
 
         if not action.has_empty_sequence:
-            return inlines + [WindowKeywordReturnValues, Execution]
+            return inlines + [KeywordExecutionInline]
 
         return inlines
 
-    def get_readonly_fields(self, request: HttpRequest, obj=None):
+    def get_protected_objects(self, obj):
         action: Action = obj
 
-        if not action:
-            return []
+        return action.uses.exclude(execution=action.execution)
 
-        readonly_fields = []
+    def has_add_permission(self, request):
+        return self.can_add(request.user, 'action')
 
-        if request.user.is_superuser:
-            return readonly_fields
-        else:
-            return readonly_fields + super().get_readonly_fields(request, obj)
+    def has_change_permission(self, request, obj=None):
+        action: Action = obj
+
+        if action and action.setup_teardown:
+            return request.user.is_superuser
+
+        return self.can_change(request.user, 'action')
+
+    def has_delete_permission(self, request, obj=None):
+        action: Action = obj
+
+        if action and action.setup_teardown:
+            return request.user.is_superuser
+
+        return self.can_delete(request.user, 'action')
 
 
-@admin.register(ActionDocumentation)
-class ActionDocumentationAdmin(KeywordDocumentationAdmin):
-    pass
+@admin.register(ActionQuickAdd)
+class ActionQuickAddAdmin(ActionAdminMixin, BaseQuickAddAdmin):
+    form = QuickAddActionForm
+
+    def autocomplete_name_queryset(self, name: str, request: HttpRequest):
+        queryset = super().autocomplete_name_queryset(name, request)
+
+        if 'windows' in request.GET:
+            queryset = queryset.filter(windows__in=[request.GET['windows']])
+
+        return queryset
 
 
-@admin.register(ActionWindow)
-class ActionWindowAdmin(BaseAdmin):
-    pass
+@admin.register(ActionQuickChange)
+class ActionQuickChangeAdmin(WindowKeywordAdmin):
+    fields = []
+    readonly_fields = ['documentation']
+    inlines = [ParametersInline, ActionSteps]
 
+    def change_view(self, request, object_id, form_url="", extra_context=None):
+        return super().change_view(request, object_id, form_url, extra_context or {'title_icon': settings.FA_ICONS.action})
 
-@admin.register(WindowAction)
-class WindowActionAdmin(ActionAdminMixin, BaseAddAdmin):
-    pass
+    def get_inlines(self, request, obj):
+        action: Action = obj
+        inlines = [*self.inlines]
+
+        kw_call_pks = action.calls.values_list('pk')
+        if KeywordCallReturnValue.objects.filter(keyword_call__in=kw_call_pks).exists():
+            inlines += [ReturnValueInline]
+
+        return inlines
+
+    def has_change_permission(self, request, obj=None):
+        return self.can_change(request.user, 'action')
+
+    def has_delete_permission(self, request, obj=None):
+        return False

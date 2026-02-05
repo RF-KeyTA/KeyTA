@@ -3,6 +3,8 @@
 from django.db import migrations, models
 import django.db.models.deletion
 
+import model_clone.mixin
+
 
 class Migration(migrations.Migration):
 
@@ -56,7 +58,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(blank=True, default=None, max_length=255, null=True)),
                 ('keyword_call', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='return_value', to='keywords.keywordcall')),
-                ('return_value', models.ForeignKey(blank=True, default=None, null=True, on_delete=django.db.models.deletion.CASCADE, to='keywords.keywordcallreturnvalue')),
+                ('kw_call_return_value', models.ForeignKey(blank=True, default=None, null=True, on_delete=django.db.models.deletion.CASCADE, to='keywords.keywordcallreturnvalue')),
             ],
             options={
                 'verbose_name': 'Rückgabewert',
@@ -103,5 +105,42 @@ class Migration(migrations.Migration):
                 'verbose_name': 'Parameter-Referenz',
                 'verbose_name_plural': 'Parameter-Referenzen',
             },
+        ),
+        migrations.CreateModel(
+            name='WindowKeyword',
+            fields=[
+            ],
+            options={
+                'proxy': True,
+                'indexes': [],
+                'constraints': [],
+            },
+            bases=(model_clone.mixin.CloneMixin, 'keywords.keyword'),
+        ),
+        migrations.CreateModel(
+            name='WindowKeywordParameter',
+            fields=[
+            ],
+            options={
+                'verbose_name': 'Parameter',
+                'verbose_name_plural': 'Parameters',
+                'proxy': True,
+                'indexes': [],
+                'constraints': [],
+            },
+            bases=('keywords.keywordparameter',),
+        ),
+        migrations.CreateModel(
+            name='WindowKeywordReturnValue',
+            fields=[
+            ],
+            options={
+                'verbose_name': 'Return Value',
+                'verbose_name_plural': 'Return Value',
+                'proxy': True,
+                'indexes': [],
+                'constraints': [],
+            },
+            bases=('keywords.keywordreturnvalue',),
         ),
     ]

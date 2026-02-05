@@ -1,0 +1,33 @@
+*** Test Cases ***
+{%- for testcase in testcases %}
+{{ testcase.name }}
+    {%- if testcase.doc %}
+    [Documentation]    {%- for line in testcase.doc|splitlines %}
+    ...  {{ line }}
+    {%- endfor %}
+    {%- endif %}
+    {%- if testcase.tags %}
+    [Tags]    {{ rf_join(testcase.tags) }}
+    {%- endif %}
+    {%- if testcase.setup %}
+    [Setup]    {{ call_keyword(testcase.setup) }}
+    {%- endif %}
+
+    {%- for name, values in testcase.variables %}
+    VAR    {{ name }}    {{ rf_join(values) }}
+    {%- endfor %}
+
+    {%- for step in testcase.steps %}
+    {%- if step.table_var %}
+    FOR   {{ rf_join(step.table_columns) }}   IN   {{ step.table_var }}
+        {{ call_keyword(step) }}
+    END
+    {%- else %}
+    {% if step.return_values %}{{ rf_join(step.return_values) }}    {% endif %}{{ call_keyword(step) }}
+    {%- endif %}
+    {%- endfor %}
+
+    {%- if testcase.teardown %}
+    [Teardown]    {{ call_keyword(testcase.teardown) }}
+    {%- endif %}
+{% endfor %}

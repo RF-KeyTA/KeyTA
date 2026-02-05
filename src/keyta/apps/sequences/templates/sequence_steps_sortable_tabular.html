@@ -1,0 +1,8 @@
+{% extends "sortable_tabular.html" %}
+{% load static %}
+
+{% block table_header %}
+<th class="column-{{ field.name }}{% if field.required %} required{% endif %}" {% if field.name == 'exec_state' %}style="width: 69px"{% endif %}>{{ field.label|capfirst }}
+    {% if field.help_text %}<img src="{% static "admin/img/icon-unknown.svg" %}" class="help help-tooltip" width="10" height="10" alt="({{ field.help_text|striptags }})" title="{{ field.help_text|striptags }}">{% endif %}
+</th>
+{% endblock %}

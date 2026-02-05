@@ -1,14 +1,6 @@
 {% extends "admin/base_orig.html" %}
 {% load i18n static jazzmin admin_urls %}
 
-{% block extrastyle %}
-    <link rel="stylesheet" type="text/css" href="/static/css/admin_base.css">
-    <link rel="stylesheet" type="text/css" href="/static/css/admin_submit_line.css">
-{% endblock %}
-
-{% block extrahead %}
-{% endblock %}
-
 {% block navbar %}
     <nav class="main-header navbar navbar-expand {{ jazzmin_ui.navbar_classes }}" id="jazzy-navbar">
         <ul class="navbar-nav ml-auto">
@@ -24,7 +16,7 @@
                 </li>
             {% endif %}
         </ul>
-        <div class="col-12 col-md-auto d-flex flex-grow-1 align-items-center">
+        <div class="col-8 col-md-auto d-flex flex-grow-1 align-items-center">
             <h1 class="h4 m-0 pb-1 pr-3 mr-0 border-right">{% block content_title %}{% endblock %}</h1>
             {% block breadcrumbs %}{% endblock %}
         </div>
@@ -35,18 +27,18 @@
 {% block sidebar %}
     {% if jazzmin_settings.show_sidebar %}
         {% get_side_menu as side_menu_list %}
-        <aside class="main-sidebar elevation-4 {{ jazzmin_ui.sidebar_classes }}" id="jazzy-sidebar">
-            <div class="sidebar">
-                <a href="{% url 'admin:index' %}">
-                    <div class="user-panel mt-3 pb-2 mb-2 d-flex border-bottom-0">
-                        <div class="image">
-                            <img src="{% static jazzmin_settings.site_logo %}" alt="{{ jazzmin_settings.site_header }} Logo" class="{{ jazzmin_settings.site_logo_classes }}">
-                        </div>
-                        <div class="info">
-                            <p class="font-weight-light brand-text">{{ jazzmin_settings.site_brand }}</p>
-                        </div>
+        <aside class="main-sidebar elevation-4 {{ jazzmin_ui.sidebar_classes }}">
+            <a href="{% url 'admin:index' %}">
+                <div class="user-panel ml-2 mt-3 d-flex border-bottom-0">
+                    <div class="image">
+                        <img src="{% static jazzmin_settings.site_logo %}" alt="{{ jazzmin_settings.site_header }} Logo" class="{{ jazzmin_settings.site_logo_classes }}">
                     </div>
-                </a>
+                    <div class="info">
+                        <p class="font-weight-light brand-text">{{ jazzmin_settings.site_brand }}</p>
+                    </div>
+                </div>
+            </a>
+            <div class="sidebar">
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar {{ jazzmin_ui.sidebar_list_classes }}" data-widget="treeview" role="menu" data-collapsible="false">
 

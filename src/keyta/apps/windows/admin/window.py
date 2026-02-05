@@ -1,198 +1,78 @@
-import json
-import logging
-
 from django import forms
+from django.conf import settings
 from django.contrib import admin
-from django.db.models import QuerySet
+from django.forms import ModelMultipleChoiceField
 from django.http import HttpRequest, HttpResponseRedirect
-from django.utils.translation import gettext as _
+from django.urls import reverse
+from django.utils.safestring import mark_safe
+from django.utils.translation import gettext_lazy as _
 
-from tinymce.widgets import AdminTinyMCE
-
-from apps.actions.models import Action, WindowAction
-from apps.common.admin.base_admin import (
+from keyta.admin.base_admin import (
     BaseAdmin,
     BaseDocumentationAdmin,
-    BaseAdminWithDoc
+    BaseQuickAddAdmin
 )
-from apps.common.admin.base_inline import AddInline
-from apps.common.forms.baseform import form_with_select
-from apps.common.widgets import ModelSelect2MultipleAdminWidget
-from apps.keywords.models import KeywordType
-from apps.sequences.models import Sequence, WindowSequence
-from apps.variables.models import Variable, WindowVariable
+from keyta.admin.field_documentation import DocumentationField
+from keyta.admin.list_filters import SystemListFilter
+from keyta.apps.resources.models import Resource
+from keyta.apps.systems.models import System
+from keyta.forms.baseform import form_with_select
+from keyta.widgets import (
+    CheckboxSelectMultipleSystems,
+    Icon,
+    open_link_in_modal,
+    url_query_parameters
+)
 
-from ..models import Window, WindowDocumentation, SystemWindow
-
-logger = logging.getLogger('django')
-
-
-class Actions(AddInline):
-    model = Action.windows.through
-    extra = 0
-    verbose_name = _('Aktion')
-    verbose_name_plural = _('Aktionen')
-
-    form = forms.modelform_factory(
-        Action.windows.through,
-        forms.ModelForm,
-        ['keyword'],
-        labels={
-            'keyword': _('Aktion')
-        }
-    )
-
-    related_field_name = 'keyword'
-    related_field_model = WindowAction
-
-    def get_queryset(self, request):
-        queryset: QuerySet = super().get_queryset(request)
-        return (
-            queryset
-            .prefetch_related('keyword')
-            .filter(keyword__type=KeywordType.ACTION)
-            .order_by('keyword__name')
-        )
-
-    def related_field_widget_url_params(self, request):
-        window_id = request.resolver_match.kwargs['object_id']
-        window = Window.objects.get(pk=window_id)
-        system_id = window.systems.first().pk
-
-        return {
-            'windows': window_id,
-            'systems': system_id 
-        }
-
-    def get_readonly_fields(self, request, obj=None):
-        readonly_fields = super().get_readonly_fields(request, obj)
-        return readonly_fields + ('system',)
-
-    @admin.display(description=_('System'))
-    def system(self, obj):
-        return ', '.join(obj.keyword.systems.values_list('name', flat=True))
-
-    def has_change_permission(self, request, obj=None) -> bool:
-        return False
-
-
-class Sequences(AddInline):
-    model = Sequence.windows.through
-    extra = 0
-    verbose_name = _('Sequenz')
-    verbose_name_plural = _('Sequenzen')
-
-    form = forms.modelform_factory(
-        Sequence.windows.through,
-        forms.ModelForm,
-        ['keyword'],
-        labels={
-            'keyword': _('Sequenz')
-        }
-    )
-
-    related_field_name = 'keyword'
-    related_field_model = WindowSequence
-
-    def get_queryset(self, request):
-        queryset: QuerySet = super().get_queryset(request)
-        return (
-            queryset
-            .prefetch_related('keyword')
-            .filter(keyword__type=KeywordType.SEQUENCE)
-            .order_by('keyword__name')
-        )
-
-    def related_field_widget_url_params(self, request):
-        window_id = request.resolver_match.kwargs['object_id']
-        window = Window.objects.get(pk=window_id)
-        system_id = window.systems.first().pk
-
-        return {
-            'windows': window_id,
-            'systems': system_id 
-        }
-
-    def get_readonly_fields(self, request, obj=None):
-        readonly_fields = super().get_readonly_fields(request, obj)
-        return readonly_fields + ('system',)
-
-    @admin.display(description=_('System'))
-    def system(self, obj):
-        return ', '.join(obj.keyword.systems.values_list('name', flat=True))
-
-    def has_change_permission(self, request: HttpRequest, obj=None) -> bool:
-        return False
-
-
-class Variables(AddInline):
-    model = Variable.windows.through
-    extra = 0
-    verbose_name = _('Referenzwert')
-    verbose_name_plural = _('Referenzwerte')
-
-    form = forms.modelform_factory(
-        Variable.windows.through,
-        forms.ModelForm,
-        ['variable'],
-        labels={
-            'variable': _('Referenzwert')
-        }
-    )
-
-    related_field_name = 'variable'
-    related_field_model = WindowVariable
-
-    def get_queryset(self, request):
-        queryset: QuerySet = super().get_queryset(request)
-        return (
-            queryset
-            .order_by('variable__name')
-        )
-
-    def has_change_permission(self, request: HttpRequest, obj=None) -> bool:
-        return False
-    
-    @admin.display(description=_('System'))
-    def system(self, obj):
-        return ', '.join(obj.variable.systems.values_list('name', flat=True))
-
-    def related_field_widget_url_params(self, request):
-        window_id = request.resolver_match.kwargs['object_id']
-        window = Window.objects.get(pk=window_id)
-        system_id = window.systems.first().pk
-
-        return {
-            'windows': window_id,
-            'systems': system_id 
-        }
-
-    def get_readonly_fields(self, request, obj=None):
-        readonly_fields = super().get_readonly_fields(request, obj)
-        return readonly_fields + ('system',)
-
-    def has_change_permission(self, request: HttpRequest, obj=None) -> bool:
-        return False
+from ..forms import WindowForm
+from ..models import (
+    Window,
+    WindowDocumentation,
+    WindowQuickAdd,
+    WindowQuickChange
+)
+from .actions_inline import Actions
+from .resources_inline import Resources
+from .sequences_inline import Sequences
+from .variables_inline import Variables
 
 
 @admin.register(Window)
-class WindowAdmin(BaseAdminWithDoc):
-    list_display = ['system_list', 'name', 'description']
+class WindowAdmin(DocumentationField, BaseAdmin):
+    list_display = ['preview', 'name', 'system_list']
     list_display_links = ['name']
-    list_filter = ['systems']
-    ordering = ['name']
+    list_filter = [
+        ('systems', SystemListFilter),
+    ]
+    list_per_page = 10
     search_fields = ['name']
     search_help_text = _('Name')
 
+    preview_icon = Icon(
+        settings.FA_ICONS.preview_field,
+        styles={'font-size': '18px'},
+        title=_('Vorschau')
+    )
+
+    @admin.display(description=mark_safe(str(preview_icon)))
+    def preview(self, window: Window):
+        return open_link_in_modal(
+            WindowDocumentation.objects.get(id=window.pk).get_admin_url(),
+            str(Icon(settings.FA_ICONS.preview, {'font-size': '18px'}))
+        )
+
     @admin.display(description=_('Systeme'))
-    def system_list(self, obj: Window):
-        return list(obj.systems.values_list('name', flat=True))
+    def system_list(self, window: Window):
+        return ', '.join(
+            window.systems.values_list('name', flat=True)
+        )
 
     fields = ['systems', 'name', 'description']
     form = form_with_select(
         Window,
         'systems',
         _('System hinzufügen'),
+        form_class=WindowForm,
         select_many=True
     )
     inlines = [
@@ -201,61 +81,98 @@ class WindowAdmin(BaseAdminWithDoc):
         Variables
     ]
 
-    def autocomplete_name(self, name: str):
-        return json.dumps([
-            '%s (%s)' % (name, systems)
-            for name, systems in
-            self.model.objects.values_list('name', 'systems__name')
-            .filter(name__icontains=name)
-        ])
+    def change_view(self, request: HttpRequest, object_id, form_url="", extra_context=None):
+        if '_popup' in request.GET:
+            window = WindowQuickChange.objects.get(pk=object_id)
+            return HttpResponseRedirect(window.get_admin_url() + '?_popup=1')
 
-    def change_view(self, request: HttpRequest, object_id, form_url="",
-                    extra_context=None):
-        if '_to_field' in request.GET:
-            window = Window.objects.get(id=object_id)
-            return HttpResponseRedirect(window.get_docadmin_url())
+        current_app, model, *route = request.resolver_match.route.split('/')
+        app = settings.MODEL_TO_APP.get(model)
+
+        if app and app != current_app:
+            return HttpResponseRedirect(reverse('admin:%s_%s_change' % (app, model), args=(object_id,)))
 
         return super().change_view(request, object_id, form_url, extra_context)
 
-    def get_fields(self, request, obj=None):
-        if request.user.is_superuser:
-            return self.fields + ['documentation']
-        else:
-            return self.fields + ['read_documentation']
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        field = super().formfield_for_dbfield(db_field, request, **kwargs)
+
+        if db_field.name == 'systems':
+            field = ModelMultipleChoiceField(
+                widget=CheckboxSelectMultipleSystems,
+                queryset=field.queryset
+            )
+            if System.objects.count() == 1:
+                field.initial = [System.objects.first()]
+            field.label = _('Systeme')
+
+            if window_id := request.resolver_match.kwargs.get('object_id'):
+                window = Window.objects.get(id=window_id)
+                field.widget.in_use = set(window.keywords.values_list('systems', flat=True))
+
+        return field
 
     def get_inlines(self, request, obj):
         if not obj:
             return []
 
+        if Resource.objects.count():
+            return [Resources] + self.inlines
+
         return self.inlines
 
-    def get_readonly_fields(self, request: HttpRequest, obj=None):
-        if request.user.is_superuser:
-            return []
-        else:
-            return self.fields + ['read_documentation']
+    def get_protected_objects(self, obj):
+        window: Window = obj
+        return list(window.actions.all()) + list(window.sequences.all()) + list(window.variables.all())
+
+    def has_add_permission(self, request):
+        return self.can_add(request.user, 'window')
+
+    def has_change_permission(self, request, obj=None):
+        return self.can_change(request.user, 'window')
+
+    def has_delete_permission(self, request, obj=None):
+        return self.can_delete(request.user, 'window')
 
 
 @admin.register(WindowDocumentation)
 class WindowDocumentationAdmin(BaseDocumentationAdmin):
-    pass
+    fields = []
 
 
-@admin.register(SystemWindow)
-class SystemWindowAdmin(BaseAdmin):
-        def get_form(self, request, obj=None, change=False, **kwargs):
-            return forms.modelform_factory(
-                self.model,
-                forms.ModelForm,
-                ['systems', 'name', 'documentation'],
-                widgets={
-                    'systems': ModelSelect2MultipleAdminWidget(
-                        model=self.model.systems.through,
-                        search_fields=['name__icontains'],
-                        attrs={
-                            'data-placeholder': _('System hinzufügen'),
-                        }
-                    ),
-                    'documentation': AdminTinyMCE
-                }
-            )
+@admin.register(WindowQuickAdd)
+class WindowQuickAddAdmin(BaseQuickAddAdmin):
+    fields = ['systems', 'name']
+    form = WindowForm
+
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        field = super().formfield_for_dbfield(db_field, request, **kwargs)
+
+        if db_field.name == 'systems':
+            field.widget = forms.MultipleHiddenInput()
+
+        return field
+
+
+@admin.register(WindowQuickChange)
+class WindowQuickChangeAdmin(WindowAdmin):
+    fields = []
+    readonly_fields = ['documentation']
+
+    def change_view(self, request, object_id, form_url="", extra_context=None):
+        current_app, model, *route = request.resolver_match.route.split('/')
+        app = settings.MODEL_TO_APP.get(model)
+
+        if app and app != current_app:
+            return HttpResponseRedirect(reverse('admin:%s_%s_change' % (app, model), args=(object_id,)) + '?' + url_query_parameters(request.GET))
+
+        return self.changeform_view(request, object_id, form_url, extra_context or {'title_icon': settings.FA_ICONS.window})
+
+    def get_inlines(self, request, obj):
+        if Resource.objects.count():
+            return [Resources]
+
+        return []
+
+    def has_delete_permission(self, request, obj=None):
+        return False

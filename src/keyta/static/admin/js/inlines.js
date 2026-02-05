@@ -50,11 +50,11 @@
                     // If forms are laid out as table rows, insert the
                     // "add" button in a new table row:
                     const numCols = $this.eq(-1).children().length;
-                    $parent.append('<tr class="' + options.addCssClass + '"><td colspan="' + numCols + '"><a href="#">' + options.addText + "</a></tr>");
+                    $parent.append('<tr class="' + options.addCssClass + '"><td colspan="' + numCols + '"><a role="button" class="addlink" href="#">' + options.addText + "</a></tr>");
                     addButton = $parent.find("tr:last a");
                 } else {
                     // Otherwise, insert it immediately after the last form:
-                    $this.filter(":last").after('<div class="' + options.addCssClass + '"><a href="#">' + options.addText + "</a></div>");
+                    $this.filter(":last").after('<div class="' + options.addCssClass + '"><a role="button" class="addlink" href="#">' + options.addText + "</a></div>");
                     addButton = $this.filter(":last").next().find("a");
                 }
             }
@@ -68,6 +68,7 @@
             row.removeClass(options.emptyCssClass)
                 .addClass(options.formCssClass)
                 .attr("id", options.prefix + "-" + nextIndex);
+            addInlineSaveButton(row);
             addInlineDeleteButton(row);
             row.find("*").each(function() {
                 updateElementIndex(this, options.prefix, totalForms.val());
@@ -104,19 +105,53 @@
             if (row.is("tr")) {
                 // If the forms are laid out in table rows, insert
                 // the remove button into the last table cell:
-                row.children(".delete").append('<p class="mt-2"><a class="' + options.deleteCssClass + '" href="#">' + options.deleteText + "</a></p>");
+                row.children(":last").append('<div><a role="button" class="' + options.deleteCssClass + '" href="#">' + options.deleteText + "</a></div>");
             } else if (row.is("ul") || row.is("ol")) {
                 // If they're laid out as an ordered/unordered list,
                 // insert an <li> after the last list item:
-                row.append('<li><a class="' + options.deleteCssClass + '" href="#">' + options.deleteText + "</a></li>");
+                row.append('<li><a role="button" class="' + options.deleteCssClass + '" href="#">' + options.deleteText + "</a></li>");
             } else {
                 // Otherwise, just insert the remove button as the
                 // last child element of the form's container:
-                row.children(":first").append('<span><a class="' + options.deleteCssClass + '" href="#">' + options.deleteText + "</a></span>");
+                row.children(":first").append('<span><a role="button" class="' + options.deleteCssClass + '" href="#">' + options.deleteText + "</a></span>");
             }
             // Add delete handler for each row.
             row.find("a." + options.deleteCssClass).on('click', inlineDeleteHandler.bind(this));
+            row.find("a." + options.deleteCssClass).addClass('btn')
+            row.find("a." + options.deleteCssClass).width('80px');
+            row.find("a." + options.deleteCssClass).css('margin', '3px');
         };
+
+        const addInlineSaveButton = function(row) {
+            if (row.is("tr")) {
+                // If the forms are laid out in table rows, insert
+                // the remove button into the last table cell:
+                row.children(":last").append('<div><a role="button" class="' + options.saveCssClass + '" href="#">' + options.saveText + "</a></div>");
+            } else if (row.is("ul") || row.is("ol")) {
+                // If they're laid out as an ordered/unordered list,
+                // insert an <li> after the last list item:
+                row.append('<li><a role="button" class="' + options.saveCssClass + '" href="#">' + options.saveText + "</a></li>");
+            } else {
+                // Otherwise, just insert the remove button as the
+                // last child element of the form's container:
+                row.children(":first").append('<span><a role="button" class="' + options.saveCssClass + '" href="#">' + options.saveText + "</a></span>");
+            }
+            // Add delete handler for each row.
+            row.find("a." + options.saveCssClass).on('click', inlineSaveHandler.bind(this));
+            row.find("a." + options.saveCssClass).addClass('btn btn-primary')
+            row.find("a." + options.saveCssClass).width('80px');
+            row.find("a." + options.saveCssClass).css('margin', '3px');
+        };
+
+        const inlineSaveHandler = function(e1) {
+            e1.preventDefault();
+
+            window.onbeforeunload = function(e) {
+                localStorage.setItem('scrollpos', window.scrollY);
+            };
+
+            $('.button-save').click();
+        }
 
         const inlineDeleteHandler = function(e1) {
             e1.preventDefault();
@@ -175,6 +210,7 @@
 
         // Create the delete buttons for all unsaved inlines:
         $this.filter('.' + options.formCssClass + ':not(.has_original):not(.' + options.emptyCssClass + ')').each(function() {
+            addInlineSaveButton($(this));
             addInlineDeleteButton($(this));
         });
         toggleDeleteButtonVisibility($this);
@@ -196,14 +232,16 @@
     };
 
     /* Setup plugin defaults */
-    $.fn.formset.defaults = {
+    $.fn.formset. defaults = {
         prefix: "form", // The form prefix for your django formset
         addText: "add another", // Text for the add link
         deleteText: "remove", // Text for the delete link
+        saveText: "save",
         addCssClass: "add-row", // CSS class applied to the add link
         deleteCssClass: "delete-row", // CSS class applied to the delete link
         emptyCssClass: "empty-row", // CSS class applied to the empty row
         formCssClass: "dynamic-form", // CSS class applied to each form in a formset
+        saveCssClass: "save-row",
         added: null, // Function called each time a new form is added
         removed: null, // Function called each time a form is deleted
         addButton: null // Existing add button to use
@@ -256,6 +294,8 @@
             formCssClass: "dynamic-" + options.prefix,
             deleteCssClass: "inline-deletelink",
             deleteText: options.deleteText,
+            saveCssClass: options.saveCssClass,
+            saveText: options.saveText,
             emptyCssClass: "empty-form",
             added: function(row) {
                 initPrepopulatedFields(row);
@@ -325,6 +365,8 @@
             formCssClass: "dynamic-" + options.prefix,
             deleteCssClass: "inline-deletelink",
             deleteText: options.deleteText,
+            saveCssClass: options.saveCssClass,
+            saveText: options.saveText,
             emptyCssClass: "empty-form",
             removed: updateInlineLabel,
             added: function(row) {

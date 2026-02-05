@@ -11,22 +11,33 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 import os
+import sys
 from pathlib import Path
+
 from django.contrib import admin
 
+from keyta.project.icons import Icons
 
-LOCALAPPDATA = Path(str(os.getenv('LOCALAPPDATA')))
-KEYTA_DIR = LOCALAPPDATA / 'KeyTA'
+
+def get_home_dir():
+    if sys.platform.startswith('win'):
+        return Path(str(os.getenv('LOCALAPPDATA')))
+    else:
+        return Path(str(os.getenv('HOME')))
+
+
+KEYTA_DIR = get_home_dir() / 'KeyTA'
 KEYTA_DIR.mkdir(exist_ok=True)
+RF_SERVER = f'http://localhost:1471'
 
 
-admin.AdminSite.index_title = 'KeyTA'
+admin.AdminSite.index_title = 'Dashboard'
 
 def has_permission(self, request):
     from django.contrib.auth.models import User
     user = User.objects.first()
     if not user:
-        user = User.objects.create_superuser('keyta', '', 'keyta')
+        user = User.objects.create_superuser('keyta', password='keyta')
 
     return setattr(request, 'user', user) or True
 
@@ -35,7 +46,7 @@ admin.AdminSite.has_permission = has_permission # type: ignore
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-BASE_URL = 'http://localhost:8000/'
+BASE_URL = 'http://localhost:8000'
 
 DEBUG = True
 
@@ -54,6 +65,7 @@ ADMIN_APP = [
 ]
 
 DEFAULT_APPS = [
+    'model_clone',  # model_clone must be placed before django.contrib.admin
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -67,23 +79,29 @@ DEFAULT_APPS = [
 THIRD_PARTY_APPS = [
     'adminsortable2',
     'django_select2',
+    'taggit',
+    'taggit_selectize',
     'tinymce'
 ]
 
 KEYTA_APPS = [
-    'apps.actions',
-    'apps.executions',
-    'apps.keywords',
-    'apps.libraries',
-    'apps.resources',
-    'apps.sequences',
-    'apps.systems',
-    'apps.testcases',
-    'apps.variables',
-    'apps.windows'
+    'keyta.apps.actions',
+    'keyta.apps.executions',
+    'keyta.apps.keywords',
+    'keyta.apps.libraries',
+    'keyta.apps.resources',
+    'keyta.apps.sequences',
+    'keyta.apps.systems',
+    'keyta.apps.testcases',
+    'keyta.apps.variables',
+    'keyta.apps.windows'
 ]
 
-INSTALLED_APPS = ADMIN_APP + DEFAULT_APPS + THIRD_PARTY_APPS + KEYTA_APPS
+INSTALLED_APPS = ADMIN_APP + DEFAULT_APPS + THIRD_PARTY_APPS + KEYTA_APPS + ['media']
+
+# Used by BaseAdmin.can_change
+MODEL_TO_APP = {}
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -111,6 +129,10 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages'
             ],
+            'libraries': {
+                'filters': 'project.filters',
+                'tags': 'project.tags',
+            }
         },
     },
 ]
@@ -127,7 +149,12 @@ SQLITE_DB = KEYTA_DIR / 'db.sqlite3'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': SQLITE_DB
+        'NAME': SQLITE_DB,
+        'OPTIONS': {
+            # Solution for the Database locked error
+            # https://blog.pecar.me/django-sqlite-dblock
+            'transaction_mode': 'IMMEDIATE'
+        }
     }
 }
 
@@ -149,6 +176,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_USER_MODEL = "auth.User"
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
@@ -162,7 +190,8 @@ USE_I18N = True
 USE_TZ = True
 
 LOCALE_PATHS = [
-    BASE_DIR / "locale"
+    BASE_DIR / "locale",
+    BASE_DIR / "model_clone_locale"
 ]
 
 # Static files (CSS, JavaScript, Images)
@@ -177,79 +206,71 @@ STATICFILES_DIRS = [STATIC_DIR]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+FA_ICONS = Icons()
 
 # Jazzmin: Use modals instead of popups
 X_FRAME_OPTIONS = 'SAMEORIGIN'
 JAZZMIN_SETTINGS = {
     "changeform_format_overrides": {
-        'actions.actionexecution': 'single',
-        'actions.librarykeywordcall': 'single',
         'executions.keywordexecution': 'single',
-        'executions.keywordexecutioncall': 'single',
-        'executions.keywordexecutionsetup': 'single',
-        'executions.executionlibraryimport': 'single',
-        'executions.setupteardown': 'single',
-        'sequences.actioncall': 'single',
-        'sequences.sequenceexecution': 'single',
-        'testcases.sequencecall': 'single',
-        'testcases.teststep': 'single',
-        'testcases.testcaseexecution': 'single',
+        'executions.setup': 'single',
+        'executions.teardown': 'single',
+        'executions.testcaseexecution': 'single',
+        'keywords.executionkeywordcall': 'single',
+        'libraries.libraryimport': 'single',
     },
     "copyright": 'imbus',
-    "custom_css": "css/keyta.css",
     "hide_models": [
         'auth.group',
         'auth.user',
-        'actions.actiondocumentation',
-        'actions.actionexecution',
-        'actions.actionwindow',
-        'actions.actionlibraryimport',
-        'actions.robotkeywordcall',
-        'actions.windowaction',
-        'executions.execution',
+        'actions.actionquickadd',
+        'actions.actionquickchange',
+        'actions.actionstep',
+        'actions.actionwindowrelation',
+        'actions.librarykeywordcallparameter',
         'executions.keywordexecution',
-        'executions.keywordexecutioncall',
         'executions.testcaseexecution',
-        'executions.executionlibraryimport',
-        'executions.testsetup',
-        'executions.setupteardown',
-        'executions.keywordexecutionsetup',
-        'executions.testcaseexecutionsetupteardown',
+        'executions.setup',
+        'executions.teardown',
+        'keywords.executionkeywordcall',
         'keywords.keyword',
         'keywords.keywordcall',
+        'keywords.keywordcallcondition',
+        'keywords.keywordcallparameter',
+        'keywords.keywordcallparametersource',
+        'keywords.keywordcallreturnvalue',
         'keywords.keyworddocumentation',
-        'libraries.librarykeyword',
-        'libraries.librarykeyworddocumentation',
+        'keywords.keywordparameter',
+        'keywords.keywordreturnvalue',
         'libraries.libraryimport',
-        'libraries.libraryparameter',
+        'libraries.libraryimportparameter',
         'libraries.libraryinitdocumentation',
-        'resources.resourcekeyword',
-        'resources.resourcekeyworddocumentation',
-        'sequences.sequencedocumentation',
-        'sequences.actioncall',
-        'sequences.sequenceexecution',
-        'sequences.sequenceresourceimport',
-        'sequences.windowsequence',
+        'libraries.libraryparameter',
+        'resources.resourceimport',
+        'sequences.sequencequickadd',
+        'sequences.sequencequickchange',
+        'sequences.sequencestep',
+        'taggit.tag',
         'testcases.teststep',
-        'testcases.testcaseexecution',
+        'variables.tablecolumn',
+        'variables.variabledocumentation',
+        'variables.variablequickadd',
+        'variables.variablequickchange',
         'variables.variablevalue',
-        'variables.variablewindow',
-        'variables.windowvariable',
-        'windows.systemwindow',
+        'variables.variablewindowrelation',
         'windows.windowdocumentation',
-        'windows.windowkeywordparameter',
-        'windows.windowkeywordreturnvalue',
-        'windows.windowlibrary'
+        'windows.windowquickadd',
+        'windows.windowquickchange',
     ],
     "icons": {
-        "actions.action": "fa-solid fa-cubes-stacked",
-        "libraries.library": "fa-solid fa-robot",
-        "resources.resource": "fa-solid fa-key",
-        "sequences.sequence": "fa-solid fa-arrows-turn-to-dots",
-        "systems.system": "fa-solid fa-shapes",
-        "testcases.testcase": "fa-solid fa-list-check",
-        "variables.variable": "fa-solid fa-arrow-up-right-from-square",
-        "windows.window": "fa-solid fa-layer-group"
+        "actions.action": FA_ICONS.action,
+        "libraries.library": FA_ICONS.library,
+        "resources.resource": FA_ICONS.resource,
+        "sequences.sequence": FA_ICONS.sequence,
+        "systems.system": FA_ICONS.system,
+        "testcases.testcase": FA_ICONS.testcase,
+        "variables.variable": FA_ICONS.variable,
+        "windows.window": FA_ICONS.window
     },
     "index_title": "KeyTA",
     "order_with_respect_to": [
@@ -263,11 +284,32 @@ JAZZMIN_SETTINGS = {
         'windows',
     ],
     "related_modal_active": True,
-    "site_logo": "img/keyta.png",
+    "site_logo": "keyta.png",
     "site_brand": "KeyTA",
     "site_header": "KeyTA",
     "site_title": "KeyTA",
     "use_google_fonts_cdn": False,
+}
+
+TAGGIT_SELECTIZE = {
+    'MINIMUM_QUERY_LENGTH': 2,
+    'RECOMMENDATION_LIMIT': 10,
+    'CSS_FILENAMES': ("taggit_selectize/css/selectize.django.css",),
+    'JS_FILENAMES': ("taggit_selectize/js/selectize.js",),
+    'DIACRITICS': True,
+    'CREATE': True,
+    'PERSIST': True,
+    'OPEN_ON_FOCUS': True,
+    'HIDE_SELECTED': True,
+    'CLOSE_AFTER_SELECT': False,
+    'LOAD_THROTTLE': 300,
+    'PRELOAD': False,
+    'ADD_PRECEDENCE': False,
+    'SELECT_ON_TAB': False,
+    'REMOVE_BUTTON': True,
+    'RESTORE_ON_BACKSPACE': False,
+    'DRAG_DROP': False,
+    'DELIMITER': ','
 }
 
 TINYMCE_DEFAULT_CONFIG= {

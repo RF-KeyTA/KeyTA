@@ -1,0 +1,58 @@
+{% load i18n static jazzmin filters %}
+
+{% if result_hidden_fields %}
+<div class="hiddenfields">
+    {% for item in result_hidden_fields %}{{ item }}{% endfor %}
+</div>
+{% endif %}
+
+{% if results %}
+    <div class="card">
+        <div class="card-body table-responsive p-0">
+            <table id="result_list" class="table table-striped" style="table-layout:auto; border-collapse: separate;">
+                <thead>
+                    <tr>
+                        {% with action_column=result_headers|filter:"class_attrib,action"|length %}
+                        {% with skip_columns=1|add:action_column %}
+                        {% with num_columns=result_headers|length|subtract:skip_columns %}
+                        {% for header in result_headers %}
+                        {% if forloop.counter > skip_columns %}
+                        <th class="{% header_class header forloop %}" tabindex="0" rowspan="1" colspan="1" style="width: {% widthratio 1 num_columns 100 %}%; position: sticky; top: 0; background: white; border-bottom: 2px solid #afb7bb; z-index: 1">
+                        {% else %}
+                        <th class="{% header_class header forloop %}" tabindex="0" rowspan="1" colspan="1"  style="position: sticky; top: 0; background: white; border-bottom: 2px solid #afb7bb; z-index: 1">
+                        {% endif %}
+                            <div class="text">
+                                {% if header.sortable %}
+                                    <a href="{{ header.url_primary }}">{{ header.text|capfirst }}</a>
+                                {% else %}
+                                    <span>{{ header.text|capfirst }}</span>
+                                {% endif %}
+                                {% if header.sorted %}
+                                    <a href="{{ header.url_remove }}">
+                                        <div style="margin-top: .2em;" class="fa fa-times float-right"> </div>
+                                    </a>
+                                    {% if header.ascending %}
+                                        <i style="margin-top: .2em;" class="fa fa-sort-alpha-down"> </i>
+                                    {% else %}
+                                        <i style="margin-top: .2em;" class="fa fa-sort-alpha-up"> </i>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </th>
+                        {% endfor %}
+                        {% endwith %}
+                        {% endwith %}
+                        {% endwith %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for result in results %}
+                    <tr role="row" class="{% cycle 'even' 'odd' %}">
+                        {% for item in result %}{{ item }}{% endfor %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endif %}

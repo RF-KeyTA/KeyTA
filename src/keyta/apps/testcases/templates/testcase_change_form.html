@@ -1,0 +1,112 @@
+{% extends "admin/change_form.html" %}
+{% load i18n admin_urls static admin_modify jazzmin %}
+{% get_jazzmin_settings request as jazzmin_settings %}
+
+{% block page_actions %}
+    {% if not add %}
+    <div class="col-12 col-md-auto d-flex align-items-center justify-content-end page-actions">
+        <a id="export-button" href="{% add_preserved_filters add_url is_popup to_field %}?export" class="btn {{ jazzmin_ui.button_classes.success }} float-right">
+            <i class="fa-solid fa-file-export"></i> &nbsp; Export .robot 
+        </a>
+    </div>
+    {% endif %}
+{% endblock %}
+
+{% block extrajs %}
+{{ block.super }}
+<script>
+    $(document).ready(function () {
+        setTimeout(function () {
+            var scrollpos = localStorage.getItem('scrollpos');
+            if (scrollpos) window.scrollTo(0, scrollpos);
+            localStorage.removeItem('scrollpos');
+        }, 300)
+
+        if (!document.location.hash) {
+           $('a:contains("{% trans "Schritte" %}")').click()
+        }
+    })
+</script>
+{% endblock %}
+
+{% block formset_form %}
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Selects in a saved form of a formset
+        const formset_forms = django.jQuery('.form-row.has_original')
+        formset_forms.each((index, form) => {
+            const window_select = django.jQuery('select[name$="-window"]', form)
+            const to_keyword_select = django.jQuery('select[name$="-to_keyword"]', form)
+
+            window_select.on('change', function () {
+                $('.button-save').click()
+            })
+
+            to_keyword_select.on('select2:clearing', function (event) {
+                event.preventDefault()
+                const result = confirm('{% trans "Sicher?" %}')
+
+                if (result) {
+                    django.jQuery(event.target).val(null).trigger('change');
+                }
+            })
+
+            if (index === 0) {
+                // When the first step is added reload the page in order to add the tab 'Execution'
+                to_keyword_select.on('change', function () {
+                    $('.button-save').click()
+                })
+            }
+            else {
+                to_keyword_select.on('change', function () {
+                    const related_widget_link = to_keyword_select.siblings('a').first()
+                    const test_step_id = to_keyword_select.closest('tr').find('input[id$="-id"]').attr('value')
+                    const test_step_url = `/testcases/teststep/${test_step_id}/change`
+                    const values_link = to_keyword_select.closest('tr').find('td.field-values a')
+                    const values_icon = values_link.find('i')
+
+                    if (to_keyword_select.val()) {
+                        $.post(
+                            window.location.href,
+                            $('form').serialize() + "&_continue=",
+                            function () {
+                                values_link.css('visibility', 'visible')
+                                $.get(
+                                    test_step_url + '?step-changed',
+                                    function (res) {
+                                        related_widget_link.replaceWith(res)
+                                        presentRelatedObjectModal()
+                                    }
+                                )
+                                $.get(
+                                    test_step_url + '?update-icon',
+                                    function (res) {
+                                        values_icon.replaceWith(res);
+                                        presentRelatedObjectModal()
+                                    }
+                                )
+                            }
+                        )
+                    }
+                    else {
+                        $.post(
+                            window.location.href,
+                            $('form').serialize() + "&_continue=",
+                            function () {
+                                values_link.css('visibility', 'hidden')
+                                $.get(
+                                    test_step_url + '?step-empty',
+                                    function (res) {
+                                        related_widget_link.replaceWith(res);
+                                        presentRelatedObjectModal()
+                                    }
+                                )
+                            }
+                        )
+                    }
+                })
+            }
+        })
+    })
+</script>
+{% endblock %}

@@ -1,25 +1,42 @@
 from django.contrib import admin
+from django.http import HttpRequest
 
-from apps.keywords.admin import KeywordCallAdmin
+from keyta.apps.keywords.admin import KeywordCallAdmin, KeywordCallParametersInline
+from keyta.apps.keywords.admin.field_keyword_documentation import KeywordDocField
+from keyta.apps.keywords.models import KeywordCall
 
-from ..models import SetupTeardown
-from .setup_teardown_parameters_inline import  SetupTeardownParametersInline
+from ..forms import SetupTeardownParametersFormset
+from ..models import Setup, Teardown
 
 
-@admin.register(SetupTeardown)
-class SetupTeardownAdmin(KeywordCallAdmin):
-    fields = ['keyword_doc']
-    readonly_fields = ['keyword_doc']
+class SetupTeardownParametersInline(KeywordCallParametersInline):
+    fields = ['name', 'value']
+    formset = SetupTeardownParametersFormset
 
+    def get_queryset(self, request: HttpRequest):
+        return super().get_queryset(request).filter(user=request.user)
+
+
+@admin.register(Setup)
+@admin.register(Teardown)
+class SetupTeardownAdmin(
+    KeywordDocField,
+    KeywordCallAdmin
+):
     def change_view(self, request, object_id, form_url="", extra_context=None):
-        setup_teardown = SetupTeardown.objects.get(id=object_id)
+        kw_call = KeywordCall.objects.get(pk=object_id)
 
-        for param in setup_teardown.to_keyword.parameters.all():
-            setup_teardown.add_parameter(param, user=request.user)
+        if request.GET.get('update-icon'):
+            return self.update_icon(request, kw_call)
 
-        return super().change_view(request, object_id, form_url, extra_context)
+        kw_call.update_parameter_values()
+
+        return super().changeform_view(request, object_id, form_url, extra_context)
 
     def get_inlines(self, request, obj):
-        return [
-            SetupTeardownParametersInline
-        ]
+        setup: Setup = obj
+
+        if setup.parameters.exists():
+            return [SetupTeardownParametersInline]
+
+        return []

@@ -1,7 +1,9 @@
-from django.db import models
-from django.utils.translation import gettext as _
+import json
 
-from apps.common.abc import AbstractBaseModel
+from django.db import models
+from django.utils.translation import gettext_lazy as _
+
+from keyta.models.base_model import AbstractBaseModel
 
 
 __all__ = ['LibraryParameter']
@@ -13,15 +15,31 @@ class LibraryParameter(AbstractBaseModel):
         on_delete=models.CASCADE,
         related_name='kwargs'
     )
-    name = models.CharField(max_length=255, verbose_name=_('Name'))
-    default_value = models.CharField(max_length=255, verbose_name=_('Standardwert'))
-    orig_default_value = models.CharField(max_length=255)
+    name = models.CharField(
+        max_length=255,
+        verbose_name=_('Name')
+    )
+    value = models.CharField(
+        max_length=255,
+        verbose_name=_('Standardwert')
+    )
+    orig_default_value = models.CharField(
+        max_length=255
+    )
+    # JSON representation of a union type as a list of strings
+    typedoc = models.CharField(
+        max_length=255,
+        default='[]'
+    )
 
     def __str__(self):
         return self.name
 
+    def get_typedoc(self) -> list[str]:
+        return json.loads(self.typedoc)
+
     def reset_value(self):
-        self.default_value = self.orig_default_value
+        self.value = self.orig_default_value
         self.save()
 
     def save(
@@ -29,9 +47,13 @@ class LibraryParameter(AbstractBaseModel):
             update_fields=None
     ):
         if not self.pk:
-            self.orig_default_value = self.default_value
+            self.value = self.orig_default_value
 
         super().save(force_insert, force_update, using, update_fields)
+
+    def set_typedoc(self, typedoc: list[str]):
+        self.typedoc = json.dumps(typedoc)
+        self.save()
 
     class Manager(models.Manager):
         def get_queryset(self):

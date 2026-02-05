@@ -1,24 +1,28 @@
+from dataclasses import dataclass
 from typing import Optional
-from django.contrib.auth.models import User
+
+from django.conf import settings
+from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.db.models import Q
-from django.utils.translation import gettext as _
+from django.db.models import QuerySet
+from django.utils.translation import gettext_lazy as _
 
-from apps.common.abc import AbstractBaseModel
-from apps.keywords.models import (
-    KeywordCall,
-    TestSetupTeardown,
-    SuiteSetupTeardown
-)
-from apps.libraries.models import Library
-from apps.resources.models import Resource
-from apps.rf_export.keywords import RFKeyword
-from apps.rf_export.testsuite import RFTestSuite
+from model_clone import CloneMixin
 
-from .user_execution import UserExecution
-from .execution_resource_import import ExecutionResourceImport
-from .execution_library_import import ExecutionLibraryImport
-from ..errors import ValidationError
+from keyta.apps.keywords.models.keyword import KeywordType
+from keyta.apps.libraries.models import Library, LibraryImport
+from keyta.apps.resources.models import Resource, ResourceImport
+from keyta.models.base_model import AbstractBaseModel
+from keyta.rf_export.rfgenerator import gen_testsuite
+from keyta.rf_export.settings import RFSettings
+from keyta.rf_export.testsuite import RFTestSuite
+from keyta.widgets import Icon
+
+
+@dataclass
+class Dependencies:
+    libraries: set[int]
+    resources: set[int]
 
 
 class ExecutionType(models.TextChoices):
@@ -26,7 +30,7 @@ class ExecutionType(models.TextChoices):
     TESTCASE = 'TESTCASE_EXECUTION', _('Testfall Ausführung')
 
 
-class Execution(AbstractBaseModel):
+class Execution(CloneMixin, AbstractBaseModel):
     keyword = models.OneToOneField(
         'keywords.Keyword',
         on_delete=models.CASCADE,
@@ -43,19 +47,101 @@ class Execution(AbstractBaseModel):
         default=None,
         related_name='execution'
     )
-    type = models.CharField(max_length=255, choices=ExecutionType.choices)
+    type = models.CharField(max_length=255)
+
+    _clone_m2o_or_o2m_fields = ['keyword_calls']
 
     def __str__(self):
         return str(self.keyword or self.testcase)
 
-    def get_testsuite(self, user: User):
+    def get_keyword_calls(self) -> models.QuerySet:
+        return models.QuerySet().none()
+
+    def get_keyword_dependencies(self) -> Dependencies:
+        dependencies = Dependencies(
+            libraries = set(),
+            resources = set(),
+        )
+        lib_res = (
+            self.get_keyword_calls()
+            .filter(to_keyword__type__in=[KeywordType.LIBRARY, KeywordType.RESOURCE])
+            .values_list('to_keyword__library', 'to_keyword__resource')
+        )
+
+        for library, resource in lib_res:
+            if library:
+                dependencies.libraries.add(library)
+            
+            if resource:
+                dependencies.resources.add(resource)
+
+        return dependencies
+
+    def get_log_icon(self, server_url: str, user: AbstractUser):
+        user_exec = self.user_execs.get(user=user)
+
+        if user_exec.result:
+            url = server_url + '/' + user_exec.log
+            title = str(Icon(settings.FA_ICONS.exec_log))
+            return '<a href="%s" id="log-btn" target="_blank">%s</a>' % (url, title)
+
+        return '-'
+
+    def get_result_icon(self, user: AbstractUser):
+        user_exec = self.user_execs.get(user=user)
+
+        if result := user_exec.result:
+            if result == 'FAIL':
+                icon = Icon(
+                    settings.FA_ICONS.exec_fail,
+                    {'color': 'red'}
+                )
+                return str(icon)
+
+            if result == 'PASS':
+                icon = Icon(
+                    settings.FA_ICONS.exec_pass,
+                    {'color': 'green'}
+                )
+                return str(icon)
+
+        return '-'
+
+    def get_rf_settings(self, user: AbstractUser) -> RFSettings:
+        return {
+            'documentation': None,
+            'library_imports': {
+                lib_import.library.pk: lib_import.to_robot(user)
+                for lib_import
+                in self.library_imports.all()
+            },
+            'resource_imports': {
+                resource_import.resource.pk: resource_import.to_robot(user)
+                for resource_import
+                in self.resource_imports.all()
+            },
+            'suite_setup': None,
+            'suite_teardown': None,
+        }
+
+    def get_rf_testsuite(self, get_variable_value, user: AbstractUser, execution_state: dict, include_doc: bool) -> RFTestSuite:
         pass
 
+    def make_clone(self, attrs=None, sub_clone=False, using=None, parent=None):
+        local_attrs = attrs or {}
+
+        if self.type == ExecutionType.KEYWORD:
+            local_attrs['testcase'] = None
+
+        if self.type == ExecutionType.TESTCASE:
+            local_attrs['keyword'] = None
+
+        return super().make_clone(local_attrs, sub_clone, using, parent)
+
     def save(
-        self, force_insert=False, force_update=False, using=None,
-            update_fields=None
+        self, force_insert=False, force_update=False, using=None, update_fields=None
     ):
-        if not self.pk:
+        if not self.type:
             if self.testcase:
                 self.type = ExecutionType.TESTCASE
             if self.keyword:
@@ -63,83 +149,68 @@ class Execution(AbstractBaseModel):
 
         super().save(force_insert, force_update, using, update_fields)
 
-    def save_execution_result(self, user: User, robot_result: dict):
-        user_exec, _ = UserExecution.objects.get_or_create(
-            execution=self,
-            user=user
-        )
-        user_exec.save_execution_result(robot_result)
+    def save_execution_result(self, user: AbstractUser, log: str, result: str):
+        user_exec = self.user_execs.get(user=user)
+        user_exec.save_execution_result(log, result)
 
-    def suite_setup(self) -> Optional[KeywordCall]:
+    def suite_setup(self):
         return (
             self.keyword_calls
-            .filter(type=SuiteSetupTeardown.SUITE_SETUP)
+            .suite_setup()
             .first()
         )
 
-    def suite_teardown(self) -> Optional[KeywordCall]:
+    def suite_teardown(self):
         return (
             self.keyword_calls
-            .filter(type=SuiteSetupTeardown.SUITE_TEARDOWN)
+            .suite_teardown()
             .first()
         )
 
-    def test_setup(self, user: User) -> Optional[KeywordCall]:
+    def test_setup(self) -> QuerySet:
         return (
             self.keyword_calls
-            .filter(type=TestSetupTeardown.TEST_SETUP)
-            .filter(user=user)
-            .first()
+            .test_setup()
+            .order_by('index')
         )
 
-    def test_teardown(self, user: User) -> Optional[KeywordCall]:
+    def test_teardown(self) -> QuerySet:
         return (
             self.keyword_calls
-            .filter(type=TestSetupTeardown.TEST_TEARDOWN)
-            .filter(user=user)
-            .first()
+            .test_teardown()
         )
 
-    def to_robot(self, keywords: dict[int, RFKeyword], user: User) -> RFTestSuite:
-        pass
+    def to_robot(self, testsuite: RFTestSuite) -> dict:
+        return {
+            'testsuite_name': testsuite['name'],
+            'testsuite': gen_testsuite(testsuite)
+        }
 
-    def update_library_imports(self, library_ids: set[int], user: User):
-        for library in Library.objects.filter(id__in=library_ids):
-            lib_import, created = ExecutionLibraryImport.objects.get_or_create(
+    def update_imports(self, user: AbstractUser):
+        dependencies = self.get_keyword_dependencies()
+        
+        for library in Library.objects.filter(id__in=dependencies.libraries):
+            lib_import, created = LibraryImport.objects.get_or_create(
                 execution=self,
                 library=library
             )
             lib_import.add_parameters(user)
 
-        for lib_import in self.library_imports.exclude(library_id__in=library_ids):
+        for lib_import in self.library_imports.exclude(library_id__in=dependencies.libraries):
             lib_import.delete()
 
-    def update_resource_imports(self, resource_ids: set[int], user: User):
-        for resource in Resource.objects.filter(id__in=resource_ids):
-            resource_import, created = ExecutionResourceImport.objects.get_or_create(
+        for resource in Resource.objects.filter(id__in=dependencies.resources):
+            ResourceImport.objects.get_or_create(
                 execution=self,
                 resource=resource
             )
 
-        for resource_import in self.resource_imports.exclude(resource_id__in=resource_ids):
+        for resource_import in self.resource_imports.exclude(resource_id__in=dependencies.resources):
             resource_import.delete()
 
-    def validate(self, user: User) -> Optional[ValidationError]:
+    def validate(self, user: AbstractUser, execution_state: dict) -> Optional[dict]:
         pass
 
     class Meta:
-        constraints = [
-            models.CheckConstraint(
-                name='execution_sum_type',
-                check=
-                (Q(type=ExecutionType.KEYWORD) &
-                 Q(keyword__isnull=False) &
-                 Q(testcase__isnull=True))
-                |
-                (Q(type=ExecutionType.TESTCASE) &
-                 Q(keyword__isnull=True) &
-                 Q(testcase__isnull=False))
-            )
-        ]
         verbose_name = _('Ausführung')
         verbose_name_plural = _('Ausführung')

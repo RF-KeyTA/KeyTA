@@ -1,60 +1,73 @@
-import tempfile
-from pathlib import Path
-
-from django import forms
-from django.contrib import admin
+from django.conf import settings
+from django.contrib import admin, messages
 from django.http import HttpRequest
+from django.urls import reverse
 from django.utils.safestring import mark_safe
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
-from apps.common.admin import BaseAdmin
-from apps.resources.models import Resource, ResourceKeyword
-from apps.rf_import.import_resource import import_resource
+from keyta.admin.base_admin import BaseAdmin
+from keyta.admin.field_documentation import DocumentationField
+from keyta.admin.keywords_inline import Keywords
+from keyta.apps.keywords.models import KeywordCall
+from keyta.rf_import.import_resource import import_resource
+from keyta.widgets import Icon, link
 
-
-class Keywords(admin.TabularInline):
-    model = ResourceKeyword
-    fields = ['name', 'short_doc']
-    readonly_fields = ['name', 'short_doc']
-    extra = 0
-    can_delete = False
-    show_change_link = True
-    verbose_name_plural = _('Schlüsselwörter')
-
-    def has_add_permission(self, request, obj=None):
-        return False
-
-    def has_change_permission(self, request, obj=None):
-        return False
+from ..forms import ResourceForm
+from ..models import Resource
 
 
 @admin.register(Resource)
-class ResourceAdmin(BaseAdmin):
-    list_display = ['name']
-    ordering = ['name']
+class ResourceAdmin(DocumentationField, BaseAdmin):
+    list_display = ['update', 'name']
+    list_display_links = ['name']
+
+    def get_changelist(self, request: HttpRequest, **kwargs):
+        if 'update' in request.GET:
+            resource = Resource.objects.get(id=int(request.GET['resource_id']))
+
+            if error := Resource.resource_file_not_found(resource.path):
+                messages.warning(request, error)
+            else:
+                import_resource(resource.path)
+                messages.info(
+                    request,
+                    _(f'Die Ressource "{resource.name}" wurde erfolgreich aktualisiert')
+                )
+
+        return super().get_changelist(request, **kwargs)
+
+    update_icon = Icon(
+        settings.FA_ICONS.update,
+        styles={'font-size': '18px'},
+        title=_('Aktualisierung')
+    )
+
+    @admin.display(description=mark_safe(str(update_icon)))
+    def update(self, resource: Resource):
+        return link(
+            reverse('admin:resources_resource_changelist') + f'?update&resource_id={resource.id}',
+            str(Icon(settings.FA_ICONS.library_update, {'font-size': '18px'}))
+        )
+
+    form = ResourceForm
+    fields = ['path']
+    readonly_fields = ['documentation']
     inlines = [Keywords]
 
-    @admin.display(description=_('Dokumentation'))
-    def dokumentation(self, obj):
-        return mark_safe(obj.documentation)
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        field = super().formfield_for_dbfield(db_field, request, **kwargs)
+
+        if db_field.name == 'path':
+            field.label = _('Ressource')
+            field.help_text = _('Dateipfad wie beim Importieren einer Ressource in einer .robot Datei')
+
+        return field
 
     def get_fields(self, request, obj=None):
         if not obj:
-            return ['name']
+            return ['path']
 
-        return ['dokumentation']
-
-    def formfield_for_dbfield(self, db_field, request, **kwargs):
-        if db_field.name == 'name':
-            return forms.FileField()
-
-        return super().formfield_for_dbfield(db_field, request, **kwargs)
-
-    def get_readonly_fields(self, request, obj=None):
-        if not obj:
-            return []
-
-        return ['dokumentation']
+        return super().get_fields(request, obj)
 
     def get_inlines(self, request, obj):
         if not obj:
@@ -62,18 +75,19 @@ class ResourceAdmin(BaseAdmin):
 
         return super().get_inlines(request, obj)
 
-    def has_delete_permission(self, request: HttpRequest, obj=None) -> bool:
-        return False
+    def get_protected_objects(self, obj: Resource):
+        return KeywordCall.objects.filter(to_keyword__resource=obj)
+
+    def get_readonly_fields(self, request, obj=None):
+        if not obj:
+            return []
+
+        return super().get_readonly_fields(request, obj)
 
     def save_form(self, request, form, change):
-        file_obj = request.FILES['name']
-        file_name = str(file_obj._name)
-        tmp_resource = Path(tempfile.gettempdir()) / file_name
-
-        with open(tmp_resource, 'w', encoding='utf-8') as fp:
-            fp.write(file_obj.file.read().decode())
-
-        resource = import_resource(str(tmp_resource))
-        super().save_form(request, form, change)
-
-        return resource
+        if change:
+            return super().save_form(request, form, change)
+        else:
+            resource = import_resource(form.cleaned_data['path'])
+            super().save_form(request, form, change)
+            return resource

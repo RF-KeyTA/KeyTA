@@ -1,13 +1,11 @@
 import os
 import signal
 import subprocess
+import sys
 from os.path import realpath
 from pathlib import Path
 from threading import Thread
 from typing import Optional
-
-from PIL import Image
-from pystray import Icon, Menu, MenuItem # type: ignore
 
 from .IProcess import IProcess
 from .rf_remote_server import RobotRemoteServer
@@ -39,15 +37,24 @@ def django_runserver():
     else:
         exec_django_command('migrate')
 
-    return subprocess.Popen(['cmd', f'/C pushd {DJANGO_DIR} && python manage.py runserver'])
+    return subprocess.Popen('python manage.py runserver', cwd=DJANGO_DIR, shell=True)
 
 
 def exec_command(command: str, working_dir: Path=CWD):
-    return subprocess.run(command, shell=True, cwd=working_dir, stdout=subprocess.PIPE)
+    return subprocess.run(command, cwd=working_dir, shell=True, stdout=subprocess.PIPE)
 
 
 def exec_django_command(command: str):
     return exec_command(f'python manage.py {command}', DJANGO_DIR)
+
+
+def is_running(app: str):
+    process_list = subprocess.check_output(['TASKLIST', '/FI', f'imagename eq {app}']).decode('iso-8859-1')
+    return len([
+        line
+        for line in process_list.splitlines()
+        if line.startswith(app)
+    ]) > 1
 
 
 def open_keyta():
@@ -63,31 +70,38 @@ class App:
         robot_server = RobotRemoteServer(ROBOT_REMOTE_HOST, ROBOT_REMOTE_PORT)
         # The RF logger only works if the current thread is called MainThread
         self.rf_server_thread = DaemonThread(robot_server, name='MainThread')
+        self.icon_thread = None
 
-        img = Image.open(CWD / 'icon.png')
-        img_cropped = img.crop(img.getbbox())
-        tray_icon = Icon(
-            name='KeyTA',
-            title='KeyTA',
-            icon=img_cropped,
-            menu=Menu(
-                MenuItem(
-                    texts['open_keyta'],
-                    open_keyta,
-                    default=True
-                ),
-                MenuItem(
-                    texts['terminate_keyta'],
-                    lambda icon, query: self.terminate()
+        if not sys.platform.startswith('linux'):
+            from PIL import Image
+            from pystray import Icon, Menu, MenuItem # type: ignore
+            
+            img = Image.open(CWD / 'static' / 'keyta.png')
+            img_cropped = img.crop(img.getbbox())
+            tray_icon = Icon(
+                name='KeyTA',
+                title='KeyTA',
+                icon=img_cropped,
+                menu=Menu(
+                    MenuItem(
+                        texts['open_keyta'],
+                        open_keyta,
+                        default=True
+                    ),
+                    MenuItem(
+                        texts['terminate_keyta'],
+                        lambda icon, query: self.terminate()
+                    )
                 )
             )
-        )
-        self.icon_thread = DaemonThread(tray_icon)
+            self.icon_thread = DaemonThread(tray_icon)
 
     def run(self):
         self.django_server = django_runserver()
         self.rf_server_thread.start()
-        self.icon_thread.start()
+
+        if self.icon_thread:
+            self.icon_thread.start()
 
         try:
             self.django_server.wait()
@@ -103,7 +117,9 @@ def keyta():
         'open_keyta': 'Open KeyTA',
         'terminate_keyta': 'Terminate KeyTA'
     }
-    App(texts).run()
+
+    if not is_running('keyta.exe'):
+        App(texts).run()
 
 
 def keyta_de():
@@ -112,4 +128,6 @@ def keyta_de():
         'open_keyta': 'KeyTA starten',
         'terminate_keyta': 'KeyTA beenden'
     }
-    App(texts).run()
+
+    if not is_running('keyta-de.exe'):
+        App(texts).run()

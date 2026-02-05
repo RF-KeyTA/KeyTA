@@ -16,11 +16,15 @@ Including another URLconf
 """
 
 from django.contrib import admin
+from django.http import HttpResponse
+from django.middleware.csrf import get_token
 from django.urls import path, include
 
 
 urlpatterns = [
     path('select2/', include("django_select2.urls")),
+    path('taggit/', include('taggit_selectize.urls')),
     path('tinymce/', include('tinymce.urls')),
+    path('csrf_token', lambda req: HttpResponse(get_token(req))),
     path('', admin.site.urls),
 ]

@@ -1,29 +1,37 @@
 from django.db import models
-from django.utils.translation import gettext as _
+from django.db.models.functions import Lower
+from django.utils.translation import gettext_lazy as _
 
-from apps.common.abc import AbstractBaseModel
-from apps.keywords.models import Keyword
-from apps.libraries.models import Library
+from keyta.models.base_model import AbstractBaseModel
 
 
 class System(AbstractBaseModel):
+    name = models.CharField(
+        max_length=255,
+        unique=True,
+        verbose_name=_('Name')
+    )
+    description = models.CharField(
+        max_length=255,
+        verbose_name=_('Beschreibung')
+    )
     attach_to_system = models.ForeignKey(
-        Keyword,
+        'keywords.Keyword',
         on_delete=models.SET_NULL,
+        blank=True,
         null=True,
         verbose_name=_('Anbindung an laufendes System')
     )
     library = models.ForeignKey(
-        Library,
+        'libraries.Library',
         on_delete=models.PROTECT,
         verbose_name=_('Automatisierung')
     )
-    name = models.CharField(max_length=255, unique=True, verbose_name=_('Name'))
-    description = models.CharField(max_length=255, verbose_name=_('Beschreibung'))
 
     def __str__(self):
         return self.name
 
     class Meta:
+        ordering = [Lower('name')]
         verbose_name = _('System')
         verbose_name_plural = _('Systeme')

@@ -1,66 +1,31 @@
 import json
-from django import forms
-from django.contrib import admin, messages
+
+from django.contrib import messages, admin
 from django.http import HttpRequest
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext as _
 
-from apps.common.admin import BaseAdmin
-from apps.common.admin.base_inline import AddInline
-from apps.common.forms import form_with_select
-from apps.common.widgets import ModelSelect2AdminWidget, link
-from apps.windows.models import Window, SystemWindow
+from keyta.admin.base_admin import BaseAdmin
+from keyta.widgets import ModelSelect2AdminWidget, link, BaseSelect
 
 from .models import System
-
-
-class Windows(AddInline):
-    model = Window.systems.through
-    extra = 0
-    can_delete = False
-    show_change_link = True
-    verbose_name = _('Maske')
-    verbose_name_plural = _('Masken')
-
-    form = forms.modelform_factory(
-        Window.systems.through,
-        forms.ModelForm,
-        ['window'],
-        labels={
-            'window': _('Maske')
-        }
-    )
-
-    related_field_name = 'window'
-    related_field_model = SystemWindow
-
-    def get_queryset(self, request):
-        return super().get_queryset(request).order_by('window__name')
-
-    def has_change_permission(self, request, obj=None):
-        return False
-    
-    def related_field_widget_url_params(self, request):
-        system_id = request.resolver_match.kwargs['object_id']
-
-        return {
-            'systems': system_id 
-        }
 
 
 @admin.register(System)
 class SystemAdmin(BaseAdmin):
     list_display = ['name', 'description']
-    ordering = ['name']
-    inlines = [Windows]
-    fields = ['name', 'description', 'library']
-    form = form_with_select(
-        System,
-        select_field='library',
-        placeholder=_('Bibliothek auswählen')
-    )
+    list_display_links = ['name']
 
-    def autocomplete_name(self, name: str):
+    def get_list_display(self, request):
+        return ['empty'] + super().get_list_display(request)
+
+    @admin.display(description='')
+    def empty(self, obj):
+        return mark_safe('&nbsp;')
+
+    fields = ['name', 'description', 'library']
+
+    def autocomplete_name(self, name: str, request: HttpRequest):
         return json.dumps([
             name
             for name in
@@ -71,19 +36,28 @@ class SystemAdmin(BaseAdmin):
     def formfield_for_dbfield(self, db_field, request: HttpRequest, **kwargs):
         field = super().formfield_for_dbfield(db_field, request, **kwargs)
 
-        if system_id := request.resolver_match.kwargs.get('object_id', None):
-            if db_field.name == 'attach_to_system':
-                field.widget = ModelSelect2AdminWidget(
-                    search_fields=['name__icontains'],
-                    attrs={
+        if db_field.name == 'library':
+            field.widget = ModelSelect2AdminWidget(
+                search_fields=['name__icontains'],
+                attrs={
+                    'data-placeholder': _('Bibliothek auswählen'),
+                    'style': 'width: 95%'
+                })
+
+        if db_field.name == 'attach_to_system':
+            field.widget = ModelSelect2AdminWidget(
+                search_fields=['name__icontains'],
+                attrs={
                     'data-placeholder': _('Aktion auswählen'),
                     'style': 'width: 95%'
                 })
-                field.queryset = (
-                    field.queryset.actions()
-                    .filter(systems__in=[system_id])
-                    .filter(setup_teardown=True)
-                )
+            
+            system_id = request.resolver_match.kwargs['object_id']
+            field.queryset = (
+                field.queryset.actions()
+                .filter(systems__in=[system_id])
+                .filter(setup_teardown=True)
+            )
 
         return field
 
@@ -103,27 +77,34 @@ class SystemAdmin(BaseAdmin):
 
         return []
 
-    def get_readonly_fields(self, request: HttpRequest, obj=None):
-        readonly_fields = []
-
-        if request.user.is_superuser:
-            return readonly_fields
-        else:
-            return readonly_fields + self.get_fields(request, obj)
+    def get_protected_objects(self, obj):
+        system: System = obj
+        return system.windows.all()
 
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
         system: System = obj
 
         add_attach_to_running_system = link(
-                '/actions/action/add/', 
-                _('add'),
-                new_page=True,
-                query_parameters={
-                    'setup_teardown': True,
-                    'systems': system.pk
-                }
-            )
+            '/actions/action/add/',
+            _('erstelle'),
+            new_page=True,
+            query_parameters={
+                'setup_teardown': True,
+                'systems': system.pk
+            },
+            styles={
+                'color': 'white !important'
+            }
+        )
 
         if not change:
-            messages.warning(request, mark_safe(add_attach_to_running_system + _(' die Aktion zur Anbindung an das System')))
+            message_level = messages.get_level(request)
+            messages.set_level(request, messages.INFO)
+            messages.info(
+                request,
+                mark_safe(
+                    _('Falls zutreffend, ') + add_attach_to_running_system + _(' die Aktion zur Anbindung an das System')
+                )
+            )
+            messages.set_level(request, message_level)

@@ -1,10 +1,8 @@
-from pathlib import Path
-
+from django.conf import settings
 from django.db import models
-from django.contrib.auth.models import User
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
-from apps.common.abc import AbstractBaseModel
+from keyta.models.base_model import AbstractBaseModel
 
 
 class UserExecution(AbstractBaseModel):
@@ -17,10 +15,12 @@ class UserExecution(AbstractBaseModel):
         on_delete=models.CASCADE,
         related_name='user_execs'
     )
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        verbose_name=_('Benutzer')
+    log = models.CharField(
+        max_length=255,
+        null=True,
+        default=None,
+        blank=True,
+        verbose_name=_('Protokoll')
     )
     result = models.CharField(
         max_length=255,
@@ -30,28 +30,22 @@ class UserExecution(AbstractBaseModel):
         blank=True,
         verbose_name=_('Ergebnis')
     )
-    log = models.CharField(
-        max_length=255,
-        null=True,
-        default=None,
-        blank=True,
-        verbose_name=_('Protokoll')
+    stop_on_failure = models.BooleanField(
+        default=True,
+        verbose_name=_('Beim 1. Fehler abbrechen')
     )
-    running = models.BooleanField(default=False)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        verbose_name=_('Benutzer')
+    )
 
     def __str__(self):
         return str(self.execution)
 
-    def save_execution_result(self, robot_result: dict):
-        directory = Path('static') / 'execution_logs' / str(self.id)
-        directory.mkdir(parents=True, exist_ok=True)
-        log_html = directory / 'log.html'
-
-        with open(log_html, 'w', encoding='utf-8') as file:
-            file.write(robot_result['log'])
-
-        self.log = str(log_html)
-        self.result = robot_result['result']
+    def save_execution_result(self, log: str, result: str):
+        self.log = log
+        self.result = result
         self.save()
 
     class Meta:

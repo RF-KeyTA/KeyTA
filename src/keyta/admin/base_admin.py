@@ -1,0 +1,270 @@
+import json
+from collections import defaultdict
+
+from django import forms
+from django.conf import settings
+from django.contrib import admin, messages
+from django.contrib.admin import helpers
+from django.contrib.admin.views.main import ChangeList
+from django.contrib.admin.widgets import AutocompleteSelectMultiple
+from django.contrib.auth.models import AbstractUser
+from django.forms import SelectMultiple, CheckboxSelectMultiple
+from django.http import HttpRequest, HttpResponseRedirect, HttpResponse
+from django.utils.safestring import mark_safe
+from django.utils.translation import gettext_lazy as _, gettext
+
+from keyta.widgets import BaseSelect, BaseSelectMultiple, url_query_parameters
+
+from .field_documentation import DocumentationField
+
+
+class ListView(ChangeList):
+    def __init__(
+        self,
+        request,
+        model,
+        list_display,
+        list_display_links,
+        list_filter,
+        date_hierarchy,
+        search_fields,
+        list_select_related,
+        list_per_page,
+        list_max_show_all,
+        list_editable,
+        model_admin,
+        sortable_by,
+        search_help_text,
+    ):
+        super().__init__(request, model, list_display, list_display_links, list_filter, date_hierarchy, search_fields, list_select_related, list_per_page, list_max_show_all, list_editable, model_admin, sortable_by, search_help_text)
+
+        self.title = model._meta.verbose_name_plural
+
+
+class ActionForm(helpers.ActionForm):
+    action = forms.ChoiceField(
+        label=_("Action:"),
+        widget=BaseSelect(_('Aktion auswählen'))
+    )
+
+
+class BaseAdmin(admin.ModelAdmin):
+    actions = [] if settings.DEBUG else None
+    action_form = ActionForm
+    list_max_show_all = 100
+    list_per_page = 100
+    preserve_filters = False
+    # By default, inlines and readonly_fields are tuples, which cannot be combined with a list
+    inlines = []
+    readonly_fields = []
+    sortable_by = []
+
+    def add_view(self, request: HttpRequest, form_url="", extra_context=None):
+        if 'autocomplete' in request.GET:
+            name = str(request.GET['name'])
+            data = self.autocomplete_name(name, request)
+
+            return HttpResponse(data, content_type='application/json')
+
+        return super().add_view(request, form_url, extra_context)
+
+    def autocomplete_name_queryset(self, name: str, request: HttpRequest):
+        return self.model.objects.filter(name__icontains=name)
+
+    def autocomplete_name(self, name: str, request: HttpRequest) -> str:
+        grouped = defaultdict(list)
+        name_system = (
+            self.autocomplete_name_queryset(name, request)
+            .values_list('name', 'systems__name')
+        )
+
+        for key, value in name_system:
+            grouped[key].append(value)
+
+        return json.dumps([
+            '%s (%s)' % (group, ', '.join(items))
+            for group, items in grouped.items()
+        ])
+
+    def can_add(self, user: AbstractUser, model: str):
+        if app := settings.MODEL_TO_APP.get(model):
+            return user.has_perm(f'{app}.add_{model}')
+
+        return True
+
+    def can_change(self, user: AbstractUser, model: str):
+        if app := settings.MODEL_TO_APP.get(model):
+            return user.has_perm(f'{app}.change_{model}')
+
+        return True
+
+    def can_delete(self, user: AbstractUser, model: str):
+        if app := settings.MODEL_TO_APP.get(model):
+            return user.has_perm(f'{app}.delete_{model}')
+
+        return True
+
+    def change_view(self, request, object_id, form_url="", extra_context=None):
+        if 'autocomplete' in request.GET:
+            name = request.GET['name']
+            data = self.autocomplete_name(name, request)
+
+            return HttpResponse(data, content_type='application/json')
+
+        return super().change_view(request, object_id, form_url, extra_context)
+
+    def delete_view(self, request, object_id, extra_context=None):
+        if 'post' in request.POST and 'ref' in request.GET:
+            super().delete_view(request, object_id, extra_context)
+
+            query_params = {
+                key: value
+                for key, value in request.GET.items()
+                if not key == 'ref'
+            }
+
+            return HttpResponseRedirect(request.GET['ref'] + '?' + url_query_parameters(query_params))
+
+        return super().delete_view(request, object_id, extra_context)
+
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        field = super().formfield_for_manytomany(db_field, request, **kwargs)
+
+        if (
+            hasattr(field, 'widget')
+            and isinstance(field.widget, SelectMultiple)
+            and field.widget.allow_multiple_selected
+            and not isinstance(
+                field.widget,
+                (CheckboxSelectMultiple, AutocompleteSelectMultiple)
+            )
+        ):
+            field.help_text = ''
+
+        return field
+
+    def get_changelist(self, request, **kwargs):
+        return ListView
+
+    def get_deleted_objects(self, objs, request):
+        deleted_objects, model_count, perms_needed, protected = super().get_deleted_objects(objs, request)
+
+        # The action 'Delete selected elements' was executed
+        if 'action' in request.POST:
+            to_be_deleted = [
+                mark_safe(
+                    '%s: <a href="%s" target="_blank">%s</a>' % (obj._meta.verbose_name, obj.get_admin_url(), str(obj)))
+                for obj in objs
+            ]
+            protected = [
+                mark_safe(
+                    '%s: <a href="%s" target="_blank">%s</a>' % (prot._meta.verbose_name, prot.get_admin_url(), str(prot)))
+                for obj in objs
+                for prot in self.get_protected_objects(obj)
+            ]
+        # Trying to delete a single element
+        else:
+            to_be_deleted = [
+                mark_safe('%s: <a href="%s" target="_blank">%s</a>' % (obj._meta.verbose_name, obj.get_admin_url(), str(obj)))
+                for obj in self.get_related_objects(objs[0])
+            ]
+            protected = [
+                mark_safe(
+                    '%s: <a href="%s" target="_blank">%s</a>' % (obj._meta.verbose_name, obj.get_admin_url(), str(obj)))
+                for obj in self.get_protected_objects(objs[0])
+            ]
+
+        return to_be_deleted, model_count, perms_needed, protected
+
+    def get_protected_objects(self, obj):
+        return []
+
+    def get_related_objects(self, obj):
+        return []
+
+    def render_change_form(
+        self, request, context, add=False, change=False, form_url="", obj=None
+    ):
+        template = super().render_change_form(request, context, add, change, form_url, obj)
+        inline_formsets = template.context_data['inline_admin_formsets']
+
+        for formset in inline_formsets:
+            formset_data = json.loads(formset.inline_formset_data())
+            formset_data['options']['saveText'] = gettext('Save')
+            formset.inline_formset_data = json.dumps(formset_data)
+
+        return template
+
+    def save_form(self, request, form, change):
+        messages.set_level(request, messages.WARNING)
+        return super().save_form(request, form, change)
+
+
+class BaseReadOnlyAdmin(admin.ModelAdmin):
+    list_max_show_all = 50
+    list_per_page = 50
+    preserve_filters = False
+    # By default, readonly_fields is a tuple, which cannot be combined with a list
+    readonly_fields = []
+
+    def has_delete_permission(self, request: HttpRequest, obj=None) -> bool:
+        return False
+
+    def has_change_permission(self, request: HttpRequest, obj=None) -> bool:
+        return False
+
+
+class BaseDocumentationAdmin(DocumentationField, BaseReadOnlyAdmin):
+    fields = []
+
+
+class BaseQuickAddAdmin(BaseAdmin):
+    fields = ['systems', 'windows', 'name']
+
+    def add_view(self, request, form_url='', extra_context=None):
+        if request.POST and '_popup' in request.GET:
+            response = super().add_view(request, form_url, extra_context)
+
+            if hasattr(response, 'context_data') and response.context_data.get('errors'):
+                return response
+            else:
+                response = """
+                <script>
+                (function() {
+                    const modals = window.parent.document.querySelectorAll('.modal-dialog')
+
+                    if (modals.length === 2) {
+                        window.parent.dismissRelatedObjectModal()
+                        const iframe = window.parent.document.getElementById('related-modal-iframe')
+                        iframe.contentWindow.location.reload()
+                    }
+
+                    if (modals.length === 1) {
+                        window.parent.dismissRelatedObjectModal()
+                        window.parent.location.reload()
+                    }
+                })();
+                </script>
+                """
+                return HttpResponse(response)
+
+        return super().add_view(request, form_url, extra_context)
+
+    def autocomplete_name_queryset(self, name: str, request: HttpRequest):
+        queryset = super().autocomplete_name_queryset(name, request)
+
+        if 'windows' in request.GET:
+            queryset = queryset.filter(windows__in=[request.GET['windows']])
+
+        return queryset
+
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        field = super().formfield_for_dbfield(db_field, request, **kwargs)
+
+        if db_field.name == 'systems':
+            field.widget = BaseSelectMultiple(_('System auswählen'))
+
+        if db_field.name == 'windows':
+            field.widget = forms.MultipleHiddenInput()
+
+        return field

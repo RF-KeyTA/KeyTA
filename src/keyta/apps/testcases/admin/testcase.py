@@ -1,94 +1,46 @@
-from django.contrib import admin
-from django.db.models.functions import Lower
-from django.http import HttpRequest, HttpResponse
-from django.utils.translation import gettext as _
+from django.conf import settings
+from django.contrib import admin, messages
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
+from django.urls import reverse
 
-from adminsortable2.admin import SortableAdminBase
+from keyta.apps.executions.models import TestCaseExecution
+from keyta.apps.variables.models import VariableValue
+from keyta.rf_export.rfgenerator import gen_testsuite
 
-from apps.common.admin import BaseAdmin
-from apps.common.widgets import BaseSelectMultiple
-from apps.executions.admin import ExecutionInline
-from apps.executions.models import Execution
-from apps.rf_export.rfgenerator import gen_testsuite
-
-from ..models import TestCase, TestCaseExecution
-from .steps_inline import TestSteps
-
-
-class LocalExecution(ExecutionInline):
-    model = TestCaseExecution
+from ..models import TestCase
+from .base_testcase_admin import BaseTestCaseAdmin
 
 
 @admin.register(TestCase)
-class TestCaseAdmin(SortableAdminBase, BaseAdmin):  # CloneModelAdminMixin
-    list_display = [
-        'system_list', 'name', 'description'
-    ]
-    list_display_links = ['name']
-    list_filter = ['systems']
-    search_fields = ['name']
-    search_help_text = _('Name')
-    ordering = [Lower('name')]
-
-
-    @admin.display(description=_('Systeme'))
-    def system_list(self, obj: TestCase):
-        return list(obj.systems.values_list('name', flat=True))
-
-    change_form_template = 'admin/testcase/change_form.html'
-    fields = [
-        'systems',
-        'name',
-        'description',
-        'documentation'
-    ]
-    inlines = [
-        TestSteps,
-        LocalExecution
-    ]
+class TestCaseAdmin(BaseTestCaseAdmin):
+    change_form_template = 'testcase_change_form.html'
 
     def change_view(self, request: HttpRequest, object_id, form_url="", extra_context=None):
         if 'export' in request.GET:
-            testcase_exec = TestCaseExecution.objects.get(testcase_id=object_id)
-            testcase_exec.update_library_imports(set(), request.user)
-            testcase_exec.update_resource_imports(set(), request.user)
-            testsuite = testcase_exec.get_testsuite(request.user)
-            robot_file = testsuite['name'] + '.robot'
+            execution = TestCaseExecution.objects.get(testcase_id=object_id)
 
-            return HttpResponse(
-                gen_testsuite(testsuite), 
-                headers={
-                    'Content-Type': 'text/plain', 
-                    'Content-Disposition': f'attachment; filename="{robot_file}"'
-                }
-            )
+            if err := execution.validate(request.user, {}):
+                messages.warning(request, err['error'])
+                return HttpResponseRedirect(request.path)
+            else:
+                get_variable_value = lambda pk: VariableValue.objects.get(pk=pk).current_value
+
+                execution.update_imports(request.user)
+                testsuite = execution.get_rf_testsuite(get_variable_value, request.user, {}, include_doc=True)
+                robot_file = testsuite['name'] + '.robot'
+
+                return HttpResponse(
+                    gen_testsuite(testsuite),
+                    headers={
+                        'Content-Type': 'text/plain',
+                        'Content-Disposition': f'attachment; filename="{robot_file}"'
+                    }
+                )
+
+        current_app, model, *route = request.resolver_match.route.split('/')
+        app = settings.MODEL_TO_APP.get(model)
+
+        if app and app != current_app:
+            return HttpResponseRedirect(reverse('admin:%s_%s_change' % (app, model), args=(object_id,)))
 
         return super().change_view(request, object_id, form_url, extra_context)
-
-    def formfield_for_dbfield(self, db_field, request, **kwargs):
-        field = super().formfield_for_dbfield(db_field, request, **kwargs)
-
-        if db_field.name == 'systems':
-            field.widget = BaseSelectMultiple(_('Systeme hinzufügen'))
-
-        return field
-
-    def get_inlines(self, request, obj):
-        testcase: TestCase = obj
-
-        if not testcase:
-            return []
-
-        if testcase.has_empty_sequence:
-            return [TestSteps]
-
-        return self.inlines
-
-    def save_model(self, request, obj, form, change):
-        super().save_model(request, obj, form, change)
-
-        if not change:
-            form.save_m2m()
-
-            testcase: TestCase = obj
-            Execution.objects.create(testcase=testcase)

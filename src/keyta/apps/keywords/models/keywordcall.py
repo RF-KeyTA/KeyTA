@@ -1,17 +1,23 @@
 from typing import Optional
+
+from django.conf import settings
 from django.db import models
 from django.db.models import Q, QuerySet
-from django.contrib.auth.models import User
-from django.utils.translation import gettext as _
+from django.contrib.auth.models import AbstractUser
+from django.utils.translation import gettext_lazy as _
 
-from apps.common.abc import AbstractBaseModel
-from apps.rf_export.keywords import RFKeywordCall
+from model_clone import CloneMixin
 
+from keyta.models.base_model import AbstractBaseModel
+from keyta.rf_export.keywords import RFKeywordCall
+from keyta.widgets import Icon
 
+from ..json_value import JSONValue
+from .keywordcall_condition import KeywordCallCondition
+from .keywordcall_parameter_source import KeywordCallParameterSourceType
+from .keywordcall_parameters import KeywordCallParameter
 from .keywordcall_return_value import KeywordCallReturnValue
-from .keywordcall_parameters import KeywordCallParameter, jsonify
-from .keyword import Keyword
-from .keyword_parameters import KeywordParameter
+from .keyword_parameters import KeywordParameter, KeywordParameterType
 from .keyword_return_value import KeywordReturnValue
 
 
@@ -31,9 +37,16 @@ class KeywordCallType(models.TextChoices):
     TEST_STEP = 'TEST_STEP', _('Testschritt')
 
 
-class KeywordCall(AbstractBaseModel):
+class ExecutionState(models.TextChoices):
+    EXECUTE = 'EXECUTE', 'EXECUTE'
+    SKIP_EXECUTION = 'SKIP_EXECUTION', 'SKIP_EXECUTION'
+    BEGIN_EXECUTION = 'BEGIN_EXECUTION', 'BEGIN_EXECUTION'
+    END_EXECUTION = 'END_EXECUTION', 'END_EXECUTION'
+
+
+class KeywordCall(CloneMixin, AbstractBaseModel):
     from_keyword = models.ForeignKey(
-        Keyword,
+        'keywords.Keyword',
         on_delete=models.CASCADE,
         null=True,
         default=None,
@@ -57,23 +70,25 @@ class KeywordCall(AbstractBaseModel):
         related_name='keyword_calls'
     )
     to_keyword = models.ForeignKey(
-        Keyword,
+        'keywords.Keyword',
         on_delete=models.CASCADE,
+        null=True,
+        blank=True,
         related_name='uses'
     )
-    enabled = models.BooleanField(default=True, verbose_name='')
-    index = models.PositiveSmallIntegerField(default=0, db_index=True)
+    enabled = models.BooleanField(
+        default=True,
+        verbose_name=''
+    )
+    index = models.PositiveSmallIntegerField(
+        default=0,
+        db_index=True
+    )
     type = models.CharField(
         max_length=255,
         choices=KeywordCallType.choices +
         TestSetupTeardown.choices +
         SuiteSetupTeardown.choices
-    )
-    # Test/Suite Setup/Teardown are user-dependent
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        null=True
     )
 
     # --Customization--
@@ -87,27 +102,187 @@ class KeywordCall(AbstractBaseModel):
         verbose_name=_('Maske')
     )
 
+    _clone_m2o_or_o2m_fields = ['conditions', 'parameters', 'return_values']
+
+    def __repr__(self):
+        return super().__repr__().replace('KeywordCall', f'KeywordCall({self.type})')
+
     def __str__(self):
-        return str(self.caller) + ' → ' + str(self.to_keyword)
+        return f'{self.caller} → {self.to_keyword}'
 
     def add_parameter(
         self,
         param: KeywordParameter,
-        user: Optional[User]=None
+        user: Optional[AbstractUser]=None,
+        value: str=None
     ):
         KeywordCallParameter.objects.get_or_create(
             keyword_call=self,
             parameter=param,
             user=user,
             defaults={
-                'value': jsonify(param.default_value, None),
+                'value': value or JSONValue(
+                    arg_name=None,
+                    kw_call_index=None,
+                    pk=None,
+                    user_input=param.default_value
+                ).jsonify()
             }
         )
+
+    def add_return_value(self, return_value: KeywordReturnValue):
+        if return_value.type:
+            KeywordCallReturnValue.objects.get_or_create(
+                keyword_call=self,
+                kw_call_return_value=return_value.kw_call_return_value,
+                name=_('Rückgabewert'),
+                return_value=return_value
+            )
+        else:
+            KeywordCallReturnValue.objects.get_or_create(
+                keyword_call=self,
+                kw_call_return_value=return_value.kw_call_return_value
+            )
+
+    def delete(self, using=None, keep_parents=False):
+        super().delete(using, keep_parents)
+
+        if self.from_keyword:
+            steps = self.from_keyword.calls.all()
+
+        if self.testcase:
+            steps = self.testcase.steps.all()
+
+        for index, step in enumerate(steps, start=1):
+            step.index = index
+            step.save()
+
+    def delete_conditions(self):
+        condition: KeywordCallCondition
+        for condition in self.conditions.all():
+            condition.delete()
+
+    def delete_parameters(self):
+        param: KeywordCallParameter
+        for param in self.parameters.all():
+            param.delete()
+
+    def delete_return_value(self, return_value: KeywordReturnValue):
+        self.return_values.get(kw_call_return_value__id=return_value.kw_call_return_value.pk).delete()
+
+    def delete_return_values(self):
+        return_value: KeywordReturnValue
+        for return_value in self.return_values.all():
+            return_value.delete()
 
     @property
     def caller(self):
         if self.pk:
             return self.from_keyword or self.testcase or self.execution
+        return None
+
+    def get_icon(self, user: Optional[AbstractUser] = None, default_kw_call_parameter_values: Optional[dict] = None) -> Icon | None:
+        def no_input_no_output():
+            icon = Icon(
+                settings.FA_ICONS.kw_call_no_input_no_output,
+                {
+                    'color': 'black',
+                    'font-size': '18px',
+                    'margin-left': '12px',
+                    'margin-top': '8px'
+                }
+            )
+            icon.attrs['cursor'] = 'default'
+            icon.attrs['name'] = 'no-input-no-output'
+            return icon
+
+        if not self.pk or not self.to_keyword:
+            return no_input_no_output()
+
+        to_keyword_parameters_count = self.to_keyword.parameters.count()
+        has_return_values = not self.type == KeywordCallType.KEYWORD_EXECUTION and self.return_values.exists()
+
+        if to_keyword_parameters_count == 0:
+            if not has_return_values:
+                if not (self.to_keyword.library or self.to_keyword.resource):
+                    return no_input_no_output()
+                else:
+                 # For a Library/Resource keyword the icon is necessary to set the return value
+                 icon = Icon(settings.FA_ICONS.kw_call_only_output)
+                 icon.attrs['name'] = 'only-output'
+                 icon.attrs['style'].update({'color': 'gray'})
+                 return icon
+            else:
+                icon = Icon(settings.FA_ICONS.kw_call_only_output, {'color': 'var(--keyta-secondary-color)'})
+                icon.attrs['name'] = 'only-output'
+                return icon
+
+        if self.parameters.filter(user=user).count() != to_keyword_parameters_count:
+            self.update_parameters(user, default_kw_call_parameter_values)
+
+        if has_return_values:
+            icon = Icon(settings.FA_ICONS.kw_call_input_output)
+            icon.attrs['name'] = 'input-output'
+            return self.update_icon(icon, user)
+        else:
+            icon = Icon(settings.FA_ICONS.kw_call_only_input, {'color': 'var(--keyta-primary-color)'})
+            icon.attrs['name'] = 'only-input'
+            return self.update_icon(icon, user)
+
+    def update_icon(self, icon: Icon, user: Optional[AbstractUser] = None):
+        if self.has_empty_arg(user):
+            icon.attrs['style'].update({'color': '#ff5a9e', '--fa-primary-color': '#ff5a9e'})
+
+        return icon
+
+    @classmethod
+    def get_substeps(cls, kw_calls: QuerySet):
+        return (
+            KeywordCall.unsorted()
+            .filter(from_keyword__in=kw_calls.values_list('to_keyword'))
+        )
+
+    def get_parameter(self, param_index: int):
+        kwcall_params = {}
+
+        kwcall_param: KeywordCallParameter
+        for kwcall_param in self.parameters.all():
+            name = kwcall_param.name
+            param = kwcall_param.parameter
+            type = None
+            value = kwcall_param.current_value
+            icon = ''
+
+            if value_ref := kwcall_param.value_ref:
+                type = value_ref.type
+
+            if type == KeywordCallParameterSourceType.KEYWORD_PARAMETER:
+                icon = settings.FA_ICONS.arg_kw_param
+
+            if type == KeywordCallParameterSourceType.KW_CALL_RETURN_VALUE:
+                icon = settings.FA_ICONS.arg_return_value
+
+            if type == KeywordCallParameterSourceType.VARIABLE_VALUE:
+                icon = settings.FA_ICONS.arg_variable
+
+            if not name in kwcall_params:
+                kwcall_params[name] = {'name': name, 'icon': icon}
+
+            if param.is_arg or param.is_kwarg:
+                kwcall_params[name].update({'value': value})
+            
+            if param.is_vararg or param.is_varkwarg:
+                if not kwcall_params[name].get('value'):
+                    kwcall_params[name]['value'] = [value]
+                else:
+                    kwcall_params[name]['value'].append(value)
+
+        kwcall_params_keys = list(kwcall_params.keys())
+
+        if param_index < len(kwcall_params_keys):
+            key = kwcall_params_keys[param_index]
+            return kwcall_params[key]
+
         return None
 
     def get_previous_return_values(self) -> QuerySet:
@@ -127,56 +302,122 @@ class KeywordCall(AbstractBaseModel):
             KeywordCallReturnValue.objects
             .filter(keyword_call__in=previous_kw_calls)
             .exclude(
-                Q(return_value__isnull=True) & Q(name__isnull=True)
+                Q(kw_call_return_value__isnull=True) & Q(name__isnull=True)
             )
         )
 
-    def has_empty_arg(self, user: Optional[User]=None) -> bool:
+    def has_empty_arg(self, user: Optional[AbstractUser]=None) -> bool:
+        first_arg = self.to_keyword.parameters.first()
+        if first_arg and first_arg.is_vararg and not self.parameters.filter(user=user).exists():
+            return True
+
         args: QuerySet = self.parameters.filter(user=user).args()
-        return any(arg.current_value is None for arg in args)
+        arg: KeywordCallParameter
+        for arg in args:
+            if arg.is_empty():
+                return True
+
+        return False
+
+    def has_no_kw_call(self):
+        return not self.to_keyword
+
+    def make_clone(self, attrs=None, sub_clone=False, using=None, parent=None):
+        attrs = (attrs or {}) | {'clone': True}
+        return super().make_clone(attrs, sub_clone, using, parent)
+
+    def reset_parameters(self):
+        param: KeywordCallParameter
+        for param in self.parameters.all():
+            if param.value_ref:
+                param.reset_value()
+                param.save()
 
     def save(
         self, force_insert=False, force_update=False,
         using=None, update_fields=None
     ):
         if not self.type:
-            self.type = KeywordCallType.KEYWORD_CALL
+            if self.testcase:
+                self.type = KeywordCallType.TEST_STEP
+            else:
+                self.type = KeywordCallType.KEYWORD_CALL
 
         if not self.pk:
             super().save(force_insert, force_update, using, update_fields)
 
-            if self.type in [
-                KeywordCallType.KEYWORD_CALL, KeywordCallType.TEST_STEP
-            ]:
-                for param in self.to_keyword.parameters.all():
-                    self.add_parameter(param)
+            if not hasattr(self, 'clone'):
+                if self.to_keyword and not self.testcase:
+                    self.update_parameters()
 
-                return_value: KeywordReturnValue
-                return_value = self.to_keyword.return_value.first()
-
-                if return_value:
-                    KeywordCallReturnValue.objects.create(
-                        keyword_call=self,
-                        return_value=return_value.kw_call_return_value
-                    )
+                    for return_value in self.to_keyword.return_values.all():
+                        self.add_return_value(return_value)
         else:
-            return super().save(force_insert, force_update, using, update_fields)
+            if (
+                not self.return_values.count() and
+                self.to_keyword and
+                (self.to_keyword.is_action or self.to_keyword.is_sequence)
+            ):
+                for return_value in self.to_keyword.return_values.all():
+                    self.add_return_value(return_value)
 
-    def to_robot(self, user: Optional[User]=None) -> RFKeywordCall:
-        args = self.parameters.filter(user=user).args()
-        kwargs = self.parameters.filter(user=user).kwargs()
-        return_value: KeywordCallReturnValue = self.return_value.first()
+            super().save(force_insert, force_update, using, update_fields)
+
+    def to_robot(self, get_variable_value, user: Optional[AbstractUser]=None) -> RFKeywordCall:
+        parameters = (
+            self.parameters
+           .prefetch_related('parameter')
+           .prefetch_related('value_ref')
+           .filter(user=user)
+        )
+
+        params = []
+        table_var = None
+        table_columns = []
+
+        for param in parameters:
+            value = param.to_robot(get_variable_value) or '${EMPTY}'
+
+            if param.parameter.is_arg or param.parameter.is_vararg or param.parameter.is_varkwarg:
+                params.append(value)
+
+            if param.parameter.is_kwarg:
+                params.append('%s=%s' % (param.name, value))
+
+            if param.value_ref and param.value_ref.table_column:
+                table_columns.append('${%s}' % str(param.value_ref))
+
+                if not table_var:
+                    table_var = '@{%s}' % str(param.value_ref.table_column.table)
 
         return {
+            'condition': ' and '.join([str(condition) for condition in self.conditions.all()]),
             'keyword': self.to_keyword.unique_name,
-            'args': {arg.name: arg.to_robot() for arg in args},
-            'kwargs': {kwarg.name: kwarg.to_robot() for kwarg in kwargs},
-            'return_value': (
+            'params': params,
+            'return_values': [
                 '${' + str(return_value) + '}'
-                if return_value and return_value.is_set
-                else None
-            )
+                for return_value in self.return_values.all()
+                if return_value.is_set
+            ],
+            'table_var': table_var,
+            'table_columns': table_columns
         }
+
+    @classmethod
+    def unsorted(cls):
+        return KeywordCall.objects.order_by()
+
+    def update_parameter_values(self):
+        kw_call_param: KeywordCallParameter
+        for kw_call_param in self.parameters.all():
+            kw_call_param.update_value()
+
+    def update_parameters(self, user: Optional[AbstractUser]=None, values: Optional[dict]=None):
+        for param in self.to_keyword.parameters.exclude(type__in=[KeywordParameterType.VAR_ARG, KeywordParameterType.VAR_KWARG]):
+            if values:
+                self.add_parameter(param, user, values.get(param.name))
+            else:
+                self.add_parameter(param, user)
 
     class Manager(models.Manager):
         def get_queryset(self):
@@ -238,50 +479,3 @@ class KeywordCall(AbstractBaseModel):
         ordering = ['index']
         verbose_name = _('Schritt')
         verbose_name_plural = _('Schritte')
-        constraints = [
-            models.CheckConstraint(
-                name='keyword_call_sum_type',
-                check=
-                (Q(type=KeywordCallType.KEYWORD_CALL) &
-                 Q(from_keyword__isnull=False) &
-                 Q(execution__isnull=True) &
-                 Q(testcase__isnull=True) &
-                 Q(window__isnull=True))
-                |
-                (Q(type=KeywordCallType.TEST_STEP) &
-                 Q(testcase__isnull=False) &
-                 Q(window__isnull=False) &
-                 Q(execution__isnull=True) &
-                 Q(from_keyword__isnull=True))
-                |
-                (Q(type=KeywordCallType.KEYWORD_EXECUTION) &
-                 Q(execution__isnull=False) &
-                 Q(from_keyword__isnull=True) &
-                 Q(testcase__isnull=True) &
-                 Q(window__isnull=True))
-                |
-                (Q(type=TestSetupTeardown.TEST_SETUP) &
-                 Q(execution__isnull=False) &
-                 Q(from_keyword__isnull=True) &
-                 Q(testcase__isnull=True) &
-                 Q(window__isnull=True))
-                |
-                (Q(type=TestSetupTeardown.TEST_TEARDOWN) &
-                 Q(execution__isnull=False) &
-                 Q(from_keyword__isnull=True) &
-                 Q(testcase__isnull=True) &
-                 Q(window__isnull=True))
-                |
-                (Q(type=SuiteSetupTeardown.SUITE_SETUP) &
-                 Q(execution__isnull=False) &
-                 Q(from_keyword__isnull=True) &
-                 Q(testcase__isnull=True) &
-                 Q(window__isnull=True))
-                |
-                (Q(type=SuiteSetupTeardown.SUITE_TEARDOWN) &
-                 Q(execution__isnull=False) &
-                 Q(from_keyword__isnull=True) &
-                 Q(testcase__isnull=True) &
-                 Q(window__isnull=True))
-            )
-        ]

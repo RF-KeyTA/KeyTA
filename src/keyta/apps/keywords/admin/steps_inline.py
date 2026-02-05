@@ -1,35 +1,67 @@
+from django.conf import settings
 from django.contrib import admin
-from django.utils.translation import gettext as _
+from django.http import HttpRequest
+from django.utils.safestring import mark_safe
+from django.utils.translation import gettext_lazy as _
 
-from apps.common.admin import SortableTabularInlineWithDelete
-
-from apps.common.widgets import open_link_in_modal
+from keyta.admin.base_inline import SortableTabularInline
+from keyta.admin.field_delete_related_instance import DeleteRelatedField
+from keyta.widgets import Icon
 
 from ..forms import StepsForm
-from ..models import KeywordCall
+from ..models import Keyword, KeywordCall
+from .field_keywordcall_values import KeywordCallValuesField
+from .field_parameters import ParameterFields
 
 
-class StepsInline(SortableTabularInlineWithDelete):
+class StepsInline(
+    DeleteRelatedField,
+    ParameterFields,
+    KeywordCallValuesField,
+    SortableTabularInline
+):
     model = KeywordCall
-    fields = ['to_keyword', 'args']
+    fk_name = 'from_keyword'
+    fields = ['to_keyword']
     form = StepsForm
-    readonly_fields = ['args']
-    extra = 1  # Must be > 0 in order for SequenceSteps to work
+    extra = 0
 
-    @admin.display(description=_('Werte'))
-    def args(self, obj):
-        kw_call: KeywordCall = obj
+    def get_fields(self, request, obj=None):
+        keyword: Keyword = obj
 
-        if not kw_call.pk:
-            return '-'
+        if keyword and keyword.calls.filter(conditions__isnull=False).exists():
+            return ['condition'] + super().get_fields(request, obj)
 
-        if kw_call.has_empty_arg():
-            return open_link_in_modal(
-                kw_call.get_admin_url(),
-                '<i class=" error-duotone fa-solid fa-list" style="font-size: 36px;"></i>'
-            )
-        else:
-            return open_link_in_modal(
-                kw_call.get_admin_url(),
-                '<i class=" fa-solid fa-list" style="font-size: 36px"></i>'
-            )
+        return super().get_fields(request, obj)
+
+    def get_readonly_fields(self, request: HttpRequest, obj=None):
+        readonly_fields = super().get_readonly_fields(request, obj)
+
+        @admin.display(description='')
+        def condition(self, kw_call: KeywordCall):
+            if kw_call.conditions.exists():
+                return mark_safe(str(Icon(
+                    settings.FA_ICONS.condition,
+                    {
+                        'font-size': '18px',
+                        'margin-top': '14px'
+                    },
+                    title=_('Vorbedingung')
+                )))
+
+            return ''
+
+        StepsInline.condition = condition
+
+        return ['condition'] + readonly_fields
+
+    def has_delete_permission(self, request, obj=None):
+        keyword: Keyword = obj
+
+        if keyword and keyword.is_action:
+            return self.can_change(request.user, 'action')
+
+        if keyword and keyword.is_sequence:
+            return self.can_change(request.user, 'sequence')
+
+        return super().has_delete_permission(request, obj)

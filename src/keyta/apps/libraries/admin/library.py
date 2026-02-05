@@ -1,78 +1,88 @@
-from importlib import import_module
 import json
+from importlib import import_module
+
+from django.conf import settings
 from django.contrib import admin, messages
-from django.db.models import QuerySet
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponseRedirect
 from django.urls import reverse
 from django.utils.safestring import mark_safe
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
-from apps.common.admin import BaseAdmin
-from apps.common.forms import OptionalArgumentFormSet
-from apps.common.widgets import link
-from apps.rf_import.import_library import import_library
+from keyta.admin.base_admin import BaseAdmin
+from keyta.admin.keywords_inline import Keywords
+from keyta.apps.keywords.models import KeywordCall
+from keyta.rf_import.import_library import import_library
+from keyta.widgets import link, Icon
+
 from ..forms import LibraryForm
 from ..models import (
     Library,
-    LibraryParameter,
-    LibraryKeyword,
+    LibraryImport,
     LibraryInitDocumentation
 )
-
-
-class Keywords(admin.TabularInline):
-    model = LibraryKeyword
-    fields = ['name', 'short_doc']
-    readonly_fields = ['name', 'short_doc']
-    extra = 0
-    can_delete = False
-    show_change_link = True
-    verbose_name_plural = _('Schlüsselwörter')
-
-    def has_add_permission(self, request, obj=None):
-        return False
-
-    def has_change_permission(self, request, obj=None):
-        return False
-
-
-class LibraryParameterFormSet(OptionalArgumentFormSet):
-    value_field = 'default_value'
-
-
-class InitArguments(admin.TabularInline):
-    model = LibraryParameter
-    fields = ['name', 'default_value', 'reset']
-    readonly_fields = ['name', 'reset']
-    formset = LibraryParameterFormSet
-    extra = 0
-    max_num = 0
-    can_delete = False
-
-    def get_queryset(self, request):
-        queryset: QuerySet = super().get_queryset(request)
-        return queryset.prefetch_related('library')
-
-    def has_add_permission(self, request, obj=None):
-        return False
-
-    @admin.display(description=_('zurücksetzen'))
-    def reset(self, obj: LibraryParameter):
-        ref = '&ref=' + obj.library.get_admin_url() + obj.get_tab_url()
-        url = obj.get_admin_url() + '?reset' + ref
-
-        return link(url, '↩')
+from .library_parameters_inline import LibraryParametersInline
 
 
 @admin.register(Library)
 class LibraryAdmin(BaseAdmin):
-    list_display = ['name', 'version', 'update']
-    ordering = ['name']
-    inlines = [Keywords]
-    form = LibraryForm
-    errors = set()
+    list_display = ['name', 'version']
+    list_display_links = ['name']
 
-    def autocomplete_name(self, name: str):
+    def get_changelist(self, request: HttpRequest, **kwargs):
+        if 'update' in request.GET:
+            library = Library.objects.get(id=int(request.GET['lib_id']))
+            try:
+                import_library(library.name)
+                messages.info(
+                    request,
+                    _('Die Bibliothek "{library_name}" wurde erfolgreich aktualisiert').format(library_name=library.name)
+                )
+            except:
+                self.errors.add(
+                    _('Die Bibliothek "{library_name}" konnte nicht importiert werden').format(library_name=library.name)
+                )
+
+        for error in self.errors:
+            messages.warning(request, error)
+
+        return super().get_changelist(request, **kwargs)
+
+    def get_list_display(self, request):
+        if self.can_change(request.user, 'library'):
+            return ['update'] + self.list_display
+
+        return self.list_display
+
+    update_icon = Icon(
+        settings.FA_ICONS.update,
+        styles={'font-size': '18px'},
+        title=_('Aktualisierung')
+    )
+
+    @admin.display(description=mark_safe(str(update_icon)))
+    def update(self, library: Library):
+        version = None
+
+        if library.name in Library.ROBOT_LIBRARIES:
+            version = import_module(f'robot.libraries.{library.name}').get_version()
+        else:
+            try:
+                version = getattr(import_module(library.name), '__version__', None)
+            except ModuleNotFoundError as err:
+                self.errors.add(_('Eine Bibliothek ist nicht vorhanden: {err}').format(err=err))
+
+        if version and version != library.version:
+            return link(
+                reverse('admin:libraries_library_changelist') + f'?update&lib_id={library.id}',
+                str(Icon(settings.FA_ICONS.library_update, {'font-size': '18px'}))
+            )
+
+    change_form_template = 'library_change_form.html'
+    errors = set()
+    form = LibraryForm
+    inlines = [Keywords]
+
+    def autocomplete_name(self, name: str, request: HttpRequest):
         return json.dumps([
             name
             for name in
@@ -80,27 +90,25 @@ class LibraryAdmin(BaseAdmin):
             .filter(name__icontains=name)
         ])
 
-    def get_changelist(self, request: HttpRequest, **kwargs):
-        if 'update' in request.GET:
-            library = Library.objects.get(id=int(request.GET['lib_id']))
-            import_library(library.name)
-            messages.info(request, _('Die Bibliothek "{library_name}" wurde erfolgreich aktualisiert').format(library_name=library.name))
+    def change_view(self, request, object_id, form_url="", extra_context=None):
+        current_app, model, *route = request.resolver_match.route.split('/')
+        app = settings.MODEL_TO_APP.get(model)
 
-        for error in self.errors:
-            messages.warning(request, error)
+        if app and app != current_app:
+            return HttpResponseRedirect(reverse('admin:%s_%s_change' % (app, model), args=(object_id,)))
 
-        return super().get_changelist(request, **kwargs)
+        return super().change_view(request, object_id, form_url, extra_context)
 
     @admin.display(description=_('Dokumentation'))
-    def dokumentation(self, obj):
-        return mark_safe(obj.documentation)
+    def dokumentation(self, library: Library):
+        return mark_safe(library.documentation)
 
     def get_inlines(self, request, obj):
         library: Library = obj
         inlines = [Keywords]
 
-        if library and library.has_parameters:
-            return inlines + [InitArguments]
+        if library and library.has_parameters and self.has_change_permission(request, obj):
+            return inlines + [LibraryParametersInline]
 
         if library:
             return inlines
@@ -123,8 +131,20 @@ class LibraryAdmin(BaseAdmin):
 
         return ['name', 'version', 'dokumentation']
 
-    def has_delete_permission(self, request: HttpRequest, obj=None) -> bool:
-        return False
+    def get_protected_objects(self, obj: Library):
+        return (
+            list(KeywordCall.objects.filter(to_keyword__library=obj)[:20]) +
+            list(LibraryImport.objects.filter(library=obj)[:20])
+        )
+
+    def has_add_permission(self, request):
+        return self.can_add(request.user, 'library')
+
+    def has_change_permission(self, request, obj=None):
+        return self.can_change(request.user, 'library')
+
+    def has_delete_permission(self, request, obj=None):
+        return request.user.is_superuser
 
     def save_form(self, request, form, change):
         library_name = form.cleaned_data.get('name', None)
@@ -136,30 +156,14 @@ class LibraryAdmin(BaseAdmin):
         else:
             return super().save_form(request, form, change)
 
-    @admin.display(description=_('Aktualisierung'))
-    def update(self, obj):
-        library: Library = obj
-        version = None
-
-        if library.name in Library.ROBOT_LIBRARIES:
-            version = import_module(f'robot.libraries.{library.name}').get_version()
-        else:
-            try:
-                version = getattr(import_module(library.name), '__version__', None) 
-            except ModuleNotFoundError as err:
-                self.errors.add(_('Eine Bibliothek ist nicht vorhanden: {err}').format(err=err))
-
-        if version and version != library.version:
-            return link(
-                reverse('admin:libraries_library_changelist') + f'?update&lib_id={library.id}',
-                '🔄'
-            )
 
 @admin.register(LibraryInitDocumentation)
 class LibraryInitDocumentationAdmin(BaseAdmin):
     fields = ['dokumentation']
     readonly_fields = ['dokumentation']
 
-    # noinspection PyMethodMayBeStatic
-    def dokumentation(self, obj: Library):
-        return mark_safe(obj.init_doc)
+    def dokumentation(self, library: Library):
+        return mark_safe(library.init_doc)
+
+    def has_delete_permission(self, request, obj=None):
+        return False

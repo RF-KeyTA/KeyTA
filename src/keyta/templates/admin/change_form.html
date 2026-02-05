@@ -4,6 +4,7 @@
 
 {% block extrastyle %}
     {{ block.super }}
+    <link rel="stylesheet" href="{% static 'admin/css/jquery.floatingscroll.css' %}">
     <link rel="stylesheet" href="{% static 'vendor/select2/css/select2.min.css' %}">
 {% endblock %}
 
@@ -24,7 +25,7 @@
 {% if not is_popup %}
     {% block breadcrumbs %}
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{% url 'admin:index' %}">{% trans 'Home' %}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'admin:index' %}">{% trans 'Dashboard' %}</a></li>
             <li class="breadcrumb-item">
                 {% if has_view_permission %}
                     <a href="{% url opts|admin_urlname:'changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>
@@ -46,8 +47,8 @@
 {% block content_title %} {{ opts.verbose_name_plural|capfirst }} {% endblock %}
 
 {% block page_actions %}
-<div class="col-12 col-md-auto d-flex align-items-center justify-content-end page-actions">
-    {% if has_add_permission %}
+<div class="col-3 col-md-auto d-flex align-items-center justify-content-end">
+    {% if has_add_permission and not add %}
         {% url opts|admin_urlname:'add' as add_url %}
         <a href="{% add_preserved_filters add_url is_popup to_field %}" class="btn {{ jazzmin_ui.button_classes.success }} float-right">
             <i class="fa fa-plus-circle"></i> &nbsp; {% blocktrans with opts.verbose_name as name %}Add {{ name }}{% endblocktrans %}
@@ -79,15 +80,25 @@
             {% endif %}
 
             <div class="row">
-                {% if is_popup %}<input type="hidden" name="{{ is_popup_var }}" value="1">{% endif %}
+<!--                {% if is_popup %}<input type="hidden" name="{{ is_popup_var }}" value="1">{% endif %}-->
                 {% if to_field %}<input type="hidden" name="{{ to_field_var }}" value="{{ to_field }}">{% endif %}
 
                 {% block field_sets %}
                     <div class="col-12 col-lg-12">
                         <div class="card">
                             <div class="card-header">
-                                <h4 style="display: inline-flex; margin-bottom: 0px">
-                                    {% firstof original.name title %}
+                                <h4 id="card-title" style="display: inline-flex; margin-bottom: 0px">
+                                    {% block card_title %}
+                                        {% if title_icon %}<i class="title-icon {{ title_icon }} mr-3"></i>{% endif %} {% firstof original.name title %}
+                                        {% if is_popup %}
+                                            {% url opts|admin_urlname:'change' original.pk as change_url %}
+                                            {% if 'quickchange' in change_url %}
+                                            <a href="{{ change_url|cut:'quickchange' }}" target="_blank">
+                                                <i class="ml-2 fa-solid fa-up-right-from-square" style="font-size: 1rem"></i>
+                                            </a>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endblock %}
                                 </h4>
                                 <div id="jazzy-actions" class="{{ jazzmin_ui.actions_classes }} float-right" style="display: inline-flex">
                                 {% block submit_buttons_bottom %}
@@ -108,8 +119,10 @@
                                 </div>
                             </div>
                             <div class="card-body">
+                                {% block card_body %}
                                 {% get_changeform_template adminform as changeform_template %}
                                 {% include changeform_template %}
+                                {% endblock %}
                             </div>
                         </div>
                     </div>
@@ -133,107 +146,195 @@
 {% block extrajs %}
     {{ block.super }}
     <!-- BEGIN change_form.html -->
+    <script type="text/javascript" src="{% static 'admin/js/htmx.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'admin/js/jquery.floatingscroll.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'vendor/select2/js/select2.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'jazzmin/js/change_form.js' %}"></script>
     <script type="text/javascript" src="{% static 'admin/js/bootstrap3-typeahead.min.js' %}"></script>
     {% if jazzmin_settings.related_modal_active %}
-    <script type="text/javascript" src="{% static 'jazzmin/plugins/bootstrap-show-modal/bootstrap-show-modal.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'jazzmin/js/bootstrap-show-modal.js' %}"></script>
     <script type="text/javascript" src="{% static 'jazzmin/js/related-modal.js' %}"></script>
     {% endif %}
+
+    {% block select2 %}
+        <script type="text/javascript">
+            function applySelect2() {
+                // Apply select2 to any select boxes that don't yet have it
+                // and are not part of the django's empty-form inline
+                const noSelect2 = '.empty-form select, .select2-hidden-accessible, .selectfilter, .selector-available select, .selector-chosen select, select[data-autocomplete-light-function=select2]';
+                const selects = django.jQuery('select').not(noSelect2)
+                if (selects.length > 0) {
+                    selects.select2({ width: 'element' });
+                }
+            }
+        </script>
+    {% endblock %}
+
+    <script>
+        function bsShowModal(selector) {
+            $.showModal({
+                title: selector.replace('#', ''),
+                body: document.querySelector(selector).outerHTML,
+                backdrop: false,
+                modalDialogClass: "modal-dialog-centered modal-lg",
+                modalClass: "fade modal-wide type-modal"
+            })
+            let modal = document.querySelector('.modal-body ' + selector)
+            modal.classList.remove('modal')
+        }
+    </script>
+
     <script type="text/javascript">
         $(document).ready(function () {
-            {% if add %}
-                $('input:text, select').first().focus()
-                setTimeout(function() { $('body.popup input:text, body.popup select').first().focus() }, 400);
-            {% endif %}
+            applySelect2()
 
-            {% if original.pk %}
-                var url = "{% url opts|admin_urlname:'change' original.pk %}";
-            {% else %}
-                var url = "{% url opts|admin_urlname:'add' %}";
-            {% endif %}
+            $(".tabular").floatingScroll()
 
             $('#id_name').typeahead({
                 source: function (query, process) {
                     if (query.length > 2) {
+                        const query_parameters = new URLSearchParams(window.location.search)
+                        query_parameters.set("autocomplete", "")
+
                         return $.get(
-                            url + "?autocomplete", 
-                            {name: query}, 
+                            url + '?' + query_parameters.toString(),
+                            {name: query},
                             (data) => process(data)
-                        );
+                        )
                     }
-                }
-            });
+                },
+                autoSelect: false
+            })
+
+            {% if original.pk %}
+                var url = "{% url opts|admin_urlname:'change' original.pk %}"
+            {% else %}
+                var url = "{% url opts|admin_urlname:'add' %}"
+            {% endif %}
+
+            {% if add %}
+                $('input:text, select').first().focus()
+            {% endif %}
 
             if (url.includes("/change")) {
                 const save_button = '.button-save'
                 $(save_button).hide()
 
-                /* Modal */
-                django.jQuery('body.popup select').on('change', function() {
-                    $.post(url, $('form').serialize() + "&_continue=")
-                });
+                $(document).on('hide.bs.modal', function (event) {
+                    const modals = $('div[id^="bootstrap-show-modal"]')
 
-                django.jQuery('body.popup input[type="text"]').on('blur', function() {
-                    $.post(url, $('form').serialize() + "&_continue=")
-                });
-                
-                $(document).on('click', 'button.close', function() {
-                    $('body.popup .button-save').click()
+                    modals.each((index, modal) => {
+                        if (index === 0) {
+                            const modal_iframe = $('#related-modal-iframe', modal).get(0)
 
-                    if ($('.modal-dialog').length == 1) {
-                        $(save_button).click()
-                    }
-                })
-
-                $('body.popup input[type="checkbox"]').on('change', function () {
-                    $('body.popup .button-save').click()
-                })
-                /* END */
-                
-                django.jQuery('select').not('body.popup select, .form-row select').on('change', function() {
-                    $(save_button).click()
-                });
-                
-                django.jQuery('.form-row').not('body.popup .form-row, .empty-form .form-row').each(function() {
-                    const row = $(this)
-                    const selects = django.jQuery(row).find('select')
-                    const first_select = selects.first()
-                    const last_select = selects.last()
-                    const inputs = row.find('input[type="text"]')
-                    const last_input = inputs.last()
-
-                    if(selects.length == 2 && !row.hasClass('has_original')) {
-                        last_select.prop('disabled', true)
-                        first_select.on('change', function() {
-                            last_select.prop('disabled', false)
-                        })
-                    }
-
-                    last_select.on('change', function() {
-                        $(save_button).click()
+                            if (modal_iframe) {
+                                const location = modal_iframe.contentWindow.location
+                                const match = location.pathname.match(/step\/(\d+)\//) || location.search.match(/kw_call_pk=(\d+)/)
+                                if (match) {
+                                    const pk = match[1]
+                                    htmx.trigger('body', `modal-closed-${pk}`)
+                                }
+                            }
+                        }
+                        else {
+                            const previousModal = $('#related-modal-iframe', modals[index-1])
+                            previousModal.get(0).contentWindow.htmx.trigger("body", "modal-closed")
+                        }
                     })
+                })
 
-                    if(inputs.length <= 2 && !row.hasClass('has_original')) {
-                        last_input.on('blur', function () {
-                            $(save_button).click()
-                        })
+                $(document).on('shown.bs.modal', '.modal', function (event) {
+                    const modal = $(event.target)
+                    const iframe = $('iframe', modal)
+
+                    iframe.contents().find('input[type=text]').first().focus()
+                })
+
+                $('.form-row.has_original').on('dragend', function() {
+                    $.post(url, $('form').serialize() + "&_continue=")
+                })
+
+                // A checkbox in a saved form of a formset
+                django.jQuery('.form-row.has_original input[type=checkbox]').on('change', function() {
+                    $.post(url, $('form').serialize() + "&_continue=")
+                })
+
+                // A checkbox in a form
+                django.jQuery('.form-group input[type=checkbox]').on('change', function() {
+                    $.post(url, $('form').serialize() + "&_continue=")
+                })
+
+                // Input texts in a saved form of a formset
+                const inputs = django.jQuery('.form-row.has_original input:text')
+                inputs.on('change', function(event) {
+                    const url = window.location.href
+
+                     $.post(
+                         url,
+                         $('form').serialize() + "&_continue="
+                     )
+                })
+
+                // An Input text in a form
+                $('.form-group input[type=text]').on('blur', function() {
+                    const input = $(this)
+
+                    $.post(url, $('form').serialize() + "&_continue=")
+
+                    if (input.attr('name') === 'name') {
+                        $('#card-title').html(input.val())
                     }
                 })
 
-                $('.form-row').on('dragend', function() {
-                    $(save_button).click()
-                })
-
-                $('input[type="checkbox"]').not('body.popup input').on('change', function () {
-                    $(save_button).click()
-                })
-
-                $('input').not('.form-row input, input[type="hidden"], input[type="checkbox"]').on('blur', function () {
+                // A select in a form
+                django.jQuery('.form-group select').on('change', function() {
                     $(save_button).click()
                 })
             }
-        });
+        })
     </script>
+
+    {% block formset_added %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            document.addEventListener('formset:added', function(event) {
+                applySelect2()
+
+                const row = django.jQuery(event.target)
+                const input_texts = django.jQuery('input[type=text]', row)
+
+                input_texts.first().focus()
+            })
+        })
+    </script>
+    {% endblock %}
+
+    {% block formset_form %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // Selects in a saved form of a formset
+            const formset_forms = django.jQuery('.form-row.has_original')
+            formset_forms.each((index, form) => {
+                const selects = django.jQuery('select', form)
+                selects.on('change', function(event) {
+                    const url = window.location.href
+
+                    // Reloading the whole window can be avoided using HTMX
+                    // to swap the row
+                    if (url.includes('_popup')) {
+                        $.post(
+                            url,
+                            $('form').serialize() + "&_continue=",
+                            function() { window.location.reload() }
+                        )
+                    }
+                    else {
+                        $('.button-save').click()
+                    }
+                })
+            })
+        })
+    </script>
+    {% endblock %}
     <!-- END change_form.html -->
 {% endblock %}

@@ -1,54 +1,39 @@
 from django import forms
-from django.contrib import admin
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
-from apps.actions.models import RobotKeywordCall, Action
-from apps.common.widgets import GroupedByLibrary, BaseSelect
-from apps.keywords.admin import StepsInline
-from apps.keywords.models import (
-    Keyword,
-    KeywordCall,
-    KeywordCallParameterSource,
-    KeywordCallParameter
-)
+from keyta.apps.keywords.admin import StepsInline
+from keyta.apps.keywords.forms import StepsForm
+from keyta.apps.keywords.models import Keyword, KeywordCall
+from keyta.forms.baseform import form_with_select
+from keyta.widgets import GroupedByLibrary
 
+from ..models import Action
+
+
+class GroupedChoiceField(forms.ModelChoiceField):
+    iterator = GroupedByLibrary
 
 
 class ActionSteps(StepsInline):
-    model = RobotKeywordCall
-    fk_name = 'from_keyword'
-
-    @admin.display(description=_('1. Parameter'))
-    def first_arg(self, obj: KeywordCall):
-        first_param: KeywordCallParameter = obj.parameters.first()
-
-        if not first_param:
-            return '-'
-
-        value_ref: KeywordCallParameterSource = first_param.value_ref
-
-        if value_ref and (variable_value := value_ref.variable_value):
-            return variable_value.name
-
-        return first_param.current_value
-
-    def formfield_for_dbfield(self, db_field, request, **kwargs):
-        if db_field.name == 'to_keyword':
-            choice_field = forms.ModelChoiceField(
-                label=_('Schlüsselwort'),
-                queryset=None,
-                widget=BaseSelect(_('Schlüsselwort auswählen'))
-            )
-            choice_field.iterator = GroupedByLibrary
-            return choice_field
-
-        return super().formfield_for_dbfield(db_field, request, **kwargs)
+    model = KeywordCall
+    form = form_with_select(
+        KeywordCall,
+        'to_keyword',
+        _('Schlüsselwort auswählen'),
+        labels={
+            'to_keyword': _('Schlüsselwort')
+        },
+        form_class=StepsForm,
+        field_classes={
+            'to_keyword': GroupedChoiceField
+        }
+    )
 
     def get_formset(self, request, obj=None, **kwargs):
         action: Action = obj
-        formset = super().get_formset(request, obj, **kwargs)
-
         keywords = Keyword.objects.filter(library__in=action.library_ids)
+
+        formset = super().get_formset(request, obj, **kwargs)
         formset.form.base_fields['to_keyword'].queryset = keywords
 
         return formset

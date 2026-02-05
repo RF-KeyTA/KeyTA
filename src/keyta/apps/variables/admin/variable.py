@@ -1,120 +1,241 @@
-import json
+from django.conf import settings
 from django.contrib import admin
-from django.db.models.functions import Lower
-from django.http import HttpRequest
-from django.utils.translation import gettext as _
+from django.forms import ModelMultipleChoiceField
+from django.http import HttpRequest, HttpResponseRedirect
+from django.urls import reverse
+from django.utils.safestring import mark_safe
+from django.utils.translation import gettext_lazy as _
 
-from apps.common.admin import BaseAdmin, BaseAddAdmin, TabularInlineWithDelete
-from apps.common.forms import form_with_select
-from apps.windows.models import Window
+from adminsortable2.admin import SortableAdminBase
 
-from ..models import Variable, VariableValue, VariableWindow, WindowVariable
+from keyta.admin.base_admin import BaseAdmin, BaseQuickAddAdmin
+from keyta.admin.list_filters import SystemListFilter, WindowListFilter
+from keyta.apps.keywords.models import KeywordCallParameter
+from keyta.apps.systems.models import System
+from keyta.apps.windows.models import Window
+from keyta.forms import form_with_select
+from keyta.widgets import BaseSelect, CheckboxSelectMultipleSystems, url_query_parameters
 
+from ..forms import VariableForm, VariableQuickAddForm
+from ..models import (
+    Variable,
+    VariableDocumentation,
+    VariableQuickAdd,
+    VariableQuickChange
+)
+from ..models.variable import VariableType
 
-class Values(TabularInlineWithDelete):
-    model = VariableValue
-    fields = ['name', 'value']
-    extra = 1
-    min_num = 1
-
-
-class Windows(TabularInlineWithDelete):
-    model = VariableWindow
-    extra = 0
-    fields = ['window']
-    tab_name = _('Masken').lower()
-    verbose_name = _('Maske')
-    verbose_name_plural = _('Masken')
-
-    form = form_with_select(
-        VariableWindow,
-        'window',
-        _('Maske auswählen'),
-        labels={
-            'window': _('Maske')
-        }
-    )
-
-    def get_formset(self, request, obj=None, **kwargs):
-        formset = super().get_formset(request, obj, **kwargs)
-        variable: Variable = obj
-        variable_systems = variable.systems.all()
-        windows = Window.objects.filter(systems__in=variable_systems).distinct()
-        formset.form.base_fields['window'].queryset = windows
-        return formset
-
-    def has_change_permission(self, request, obj=None) -> bool:
-        return False
+from .table_columns_inline import TableColumns
+from .values_inline import Values
+from .windows_inline import Windows
 
 
 @admin.register(Variable)
-class VariableAdmin(BaseAdmin):
-    list_display = ['system_list', 'name', 'description']
+class VariableAdmin(SortableAdminBase, BaseAdmin):
+    list_display = ['name', 'description', 'system_list']
     list_display_links = ['name']
-    list_filter = ['systems']
-    ordering = [Lower('name')]
-    search_fields = ['name']
+    list_filter = [
+        ('systems', SystemListFilter),
+        ('windows', WindowListFilter)
+    ]
+    search_fields = ['name', 'description']
     search_help_text = _('Name')
-    ordering = [Lower('name')]
 
-    @admin.display(description=_('Systeme'))
-    def system_list(self, obj):
-        variable: Variable = obj
+    def get_list_display(self, request):
+        return ['empty'] + super().get_list_display(request)
 
-        if not variable.systems.exists():
-            return _('System unabhängig')
+    @admin.display(description='')
+    def empty(self, obj):
+        return mark_safe('&nbsp;')
 
-        return list(variable.systems.values_list('name', flat=True))
-
-    fields = ['systems', 'name', 'description']
+    fields = ['systems', 'name', 'description', 'type']
     form = form_with_select(
         Variable,
-        'systems',
-        _('System hinzufügen'),
-        select_many=True
+        'type',
+        '',
+        form_class=VariableForm
     )
-    inlines = [Values]
+    inlines = [
+        Windows,
+        Values
+    ]
 
-    def autocomplete_name(self, name: str):
-        return json.dumps([
-            '%s (%s :: %s)' % (name, systems, windows or _('Systemweit'))
-            for name, systems, windows in
-            self.model.objects.values_list('name', 'systems__name', 'windows__name')
-            .filter(name__icontains=name)
-        ])
+    @admin.display(description=_('Systeme'))
+    def system_list(self, window: Window):
+        return ', '.join(
+            window.systems.values_list('name', flat=True)
+        )
+
+    def autocomplete_name_queryset(self, name: str, request: HttpRequest):
+        return super().autocomplete_name_queryset(name, request)
+
+    def change_view(self, request: HttpRequest, object_id, form_url="", extra_context=None):
+        if 'quick_change' in request.GET:
+            variable = VariableQuickChange.objects.get(id=object_id)
+            return HttpResponseRedirect(variable.get_admin_url() + '?_popup=1')
+
+        if 'view' in request.GET:
+            variable_doc = VariableDocumentation.objects.get(id=object_id)
+            return HttpResponseRedirect(variable_doc.get_admin_url())
+
+        current_app, model, *route = request.resolver_match.route.split('/')
+        app = settings.MODEL_TO_APP.get(model)
+
+        if app and app != current_app:
+            return HttpResponseRedirect(reverse('admin:%s_%s_change' % (app, model), args=(object_id,)))
+
+        return super().change_view(request, object_id, form_url, extra_context)
+
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        field = super().formfield_for_dbfield(db_field, request, **kwargs)
+
+        if db_field.name == 'systems':
+            field = ModelMultipleChoiceField(
+                widget=CheckboxSelectMultipleSystems,
+                queryset=field.queryset
+            )
+            if System.objects.count() == 1:
+                field.initial = [System.objects.first()]
+            field.label = _('Systeme')
+
+            if variable_id := request.resolver_match.kwargs.get('object_id'):
+                variable = Variable.objects.get(id=variable_id)
+                window_systems = variable.windows.values_list('systems__pk', flat=True)
+
+                if window_systems.exists():
+                    field.widget.in_use = set(window_systems)
+
+        return field
 
     def get_inlines(self, request, obj):
-        variable: Variable = obj
-
-        if not variable or not variable.systems.exists():
-            return self.inlines
-
-        return [Windows] + self.inlines
-
-    def get_readonly_fields(self, request: HttpRequest, obj=None):
         variable: Variable = obj
 
         if not variable:
             return []
 
-        readonly_fields = []
+        if variable and variable.type == VariableType.TABLE:
+            return [Windows, TableColumns]
 
-        if request.user.is_superuser:
-            return readonly_fields
-        else:
-            return readonly_fields + super().get_readonly_fields(request, obj)
+        return self.inlines
+
+    def get_queryset(self, request: HttpRequest):
+        return super().get_queryset(request).exclude(table__isnull=False)
+
+    def get_protected_objects(self, obj):
+        variable: Variable = obj
+
+        return list(
+            KeywordCallParameter.objects
+            .filter(value_ref__variable_value__variable=variable)
+            .exclude(keyword_call__execution__isnull=False)
+        )
+
+    def get_readonly_fields(self, request, obj=None):
+        variable: Variable = obj
+        fields = []
+
+        if variable and (variable.values.exists() or variable.columns.exists()):
+            fields += ['type']
+
+        return fields
+
+    def get_related_objects(self, obj):
+        variable: Variable = obj
+
+        return variable.values.all()
+
+    def has_add_permission(self, request):
+        return self.can_add(request.user, 'variable')
+
+    def has_change_permission(self, request, obj=None):
+        return self.can_change(request.user, 'variable')
+
+    def has_delete_permission(self, request, obj=None):
+        return self.can_delete(request.user, 'variable')
 
 
-@admin.register(VariableValue)
-class VariableValueAdmin(BaseAdmin):
-    pass
+@admin.register(VariableQuickAdd)
+class VariableQuickAddAdmin(SortableAdminBase, BaseQuickAddAdmin):
+    fields = ['systems', 'windows', 'name', 'type']
+    form = VariableQuickAddForm
+
+    def add_view(self, request, form_url='', extra_context=None):
+        current_app, model, *route = request.resolver_match.route.split('/')
+        app = settings.MODEL_TO_APP.get(model)
+
+        if app and app != current_app:
+            add_url = reverse('admin:%s_%s_add' % (app, model))
+
+            return HttpResponseRedirect(add_url + '?' + url_query_parameters(request.GET))
+
+        return super().add_view(request, form_url, extra_context)
+
+    def autocomplete_name_queryset(self, name: str, request: HttpRequest):
+        queryset = super().autocomplete_name_queryset(name, request)
+
+        if 'windows' in request.GET:
+            queryset = queryset.filter(windows__in=[request.GET['windows']])
+
+        return queryset
+
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        field = super().formfield_for_dbfield(db_field, request, **kwargs)
+
+        if db_field.name == 'type':
+            field.widget = BaseSelect('', choices=field.choices)
+
+        return field
 
 
-@admin.register(VariableWindow)
-class VariableWindowAdmin(BaseAdmin):
-    pass
+class TableColumnsQuickChange(TableColumns):
+    def get_fields(self, request, obj=None):
+        fields: list = super().get_fields(request, obj)
+
+        return [
+            field
+            for field in fields
+            if field != 'delete'
+        ]
 
 
-@admin.register(WindowVariable)
-class WindowVariableAdmin(BaseAddAdmin):
-    inlines = [Values]
+class ValuesQuickChange(Values):
+    def get_fields(self, request, obj=None):
+        fields: list = super().get_fields(request, obj)
+
+        return [
+            field
+            for field in fields
+            if field != 'delete'
+        ]
+
+
+@admin.register(VariableQuickChange)
+class VariableQuickChangeAdmin(SortableAdminBase, BaseAdmin):
+    def get_fields(self, request, obj=None):
+        return []
+
+    # Use this method in order to get rid of the "General" tab
+    def get_inline_instances(self, request, obj=None):
+        variable: Variable = obj
+
+        if variable.type == VariableType.TABLE:
+            return [TableColumnsQuickChange(self.model, self.admin_site)]
+
+        return [ValuesQuickChange(self.model, self.admin_site)]
+
+    def has_change_permission(self, request, obj=None):
+        variable: Variable = obj
+
+        if variable and variable.template:
+            return False
+
+        return True
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+@admin.register(VariableDocumentation)
+class VariableDocumentationAdmin(VariableQuickChangeAdmin):
+    def has_change_permission(self, request, obj=None):
+        return False

@@ -1,3 +1,2 @@
-from .resource import Resource
-from .resource_keyword import ResourceKeyword, ResourceKeywordDocumentation
-from .resource_import import ResourceImport, ResourceImportType
+from keyta.apps.resources.models.resource import Resource
+from keyta.apps.resources.models.resource_import import ResourceImport

@@ -1,33 +1,49 @@
-from django.db.models import QuerySet, Q
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
-from apps.common.admin import TabularInlineWithDelete
-from ..models import KeywordReturnValue, Keyword
+from keyta.admin.field_delete_related_instance import DeleteRelatedField
+from keyta.admin.base_inline import BaseTabularInline
+from keyta.widgets import ModelSelect2AdminWidget
+
+from ..models import Keyword, KeywordReturnValue
 
 
-class ReturnValue(TabularInlineWithDelete):
+class ReturnValueInline(DeleteRelatedField, BaseTabularInline):
     model = KeywordReturnValue
     fields = ['kw_call_return_value']
-    extra = 1
-    max_num = 1
+    extra = 0
 
     def get_formset(self, request, obj=None, **kwargs):
         formset = super().get_formset(request, obj, **kwargs)
         keyword: Keyword = obj
-        queryset: QuerySet = formset.form.base_fields['kw_call_return_value'].queryset
-        return_values = (
-            queryset
-            .filter(keyword_call__in=keyword.calls.all())
-            .exclude(Q(name__isnull=True) & Q(return_value__isnull=True))
+        kw_call_return_value_ids = (
+            self.get_queryset(request)
+            .filter(keyword__id=keyword.pk)
+            .values_list('kw_call_return_value_id', flat=True)
         )
-        formset.form.base_fields['kw_call_return_value'].queryset = return_values
-
-        if return_values.exists():
-            formset.form.base_fields['kw_call_return_value'].widget.attrs.update({
-                'data-placeholder': _('Rückgabewert auswählen')
-            })
-        else:
-            formset.form.base_fields['kw_call_return_value'].disabled = True
-            formset.form.base_fields['kw_call_return_value'].empty_label = _('Keine Rückgabewerte aus den Schritten')
+        kw_call_return_value_field = formset.form.base_fields['kw_call_return_value']
+        kw_call_return_value_field.queryset = (
+            kw_call_return_value_field.queryset
+            .filter(keyword_call__in=keyword.calls.all())
+            .exclude(id__in=kw_call_return_value_ids)
+        )
+        kw_call_return_value_field.widget = ModelSelect2AdminWidget(
+            model=KeywordReturnValue,
+            placeholder=_('Rückgabewert auswählen'),
+            search_fields=['name__icontains'],
+        )
 
         return formset
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        keyword: Keyword = obj
+
+        if keyword and keyword.is_action:
+            return self.can_change(request.user, 'action')
+
+        if keyword and keyword.is_sequence:
+            return self.can_change(request.user, 'sequence')
+
+        return super().has_delete_permission(request, obj)

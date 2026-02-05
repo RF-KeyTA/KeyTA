@@ -1,5 +1,14 @@
-{% load i18n admin_urls jazzmin %}
+{% load i18n admin_urls jazzmin tags %}
 {% get_jazzmin_ui_tweaks as jazzmin_ui %}
 
 {% block object-tools-items %}
+    {% if include_duplicate_object_link %}
+    <div class="form-group" style="display: inline-flex; margin-right: 5px">
+        <a href="{{ request.path }}?duplicate=true" class="clone-link">
+            <span class="icon-wrapper">
+                <i class="action-icon {% icon 'clone' %}"></i>
+            </span>
+        </a>
+    </div>
+    {% endif %}
 {% endblock %}

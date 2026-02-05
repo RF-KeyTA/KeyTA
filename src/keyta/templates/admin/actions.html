@@ -2,7 +2,7 @@
 {% get_jazzmin_ui_tweaks as jazzmin_ui %}
 
 <div class="actions">
-    <h5>Massenverarbeitung</h5>
+    <h5>{% trans "Massenverarbeitung" %}</h5>
     {% block actions %}
         {% block actions-form %}
             {% for field in action_form %}<label>{{ field }}</label>{% endfor %}

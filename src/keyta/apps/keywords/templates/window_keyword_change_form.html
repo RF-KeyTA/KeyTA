@@ -1,0 +1,46 @@
+{% extends "admin/change_form.html" %}
+{% load i18n %}
+
+{% block extrajs %}
+{{ block.super }}
+<script>
+    $(document).ready(function () {
+        if (!document.location.hash) {
+           $('a:contains("{% trans "Schritte" %}")').click()
+        }
+    })
+</script>
+{% endblock %}
+
+{% block formset_form %}
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Selects in a saved form of a formset
+        const formset_forms = django.jQuery('.form-row.has_original')
+        formset_forms.each((index, form) => {
+            const selects = django.jQuery('select', form)
+            selects.each((index, select) => {
+                if (!django.jQuery(select).attr('name').endsWith('execution_state')) {
+                    django.jQuery(select).on('change', function (event) {
+                        const url = window.location.href
+
+                        // Reloading the whole window can be avoided using HTMX
+                        // to swap the row
+                        if (url.includes('_popup')) {
+                            $.post(
+                                url,
+                                $('form').serialize() + "&_continue=",
+                                function () {
+                                    window.location.reload()
+                                }
+                            )
+                        } else {
+                            $('.button-save').click()
+                        }
+                    })
+                }
+            })
+        })
+    })
+</script>
+{% endblock %}

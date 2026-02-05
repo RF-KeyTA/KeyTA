@@ -1,0 +1,114 @@
+{% extends "admin/change_form.html" %}
+
+{% block select2 %}
+<script type="text/javascript">
+    // Always return the search term instead of filtering the select choices
+    function matchCustom(params, data) {
+        if (params.term) return params.term
+        return data;
+    }
+
+    function formatResult(state) {
+        const regex = /\$\{(\w+|\p{L}+)\}\[(\w+|\p{L}+)\]/u
+
+        // state.id is the value of the <option>
+        if (state.id && state.text.match(regex))
+            return state.text.replace('$', '').replace('{', '').replace('}[', '.').replace(']', '');
+
+        return state.text
+    }
+
+    function formatSelection(state) {
+        const regex = /\$\{(\w+|\p{L}+)\}\[(\w+|\p{L}+)\]/u
+        const element = state.element
+
+        if (element) {
+            const icon = state.element.attributes['icon'];
+            const $template = $('<span><i></i><span></span></span>')
+
+            if (icon) {
+                $template.find('i').addClass(icon.value).addClass('mr-3')
+            }
+
+            $template.find('span').text(state.text)
+
+            // state.id is the value of the <option>
+            if (state.id && state.text.match(regex)) {
+                const name = state.text.replace('$', '').replace('{', '').replace('}[', '.').replace(']', '');
+                $template.find('span').text(name)
+            }
+
+            return $template
+        }
+        else {
+            return state.text
+        }
+    }
+
+    function applySelect2() {
+        // Apply select2 to any select boxes that don't yet have it
+        // and are not part of the django's empty-form inline
+        const noSelect2 = '.empty-form select, .select2-hidden-accessible, .selectfilter, .selector-available select, .selector-chosen select, select[data-autocomplete-light-function=select2]';
+        const selects = django.jQuery('select').not(noSelect2)
+
+        selects.each(function (index, select) {
+            let tags = select.getAttribute('data-tags')
+
+            if (tags === 'true') {
+                django.jQuery(select).select2({
+                    width: 'element',
+                    matcher: matchCustom,
+                    templateResult: formatResult,
+                    templateSelection: formatSelection
+                });
+
+                // Automatically fill the search field with the currently selected value
+                django.jQuery(select).on('select2:open', function (e) {
+                    const selected_value = django.jQuery(select).select2('data')[0]
+                    const search_field = django.jQuery('.select2-search__field')
+
+                    // selected_value.id is the value of the <option>
+                    if (selected_value && selected_value.id !== '')
+                        search_field.val(selected_value.text)
+                })
+            }
+            else {
+                django.jQuery(select).select2({
+                    width: 'element',
+                    minimumResultsForSearch: Infinity,
+                    templateResult: formatResult,
+                    templateSelection: formatSelection
+                });
+            }
+        })
+    }
+</script>
+{% endblock %}
+
+{% block formset_form %}
+<script type="text/javascript">
+    $(document).ready(function () {
+        const formset_forms = django.jQuery('.form-row.has_original')
+        formset_forms.each((index, form) => {
+            // Selects in a saved form of a formset
+            const selects = django.jQuery('select', form)
+            selects.on('change', function (event) {
+                const url = window.location.href
+
+                // Reloading the whole window can be avoided using HTMX
+                // to swap the row
+                $.post(
+                    url,
+                    $('form').serialize() + "&_continue=",
+                    function () {
+                        window.location.reload()
+                    }
+                )
+            })
+        })
+    })
+</script>
+{% endblock %}
+
+{% block object-tools %}
+{% endblock %}

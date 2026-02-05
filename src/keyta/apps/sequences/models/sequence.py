@@ -1,9 +1,9 @@
 from django.db import models
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
-from apps.actions.models import Action
-from apps.keywords.models.keyword import KeywordType
-from apps.windows.models import WindowKeyword
+from keyta.apps.actions.models import Action
+from keyta.apps.keywords.models import WindowKeyword
+from keyta.apps.keywords.models.keyword import KeywordType
 
 
 class Sequence(WindowKeyword):
@@ -35,22 +35,20 @@ class Sequence(WindowKeyword):
 
     objects = Manager()
 
+    class Meta(WindowKeyword.Meta):
+        proxy = True
+        verbose_name = _('Sequenz')
+        verbose_name_plural = _('Sequenzen')
+
+
+class SequenceQuickAdd(Sequence):
     class Meta:
         proxy = True
         verbose_name = _('Sequenz')
         verbose_name_plural = _('Sequenzen')
 
 
-class SequenceDocumentation(Sequence):
-    class Meta:
-        proxy = True
-        verbose_name = _('Sequenz Dokumentation')
-
-
-class WindowSequence(Sequence):
-    def __str__(self):
-        return str(self.name)
-
+class SequenceQuickChange(Sequence):
     class Meta:
         proxy = True
         verbose_name = _('Sequenz')

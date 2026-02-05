@@ -30,7 +30,7 @@
             </label>
         </div>
         <div class="row">
-            <div class="{% if not line.fields|length == 1 %} col-auto  fieldBox {% else %} col-sm-12 overflow-auto {% endif %}
+            <div class="{% if not line.fields|length == 1 %} col-auto  fieldBox {% else %} col-sm-12 {% endif %}
                              {% if field.field.name %} field-{{ field.field.name }}{% endif %}
                              {% if not field.is_readonly and field.errors %} errors{% endif %}
                              {% if field.field.is_hidden %} hidden {% endif %}
