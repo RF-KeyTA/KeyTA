@@ -118,29 +118,31 @@
             // Add delete handler for each row.
             row.find("a." + options.deleteCssClass).on('click', inlineDeleteHandler.bind(this));
             row.find("a." + options.deleteCssClass).addClass('btn')
-            row.find("a." + options.deleteCssClass).width('80px');
+            row.find("a." + options.deleteCssClass).width('90px');
             row.find("a." + options.deleteCssClass).css('margin', '3px');
+            row.find("a." + options.deleteCssClass).css('padding', '5px');
         };
 
         const addInlineSaveButton = function(row) {
             if (row.is("tr")) {
                 // If the forms are laid out in table rows, insert
-                // the remove button into the last table cell:
+                // the save button into the last table cell:
                 row.children(":last").append('<div><a role="button" class="' + options.saveCssClass + '" href="#">' + options.saveText + "</a></div>");
             } else if (row.is("ul") || row.is("ol")) {
                 // If they're laid out as an ordered/unordered list,
                 // insert an <li> after the last list item:
                 row.append('<li><a role="button" class="' + options.saveCssClass + '" href="#">' + options.saveText + "</a></li>");
             } else {
-                // Otherwise, just insert the remove button as the
+                // Otherwise, just insert the save button as the
                 // last child element of the form's container:
                 row.children(":first").append('<span><a role="button" class="' + options.saveCssClass + '" href="#">' + options.saveText + "</a></span>");
             }
-            // Add delete handler for each row.
+            // Add save handler for each row.
             row.find("a." + options.saveCssClass).on('click', inlineSaveHandler.bind(this));
             row.find("a." + options.saveCssClass).addClass('btn btn-primary')
-            row.find("a." + options.saveCssClass).width('80px');
+            row.find("a." + options.saveCssClass).width('90px');
             row.find("a." + options.saveCssClass).css('margin', '3px');
+            row.find("a." + options.saveCssClass).css('padding', '5px');
         };
 
         const inlineSaveHandler = function(e1) {
@@ -397,5 +399,7 @@
                 break;
             }
         });
+
+        $('a.save-row').width('90px');
     });
 }
