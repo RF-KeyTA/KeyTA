@@ -8,10 +8,15 @@ from datetime import datetime
 from pathlib import Path
 
 from jinja2 import Environment, PackageLoader
+from jinja2.filters import escape
 
 
 def format_date(date: datetime):
     return date.strftime('%H:%M:%S %d.%m.%Y')
+
+
+def format_newline(text: str):
+    return text.replace('\n', '<br>')
 
 
 def format_time(time_str):
@@ -162,6 +167,7 @@ class RobotLog:
             output = json.load(file, object_pairs_hook=parse_object)
 
         for error in output['errors']:
+            error['message'] = format_newline(str(escape(error['message'])))
             message = error['message']
             self.items['errors'][message] = {
                 'id': str(uuid.uuid4())
@@ -207,14 +213,14 @@ class RobotLog:
         messages = set()
 
         if 'message' in step:
-            message = step['message']
+            message = format_newline(str(escape(step['message'])))
             result['message'] = message
             messages.add(message)
 
         if 'body' in step:
             for item in step['body']:
                 if item.get('type') == 'MESSAGE' and not item.get('html'):
-                    message = item['message']
+                    message = format_newline(str(escape(item['message'])))
                     if step['status'] == 'FAIL':
                         if item['level'] == 'FAIL':
                             messages.add(message)
