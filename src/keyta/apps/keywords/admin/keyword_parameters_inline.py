@@ -1,4 +1,5 @@
 from django import forms
+from django.forms.utils import ErrorDict, ErrorList
 from django.utils.translation import gettext_lazy as _
 
 from adminsortable2.admin import CustomInlineFormSet
@@ -20,9 +21,10 @@ class ParameterFormset(CustomInlineFormSet):
                 default_value = form.cleaned_data.get('default_value')
 
                 if not default_value and self.keyword.in_use > 1:
-                    raise forms.ValidationError(
+                    form._errors = ErrorDict()
+                    form._errors['default_value'] = ErrorList([
                         _('Beim Hinzufügen eines Parameters darf der Standardwert nicht leer sein.')
-                    )
+                    ])
 
 
 class ParameterForm(forms.ModelForm):
