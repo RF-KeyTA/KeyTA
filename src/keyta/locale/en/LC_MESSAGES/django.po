@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-04 14:48+0100\n"
+"POT-Creation-Date: 2026-02-06 10:47+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -259,8 +259,8 @@ msgstr "Settings"
 #: .\apps\executions\models\execution.py:216
 #: .\apps\executions\models\keyword_execution.py:144
 #: .\apps\executions\models\keyword_execution.py:145
-#: .\apps\executions\models\testcase_execution.py:136
-#: .\apps\executions\models\testcase_execution.py:137
+#: .\apps\executions\models\testcase_execution.py:134
+#: .\apps\executions\models\testcase_execution.py:135
 #: .\apps\libraries\models\library_import.py:46
 #: .\apps\resources\models\resource_import.py:46
 #: .\apps\testcases\admin\base_testcase_admin.py:100
@@ -375,7 +375,7 @@ msgid "View on site"
 msgstr ""
 
 #: .\apps\keywords\admin\field_keywordcall_values.py:22
-#: .\apps\variables\admin\table_columns_inline.py:20
+#: .\apps\variables\admin\table_columns_inline.py:40
 #: .\apps\variables\models\variable_value.py:48
 msgid "Werte"
 msgstr "Values"
@@ -405,7 +405,7 @@ msgstr "Default Value (optional)"
 
 #: .\apps\keywords\admin\keyword_parameters_inline.py:74
 #: .\apps\keywords\admin\keywordcall_return_value_inline.py:49
-#: .\apps\variables\admin\table_columns_inline.py:38
+#: .\apps\variables\admin\table_columns_inline.py:58
 msgid "Name eintragen, anschließend Enter drücken"
 msgstr "Enter a name and then press Enter"
 
@@ -596,7 +596,7 @@ msgid "Aufrufs-Rückgabewert"
 msgstr "Call Return Value"
 
 #: .\apps\keywords\models\keywordcall_parameter_source.py:14
-#: .\apps\variables\admin\table_columns_inline.py:17
+#: .\apps\variables\admin\table_columns_inline.py:37
 #: .\apps\variables\models\table_column.py:23
 msgid "Spalte"
 msgstr "Column"
@@ -816,7 +816,11 @@ msgstr ""
 msgid "Sicher?"
 msgstr "Are you sure?"
 
-#: .\apps\variables\admin\table_columns_inline.py:18
+#: .\apps\variables\admin\table_columns_inline.py:28
+msgid "Die Tabelle enthält bereits eine Spalte mit diesem Namen."
+msgstr "The table already contains a column with this name."
+
+#: .\apps\variables\admin\table_columns_inline.py:38
 #: .\apps\variables\models\table_column.py:24
 msgid "Spalten"
 msgstr "Columns"

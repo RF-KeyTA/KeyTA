@@ -1,18 +1,38 @@
 from django import forms
 from django.conf import settings
 from django.contrib import admin
+from django.forms.utils import ErrorDict, ErrorList
 from django.utils.translation import gettext_lazy as _
+
+from adminsortable2.admin import CustomInlineFormSet
 
 from keyta.admin.base_inline import SortableTabularInline
 from keyta.admin.field_delete_related_instance import DeleteRelatedField
 from keyta.widgets import open_link_in_modal, Icon
 
-from ..models import TableColumn
+from ..models import TableColumn, Variable
+
+
+class TableColumnsFormset(CustomInlineFormSet):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.variable: Variable = kwargs.get('instance')
+
+    def clean(self):
+        for form in self.extra_forms:
+            name = form.cleaned_data.get('name')
+
+            if name and self.variable.columns.filter(name=name).exists():
+                form._errors = ErrorDict()
+                form._errors['name'] = ErrorList([
+                    _('Die Tabelle enthält bereits eine Spalte mit diesem Namen.')
+                ])
 
 
 class TableColumns(DeleteRelatedField, SortableTabularInline):
     model = TableColumn
     fields = ['name', 'column_values']
+    formset = TableColumnsFormset
     readonly_fields = ['column_values']
     verbose_name = _('Spalte')
     verbose_name_plural = _('Spalten')
