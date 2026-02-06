@@ -116,7 +116,11 @@
         <div class="container border border-danger rounded p-3 mb-4">
             <div class="col">
                 <span class="badge {% if error.level == 'ERROR' %}text-bg-danger{% elif error.level == 'INFO' %}text-bg-info{% endif %}">{{ error.level }}</span>
+                {% if 'Setup failed' in error.message or 'teardown failed' in error.message %}
                 <a href="#{{ error.id }}">{{ error.message }}</a>
+                {% else %}
+                <a href="#{{ error.id }}">{{ error.message.split('<br>')|first }}</a>
+                {% endif %}
             </div>
         </div>
         {% endfor %}
@@ -204,7 +208,7 @@
             <div class="container border border-danger rounded p-3 mb-4">
                 <div class="col">
                     <span class="badge text-bg-danger">{{ keyword.status }}</span>
-                    <a href="#{{ keyword.id }}{{ error.id }}">{{ error.message }}</a>
+                    <a href="#{{ keyword.id }}{{ error.id }}">{{ error.message.split('<br>')|first }}</a>
                 </div>
             </div>
         {% endif %}
