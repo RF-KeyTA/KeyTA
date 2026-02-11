@@ -130,6 +130,13 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
             }
         )
 
+    def add_parameters(self, user: Optional[AbstractUser]=None, values: Optional[dict]=None):
+        for param in self.to_keyword.parameters.exclude(type__in=[KeywordParameterType.VAR_ARG, KeywordParameterType.VAR_KWARG]):
+            if values:
+                self.add_parameter(param, user, values.get(param.name))
+            else:
+                self.add_parameter(param, user)
+
     def add_return_value(self, return_value: KeywordReturnValue):
         if return_value.type:
             KeywordCallReturnValue.objects.get_or_create(
@@ -218,7 +225,7 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
                 return icon
 
         if self.parameters.filter(user=user).count() != to_keyword_parameters_count:
-            self.update_parameters(user, default_kw_call_parameter_values)
+            self.add_parameters(user, default_kw_call_parameter_values)
 
         if has_return_values:
             icon = Icon(settings.FA_ICONS.kw_call_input_output)
@@ -348,7 +355,7 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
 
             if not hasattr(self, 'clone'):
                 if self.to_keyword and not self.testcase:
-                    self.update_parameters()
+                    self.add_parameters()
 
                     for return_value in self.to_keyword.return_values.all():
                         self.add_return_value(return_value)
@@ -412,12 +419,6 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
         for kw_call_param in self.parameters.all():
             kw_call_param.update_value()
 
-    def update_parameters(self, user: Optional[AbstractUser]=None, values: Optional[dict]=None):
-        for param in self.to_keyword.parameters.exclude(type__in=[KeywordParameterType.VAR_ARG, KeywordParameterType.VAR_KWARG]):
-            if values:
-                self.add_parameter(param, user, values.get(param.name))
-            else:
-                self.add_parameter(param, user)
 
     class Manager(models.Manager):
         def get_queryset(self):
