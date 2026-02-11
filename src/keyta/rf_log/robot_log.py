@@ -15,6 +15,14 @@ def format_date(date: datetime):
     return date.strftime('%H:%M:%S %d.%m.%Y')
 
 
+def format_kw_name(name: str) -> str:
+    if '::' in name:
+        _, kw_name = name.split('::')
+        return kw_name
+
+    return name
+
+
 def format_newline(text: str):
     return text.replace('\n', '<br>')
 
@@ -157,9 +165,6 @@ class RobotLog:
         for keyword in keywords:
             name = keyword['name']
 
-            if '::' in keyword['name']:
-                _, name = keyword['name'].split('::')
-
             self.keyword_args[name] = [unrobot(arg) for arg in keyword.get('args', [])]
             self.keyword_kwargs[name] = [unrobot(kwarg) for kwarg in keyword.get('kwargs', [])]
 
@@ -190,8 +195,6 @@ class RobotLog:
             if name.startswith('S'):
                 kind = 'SEQUENCE'
 
-            _, name = name.split('::')
-
         if 'owner' in step:
             name = step['owner'] + '.' + step['name']
 
@@ -200,7 +203,7 @@ class RobotLog:
         result = {
             'parent_id': parent_id,
             'id': step_id,
-            'name': name,
+            'name': format_kw_name(name),
             'kind': kind,
             'status': step['status'],
             'start_time': format_date(parse_date(step['start_time'])),
