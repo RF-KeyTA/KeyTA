@@ -419,6 +419,11 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
         for kw_call_param in self.parameters.all():
             kw_call_param.update_value()
 
+    def update_parameters(self, user: AbstractUser, values: dict):
+        for param in self.parameters.filter(user=user):
+            if value := values.get(param.name):
+                param.value = value
+                param.save()
 
     class Manager(models.Manager):
         def get_queryset(self):
