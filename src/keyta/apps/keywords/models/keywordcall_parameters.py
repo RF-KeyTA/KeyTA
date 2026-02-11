@@ -119,6 +119,7 @@ class KeywordCallParameter(CloneMixin, AbstractBaseModel):
 
     def reset_value(self):
         self.value = JSONValue(None, None, None, None).jsonify()
+        self.save()
 
     def save(
         self, force_insert=False, force_update=False, using=None,
