@@ -375,28 +375,32 @@ class KeywordSource(AbstractBaseModel):
 
             for idx, arg, in enumerate(kw_args):
                 name = arg["name"]
+                kind = arg['kind']
 
                 if arg["required"]:
                     KeywordParameter.create_arg(
                         keyword=kw,
                         name=name,
+                        kind=kind,
                         position=idx,
                         typedoc=get_type(arg)
                     )
                 else:
-                    if arg["kind"] in {'VAR_NAMED', 'VAR_POSITIONAL'}:
-                        if arg["kind"] == 'VAR_NAMED':
+                    if kind in {'VAR_NAMED', 'VAR_POSITIONAL'}:
+                        if kind == 'VAR_NAMED':
                             KeywordParameter.create_varkwarg(
                                 keyword=kw,
                                 name=name,
+                                kind=kind,
                                 position=idx,
                                 typedoc=get_type(arg)
                             )
 
-                        if arg["kind"] == 'VAR_POSITIONAL':
+                        if kind == 'VAR_POSITIONAL':
                             KeywordParameter.create_vararg(
                                 keyword=kw,
                                 name=name,
+                                kind=kind,
                                 position=idx,
                                 typedoc=get_type(arg)
                             )
@@ -407,6 +411,7 @@ class KeywordSource(AbstractBaseModel):
                             keyword=kw,
                             name=name,
                             default_value=default_value,
+                            kind=kind,
                             position=idx,
                             typedoc=get_type(arg)
                         )

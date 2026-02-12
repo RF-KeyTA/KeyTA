@@ -38,6 +38,10 @@ class KeywordParameter(CloneMixin, AbstractBaseModel):
         default=None,
         verbose_name=_('Standardwert')
     )
+    kind = models.CharField(
+        max_length=255,
+        default='POSITIONAL_OR_NAMED'
+    )
     type = models.CharField(
         max_length=255,
         choices=KeywordParameterType.choices
@@ -63,12 +67,13 @@ class KeywordParameter(CloneMixin, AbstractBaseModel):
         return self.name
 
     @classmethod
-    def create_arg(cls, keyword, name: str, position: int, typedoc: list[str]):
+    def create_arg(cls, keyword, name: str, kind: str, position: int, typedoc: list[str]):
         kw_param, created = KeywordParameter.objects.update_or_create(
             keyword=keyword,
             position=position,
             defaults={
                 'default_value': None,
+                'kind': kind,
                 'name': name,
                 'type': KeywordParameterType.ARG
             }
@@ -76,12 +81,13 @@ class KeywordParameter(CloneMixin, AbstractBaseModel):
         kw_param.set_typedoc(typedoc)
 
     @classmethod
-    def create_kwarg(cls, keyword, name: str, default_value: str, position: int, typedoc: list[str]):
+    def create_kwarg(cls, keyword, name: str, default_value: str, kind: str, position: int, typedoc: list[str]):
         kw_param, created = KeywordParameter.objects.update_or_create(
             keyword=keyword,
             name=name,
             defaults={
                 'default_value': default_value,
+                'kind': kind,
                 'position': position,
                 'type': KeywordParameterType.KWARG
             }
@@ -89,26 +95,28 @@ class KeywordParameter(CloneMixin, AbstractBaseModel):
         kw_param.set_typedoc(typedoc)
 
     @classmethod
-    def create_vararg(cls, keyword, name: str, position: int, typedoc: list[str]):
+    def create_vararg(cls, keyword, name: str, kind: str, position: int, typedoc: list[str]):
         kw_param, created = KeywordParameter.objects.update_or_create(
             keyword=keyword,
             position=position,
             defaults={
                 'default_value': '@{EMPTY}',
                 'name': name,
+                'kind': kind,
                 'type': KeywordParameterType.VAR_ARG,
             }
         )
         kw_param.set_typedoc(typedoc)
 
     @classmethod
-    def create_varkwarg(cls, keyword, name: str, position: int, typedoc: list[str]):
+    def create_varkwarg(cls, keyword, name: str, kind:str, position: int, typedoc: list[str]):
         kw_param, created = KeywordParameter.objects.update_or_create(
             keyword=keyword,
             position=position,
             defaults={
                 'default_value': '&{EMPTY}',
                 'name': name,
+                'kind': kind,
                 'type': KeywordParameterType.VAR_KWARG,
             }
         )
@@ -130,6 +138,14 @@ class KeywordParameter(CloneMixin, AbstractBaseModel):
     @property
     def is_kwarg(self):
         return self.type == KeywordParameterType.KWARG
+
+    @property
+    def is_named_only(self):
+        return self.kind == 'NAMED_ONLY'
+
+    @property
+    def is_positional_or_named(self):
+        return self.kind == 'POSITIONAL_OR_NAMED'
 
     @property
     def is_vararg(self):

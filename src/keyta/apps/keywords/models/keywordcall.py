@@ -385,10 +385,10 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
         for param in parameters:
             value = param.to_robot(get_variable_value) or '${EMPTY}'
 
-            if param.parameter.is_arg or param.parameter.is_vararg or param.parameter.is_varkwarg:
+            if param.parameter.is_positional_or_named or param.parameter.is_vararg or param.parameter.is_varkwarg:
                 params.append(value)
 
-            if param.parameter.is_kwarg:
+            if param.parameter.is_named_only:
                 params.append('%s=%s' % (param.name, value))
 
             if param.value_ref and param.value_ref.table_column:
