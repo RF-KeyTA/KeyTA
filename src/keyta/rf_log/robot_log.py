@@ -278,9 +278,10 @@ class RobotLog:
                         args[varkwarg_name] = []
                 elif arg_name.startswith('*'):
                     if match := re.match(r'(\w+)=', arg):
-                        arg_name_index += 2
                         name = match.group(1)
-                        args[name] = format_arg_value(name, arg)
+                        if name in set(arg_names):
+                            arg_name_index += 2
+                            args[name] = format_arg_value(name, arg)
                     else:
                         varargs.append(arg)
 
