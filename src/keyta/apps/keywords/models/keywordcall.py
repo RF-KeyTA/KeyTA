@@ -175,7 +175,8 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
             param.delete()
 
     def delete_return_value(self, return_value: KeywordReturnValue):
-        self.return_values.get(kw_call_return_value__id=return_value.kw_call_return_value.pk).delete()
+        if return_value.kw_call_return_value:
+            self.return_values.get(kw_call_return_value__id=return_value.kw_call_return_value.pk).delete()
 
     def delete_return_values(self):
         return_value: KeywordReturnValue
