@@ -197,6 +197,10 @@ def get_return_type(return_type: dict | None) -> list:
             types = [name]
         else:
             typedoc = return_type['typedoc']
+
+            if typedoc is None:
+                return []
+
             types = [typedoc]
 
             if typedoc == 'list':
