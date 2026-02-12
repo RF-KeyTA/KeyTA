@@ -144,7 +144,7 @@
                 <a href="#" class="text-decoration-none" onclick="clickNavLink('#{{ step_id }}')">{{ step.name }}</a>
                 <a href="{{ step.url }}" target="_blank" class="text-decoration-none" style="margin-left: 3px">{{ icon.go_to }}</a>
             {% else %}
-                {{ step.name }}
+                <p class="pt-2">{{ step.name }}</p>
             {% endif %}
             </div>
             {% if step.args|length > 3 %}
@@ -236,7 +236,7 @@
                 <a href="#" class="text-decoration-none" onclick="clickNavLink('#{{ step_id }}')">{{ step.name }}</a>
                 <a href="{{ step.url }}" target="_blank" class="text-decoration-none" style="margin-left: 3px">{{ icon.go_to }}</a>
             {% else %}
-                {{ step.name }}
+                <p class="pt-2">{{ step.name }}</p>
             {% endif %}
             </div>
             {% if step.args|length > 3 %}
