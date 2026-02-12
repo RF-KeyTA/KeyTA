@@ -151,7 +151,6 @@ def unrobot(token):
 class RobotLog:
     def __init__(self, testsuite_name: str):
         self.keyword_args = {}
-        self.keyword_kwargs = {}
         self.items = {
             "errors": dict(),
             "keywords": dict(),
@@ -166,7 +165,6 @@ class RobotLog:
             name = keyword['name']
 
             self.keyword_args[name] = [unrobot(arg) for arg in keyword.get('args', [])]
-            self.keyword_kwargs[name] = [unrobot(kwarg) for kwarg in keyword.get('kwargs', [])]
 
         with open(output_json, encoding='utf-8') as file:
             output = json.load(file, object_pairs_hook=parse_object)
@@ -255,7 +253,7 @@ class RobotLog:
 
         if 'args' in step:
             arg_name_index = 0
-            arg_names = self.keyword_args[name] + self.keyword_kwargs[name]
+            arg_names = self.keyword_args[name]
             args = {}
             vararg_name = None
             varargs = []

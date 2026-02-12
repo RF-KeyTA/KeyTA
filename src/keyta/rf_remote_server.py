@@ -54,22 +54,22 @@ def get_keywords(robot_file: Path) -> list:
 
             for keyword in libdoc_dict['keywords']:
                 args = []
-                kwargs = []
+
                 for arg in keyword['args']:
-                    if arg['name']:
-                        if arg['required']:
-                            args.append(arg['name'])
-                        elif arg['kind'] == 'VAR_POSITIONAL':
-                            args.append('*' + arg['name'])
-                        elif arg['kind'] == 'VAR_NAMED':
-                            kwargs.append('**' + arg['name'])
+                    name = arg['name']
+                    kind = arg['kind']
+
+                    if name:
+                        if kind == 'VAR_POSITIONAL':
+                            args.append('*' + name)
+                        elif kind == 'VAR_NAMED':
+                            args.append('**' + name)
                         else:
-                            kwargs.append(arg['name'])
+                            args.append(name)
 
                 keywords.append({
                     'name': f'{import_name.removesuffix(".resource")}.{keyword["name"]}',
-                    'args': args,
-                    'kwargs': kwargs
+                    'args': args
                 })
 
     return keywords
