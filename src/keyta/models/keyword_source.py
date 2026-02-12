@@ -424,6 +424,10 @@ class KeywordSource(AbstractBaseModel):
                 if kwarg.name not in kwarg_names:
                     kwarg.delete()
 
+            if not return_type:
+                for return_value in kw.return_values.all():
+                    return_value.delete()
+
         for kw in self.keywords.all():
             if (
                 (kw.name in deprecated_keywords or kw.name not in keyword_names)
