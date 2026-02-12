@@ -47,6 +47,12 @@ class KeywordCallReturnValue(CloneMixin, AbstractBaseModel):
 
         return gettext('Kein Rückgabewert')
 
+    def delete(self, using=None, keep_parents=False):
+        for kw_call_parameter in self.kw_call_ret_val_source.kw_call_parameters.all():
+            kw_call_parameter.reset_value()
+
+        super().delete(using, keep_parents)
+
     @property
     def is_set(self):
         return self.name or self.kw_call_return_value

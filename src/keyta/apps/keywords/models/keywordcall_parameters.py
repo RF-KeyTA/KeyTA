@@ -34,7 +34,8 @@ class KeywordCallParameter(CloneMixin, AbstractBaseModel):
         'keywords.KeywordCallParameterSource',
         on_delete=models.SET_NULL,
         null=True,
-        default=None
+        default=None,
+        related_name='kw_call_parameters'
     )
     # The parameters of ExecutionKeywordCall, Setup and Teardown are user-dependent
     user = models.ForeignKey(
