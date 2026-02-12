@@ -20,7 +20,8 @@ class KeywordCallParameterSource(CloneMixin, AbstractBaseModel):
         'keywords.KeywordParameter',
         on_delete=models.CASCADE,
         null=True,
-        default=None
+        default=None,
+        related_name='kw_param_source'
     )
     kw_call_ret_val = models.OneToOneField(
         'keywords.KeywordCallReturnValue',

@@ -114,6 +114,12 @@ class KeywordParameter(CloneMixin, AbstractBaseModel):
         )
         kw_param.set_typedoc(typedoc)
 
+    def delete(self, using=None, keep_parents=False):
+        for kw_call_parameter in self.kw_param_source.kw_call_parameters.all():
+            kw_call_parameter.reset_value()
+
+        super().delete(using, keep_parents)
+
     def get_typedoc(self) -> list[str]:
         return json.loads(self.typedoc)
 
