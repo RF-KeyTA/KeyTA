@@ -8,6 +8,8 @@
         if (!document.location.hash) {
            $('a:contains("{% trans "Schritte" %}")').click()
         }
+
+        $('a.save-row').show()
     })
 </script>
 {% endblock %}
