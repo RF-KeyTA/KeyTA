@@ -143,6 +143,7 @@
             row.find("a." + options.saveCssClass).width('90px');
             row.find("a." + options.saveCssClass).css('margin', '3px');
             row.find("a." + options.saveCssClass).css('padding', '5px');
+            row.find("a." + options.saveCssClass).hide();
         };
 
         const inlineSaveHandler = function(e1) {
