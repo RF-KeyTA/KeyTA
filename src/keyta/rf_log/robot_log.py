@@ -324,23 +324,24 @@ class RobotLog:
             result['steps'].append(setup_id)
             result.update({'setup': setup})
 
-        for step in test['body']:
-            if step.get('type') == 'VAR':
-                continue
+        if 'body' in test:
+            for step in test['body']:
+                if step.get('type') == 'VAR':
+                    continue
 
-            if 'name' in step:
-                simple_step = self.simplify_step(step, test_id)
-                step_id = simple_step['id']
-                result['steps'].append(step_id)
-                self.items['keywords'][step_id] = simple_step
+                if 'name' in step:
+                    simple_step = self.simplify_step(step, test_id)
+                    step_id = simple_step['id']
+                    result['steps'].append(step_id)
+                    self.items['keywords'][step_id] = simple_step
 
-            if step.get('type') == 'FOR':
-                for iter in step['body']:
-                    for step in iter['body']:
-                        simple_step = self.simplify_step(step, test_id, assign=iter['assign'])
-                        step_id = simple_step['id']
-                        result['steps'].append(step_id)
-                        self.items['keywords'][step_id] = simple_step
+                if step.get('type') == 'FOR':
+                    for iter in step['body']:
+                        for step in iter['body']:
+                            simple_step = self.simplify_step(step, test_id, assign=iter['assign'])
+                            step_id = simple_step['id']
+                            result['steps'].append(step_id)
+                            self.items['keywords'][step_id] = simple_step
 
         if 'teardown' in test:
             teardown = self.simplify_step(test['teardown'], test_id)
