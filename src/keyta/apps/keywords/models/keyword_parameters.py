@@ -180,11 +180,5 @@ class KeywordParameter(CloneMixin, AbstractBaseModel):
 
     class Meta:
         ordering = ['position']
-        constraints = [
-            models.UniqueConstraint(
-                fields=['keyword', 'name'],
-                name='unique_keyword_parameter'
-            )
-        ]
         verbose_name = _('Parameter')
         verbose_name_plural = _('Parameters')

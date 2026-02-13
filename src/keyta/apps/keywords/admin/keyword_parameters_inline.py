@@ -19,11 +19,18 @@ class ParameterFormset(CustomInlineFormSet):
         if self.keyword.pk:
             for form in self.extra_forms:
                 default_value = form.cleaned_data.get('default_value')
+                name = form.cleaned_data.get('name')
 
                 if not default_value and self.keyword.in_use > 1:
                     form._errors = ErrorDict()
                     form._errors['default_value'] = ErrorList([
                         _('Beim Hinzufügen eines Parameters darf der Standardwert nicht leer sein.')
+                    ])
+
+                if self.keyword.parameters.filter(name=name).exists():
+                    form._errors = ErrorDict()
+                    form._errors['name'] = ErrorList([
+                        _('Ein Parameter mit diesem Namen ist bereits vorhanden.')
                     ])
 
 

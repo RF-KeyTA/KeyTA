@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-06 10:47+0100\n"
+"POT-Creation-Date: 2026-02-13 11:48+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -40,7 +40,7 @@ msgstr "Select a System"
 #: .\apps\keywords\models\keyword.py:51 .\apps\libraries\admin\library.py:102
 #: .\apps\libraries\admin\library_import.py:51
 #: .\apps\testcases\models\testcase.py:23 .\apps\windows\models.py:26
-#: .\models\keyword_source.py:313 .\models\keyword_source.py:349
+#: .\models\keyword_source.py:317 .\models\keyword_source.py:353
 msgid "Dokumentation"
 msgstr "Documentation"
 
@@ -74,7 +74,7 @@ msgstr "Keywords"
 #: .\apps\variables\models\variable.py:19
 #: .\apps\variables\models\variable_value.py:17
 #: .\apps\windows\admin\window.py:49 .\apps\windows\models.py:20
-#: .\models\keyword_source.py:310
+#: .\models\keyword_source.py:314
 msgid "Name"
 msgstr "Name"
 
@@ -103,7 +103,7 @@ msgid "All"
 msgstr ""
 
 #: .\apps\actions\admin\action.py:82 .\apps\actions\models\action_step.py:29
-#: .\apps\keywords\models\keywordcall.py:481
+#: .\apps\keywords\models\keywordcall.py:488
 #: .\apps\keywords\templates\window_keyword_change_form.html:9
 #: .\apps\sequences\admin\sequence.py:88
 #: .\apps\sequences\models\sequence_step.py:10
@@ -222,7 +222,7 @@ msgid "Aktion"
 msgstr "Action"
 
 #: .\apps\actions\models\action_step.py:28
-#: .\apps\keywords\models\keywordcall.py:480
+#: .\apps\keywords\models\keywordcall.py:487
 #: .\apps\sequences\models\sequence_step.py:9
 #: .\apps\testcases\models\test_step.py:28
 msgid "Schritt"
@@ -380,30 +380,34 @@ msgstr ""
 msgid "Werte"
 msgstr "Values"
 
-#: .\apps\keywords\admin\keyword_parameters_inline.py:24
+#: .\apps\keywords\admin\keyword_parameters_inline.py:27
 msgid "Beim Hinzufügen eines Parameters darf der Standardwert nicht leer sein."
 msgstr "The default value cannot be empty when adding a parameter."
 
-#: .\apps\keywords\admin\keyword_parameters_inline.py:59
-#: .\apps\keywords\models\keyword_parameters.py:167
+#: .\apps\keywords\admin\keyword_parameters_inline.py:33
+msgid "Ein Parameter mit diesem Namen ist bereits vorhanden."
+msgstr "A Parameter with this name already exists."
+
+#: .\apps\keywords\admin\keyword_parameters_inline.py:68
+#: .\apps\keywords\models\keyword_parameters.py:183
 #: .\apps\libraries\models\library_import_parameter.py:36
 msgid "Parameter"
 msgstr "Parameter"
 
-#: .\apps\keywords\admin\keyword_parameters_inline.py:60
+#: .\apps\keywords\admin\keyword_parameters_inline.py:69
 #: .\apps\keywords\forms\keywordcall_condition_formset.py:23
 #: .\apps\keywords\forms\keywordcall_parameter_formset.py:33
-#: .\apps\keywords\models\keyword_parameters.py:168
+#: .\apps\keywords\models\keyword_parameters.py:184
 #: .\apps\libraries\models\library_import_parameter.py:37
 #: .\models\keyword_source.py:35
 msgid "Parameters"
 msgstr "Parameters"
 
-#: .\apps\keywords\admin\keyword_parameters_inline.py:66
+#: .\apps\keywords\admin\keyword_parameters_inline.py:75
 msgid "Standardwert (optional)"
 msgstr "Default Value (optional)"
 
-#: .\apps\keywords\admin\keyword_parameters_inline.py:74
+#: .\apps\keywords\admin\keyword_parameters_inline.py:83
 #: .\apps\keywords\admin\keywordcall_return_value_inline.py:49
 #: .\apps\variables\admin\table_columns_inline.py:58
 msgid "Name eintragen, anschließend Enter drücken"
@@ -436,14 +440,14 @@ msgstr ""
 #: .\apps\keywords\admin\keywordcall_return_value_inline.py:39
 #: .\apps\keywords\models\keyword_return_value.py:33
 #: .\apps\keywords\models\keyword_return_value.py:87
-#: .\apps\keywords\models\keywordcall.py:138
-#: .\apps\keywords\models\keywordcall_return_value.py:84
+#: .\apps\keywords\models\keywordcall.py:145
+#: .\apps\keywords\models\keywordcall_return_value.py:90
 msgid "Rückgabewert"
 msgstr "Return Value"
 
 #: .\apps\keywords\admin\keywordcall_return_value_inline.py:40
 #: .\apps\keywords\models\keyword_return_value.py:88
-#: .\apps\keywords\models\keywordcall_return_value.py:85
+#: .\apps\keywords\models\keywordcall_return_value.py:91
 msgid "Rückgabewerte"
 msgstr "Return Values"
 
@@ -479,7 +483,7 @@ msgid "Eingabe"
 msgstr "Input"
 
 #: .\apps\keywords\models\execution_keywordcall.py:36
-#: .\apps\keywords\models\keywordcall_parameters.py:156
+#: .\apps\keywords\models\keywordcall_parameters.py:158
 msgid "Eingabewerte"
 msgstr "Input values"
 
@@ -612,15 +616,15 @@ msgstr "Column"
 msgid "Referenzwert"
 msgstr "Reference Value"
 
-#: .\apps\keywords\models\keywordcall_parameter_source.py:107
+#: .\apps\keywords\models\keywordcall_parameter_source.py:109
 msgid "Parameter-Referenz"
 msgstr "Parameter reference"
 
-#: .\apps\keywords\models\keywordcall_parameter_source.py:108
+#: .\apps\keywords\models\keywordcall_parameter_source.py:110
 msgid "Parameter-Referenzen"
 msgstr "Parameter references"
 
-#: .\apps\keywords\models\keywordcall_parameters.py:155
+#: .\apps\keywords\models\keywordcall_parameters.py:157
 msgid "Eingabewert"
 msgstr "Input value"
 
@@ -707,7 +711,7 @@ msgid "Dateipfad wie beim Importieren einer Ressource in einer .robot Datei"
 msgstr "Filepath just like when importing a Resource in a .robot file"
 
 #: .\apps\resources\admin\resource_import.py:61
-#: .\apps\sequences\admin\uses_inline.py:22
+#: .\apps\sequences\admin\uses_inline.py:33
 #: .\apps\testcases\models\testcase.py:173
 msgid "Testfall"
 msgstr "Test Case"
@@ -743,7 +747,7 @@ msgstr "Resource Import"
 msgid "Ressource-Imports"
 msgstr "Resource Imports"
 
-#: .\apps\sequences\admin\uses_inline.py:14
+#: .\apps\sequences\admin\uses_inline.py:16
 msgid "Verwendungen"
 msgstr "Uses"
 
@@ -911,7 +915,7 @@ msgstr "Relationships to Systems"
 msgid "Diese Bibliothek hat keine Einstellungen"
 msgstr "This library has no settings"
 
-#: .\models\keyword_source.py:297
+#: .\models\keyword_source.py:301
 msgid "Rückgabetyp"
 msgstr "Return type"
 
