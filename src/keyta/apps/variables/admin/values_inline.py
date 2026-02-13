@@ -31,6 +31,8 @@ class Values(DeleteRelatedField, SortableTabularInline):
 
     def formfield_for_dbfield(self, db_field, request, **kwargs):
         field = super().formfield_for_dbfield(db_field, request, **kwargs)
+        variable_pk = request.resolver_match.kwargs['object_id']
+        variable = Variable.objects.get(pk=variable_pk)
 
         if db_field.name == 'name':
             field.widget = forms.TextInput(attrs={
@@ -40,6 +42,7 @@ class Values(DeleteRelatedField, SortableTabularInline):
         if db_field.name == 'value':
             field.widget = forms.TextInput(attrs={
                 'style': 'width: 100%',
+                'placeholder': _('Wert eintragen, anschließend Enter drücken') if variable.is_list() else ''
             })
 
         return field
