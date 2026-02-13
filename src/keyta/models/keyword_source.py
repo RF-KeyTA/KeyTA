@@ -1,12 +1,12 @@
 import json
 import re
-import subprocess
 import tempfile
 from abc import abstractmethod
 from pathlib import Path
 from typing import TypedDict
 
 from jinja2 import Template
+from robot.libdoc import libdoc
 
 from django.db import models
 from django.db.models.functions import Lower
@@ -171,6 +171,14 @@ def get_init_doc(library_json):
         return _("Diese Bibliothek hat keine Einstellungen")
 
 
+def get_libdoc_dict(library_or_resource: str) -> dict:
+    libdoc_json = Path(tempfile.gettempdir()) / f"{library_or_resource}.json"
+    libdoc(library_or_resource, str(libdoc_json))
+
+    with open(libdoc_json, encoding='utf-8') as file:
+        return json.load(file)
+
+
 def get_return_type(return_type: dict | None) -> list:
     if return_type is None:
         return []
@@ -231,31 +239,6 @@ def get_type(arg: dict) -> list[str]:
     return []
 
 
-def heading(title: str):
-    return f"""
-    <div class="row">
-        <label class="col-sm-6 text-left">
-            {title}
-        </label>
-    </div>
-    """
-
-
-def get_libdoc_dict(library_or_resource: str) -> dict:
-    libdoc_json = Path(tempfile.gettempdir()) / f"{library_or_resource}.json"
-    libdoc = subprocess.run(
-        f'libdoc "{library_or_resource}" "{libdoc_json}"',
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT
-    )
-
-    if libdoc.returncode == 0:
-        with open(libdoc_json, encoding='utf-8') as file:
-            return json.load(file)
-
-    raise Exception(libdoc.stdout.decode('utf-8'))
-
-
 def get_typedocs(libdoc_typedocs: list[dict]) -> dict[str, TypeDoc]:
     typedocs = dict()
 
@@ -292,6 +275,16 @@ def get_typedocs(libdoc_typedocs: list[dict]) -> dict[str, TypeDoc]:
             )
 
     return typedocs
+
+
+def heading(title: str):
+    return f"""
+    <div class="row">
+        <label class="col-sm-6 text-left">
+            {title}
+        </label>
+    </div>
+    """
 
 
 def return_type_doc(return_type: list, typedocs: dict[str, TypeDoc]) -> str:
