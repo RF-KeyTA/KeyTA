@@ -59,6 +59,7 @@ class VariableAdmin(SortableAdminBase, BaseAdmin):
         Windows,
         Values
     ]
+    change_form_template = 'variable_change_form.html'
 
     @admin.display(description=_('Systeme'))
     def system_list(self, window: Window):
