@@ -12,23 +12,20 @@
 </script>
 {% endblock %}
 
-{% block formset_added %}
-{{ block.super }}
+{% block on_formset_added %}
 <script type="text/javascript">
-    $(document).ready(function () {
-        document.addEventListener('formset:added', function(event) {
-            const row = django.jQuery(event.target)
-            const selects = django.jQuery('select', row)
-            const inputs = django.jQuery('input[type="text"]', row)
+    function onFormsetAdded(event) {
+        const row = django.jQuery(event.target)
+        const selects = django.jQuery('select', row)
+        const inputs = django.jQuery('input[type="text"]', row)
 
-            if (inputs.length > 1) {
-                $('a.save-row').show()
-            }
+        if (inputs.length > 1) {
+            $('a.save-row').show()
+        }
 
-            selects.on('change', function(event) {
-                $('.button-save').click()
-            })
+        selects.on('change', function(event) {
+            $('.button-save').click()
         })
-    })
+    }
 </script>
 {% endblock %}

@@ -294,16 +294,27 @@
         })
     </script>
 
+    {% block on_formset_added %}
+    <script type="text/javascript">
+        function onFormsetAdded(event) {
+            const row = django.jQuery(event.target)
+            const input_texts = django.jQuery('input[type=text]', row)
+            input_texts.first().focus()
+
+            const selects = django.jQuery('select', row)
+            selects.on('change', function(event) {
+                $('.button-save').click()
+            })
+        }
+    </script>
+    {% endblock %}
+
     {% block formset_added %}
     <script type="text/javascript">
         $(document).ready(function () {
             document.addEventListener('formset:added', function(event) {
                 applySelect2()
-
-                const row = django.jQuery(event.target)
-                const input_texts = django.jQuery('input[type=text]', row)
-
-                input_texts.first().focus()
+                onFormsetAdded(event)
             })
         })
     </script>

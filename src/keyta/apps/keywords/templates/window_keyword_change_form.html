@@ -12,22 +12,6 @@
 </script>
 {% endblock %}
 
-{% block formset_added %}
-{{ block.super }}
-<script type="text/javascript">
-    $(document).ready(function () {
-        document.addEventListener('formset:added', function(event) {
-            const row = django.jQuery(event.target)
-            const selects = django.jQuery('select', row)
-
-            selects.on('change', function(event) {
-                $('.button-save').click()
-            })
-        })
-    })
-</script>
-{% endblock %}
-
 {% block formset_form %}
 <script type="text/javascript">
     $(document).ready(function () {
