@@ -2,16 +2,6 @@
 {% load i18n admin_urls static admin_modify jazzmin %}
 {% get_jazzmin_settings request as jazzmin_settings %}
 
-{% block page_actions %}
-    {% if not add %}
-    <div class="col-12 col-md-auto d-flex align-items-center justify-content-end page-actions">
-        <a id="export-button" href="{% add_preserved_filters add_url is_popup to_field %}?export" class="btn {{ jazzmin_ui.button_classes.success }} float-right">
-            <i class="fa-solid fa-file-export"></i> &nbsp; Export .robot 
-        </a>
-    </div>
-    {% endif %}
-{% endblock %}
-
 {% block extrajs %}
 {{ block.super }}
 <script>
@@ -25,6 +15,17 @@
         if (!document.location.hash) {
            $('a:contains("{% trans "Schritte" %}")').click()
         }
+    })
+</script>
+{% endblock %}
+
+{% block formset_added %}
+{{ block.super }}
+<script type="text/javascript">
+    $(document).ready(function () {
+        document.addEventListener('formset:added', function(event) {
+            $('a.save-row').show()
+        })
     })
 </script>
 {% endblock %}
@@ -109,4 +110,14 @@
         })
     })
 </script>
+{% endblock %}
+
+{% block page_actions %}
+    {% if not add %}
+    <div class="col-12 col-md-auto d-flex align-items-center justify-content-end page-actions">
+        <a id="export-button" href="{% add_preserved_filters add_url is_popup to_field %}?export" class="btn {{ jazzmin_ui.button_classes.success }} float-right">
+            <i class="fa-solid fa-file-export"></i> &nbsp; Export .robot
+        </a>
+    </div>
+    {% endif %}
 {% endblock %}
