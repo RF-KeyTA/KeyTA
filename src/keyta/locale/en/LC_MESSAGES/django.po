@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-13 14:06+0100\n"
+"POT-Creation-Date: 2026-02-13 15:37+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -116,8 +116,9 @@ msgstr "Steps"
 #: .\apps\sequences\admin\sequence.py:66 .\apps\sequences\admin\sequence.py:113
 #: .\apps\systems\apps.py:8 .\apps\systems\models.py:37
 #: .\apps\testcases\admin\base_testcase_admin.py:130
-#: .\apps\testcases\models\testcase.py:34 .\apps\variables\admin\variable.py:63
-#: .\apps\variables\admin\variable.py:99 .\apps\variables\models\variable.py:25
+#: .\apps\testcases\models\testcase.py:34 .\apps\variables\admin\variable.py:64
+#: .\apps\variables\admin\variable.py:100
+#: .\apps\variables\models\variable.py:25
 #: .\apps\windows\admin\variables_inline.py:24
 #: .\apps\windows\admin\window.py:64 .\apps\windows\admin\window.py:107
 #: .\apps\windows\admin\window_keyword_inline.py:12 .\apps\windows\models.py:18
@@ -140,6 +141,7 @@ msgstr "The value field cannot be left empty."
 
 #: .\apps\actions\admin\library_keyword_call_vararg_parameters_inline.py:57
 #: .\apps\variables\admin\table_column.py:26
+#: .\apps\variables\admin\values_inline.py:64
 msgid "Wert eintragen, anschließend Enter drücken"
 msgstr "Enter a value and then press Enter"
 
@@ -377,6 +379,7 @@ msgstr ""
 #: .\apps\keywords\admin\field_keywordcall_values.py:22
 #: .\apps\variables\admin\table_columns_inline.py:40
 #: .\apps\variables\models\variable_value.py:48
+#: .\apps\variables\templates\variable_change_form.html:9
 msgid "Werte"
 msgstr "Values"
 
@@ -829,9 +832,13 @@ msgstr "The table already contains a column with this name."
 msgid "Spalten"
 msgstr "Columns"
 
-#: .\apps\variables\admin\values_inline.py:21
-msgid "Die Namen müssen eindeutig sein."
-msgstr "The names must be unique."
+#: .\apps\variables\admin\values_inline.py:28
+msgid "Dieser Name ist bereits vorhanden."
+msgstr "This name already exists."
+
+#: .\apps\variables\admin\values_inline.py:37
+msgid "Dieser Wert ist bereits vorhanden."
+msgstr "This value already exists."
 
 #: .\apps\variables\apps.py:7 .\apps\variables\models\variable.py:122
 #: .\apps\variables\models\variable.py:129
