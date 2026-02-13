@@ -1,5 +1,5 @@
 from django import forms
-from django.core.exceptions import ValidationError
+from django.forms.utils import ErrorDict, ErrorList
 from django.utils.translation import gettext_lazy as _
 
 from adminsortable2.admin import CustomInlineFormSet
@@ -11,14 +11,33 @@ from ..models import Variable, VariableValue
 
 
 class ValuesFormset(CustomInlineFormSet):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.variable: Variable = kwargs.get('instance')
+
     def clean(self):
         names = set()
+        values = set()
 
         for form in self.forms:
             name = form.cleaned_data.get('name')
 
             if name and name in names:
-                raise ValidationError(_('Die Namen müssen eindeutig sein.'))
+                form._errors = ErrorDict()
+                form._errors['name'] = ErrorList([
+                    _('Dieser Name ist bereits vorhanden.')
+                ])
+
+            if self.variable.is_list():
+                value = form.cleaned_data.get('value')
+
+                if value and value in values:
+                    form._errors = ErrorDict()
+                    form._errors['value'] = ErrorList([
+                        _('Dieser Wert ist bereits vorhanden.')
+                    ])
+
+                values.add(value)
 
             names.add(name)
 
