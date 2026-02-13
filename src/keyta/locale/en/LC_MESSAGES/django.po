@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-13 11:48+0100\n"
+"POT-Creation-Date: 2026-02-13 14:06+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -40,7 +40,7 @@ msgstr "Select a System"
 #: .\apps\keywords\models\keyword.py:51 .\apps\libraries\admin\library.py:102
 #: .\apps\libraries\admin\library_import.py:51
 #: .\apps\testcases\models\testcase.py:23 .\apps\windows\models.py:26
-#: .\models\keyword_source.py:317 .\models\keyword_source.py:353
+#: .\models\keyword_source.py:310 .\models\keyword_source.py:346
 msgid "Dokumentation"
 msgstr "Documentation"
 
@@ -74,7 +74,7 @@ msgstr "Keywords"
 #: .\apps\variables\models\variable.py:19
 #: .\apps\variables\models\variable_value.py:17
 #: .\apps\windows\admin\window.py:49 .\apps\windows\models.py:20
-#: .\models\keyword_source.py:314
+#: .\models\keyword_source.py:307
 msgid "Name"
 msgstr "Name"
 
@@ -663,8 +663,8 @@ msgstr "Libraries"
 
 #: .\apps\libraries\forms\library_form.py:21
 #, python-brace-format
-msgid "\"{name}\" ist keine Robot Framework Bibliothek"
-msgstr "\"{name}\" is not a Robot Framework library"
+msgid "Die Bibliothek \"{name}\" enthält keine Schlüsselwörter."
+msgstr "The library \"{name}\" does not contain any keywords."
 
 #: .\apps\libraries\forms\library_form.py:23
 #, python-brace-format
@@ -915,7 +915,7 @@ msgstr "Relationships to Systems"
 msgid "Diese Bibliothek hat keine Einstellungen"
 msgstr "This library has no settings"
 
-#: .\models\keyword_source.py:301
+#: .\models\keyword_source.py:294
 msgid "Rückgabetyp"
 msgstr "Return type"
 

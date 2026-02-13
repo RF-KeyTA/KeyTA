@@ -18,7 +18,7 @@ class LibraryForm(forms.ModelForm):
                 import_module(name)
 
                 if not get_libdoc_dict(name)['keywords']:
-                    raise ValidationError(_(f'"{name}" ist keine Robot Framework Bibliothek'))
+                    raise ValidationError(_(f'Die Bibliothek "{name}" enthält keine Schlüsselwörter.'))
             except ModuleNotFoundError:
                 raise ValidationError(_(f'Die Bibliothek "{name}" ist im PYTHONPATH nicht vorhanden.'))
 
