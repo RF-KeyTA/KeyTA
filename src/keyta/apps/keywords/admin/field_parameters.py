@@ -1,3 +1,5 @@
+from html import escape
+
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
@@ -12,15 +14,15 @@ def repr_param(param):
     value = param['value']
 
     if value is None:
-        value = len(name)*'&nbsp;'
+        value = len(name)*' '
 
     if value == '${None}':
         value = 'None'
 
     if isinstance(value, list):
-        value = (4*'&nbsp;').join(value)
+        value = (4*' ').join(value)
 
-    value_span = f'<span class="input-group-text bg-white" style="border-color: var(--keyta-primary-color)">{value}</span>'
+    value_span = f'<span class="input-group-text bg-white" style="border-color: var(--keyta-primary-color)">{escape(value)}</span>'
     
     if icon:
         html = f"""
