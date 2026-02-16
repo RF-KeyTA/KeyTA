@@ -243,14 +243,14 @@
                 <div class="col">
                     <table class="table">
                         {% for arg_name, arg in step.args.items() %}
-                            <tr><td><i style="color: gray">{{ arg_name }}</i></td><td>{{ arg }}</td></tr>
+                            <tr><td><i style="color: gray">{{ arg_name }}</i></td><td>{{ arg|e }}</td></tr>
                         {% endfor %}
                     </table>
                 </div>
             {% else %}
                 {% for arg_name, arg in step.args.items() %}
                 <div class="col">
-                    <span>{{ arg }}</span>
+                    <span>{{ arg|e }}</span>
                     <br>
                     <i style="color: gray">{{ arg_name }}</i>
                 </div>
