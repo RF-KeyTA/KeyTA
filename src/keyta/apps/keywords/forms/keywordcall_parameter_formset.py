@@ -35,6 +35,7 @@ def get_keyword_parameters(kw_call: KeywordCall):
             (source.get_value().jsonify(), str(source))
             for source in KeywordCallParameterSource.objects
             .filter(kw_param__keyword=kw_call.from_keyword)
+            .order_by('kw_param__position')
         ]
     ]]
 
