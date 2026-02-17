@@ -77,8 +77,12 @@ class ParameterFields:
     def parameter3(self, kw_call: KeywordCall):
         return self.show_parameter(kw_call, 3)
 
+    @admin.display(description='')
+    def parameter4(self, kw_call: KeywordCall):
+        return self.show_parameter(kw_call, 4)
+
     def get_fields(self, request, obj=None):
-        return super().get_fields(request, obj) + ['parameter1', 'parameter2', 'parameter3']
+        return super().get_fields(request, obj) + ['parameter1', 'parameter2', 'parameter3', 'parameter4']
 
     def get_readonly_fields(self, request, obj=None):
-        return super().get_readonly_fields(request, obj) + ['parameter1', 'parameter2', 'parameter3']
+        return super().get_readonly_fields(request, obj) + ['parameter1', 'parameter2', 'parameter3', 'parameter4']
