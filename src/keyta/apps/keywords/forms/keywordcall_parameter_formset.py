@@ -97,29 +97,28 @@ def get_prev_return_values(kw_call: KeywordCall):
 
 
 def get_variables_choices(variables: QuerySet):
-    def sources_to_choices(sources: QuerySet):
-        return [
-            ((source.get_value().jsonify(), str(source)))
-            for source in sources
-        ]
-
     grouped_variable_values = {}
 
     for variable in variables:
         if variable.is_table():
-            sources = KeywordCallParameterSource.objects.filter(table_column__in=variable.columns.all())
+            sources = (
+                KeywordCallParameterSource.objects
+                .filter(table_column__in=variable.columns.all())
+                .order_by('table_column__index')
+            )
         else:
-            sources = KeywordCallParameterSource.objects.filter(variable_value__in=variable.values.all())
+            sources = (
+                KeywordCallParameterSource.objects
+                .filter(variable_value__in=variable.values.all())
+                .order_by('variable_value__index')
+            )
 
-        grouped_variable_values[variable.name] = sources_to_choices(sources)
-
-    return [
-        [
-            variable,
-            sorted(values, key=lambda value: value[1].lower())
+        grouped_variable_values[variable.name] = [
+            ((source.get_value().jsonify(), str(source)))
+            for source in sources
         ]
-        for variable, values in sorted(grouped_variable_values.items(), key=lambda kv: kv[0].lower())
-    ]
+
+    return list( grouped_variable_values.items())
 
 
 class ErrorsMixin:
