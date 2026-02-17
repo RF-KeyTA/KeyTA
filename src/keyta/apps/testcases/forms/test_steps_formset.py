@@ -11,6 +11,8 @@ from ..models import TestCase, TestStep
 
 
 class TestStepsFormset(CustomInlineFormSet):
+    window_widget_class = CustomRelatedFieldWidgetWrapper
+
     def __init__(
         self, default_order_direction=None, default_order_field=None, **kwargs
     ):
@@ -31,7 +33,7 @@ class TestStepsFormset(CustomInlineFormSet):
             if execute_field := form.fields.get('execute'):
                 execute_field.widget.attrs.update({'disabled': 'disabled'})
 
-            window_field.widget = CustomRelatedFieldWidgetWrapper(
+            window_field.widget = self.window_widget_class(
                 window_field.widget,
                 None,
                 {'systems': self.system_pks[0]}
