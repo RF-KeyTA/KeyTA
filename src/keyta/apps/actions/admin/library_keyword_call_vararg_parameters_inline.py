@@ -2,7 +2,8 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
-from keyta.admin.base_inline import TabularInlineWithDelete
+from keyta.admin.base_inline import BaseTabularInline
+from keyta.admin.field_delete_related_instance import DeleteRelatedField
 from keyta.apps.keywords.json_value import JSONValue
 from keyta.apps.keywords.models import (
     KeywordCall,
@@ -40,7 +41,7 @@ class VarkwargForm(VarargForm):
     parameter_type = KeywordParameterType.VAR_KWARG
 
 
-class VarargParametersInline(TabularInlineWithDelete):
+class VarargParametersInline(DeleteRelatedField, BaseTabularInline):
     model = KeywordCallParameter
     fields = ['value']
     form = VarargForm
