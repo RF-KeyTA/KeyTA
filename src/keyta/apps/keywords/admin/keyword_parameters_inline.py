@@ -89,7 +89,7 @@ class ParametersInline(DeleteRelatedField, SortableTabularInline):
         keyword: Keyword = obj
 
         if keyword and keyword.in_use > 1:
-            return self.fields + ['default_value', 'delete']
+            return self.fields + ['default_value'] + super().get_readonly_fields(request, obj)
 
         return super().get_fields(request, obj)
 
