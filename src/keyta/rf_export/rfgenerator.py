@@ -32,11 +32,7 @@ def dict_as_kwargs(dic):
 def escape_backslashes(text: str):
     # A Windows path
     if re.search(r'[A-Za-z]:\\', text) or re.search(r'\\\\.*\\', text):
-        return re.sub(
-        r"\\(\w)",
-        r"\\\\\1",
-            text.replace(r'\ ', '##BACKSLASH_SPACE##')
-        ).replace('##BACKSLASH_SPACE##', r'\ ')
+        return re.sub(r"\\(\w)", r"\\\\\1", text)
 
     return text
 
