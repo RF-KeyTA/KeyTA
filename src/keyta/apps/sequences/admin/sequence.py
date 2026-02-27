@@ -100,7 +100,7 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
         if app and app != current_app:
             return HttpResponseRedirect(reverse('admin:%s_%s_change' % (app, model), args=(object_id,)))
 
-        return super().change_view(request, object_id, form_url=form_url, extra_context=extra_context)
+        return super().change_view(request, object_id, form_url=form_url, extra_context=extra_context or {'title_icon': settings.FA_ICONS.sequence})
 
     def formfield_for_dbfield(self, db_field, request, **kwargs):
         field = super().formfield_for_dbfield(db_field, request, **kwargs)
