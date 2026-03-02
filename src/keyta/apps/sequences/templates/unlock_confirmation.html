@@ -1,0 +1,62 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static jazzmin %}
+{% get_jazzmin_ui_tweaks as jazzmin_ui %}
+
+{% block extrahead %}
+{{ block.super }}
+{{ media }}
+<script type="text/javascript" src="{% static 'admin/js/cancel.js' %}"></script>
+{% endblock %}
+
+{% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} delete-confirmation{% endblock %}
+
+{% block breadcrumbs %}
+<ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'admin:index' %}">{% trans 'Dashboard' %}</a></li>
+    <li class="breadcrumb-item"><a href="{% url opts|admin_urlname:'changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url opts|admin_urlname:'change' object.pk|admin_urlquote %}">{{ object|truncatewords:"18" }}</a></li>
+    <li class="breadcrumb-item active">{% trans 'Entsperren' %}</li>
+</ol>
+{% endblock %}
+
+{% block content_title %} {% trans 'Entsperren' %} {% endblock %}
+
+{% block content %}
+
+<div class="col-12">
+    <div class="card card-danger card-outline">
+        <div class="card-header with-border">
+            <h4 class="card-title">
+                <strong>{% trans 'Entsperren' %} &ldquo;{{ object|truncatewords:"18" }}&rdquo;</strong>
+            </h4>
+        </div>
+
+        <div class="card-body">
+            <div id="content-main">
+                <div class="row">
+                    <p>{% blocktrans with escaped_object=object %}Änderungen am Objekt '{{ escaped_object }}' wirken sich auf die folgenden Objekte aus. Trotzdem fortfahren?{% endblocktrans %}</p>
+                    <div class="col-12 col-sm-9">
+                        <ul>
+                            {% for obj in protected %}
+                            <li>{{ obj }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="col-12 col-sm-3">
+                        <form method="post">{% csrf_token %}
+                            <input type="hidden" name="post" value="yes">
+                            <div class="form-group">
+                                <input type="submit" class="btn {{ jazzmin_ui.button_classes.danger }} form-control" value="{% trans 'Yes' %}">
+                            </div>
+                            <div class="form-group">
+                                <a href="?lock" class="btn {{ jazzmin_ui.button_classes.danger }} form-control">{% trans "No" %}</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -100,6 +100,6 @@ class ParametersInline(DeleteRelatedField, SortableTabularInline):
             return self.can_change(request.user, 'action')
 
         if keyword and keyword.is_sequence:
-            return self.can_change(request.user, 'sequence')
+            return self.can_change(request.user, 'sequence') and not keyword.locked
 
         return super().has_delete_permission(request, obj)

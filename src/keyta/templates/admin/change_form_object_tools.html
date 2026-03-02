@@ -2,6 +2,16 @@
 {% get_jazzmin_ui_tweaks as jazzmin_ui %}
 
 {% block object-tools-items %}
+    {% if change_lock %}
+    <div class="form-group" style="display: inline-flex; margin-right: 5px">
+        <a href="{{ request.path }}?{{change_lock.next_state}}">
+            <span class="icon-wrapper">
+                <i class="action-icon {% icon change_lock.icon %}"></i>
+            </span>
+        </a>
+    </div>
+    {% endif %}
+
     {% if include_duplicate_object_link %}
     <div class="form-group" style="display: inline-flex; margin-right: 5px">
         <a href="{{ request.path }}?duplicate=true" class="clone-link">

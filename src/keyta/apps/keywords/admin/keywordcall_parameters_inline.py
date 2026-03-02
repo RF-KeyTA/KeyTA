@@ -48,7 +48,13 @@ class KeywordCallParametersInline(BaseTabularInline):
             return True
 
         if keywordcall and keywordcall.from_keyword:
-            return self.can_change(request.user, 'action') or self.can_change(request.user, 'sequence')
+            from_keyword = keywordcall.from_keyword
+
+            if from_keyword.is_action:
+                return self.can_change(request.user, 'action')
+
+            if from_keyword.is_sequence:
+                return self.can_change(request.user, 'sequence') and not from_keyword.locked
 
         return super().has_change_permission(request, obj)
 

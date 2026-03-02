@@ -1,9 +1,11 @@
+import datetime
 import re
 from collections import defaultdict
 
 from django.db import models
 from django.db.models import Q
 from django.db.models.functions import Lower
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from keyta.models.base_model import AbstractBaseModel
@@ -56,6 +58,12 @@ class Keyword(AbstractBaseModel):
     )
 
     # ---Customization--
+    locked = models.BooleanField(
+        default=False
+    )
+    last_unlocked = models.DateTimeField(
+        default=timezone.localtime() - datetime.timedelta(days=1)
+    )
     setup_teardown = models.BooleanField(
         default=False,
         verbose_name=_('Vor-/Nachbereitung')

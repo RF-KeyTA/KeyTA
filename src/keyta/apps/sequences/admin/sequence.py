@@ -1,8 +1,11 @@
 from django import forms
 from django.conf import settings
 from django.contrib import admin
+from django.contrib.admin.options import csrf_protect_m
+from django.db import transaction, router
 from django.forms import ModelMultipleChoiceField
 from django.http import HttpResponseRedirect, HttpRequest
+from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext as _
@@ -83,8 +86,10 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
         ParametersInline,
         SequenceSteps
     ]
+    unlock_confirmation_template = 'unlock_confirmation.html'
 
     def change_view(self, request: HttpRequest, object_id, form_url="", extra_context=None):
+        sequence = Sequence.objects.get(id=object_id)
         steps_tab = '#%s-tab' % _('Schritte').lower()
 
         if 'steps_tab' in request.GET:
@@ -100,7 +105,102 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
         if app and app != current_app:
             return HttpResponseRedirect(reverse('admin:%s_%s_change' % (app, model), args=(object_id,)))
 
-        return super().change_view(request, object_id, form_url=form_url, extra_context=extra_context or {'title_icon': settings.FA_ICONS.sequence})
+        context = {
+            'title_icon': settings.FA_ICONS.sequence
+        }
+
+        if 'lock' in request.GET:
+            sequence.lock()
+            return HttpResponseRedirect(request.path)
+
+        if 'unlock' in request.GET:
+            sequence.unlock()
+
+            if request.method == 'POST':
+                return HttpResponseRedirect(request.path)
+
+            return self.unlock_view(request, object_id, extra_context)
+
+        if sequence.in_use > 1 and sequence.unlock_timeout_expired:
+            sequence.lock()
+
+        if sequence.locked:
+            context.update({
+                'change_lock': {
+                    'next_state': 'unlock',
+                    'icon': 'unlock'
+                }
+            })
+        else:
+            context.update({
+                'change_lock': {
+                    'next_state': 'lock',
+                    'icon': 'lock'
+                }
+            })
+
+        return super().change_view(request, object_id, form_url=form_url, extra_context=context | (extra_context or {}))
+
+    @csrf_protect_m
+    def unlock_view(self, request, object_id, extra_context=None):
+        if request.method in ("GET", "HEAD", "OPTIONS", "TRACE"):
+            return self._unlock_view(request, object_id, extra_context)
+
+        with transaction.atomic(using=router.db_for_write(self.model)):
+            return self._unlock_view(request, object_id, extra_context)
+
+    def _unlock_view(self, request, object_id, extra_context):
+        "The 'unlock' admin view for this model."
+        app_label = self.opts.app_label
+
+        sequence = Sequence.objects.get(id=object_id)
+
+        if sequence is None:
+            return self._get_obj_does_not_exist_redirect(request, self.opts, object_id)
+
+        # Populate deleted_objects, a data structure of all related objects that
+        # will also be deleted.
+        (
+            deleted_objects,
+            model_count,
+            perms_needed,
+            protected,
+        ) = self.get_deleted_objects([sequence], request)
+
+        if request.POST and not protected:  # The user has confirmed the deletion.
+            sequence.unlock()
+            return HttpResponseRedirect(request.path)
+
+        object_name = str(self.opts.verbose_name)
+
+        context = {
+            **self.admin_site.each_context(request),
+            "subtitle": None,
+            "object_name": object_name,
+            "object": sequence,
+            "deleted_objects": deleted_objects,
+            "model_count": dict(model_count).items(),
+            "perms_lacking": perms_needed,
+            "protected": protected,
+            "opts": self.opts,
+            "app_label": app_label,
+            "preserved_filters": self.get_preserved_filters(request),
+            **(extra_context or {}),
+        }
+
+        return self.render_unlock_form(request, context)
+
+    def render_unlock_form(self, request, context):
+        request.current_app = self.admin_site.name
+        context.update(
+            media=self.media,
+        )
+
+        return TemplateResponse(
+            request,
+            self.unlock_confirmation_template,
+            context,
+        )
 
     def formfield_for_dbfield(self, db_field, request, **kwargs):
         field = super().formfield_for_dbfield(db_field, request, **kwargs)
@@ -164,7 +264,14 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
         return self.can_add(request.user, 'sequence')
 
     def has_change_permission(self, request, obj=None):
-        return self.can_change(request.user, 'sequence')
+        locked = False
+
+        if '/sequence/' in request.path and '/change/' in request.path:
+            if sequence_id := request.resolver_match.kwargs.get('object_id'):
+                sequence = Sequence.objects.get(id=sequence_id)
+                locked = sequence.locked
+
+        return self.can_change(request.user, 'sequence') and not locked
 
     def has_delete_permission(self, request, obj=None):
         return self.can_delete(request.user, 'sequence')
@@ -204,6 +311,11 @@ class SequenceQuickChangeAdmin(WindowKeywordAdmin):
     inlines = [ParametersInline, SequenceQuickChangeSteps]
 
     def change_view(self, request, object_id, form_url="", extra_context=None):
+        sequence = Sequence.objects.get(id=object_id)
+
+        if sequence.in_use > 1 and sequence.unlock_timeout_expired:
+            sequence.lock()
+
         return super().change_view(request, object_id, form_url, extra_context or {'title_icon': settings.FA_ICONS.sequence})
 
     def get_inlines(self, request, obj):
@@ -217,7 +329,14 @@ class SequenceQuickChangeAdmin(WindowKeywordAdmin):
         return inlines
 
     def has_change_permission(self, request, obj=None):
-        return self.can_change(request.user, 'sequence')
+        locked = False
+
+        if '/sequencequickchange/' in request.path:
+            sequence_id = request.resolver_match.kwargs.get('object_id')
+            sequence = Sequence.objects.get(id=sequence_id)
+            locked = sequence.locked
+
+        return self.can_change(request.user, 'sequence') and not locked
 
     def has_delete_permission(self, request, obj=None):
         return False
