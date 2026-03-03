@@ -34,7 +34,7 @@
         <div class="card-body">
             <div id="content-main">
                 <div class="row">
-                    <p>{% blocktrans with escaped_object=object %}Änderungen am Objekt '{{ escaped_object }}' wirken sich auf die folgenden Objekte aus. Trotzdem fortfahren?{% endblocktrans %}</p>
+                    <p>{% blocktrans with escaped_object=object %}Änderungen am Objekt '{{ escaped_object }}' wirken sich auf die folgenden Objekte aus. Trotzdem fortfahren?<br><b>Hinweis</b>: Um ungewünschte Auswirkungen zu vermeiden, soll eine Kopie erstellt werden.{% endblocktrans %}</p>
                     <div class="col-12 col-sm-9">
                         <ul>
                             {% for obj in protected %}
