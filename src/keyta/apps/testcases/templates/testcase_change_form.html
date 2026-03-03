@@ -37,8 +37,13 @@
         // Selects in a saved form of a formset
         const formset_forms = django.jQuery('.form-row.has_original')
         formset_forms.each((index, form) => {
-            const window_select = django.jQuery('select[name$="-window"]', form)
+            const to_keyword_add = django.jQuery('a.add-related', form)
+            if (to_keyword_add.length === 1) {
+                const to_keyword_select_id = to_keyword_add.attr('id').replace('add_', '')
+                sessionStorage.setItem('to-keyword-select-id', to_keyword_select_id)
+            }
             const to_keyword_select = django.jQuery('select[name$="-to_keyword"]', form)
+            const window_select = django.jQuery('select[name$="-window"]', form)
 
             window_select.on('change', function () {
                 $('.button-save').click()
