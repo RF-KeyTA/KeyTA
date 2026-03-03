@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-01 18:32+0100\n"
+"POT-Creation-Date: 2026-03-03 13:28+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -91,7 +91,7 @@ msgstr "Window-independent"
 #: .\apps\keywords\models\keyword.py:74
 #: .\apps\keywords\models\keywordcall.py:102
 #: .\apps\resources\admin\resource_import.py:20
-#: .\apps\sequences\admin\sequence.py:279
+#: .\apps\sequences\admin\sequence.py:280
 #: .\apps\variables\admin\windows_inline.py:21
 #: .\apps\variables\admin\windows_inline.py:32 .\apps\windows\models.py:58
 #: .\apps\windows\models.py:72 .\apps\windows\models.py:79
@@ -113,7 +113,7 @@ msgid "Schritte"
 msgstr "Steps"
 
 #: .\apps\actions\admin\action.py:110 .\apps\keywords\models\keyword.py:79
-#: .\apps\sequences\admin\sequence.py:69 .\apps\sequences\admin\sequence.py:213
+#: .\apps\sequences\admin\sequence.py:69 .\apps\sequences\admin\sequence.py:214
 #: .\apps\systems\apps.py:8 .\apps\systems\models.py:37
 #: .\apps\testcases\admin\base_testcase_admin.py:130
 #: .\apps\testcases\models\testcase.py:34 .\apps\variables\admin\variable.py:64
@@ -418,7 +418,7 @@ msgstr "Enter a name and then press Enter"
 
 #: .\apps\keywords\admin\keywordcall.py:98
 #: .\apps\keywords\admin\keywordcall.py:104
-#: .\apps\keywords\admin\keywordcall_parameters_inline.py:55
+#: .\apps\keywords\admin\keywordcall_parameters_inline.py:61
 #: .\apps\keywords\models\keywordcall_condition.py:24
 #: .\apps\keywords\models\keywordcall_parameters.py:31
 #: .\apps\libraries\models\library_import_parameter.py:25
@@ -750,6 +750,12 @@ msgstr "Resource Import"
 msgid "Ressource-Imports"
 msgstr "Resource Imports"
 
+#: .\apps\sequences\admin\sequence.py:134
+msgid ""
+"Die Sequenz ist zur Bearbeitung gesperrt. Zum Entsperren das offene Schloss "
+"anklicken."
+msgstr "The Sequence is locked for modification. To unlock it click on the open lock."
+
 #: .\apps\sequences\admin\uses_inline.py:16
 msgid "Verwendungen"
 msgstr "Uses"
@@ -796,8 +802,11 @@ msgstr "Unlock"
 #, python-format
 msgid ""
 "Änderungen am Objekt '%(escaped_object)s' wirken sich auf die folgenden "
-"Objekte aus. Trotzdem fortfahren?"
-msgstr "Changes to the object '%(escaped_object)s' affect the following objects. Continue anyway?"
+"Objekte aus. Trotzdem fortfahren?<br><b>Hinweis</b>: Um ungewünschte "
+"Auswirkungen zu vermeiden, soll eine Kopie erstellt werden."
+msgstr ""
+"Changes to the object '%(escaped_object)s' affect the following objects. "
+"Continue anyway?<br><b>Hint</b>: In order to avoid undesired side effects it is better to create a copy."
 
 #: .\apps\sequences\templates\unlock_confirmation.html:49
 #: .\templates\admin\delete_confirmation.html:67
