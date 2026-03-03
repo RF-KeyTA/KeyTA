@@ -1,6 +1,6 @@
 from django import forms
 from django.conf import settings
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.contrib.admin.options import csrf_protect_m
 from django.db import transaction, router
 from django.forms import ModelMultipleChoiceField
@@ -131,6 +131,7 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
                     'icon': 'unlock'
                 }
             })
+            messages.warning(request, _('Die Sequenz ist zur Bearbeitung gesperrt. Zum Entsperren das offene Schloss anklicken.'))
         else:
             context.update({
                 'change_lock': {
