@@ -22,6 +22,10 @@
 {% block on_formset_added %}
 <script type="text/javascript">
     function onFormsetAdded(event) {
+        const row = event.target
+        const window_add = django.jQuery('a.add-related', row)
+        const window_select_id = window_add.attr('id').replace('add_', '')
+        sessionStorage.setItem('window-select-id', window_select_id)
         $('a.save-row').show()
     }
 </script>

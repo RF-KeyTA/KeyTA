@@ -229,6 +229,18 @@
 
                             if (modal_iframe) {
                                 const location = modal_iframe.contentWindow.location
+                                const window_quick_change_pk = location.pathname.match(/windowquickchange\/(\d+)\//)
+                                if (window_quick_change_pk) {
+                                    const window_pk = window_quick_change_pk[1]
+                                    const window_name = django.jQuery('#related-modal-iframe').contents().find('#card-title').text().trim()
+                                    const window_select_id = sessionStorage.getItem('window-select-id')
+                                    if (window_select_id) {
+                                        const window_select = django.jQuery('#' + window_select_id)
+                                        var newOption = new Option(window_name, window_pk, true, true)
+                                        window_select.append(newOption).trigger('change')
+                                        sessionStorage.clear()
+                                    }
+                                }
                                 const match = location.pathname.match(/step\/(\d+)\//) || location.search.match(/kw_call_pk=(\d+)/)
                                 if (match) {
                                     const pk = match[1]
