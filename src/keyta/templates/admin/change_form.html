@@ -261,8 +261,25 @@
                             }
                         }
                         else {
+                            const modal_iframe = $('#related-modal-iframe', modal).get(0)
                             const previousModal = $('#related-modal-iframe', modals[index-1])
                             previousModal.get(0).contentWindow.htmx.trigger("body", "modal-closed")
+
+                            if (modal_iframe) {
+                                const location = modal_iframe.contentWindow.location
+                                const action_quick_add_pk = location.pathname.match(/actionquickadd\/(\d+)\//)
+
+                                if (action_quick_add_pk) {
+                                    const action_pk = action_quick_add_pk[1]
+                                    const action_name = modal_iframe.contentWindow.django.jQuery('#card-title').text().trim()
+                                    const to_keyword_select_id = sessionStorage.getItem('add-related-select-id')
+                                    if (to_keyword_select_id) {
+                                        const to_keyword_select = previousModal.get(0).contentWindow.django.jQuery('#' + to_keyword_select_id)
+                                        to_keyword_select.append(new Option(action_name, action_pk, true, true)).trigger('change')
+                                        sessionStorage.clear()
+                                    }
+                                }
+                            }
                         }
                     })
                 })
@@ -329,6 +346,13 @@
             selects.on('change', function(event) {
                 $('.button-save').click()
             })
+
+            const add_related_link = django.jQuery('a.add-related', row)
+
+            if (add_related_link.length === 1) {
+                const add_related_select_id = add_related_link.attr('id').replace('add_', '')
+                sessionStorage.setItem('add-related-select-id', add_related_select_id)
+            }
         }
     </script>
     {% endblock %}
