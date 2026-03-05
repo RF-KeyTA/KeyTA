@@ -233,7 +233,7 @@
                                 if (sequence_quick_add_pk) {
                                     const sequence_pk = sequence_quick_add_pk[1]
                                     const sequence_name = django.jQuery('#related-modal-iframe').contents().find('#card-title').text().trim()
-                                    const to_keyword_select_id = sessionStorage.getItem('to-keyword-select-id')
+                                    const to_keyword_select_id = sessionStorage.getItem('add-related-select-id')
                                     if (to_keyword_select_id) {
                                         const to_keyword_select = django.jQuery('#' + to_keyword_select_id)
                                         to_keyword_select.append(new Option(sequence_name, sequence_pk, true, true)).trigger('change')
@@ -245,7 +245,7 @@
                                 if (window_quick_change_pk) {
                                     const window_pk = window_quick_change_pk[1]
                                     const window_name = django.jQuery('#related-modal-iframe').contents().find('#card-title').text().trim()
-                                    const window_select_id = sessionStorage.getItem('window-select-id')
+                                    const window_select_id = sessionStorage.getItem('add-related-select-id')
                                     if (window_select_id) {
                                         const window_select = django.jQuery('#' + window_select_id)
                                         var newOption = new Option(window_name, window_pk, true, true)

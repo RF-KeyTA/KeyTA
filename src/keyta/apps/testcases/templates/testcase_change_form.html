@@ -23,9 +23,12 @@
 <script type="text/javascript">
     function onFormsetAdded(event) {
         const row = event.target
-        const window_add = django.jQuery('a.add-related', row)
-        const window_select_id = window_add.attr('id').replace('add_', '')
-        sessionStorage.setItem('window-select-id', window_select_id)
+        const add_related_link = django.jQuery('a.add-related', row)
+
+        if (add_related_link.length === 1) {
+            const add_related_select_id = add_related_link.attr('id').replace('add_', '')
+            sessionStorage.setItem('add-related-select-id', add_related_select_id)
+        }
         $('a.save-row').show()
     }
 </script>
@@ -40,7 +43,7 @@
             const to_keyword_add = django.jQuery('a.add-related', form)
             if (to_keyword_add.length === 1) {
                 const to_keyword_select_id = to_keyword_add.attr('id').replace('add_', '')
-                sessionStorage.setItem('to-keyword-select-id', to_keyword_select_id)
+                sessionStorage.setItem('add-related-select-id', to_keyword_select_id)
             }
             const to_keyword_select = django.jQuery('select[name$="-to_keyword"]', form)
             const window_select = django.jQuery('select[name$="-window"]', form)
