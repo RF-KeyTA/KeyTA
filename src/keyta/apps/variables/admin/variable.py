@@ -238,6 +238,8 @@ class ValuesQuickChange(Values):
 
 @admin.register(VariableQuickChange)
 class VariableQuickChangeAdmin(SortableAdminBase, BaseAdmin):
+    change_form_template = 'variable_change_form.html'
+
     def get_fields(self, request, obj=None):
         return []
 
