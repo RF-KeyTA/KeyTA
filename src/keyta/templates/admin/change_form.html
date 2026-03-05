@@ -229,14 +229,14 @@
 
                             if (modal_iframe) {
                                 const location = modal_iframe.contentWindow.location
-                                const sequence_quick_add_pk = location.pathname.match(/sequencequickadd\/(\d+)\//)
-                                if (sequence_quick_add_pk) {
-                                    const sequence_pk = sequence_quick_add_pk[1]
-                                    const sequence_name = django.jQuery('#related-modal-iframe').contents().find('#card-title').text().trim()
+                                const keyword_quick_add_pk = location.pathname.match(/(action|sequence)quickadd\/(\d+)\//)
+                                if (keyword_quick_add_pk) {
+                                    const keyword_pk = keyword_quick_add_pk[2]
+                                    const keyword_name = django.jQuery('#related-modal-iframe').contents().find('#card-title').text().trim()
                                     const to_keyword_select_id = sessionStorage.getItem('add-related-select-id')
                                     if (to_keyword_select_id) {
                                         const to_keyword_select = django.jQuery('#' + to_keyword_select_id)
-                                        to_keyword_select.append(new Option(sequence_name, sequence_pk, true, true)).trigger('change')
+                                        to_keyword_select.append(new Option(keyword_name, keyword_pk, true, true)).trigger('change')
                                         sessionStorage.clear()
                                     }
                                 }
