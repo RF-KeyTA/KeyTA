@@ -221,35 +221,6 @@ class BaseDocumentationAdmin(DocumentationField, BaseReadOnlyAdmin):
 class BaseQuickAddAdmin(BaseAdmin):
     fields = ['systems', 'windows', 'name']
 
-    def add_view(self, request, form_url='', extra_context=None):
-        if request.POST and '_popup' in request.GET:
-            response = super().add_view(request, form_url, extra_context)
-
-            if hasattr(response, 'context_data') and response.context_data.get('errors'):
-                return response
-            else:
-                response = """
-                <script>
-                (function() {
-                    const modals = window.parent.document.querySelectorAll('.modal-dialog')
-
-                    if (modals.length === 2) {
-                        window.parent.dismissRelatedObjectModal()
-                        const iframe = window.parent.document.getElementById('related-modal-iframe')
-                        iframe.contentWindow.location.reload()
-                    }
-
-                    if (modals.length === 1) {
-                        window.parent.dismissRelatedObjectModal()
-                        window.parent.location.reload()
-                    }
-                })();
-                </script>
-                """
-                return HttpResponse(response)
-
-        return super().add_view(request, form_url, extra_context)
-
     def autocomplete_name_queryset(self, name: str, request: HttpRequest):
         queryset = super().autocomplete_name_queryset(name, request)
 

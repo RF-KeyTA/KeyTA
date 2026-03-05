@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.contrib import admin
 from django.forms import ModelMultipleChoiceField
-from django.http import HttpRequest, HttpResponseRedirect
+from django.http import HttpRequest, HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
@@ -168,6 +168,32 @@ class VariableQuickAddAdmin(SortableAdminBase, BaseQuickAddAdmin):
             add_url = reverse('admin:%s_%s_add' % (app, model))
 
             return HttpResponseRedirect(add_url + '?' + url_query_parameters(request.GET))
+
+        if request.POST and '_popup' in request.GET:
+            response = super().add_view(request, form_url, extra_context)
+
+            if hasattr(response, 'context_data') and response.context_data.get('errors'):
+                return response
+            else:
+                response = """
+                <script>
+                (function() {
+                    const modals = window.parent.document.querySelectorAll('.modal-dialog')
+
+                    if (modals.length === 2) {
+                        window.parent.dismissRelatedObjectModal()
+                        const iframe = window.parent.document.getElementById('related-modal-iframe')
+                        iframe.contentWindow.location.reload()
+                    }
+
+                    if (modals.length === 1) {
+                        window.parent.dismissRelatedObjectModal()
+                        window.parent.location.reload()
+                    }
+                })();
+                </script>
+                """
+                return HttpResponse(response)
 
         return super().add_view(request, form_url, extra_context)
 
