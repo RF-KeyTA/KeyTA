@@ -5,3 +5,14 @@
 {% block card_body %}
 {% include "test_step_tabs.html" %}
 {% endblock %}
+
+{% block extrajs %}
+{{ block.super }}
+<script>
+    $(document).ready(function () {
+        if (document.location.hash) {
+           $(`a[href="${document.location.hash}"]`).click()
+        }
+    })
+</script>
+{% endblock %}
