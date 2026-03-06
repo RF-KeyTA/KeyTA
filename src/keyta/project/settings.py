@@ -26,9 +26,11 @@ def get_home_dir():
         return Path(str(os.getenv('HOME')))
 
 
+BASE_URL = 'http://localhost:6227'
+
 KEYTA_DIR = get_home_dir() / 'KeyTA'
 KEYTA_DIR.mkdir(exist_ok=True)
-RF_SERVER = f'http://localhost:1471'
+RF_SERVER = 'http://localhost:1471'
 
 
 admin.AdminSite.index_title = 'Dashboard'
@@ -45,8 +47,6 @@ admin.AdminSite.has_permission = has_permission # type: ignore
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-BASE_URL = 'http://localhost:8000'
 
 DEBUG = True
 
