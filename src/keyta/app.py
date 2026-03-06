@@ -9,14 +9,13 @@ from typing import Optional
 
 from .IProcess import IProcess
 from .rf_remote_server import RobotRemoteServer
-from .project.settings import SQLITE_DB
+from .project.settings import BASE_URL, SQLITE_DB
 
 
-ROBOT_REMOTE_HOST = 'localhost'
-ROBOT_REMOTE_PORT = 1471
 CWD = Path(realpath(__file__)).parent
 DJANGO_DIR = CWD
-DJANGO_PORT = 8000
+ROBOT_REMOTE_HOST = 'localhost'
+ROBOT_REMOTE_PORT = 1471
 
 
 class DaemonThread(Thread):
@@ -30,6 +29,8 @@ class DaemonThread(Thread):
 
 
 def django_runserver():
+    host_port = BASE_URL.removeprefix('http://')
+
     if not SQLITE_DB.exists():
         print('Setting up the database...')
         exec_django_command('migrate')
@@ -37,7 +38,7 @@ def django_runserver():
     else:
         exec_django_command('migrate')
 
-    return subprocess.Popen('python manage.py runserver', cwd=DJANGO_DIR, shell=True)
+    return subprocess.Popen(f'python manage.py runserver {host_port}', cwd=DJANGO_DIR, shell=True)
 
 
 def exec_command(command: str, working_dir: Path=CWD):
@@ -58,7 +59,7 @@ def is_running(app: str):
 
 
 def open_keyta():
-    open_url('http://localhost:8000')
+    open_url(BASE_URL)
 
 
 def open_url(url):
