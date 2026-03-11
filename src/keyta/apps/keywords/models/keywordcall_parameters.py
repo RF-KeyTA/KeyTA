@@ -89,25 +89,13 @@ class KeywordCallParameter(CloneMixin, AbstractBaseModel):
                 ).pk
 
             if value_ref.type == KeywordCallParameterSourceType.KW_CALL_RETURN_VALUE:
-                if clone_keyword:
-                    clone_kwcall = clone_keyword.calls.get(index=clone_value.kw_call_index)
-                    clone_kw_call_return_values = {
-                        str(kw_call_return_value): kw_call_return_value
-                        for kw_call_return_value in clone_kwcall.get_previous_return_values().all()
-                    }
+                clone_kw_call_return_values = {
+                    str(kw_call_return_value): kw_call_return_value
+                    for kw_call_return_value in clone.keyword_call.get_previous_return_values().all()
+                }
 
-                    if kw_call_return_value := clone_kw_call_return_values.get(str(self.value_ref.kw_call_ret_val)):
-                        clone_value.pk = KeywordCallParameterSource.objects.get(kw_call_ret_val=kw_call_return_value).pk
-
-                if testcase := clone.keyword_call.testcase:
-                    clone_test_step = testcase.steps.get(index=clone_value.kw_call_index)
-                    clone_test_step_return_values = {
-                        str(test_step_return_value): test_step_return_value
-                        for test_step_return_value in clone_test_step.get_previous_return_values().all()
-                    }
-
-                    if kw_call_return_value := clone_test_step_return_values.get(str(self.value_ref.kw_call_ret_val)):
-                        clone_value.pk = KeywordCallParameterSource.objects.get(kw_call_ret_val=kw_call_return_value).pk
+                if kw_call_return_value := clone_kw_call_return_values.get(str(self.value_ref.kw_call_ret_val)):
+                    clone_value.pk = KeywordCallParameterSource.objects.get(kw_call_ret_val=kw_call_return_value).pk
 
             clone.value = clone_value.jsonify()
             clone.save()
