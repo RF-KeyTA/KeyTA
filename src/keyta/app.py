@@ -140,6 +140,9 @@ def keyta():
 
     if not is_running('keyta'):
         App(texts).run()
+    else:
+        print('KeyTA is already running')
+        sys.exit()
 
 
 def keyta_de():
@@ -151,3 +154,6 @@ def keyta_de():
 
     if not is_running('keyta-de'):
         App(texts).run()
+    else:
+        print('KeyTA läuft gerade')
+        sys.exit()
