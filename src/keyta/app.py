@@ -50,12 +50,24 @@ def exec_django_command(command: str):
 
 
 def is_running(app: str):
-    process_list = subprocess.check_output(['TASKLIST', '/FI', f'imagename eq {app}']).decode('iso-8859-1')
-    return len([
-        line
-        for line in process_list.splitlines()
-        if line.startswith(app)
-    ]) > 1
+    return len(list_processes(app)) > 1
+
+
+def list_processes(proc_name: str):
+    if os.name == 'nt':
+        return [
+            proc 
+            for proc in 
+            subprocess.check_output(['TASKLIST', '/FI', f'imagename eq {proc_name}.exe']).decode('iso-8859-1').splitlines()
+            if proc.startswith(proc_name)
+        ]
+
+    return [
+        proc 
+        for proc in 
+        subprocess.check_output(['ps', 'aux']).decode().splitlines()
+        if proc.endswith(proc_name)
+    ]
 
 
 def open_keyta():
@@ -119,7 +131,7 @@ def keyta():
         'terminate_keyta': 'Terminate KeyTA'
     }
 
-    if not is_running('keyta.exe'):
+    if not is_running('keyta'):
         App(texts).run()
 
 
@@ -130,5 +142,5 @@ def keyta_de():
         'terminate_keyta': 'KeyTA beenden'
     }
 
-    if not is_running('keyta-de.exe'):
+    if not is_running('keyta-de'):
         App(texts).run()
