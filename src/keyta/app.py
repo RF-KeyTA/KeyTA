@@ -75,7 +75,11 @@ def open_keyta():
 
 
 def open_url(url):
-    exec_command(f'start {url}')
+    if os.name == 'nt':
+        exec_command(f'start {url}')
+
+    if sys.platform.startswith('linux'):
+        exec_command(f'xdg-open {url}')
 
 
 class App:
