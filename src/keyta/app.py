@@ -122,7 +122,10 @@ class App:
             return
 
     def terminate(self): # type: ignore
-        self.django_server.send_signal(signal.CTRL_C_EVENT)
+        if os.name == 'nt':
+            self.django_server.send_signal(signal.CTRL_C_EVENT)
+        else:
+            self.django_server.send_signal(signal.SIGINT)
 
 
 def keyta():
