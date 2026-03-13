@@ -33,7 +33,7 @@ def format_time(time_str):
     if time < 60:
         return '%s %s' % (time, translate('seconds'))
 
-    return '%s:%s %s' % (time // 60, time % 60, translate('minutes'))
+    return '%s:%02d %s' % (time // 60, time % 60, translate('minutes'))
 
 
 def format_value(value):
