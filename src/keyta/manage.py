@@ -6,7 +6,7 @@ import sys
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'project.settings')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'keyta.project.settings')
     # For compatibility with IPython
     os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
 

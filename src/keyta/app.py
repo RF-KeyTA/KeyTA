@@ -38,7 +38,7 @@ def django_runserver():
     else:
         exec_django_command('migrate')
 
-    return subprocess.Popen(f'python manage.py runserver {host_port}', cwd=DJANGO_DIR, shell=True)
+    return subprocess.Popen(f'{sys.executable} manage.py runserver {host_port}', cwd=DJANGO_DIR, shell=True)
 
 
 def exec_command(command: str, working_dir: Path=CWD):
@@ -46,7 +46,7 @@ def exec_command(command: str, working_dir: Path=CWD):
 
 
 def exec_django_command(command: str):
-    return exec_command(f'python manage.py {command}', DJANGO_DIR)
+    return exec_command(f'{sys.executable} manage.py {command}', DJANGO_DIR)
 
 
 def is_running(app: str):

@@ -97,7 +97,7 @@ KEYTA_APPS = [
     'keyta.apps.windows'
 ]
 
-INSTALLED_APPS = ADMIN_APP + DEFAULT_APPS + THIRD_PARTY_APPS + KEYTA_APPS + ['media']
+INSTALLED_APPS = ADMIN_APP + DEFAULT_APPS + THIRD_PARTY_APPS + KEYTA_APPS + ['keyta.media']
 
 # Used by BaseAdmin.can_change
 MODEL_TO_APP = {}
@@ -115,7 +115,7 @@ MIDDLEWARE = [
 
 AUTHENTICATION_BACKENDS = ["django.contrib.auth.backends.ModelBackend"]
 
-ROOT_URLCONF = 'project.urls'
+ROOT_URLCONF = 'keyta.project.urls'
 
 TEMPLATES = [
     {
@@ -130,8 +130,8 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages'
             ],
             'libraries': {
-                'filters': 'project.filters',
-                'tags': 'project.tags',
+                'filters': 'keyta.project.filters',
+                'tags': 'keyta.project.tags',
             }
         },
     },
@@ -139,7 +139,7 @@ TEMPLATES = [
 
 FORM_RENDERER = 'django.forms.renderers.TemplatesSetting'
 
-WSGI_APPLICATION = 'project.wsgi.application'
+WSGI_APPLICATION = 'keyta.project.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
