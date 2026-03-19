@@ -121,6 +121,9 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
 
             return self.unlock_view(request, object_id, extra_context)
 
+        if sequence.in_use <= 1:
+            sequence.unlock()
+
         if sequence.in_use > 1 and sequence.unlock_timeout_expired:
             sequence.lock()
 
