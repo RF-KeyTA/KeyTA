@@ -206,6 +206,8 @@ STATICFILES_DIRS = [STATIC_DIR]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+DATA_UPLOAD_MAX_MEMORY_SIZE = None
+
 FA_ICONS = Icons()
 
 # Jazzmin: Use modals instead of popups
