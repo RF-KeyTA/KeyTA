@@ -127,7 +127,7 @@
             if (row.is("tr")) {
                 // If the forms are laid out in table rows, insert
                 // the save button into the last table cell:
-                row.children(":last").append('<div><a role="button" class="' + options.saveCssClass + '" href="#">' + options.saveText + "</a></div>");
+                row.children(":last").html('<div><a role="button" class="' + options.saveCssClass + '" href="#">' + options.saveText + "</a></div>");
             } else if (row.is("ul") || row.is("ol")) {
                 // If they're laid out as an ordered/unordered list,
                 // insert an <li> after the last list item:
