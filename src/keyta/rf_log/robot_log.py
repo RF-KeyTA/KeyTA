@@ -152,10 +152,11 @@ class RobotLog:
     def __init__(self, testsuite_name: str):
         self.keyword_args = {}
         self.items = {
-            "errors": dict(),
-            "keywords": dict(),
-            "test_cases": [],
-            "testsuite": {
+            'errors': dict(),
+            'keywords': dict(),
+            'metadata': dict(),
+            'test_cases': [],
+            'testsuite': {
                 'name': testsuite_name
             }
         }
@@ -179,6 +180,9 @@ class RobotLog:
         for test in output['suite']['tests']:
             simple_test = self.simplify_test(test)
             self.items['test_cases'].append(simple_test)
+
+        if metadata := output['suite'].get('metadata'):
+            self.items['metadata'] = metadata
 
         return self.items
 
