@@ -100,7 +100,7 @@ def get_variables_choices(variables: QuerySet):
     grouped_variable_values = {}
 
     for variable in variables:
-        if variable.is_table():
+        if variable.is_table:
             sources = (
                 KeywordCallParameterSource.objects
                 .filter(table_column__in=variable.columns.all())

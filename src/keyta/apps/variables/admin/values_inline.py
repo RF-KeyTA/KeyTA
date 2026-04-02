@@ -28,7 +28,7 @@ class ValuesFormset(CustomInlineFormSet):
                     _('Dieser Name ist bereits vorhanden.')
                 ])
 
-            if self.variable.is_list():
+            if self.variable.is_list:
                 value = form.cleaned_data.get('value')
 
                 if value and value in values:
@@ -61,7 +61,7 @@ class Values(DeleteRelatedField, SortableTabularInline):
         if db_field.name == 'value':
             field.widget = forms.TextInput(attrs={
                 'style': 'width: 100%',
-                'placeholder': _('Wert eintragen, anschließend Enter drücken') if variable.is_list() else ''
+                'placeholder': _('Wert eintragen, anschließend Enter drücken') if variable.is_list else ''
             })
 
         return field
@@ -70,7 +70,7 @@ class Values(DeleteRelatedField, SortableTabularInline):
         fields: list = super().get_fields(request, obj)
         variable: Variable = obj
 
-        if variable and variable.is_list():
+        if variable and variable.is_list:
             return [
                 field
                 for field in fields
