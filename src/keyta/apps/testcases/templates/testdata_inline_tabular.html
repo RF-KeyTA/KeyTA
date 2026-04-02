@@ -1,0 +1,162 @@
+{% load i18n admin_urls static admin_modify %}
+
+<div class="alert alert-warning alert-dismissible hidden" id="testdata-error-message">
+    <i class="icon fa fa-exclamation-triangle" aria-hidden="true"></i>
+    <span id="error-text"></span>
+</div>
+
+<div class="js-inline-admin-formset inline-group" id="{{ inline_admin_formset.formset.prefix }}-group"
+     data-inline-type="tabular"
+     data-inline-formset="{{ inline_admin_formset.inline_formset_data }}">
+    <div class="tabular inline-related {% if forloop.last %}last-related{% endif %}">
+        {{ inline_admin_formset.formset.management_form }}
+        <fieldset class="module {{ inline_admin_formset.classes }}">
+            {{ inline_admin_formset.formset.non_form_errors }}
+            <table class="table table-hover text-nowrap">
+                <thead><tr>
+                    <th class="original"></th>
+                    {% for field in inline_admin_formset.fields %}
+                        {% if not field.widget.is_hidden %}
+                            <th class="column-{{ field.name }}{% if field.required %} required{% endif %}">{{ field.label|capfirst }}
+                                {% if field.help_text %}<img src="{% static "admin/img/icon-unknown.svg" %}" class="help help-tooltip" width="10" height="10" alt="({{ field.help_text|striptags }})" title="{{ field.help_text|striptags }}">{% endif %}
+                            </th>
+                        {% endif %}
+                    {% endfor %}
+                </tr></thead>
+
+                <tbody>
+                {% for inline_admin_form in inline_admin_formset %}
+                    {% if inline_admin_form.form.non_field_errors %}
+                        <tr class="row-form-errors"><td colspan="{{ inline_admin_form|cell_count }}">{{ inline_admin_form.form.non_field_errors }}</td></tr>
+                    {% endif %}
+                    <tr class="form-row{% if inline_admin_form.original or inline_admin_form.show_url %} has_original{% endif %}{% if forloop.last and inline_admin_formset.has_add_permission %} empty-form{% endif %}"
+                        id="{{ inline_admin_formset.formset.prefix }}-{% if not forloop.last %}{{ forloop.counter0 }}{% else %}empty{% endif %}">
+                        <td class="original">
+                            {% if inline_admin_form.original or inline_admin_form.show_url %}
+                            <p>
+                                {% if inline_admin_form.original %}
+                                    {% if inline_admin_form.model_admin.show_change_link and inline_admin_form.model_admin.has_registered_model %}
+                                        <a
+                                            href="{% url inline_admin_form.model_admin.opts|admin_urlname:'change' inline_admin_form.original.pk|admin_urlquote %}"
+                                            class="{% if inline_admin_formset.has_change_permission %}inlinechangelink{% else %}inlineviewlink{% endif %}">
+                                            {% if inline_admin_formset.has_change_permission %}
+                                                <i class="fas fa-pencil-alt fa-sm"> </i>
+                                            {% else %}
+                                                <i class="fas fa-eye fa-sm"> </i>
+                                            {% endif %}
+                                        </a>
+                                    {% endif %}
+
+                                    {% if inline_admin_form.show_url %}
+                                        <a href="{{ inline_admin_form.absolute_url }}" title="{% trans "View on site" %}">
+                                            <i class="fas fa-eye fa-sm"> </i>
+                                        </a>
+                                    {% endif %}
+                                {% endif %}
+                            </p>
+                            {% else %}
+                            <i class="fas fa-sm text-success"> </i>
+                            {% endif %}
+                            {% if inline_admin_form.needs_explicit_pk_field %}{{ inline_admin_form.pk_field.field }}{% endif %}
+                            {% if inline_admin_form.fk_field %}{{ inline_admin_form.fk_field.field }}{% endif %}
+                            {% spaceless %}
+                                {% for fieldset in inline_admin_form %}
+                                    {% for line in fieldset %}
+                                        {% for field in line %}
+                                            {% if not field.is_readonly and field.field.is_hidden %}{{ field.field }}{% endif %}
+                                        {% endfor %}
+                                    {% endfor %}
+                                {% endfor %}
+                            {% endspaceless %}
+                        </td>
+                        {% for fieldset in inline_admin_form %}
+                            {% for line in fieldset %}
+                                {% for field in line %}
+                                    {% if field.is_readonly or not field.field.is_hidden %}
+                                        <td {% if field.field.name %} class="field-{{ field.field.name }}"{% endif %}>
+                                            {% if field.is_readonly %}
+                                                <p>{{ field.contents }}</p>
+                                            {% else %}
+                                                {{ field.field }}
+                                                <div class="help-block text-red">
+                                                    {{ field.field.errors.as_ul }}
+                                                </div>
+                                            {% endif %}
+                                        </td>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endfor %}
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </fieldset>
+    </div>
+</div>
+<script>
+    django.jQuery(document).ready(function () {
+        const error_message = document.querySelector("#testdata-error-message")
+
+        django.jQuery('a[id^=export-testdata]').on('click', function (e) {
+            $(error_message).hide()
+            let export_url = django.jQuery(this).attr('export-url')
+            let [, , pk] = django.jQuery(this).attr('id').split('-')
+            let filename = null
+
+            e.preventDefault()
+
+            get_csrf_token().then(
+                csrf_token => {
+                    fetch(export_url,
+                    {
+                        headers: {'X-CSRFToken': csrf_token}
+                    })
+                    .then(res => {
+                        let content_disposition = res.headers.get('content-disposition');
+                        filename = /filename="(.*)"/.exec(content_disposition)[1]
+                        return res.blob()
+                    })
+                    .then(blob => {
+                        let a = document.createElement('a')
+                        a.href = window.URL.createObjectURL(blob)
+                        a.download = filename
+                        document.body.appendChild(a)
+                        a.click()
+                        a.remove()
+                        htmx.trigger('body', `show-upload-icon-${pk}`)
+                    })
+            })
+        })
+
+        django.jQuery('input[id^=excel-file]').on('change', function (e) {
+            let file = e.target.files[0]
+            let import_url = django.jQuery(this).attr('import-url')
+            let [, , pk] = django.jQuery(this).attr('id').split('-')
+
+            get_csrf_token().then(
+                csrf_token => {
+                    fetch(import_url,
+                        {
+                            method: "PUT",
+                            body: file,
+                            headers: {'X-CSRFToken': csrf_token, 'Content-Type': file.type}
+                        }
+                    )
+                    .then(resp => resp.json())
+                    .then(json => {
+                        e.target.value = null
+
+                        if (json.error) {
+                            error_message.querySelector("#error-text").textContent = json.error
+                            $(error_message).show()
+                        }
+                        else {
+                            htmx.trigger('body', `update-last-update-${pk}`)
+                            $(error_message).hide()
+                        }
+                    })
+                })
+        })
+    })
+</script>

@@ -25,6 +25,7 @@ from keyta.rf_export.testsuite import make_rf_testsuite
 from keyta.widgets import CheckboxSelectMultipleSystems, Icon
 
 from ..models import TestCase
+from .testdata_inline import TestDataInline
 from .test_steps_inline import TestStepsInline
 
 
@@ -114,6 +115,7 @@ class BaseTestCaseAdmin(DocumentationField, CloneModelAdminMixin, SortableAdminB
     ]
     inlines = [
         TestStepsInline,
+        TestDataInline,
         LocalExecution
     ]
 

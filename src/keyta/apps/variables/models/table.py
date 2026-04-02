@@ -7,6 +7,13 @@ from .variable import Variable
 from .variable_value import VariableValue
 
 
+def get_row_variables(table_name: str, table: list[list[str]]):
+    return {
+        '@{%s__%s}' % (table_name, index): [col or '${EMPTY}' for col in row]
+        for index, row in enumerate(table, start=1)
+    }
+
+
 class Table(Variable):
     def get_column_titles(self):
         return list(self.columns.order_by('index').values_list('name', flat=True))

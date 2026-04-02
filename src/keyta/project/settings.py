@@ -253,6 +253,7 @@ JAZZMIN_SETTINGS = {
         'sequences.sequencequickchange',
         'sequences.sequencestep',
         'taggit.tag',
+        'testcases.testdata',
         'testcases.teststep',
         'variables.tablecolumn',
         'variables.variabledocumentation',

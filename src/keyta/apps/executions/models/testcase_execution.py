@@ -5,7 +5,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from keyta.apps.keywords.models import Keyword, KeywordCall
-from keyta.apps.testcases.models import TestStep
+from keyta.apps.testcases.models import TestData, TestStep
 from keyta.rf_export.testsuite import RFTestSuite
 
 from ..errors import ValidationError
@@ -102,6 +102,10 @@ class TestCaseExecution(Execution):
             ]
         }
 
+    def get_testdata(self, user: AbstractUser) -> Optional[TestData]:
+        user_execution = self.user_execs.get(user=user)
+        return user_execution.testdata
+
     def save(
         self, force_insert=False, force_update=False, using=None,
             update_fields=None
@@ -128,6 +132,12 @@ class TestCaseExecution(Execution):
 
         if test_teardown and test_teardown.has_empty_arg(user):
             return ValidationError.INCOMPLETE_TEST_TEARDOWN_PARAMS
+
+        user_exec = self.user_execs.get(user=user)
+
+        if testdata := user_exec.testdata:
+            if testdata.validate_metadata(testdata.get_metadata(user)):
+                return ValidationError.INVALID_TESTDATA
 
         return None
 
