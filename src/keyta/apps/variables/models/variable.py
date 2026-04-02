@@ -79,12 +79,15 @@ class Variable(AbstractBaseModel):
 
         return table_variable, list(row_variables.items())
 
+    @property
     def is_dict(self):
         return self.type == VariableType.DICT
 
+    @property
     def is_list(self):
         return self.type == VariableType.LIST
 
+    @property
     def is_table(self):
         return self.type == VariableType.TABLE
 
@@ -98,7 +101,7 @@ class Variable(AbstractBaseModel):
             super().save(*args, **kwargs)
 
     def to_robot(self, get_variable_value):
-        if self.is_dict():
+        if self.is_dict:
             return (
                 '&{%s}' % self.name,
                 {
@@ -107,7 +110,7 @@ class Variable(AbstractBaseModel):
                 }
             )
 
-        if self.is_list():
+        if self.is_list:
             return (
                 '@{%s}' % self.name,
                 [
