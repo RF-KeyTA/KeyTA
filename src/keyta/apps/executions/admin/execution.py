@@ -1,13 +1,11 @@
 import json
 
 from django.conf import settings
-from django.contrib.auth.models import AbstractUser
-from django.http import HttpRequest, JsonResponse, HttpResponse
+from django.http import HttpRequest, HttpResponse, JsonResponse
 
 from keyta.admin.base_admin import BaseAdmin
 from keyta.apps.libraries.admin import LibraryImportInline
 from keyta.apps.resources.admin import ResourceImportsInline
-from keyta.apps.variables.models import VariableValue
 
 from ..models import Execution, UserExecution
 from .setup_teardown_inline import SetupInline, TeardownInline
@@ -37,7 +35,8 @@ class ExecutionAdmin(BaseAdmin):
             return super().change_view(request, object_id, form_url, extra_context)
 
         if 'to_robot' in request.GET:
-            return self.handle_to_robot(request, execution)
+            execution_state = json.loads(request.body.decode('utf-8'))
+            return JsonResponse(execution.export_to_robot(request.user, execution_state))
 
         if request.method == 'PUT':
             result = json.loads(request.body.decode('utf-8'))
@@ -61,20 +60,6 @@ class ExecutionAdmin(BaseAdmin):
             inlines += [ResourceImportsInline]
 
         return inlines + self.inlines
-
-    def export_to_robot(self, execution: Execution, user: AbstractUser, execution_state: dict) -> dict:
-        if err := execution.validate(user, execution_state):
-            return err
-
-        execution.update_imports(user)
-        get_variable_value = lambda pk: VariableValue.objects.get(pk=pk).current_value
-        testsuite = execution.get_rf_testsuite(get_variable_value, user, execution_state, include_doc=False)
-
-        return execution.to_robot(testsuite)
-
-    def handle_to_robot(self, request: HttpRequest, execution: Execution) -> HttpResponse:
-        execution_state = json.loads(request.body.decode('utf-8'))
-        return JsonResponse(self.export_to_robot(execution, request.user, execution_state))
 
     def has_delete_permission(self, request, obj=None):
         return False

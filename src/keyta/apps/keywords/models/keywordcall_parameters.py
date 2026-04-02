@@ -123,9 +123,14 @@ class KeywordCallParameter(CloneMixin, AbstractBaseModel):
 
         super().save(force_insert, force_update, using, update_fields)
 
-    def to_robot(self, get_variable_value):
+    def to_robot(self, parameter_values: dict[int, str]):
+        value = parameter_values.get(self.pk, None)
+
+        if value is not None:
+            return value
+
         if value_ref := self.value_ref:
-            return value_ref.to_robot(get_variable_value)
+            return value_ref.to_robot()
         else:
             return JSONValue.from_json(self.value).user_input
 

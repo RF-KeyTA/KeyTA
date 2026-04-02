@@ -54,6 +54,15 @@ class Execution(CloneMixin, AbstractBaseModel):
     def __str__(self):
         return str(self.keyword or self.testcase)
 
+    def export_to_robot(self, user: AbstractUser, execution_state: dict) -> dict:
+        if err := self.validate(user, execution_state):
+            return err
+
+        self.update_imports(user)
+        testsuite = self.get_rf_testsuite(user, execution_state, include_doc=False)
+
+        return self.to_robot(testsuite)
+
     def get_keyword_calls(self) -> models.QuerySet:
         return models.QuerySet().none()
 
@@ -124,7 +133,7 @@ class Execution(CloneMixin, AbstractBaseModel):
             'suite_teardown': None,
         }
 
-    def get_rf_testsuite(self, get_variable_value, user: AbstractUser, execution_state: dict, include_doc: bool) -> RFTestSuite:
+    def get_rf_testsuite(self, user: AbstractUser, execution_state: dict, include_doc: bool) -> RFTestSuite:
         pass
 
     def make_clone(self, attrs=None, sub_clone=False, using=None, parent=None):

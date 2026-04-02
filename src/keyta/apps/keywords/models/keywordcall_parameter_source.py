@@ -99,9 +99,9 @@ class KeywordCallParameterSource(CloneMixin, AbstractBaseModel):
 
         super().save(force_insert, force_update, using, update_fields)
 
-    def to_robot(self, get_variable_value):
+    def to_robot(self):
         if self.type == KeywordCallParameterSourceType.VARIABLE_VALUE:
-            return get_variable_value(self.variable_value.pk)
+            return self.variable_value.value
         else:
             return '${' + str(self) + '}'
 
