@@ -23,7 +23,10 @@ def attrs_to_string(attrs: dict) -> str:
     ])
 
 
-def html_to_string(tag, attrs, body) -> str:
+def html_to_string(tag, attrs, body, self_closing=False) -> str:
+    if self_closing:
+        return f'<{tag} {attrs_to_string(attrs)}/>'
+
     return f'<{tag} {attrs_to_string(attrs)}>{body}</{tag}>'
 
 
