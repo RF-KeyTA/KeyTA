@@ -134,10 +134,14 @@
                 </div>
             </div>
         </h3>
-        <div class="row pt-3 pb-3">
-            <div class="col"><b>{{ "Start time" | translate }}</b> {{ testcase.start_time }}</div>
-            <div class="col"><b>{{ "Elapsed time" |translate }}</b> {{ testcase.elapsed_time }}</div>
-        </div>
+        <table class="table" style="table-layout: fixed">
+            <thead>
+                <tr><th>{{ "Start time" | translate }}</th><th>{{ "Elapsed time" |translate }}</th>{% for name in rf.metadata.keys() %}<th>{{ name }}</th>{% endfor %}</tr>
+            </thead>
+            <tbody>
+                <tr><td>{{ testcase.start_time }}</td><td>{{ testcase.elapsed_time }}</td>{% for value in rf.metadata.values() %}<td>{{ value }}</td>{% endfor %}</tr>
+            </tbody>
+        </table>
 
         {% for step_id in testcase.steps %}
         {% set step = rf.keywords[step_id] %}

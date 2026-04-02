@@ -2,6 +2,11 @@
 {%- if settings.documentation %}
 Documentation    {{ settings.documentation }}
 {%- endif -%}
+{%- if settings.metadata %}
+{%- for name, value in settings.metadata.items() %}
+Metadata    {{ name }}    {{ value }}
+{%- endfor %}
+{%- endif -%}
 {%- for lib_import in settings.library_imports.values() %}
 Library    {{ lib_import.library }}    {{ kwargs_list(lib_import.kwargs) }}
 {%- endfor %}

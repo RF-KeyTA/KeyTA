@@ -134,6 +134,9 @@ class Execution(CloneMixin, AbstractBaseModel):
 
         return '-'
 
+    def get_rf_metadata(self, user: AbstractUser):
+        return {}
+
     def get_rf_settings(self, user: AbstractUser) -> RFSettings:
         return {
             'documentation': None,
@@ -142,6 +145,7 @@ class Execution(CloneMixin, AbstractBaseModel):
                 for lib_import
                 in self.library_imports.all()
             },
+            'metadata': self.get_rf_metadata(user),
             'resource_imports': {
                 resource_import.resource.pk: resource_import.to_robot(user)
                 for resource_import
