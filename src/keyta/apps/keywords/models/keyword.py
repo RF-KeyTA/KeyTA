@@ -137,7 +137,7 @@ class Keyword(AbstractBaseModel):
 
         super().save(force_insert, force_update, using, update_fields)
 
-    def to_robot(self, get_variable_value, execution_state: dict, include_doc=False) -> RFKeyword:
+    def to_robot(self, execution_state: dict, include_doc=False) -> RFKeyword:
         if include_doc:
             documentation = HTML2Text.parse(self.documentation)
         else:
@@ -162,7 +162,7 @@ class Keyword(AbstractBaseModel):
             'args': [arg.name for arg in args],
             'kwargs': {kwarg.name: kwarg.default_value for kwarg in kwargs},
             'steps': [
-                step.to_robot(get_variable_value)
+                step.to_robot({})
                 for step in self.executable_steps(execution_state)
             ] if self.calls.exists() else [],
             'return_values': [f'${{{return_value}}}' for return_value in return_values]

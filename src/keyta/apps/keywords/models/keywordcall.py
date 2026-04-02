@@ -371,20 +371,19 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
 
             super().save(force_insert, force_update, using, update_fields)
 
-    def to_robot(self, get_variable_value, user: Optional[AbstractUser]=None) -> RFKeywordCall:
+    def to_robot(self, parameter_values: dict[int, str], table: Optional[tuple[str, list[str]]]=None, user: Optional[AbstractUser]=None) -> RFKeywordCall:
         parameters = (
             self.parameters
            .prefetch_related('parameter')
            .prefetch_related('value_ref')
            .filter(user=user)
         )
-
         params = []
-        table_var = None
         table_columns = []
+        table_var = None
 
         for param in parameters:
-            value = param.to_robot(get_variable_value) or '${EMPTY}'
+            value = param.to_robot(parameter_values) or '${EMPTY}'
 
             if param.parameter.is_positional_or_named or param.parameter.is_vararg or param.parameter.is_varkwarg:
                 params.append(value)
@@ -392,11 +391,9 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
             if param.parameter.is_named_only:
                 params.append('%s=%s' % (param.name, value))
 
-            if param.value_ref and param.value_ref.table_column:
-                table_columns.append('${%s}' % str(param.value_ref))
-
-                if not table_var:
-                    table_var = '@{%s}' % str(param.value_ref.table_column.table)
+        if table:
+            table_var, table_columns = table
+            params = table_columns
 
         return {
             'condition': ' and '.join([str(condition) for condition in self.conditions.all()]),

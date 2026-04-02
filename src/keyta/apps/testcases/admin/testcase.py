@@ -4,7 +4,6 @@ from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 
 from keyta.apps.executions.models import TestCaseExecution
-from keyta.apps.variables.models import VariableValue
 from keyta.rf_export.rfgenerator import gen_testsuite
 
 from ..models import TestCase
@@ -23,10 +22,8 @@ class TestCaseAdmin(BaseTestCaseAdmin):
                 messages.warning(request, err['error'])
                 return HttpResponseRedirect(request.path)
             else:
-                get_variable_value = lambda pk: VariableValue.objects.get(pk=pk).current_value
-
                 execution.update_imports(request.user)
-                testsuite = execution.get_rf_testsuite(get_variable_value, request.user, {}, include_doc=True)
+                testsuite = execution.get_rf_testsuite(request.user, {}, include_doc=True)
                 robot_file = testsuite['name'] + '.robot'
 
                 return HttpResponse(
