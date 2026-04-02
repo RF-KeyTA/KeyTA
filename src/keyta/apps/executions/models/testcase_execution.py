@@ -55,7 +55,7 @@ class TestCaseExecution(Execution):
 
         keyword: Keyword
         keywords = {
-            keyword.pk: keyword.to_robot(get_variable_value, {}, include_doc=include_doc)
+            keyword.pk: keyword.to_robot({}, include_doc=include_doc)
             for keyword in
             Keyword.objects
             .prefetch_related('parameters')
@@ -75,11 +75,11 @@ class TestCaseExecution(Execution):
 
         if test_setup := self.test_setup().filter(enabled=True).first():
             if to_keyword := test_setup.to_keyword:
-                keywords[to_keyword.id] = to_keyword.to_robot(get_variable_value, {}, include_doc=include_doc)
+                keywords[to_keyword.id] = to_keyword.to_robot({}, include_doc=include_doc)
 
         if test_teardown := self.test_teardown().first():
             if to_keyword := test_teardown.to_keyword:
-                keywords[to_keyword.id] = to_keyword.to_robot(get_variable_value, {}, include_doc=include_doc)
+                keywords[to_keyword.id] = to_keyword.to_robot({}, include_doc=include_doc)
 
         stop_on_failure = True
 
@@ -91,7 +91,15 @@ class TestCaseExecution(Execution):
             'settings': self.get_rf_settings(user),
             'keywords': keywords,
             'testcases': [
-                self.testcase.to_robot(get_variable_value, user, execution_state, test_setup, test_teardown, stop_on_failure, include_doc=include_doc)
+                self.testcase.to_robot(
+                    self.get_testdata(user),
+                    user,
+                    execution_state,
+                    test_setup,
+                    test_teardown,
+                    stop_on_failure,
+                    include_doc=include_doc
+                )
             ]
         }
 
