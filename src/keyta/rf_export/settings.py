@@ -15,6 +15,7 @@ class RFResourceImport(TypedDict):
 class RFSettings(TypedDict):
     documentation: Optional[str]
     library_imports: dict[int, RFLibraryImport]
+    metadata: dict[str, str]
     resource_imports: dict[int, RFResourceImport]
     suite_setup: Optional[RFKeywordCall]
     suite_teardown: Optional[RFKeywordCall]
