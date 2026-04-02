@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-03 13:28+0100\n"
+"POT-Creation-Date: 2026-03-30 16:16+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,7 +30,7 @@ msgstr "Select an Action"
 msgid "Save"
 msgstr ""
 
-#: .\admin\base_admin.py:265 .\apps\actions\admin\action.py:68
+#: .\admin\base_admin.py:236 .\apps\actions\admin\action.py:68
 #: .\apps\sequences\admin\sequence.py:73
 msgid "System auswählen"
 msgstr "Select a System"
@@ -39,7 +39,7 @@ msgstr "Select a System"
 #: .\apps\keywords\admin\field_keyword_documentation.py:10
 #: .\apps\keywords\models\keyword.py:53 .\apps\libraries\admin\library.py:102
 #: .\apps\libraries\admin\library_import.py:51
-#: .\apps\testcases\models\testcase.py:23 .\apps\windows\models.py:26
+#: .\apps\testcases\models\testcase.py:28 .\apps\windows\models.py:26
 #: .\models\keyword_source.py:310 .\models\keyword_source.py:346
 msgid "Dokumentation"
 msgstr "Documentation"
@@ -69,9 +69,9 @@ msgstr "Keywords"
 #: .\apps\keywords\models\keyword.py:44
 #: .\apps\keywords\models\keyword_parameters.py:29
 #: .\apps\libraries\models\library_parameter.py:20 .\apps\systems\models.py:12
-#: .\apps\testcases\admin\base_testcase_admin.py:98
-#: .\apps\testcases\models\testcase.py:22 .\apps\variables\admin\variable.py:42
-#: .\apps\variables\models\variable.py:19
+#: .\apps\testcases\admin\base_testcase_admin.py:99
+#: .\apps\testcases\models\testcase.py:27 .\apps\variables\admin\variable.py:42
+#: .\apps\variables\models\variable.py:31
 #: .\apps\variables\models\variable_value.py:17
 #: .\apps\windows\admin\window.py:49 .\apps\windows\models.py:20
 #: .\models\keyword_source.py:307
@@ -91,7 +91,7 @@ msgstr "Window-independent"
 #: .\apps\keywords\models\keyword.py:74
 #: .\apps\keywords\models\keywordcall.py:102
 #: .\apps\resources\admin\resource_import.py:20
-#: .\apps\sequences\admin\sequence.py:280
+#: .\apps\sequences\admin\sequence.py:283
 #: .\apps\variables\admin\windows_inline.py:21
 #: .\apps\variables\admin\windows_inline.py:32 .\apps\windows\models.py:58
 #: .\apps\windows\models.py:72 .\apps\windows\models.py:79
@@ -103,7 +103,7 @@ msgid "All"
 msgstr ""
 
 #: .\apps\actions\admin\action.py:82 .\apps\actions\models\action_step.py:29
-#: .\apps\keywords\models\keywordcall.py:488
+#: .\apps\keywords\models\keywordcall.py:485
 #: .\apps\keywords\templates\window_keyword_change_form.html:9
 #: .\apps\sequences\admin\sequence.py:93
 #: .\apps\sequences\models\sequence_step.py:10
@@ -113,12 +113,12 @@ msgid "Schritte"
 msgstr "Steps"
 
 #: .\apps\actions\admin\action.py:110 .\apps\keywords\models\keyword.py:79
-#: .\apps\sequences\admin\sequence.py:69 .\apps\sequences\admin\sequence.py:214
+#: .\apps\sequences\admin\sequence.py:69 .\apps\sequences\admin\sequence.py:217
 #: .\apps\systems\apps.py:8 .\apps\systems\models.py:37
-#: .\apps\testcases\admin\base_testcase_admin.py:130
-#: .\apps\testcases\models\testcase.py:34 .\apps\variables\admin\variable.py:64
+#: .\apps\testcases\admin\base_testcase_admin.py:132
+#: .\apps\testcases\models\testcase.py:39 .\apps\variables\admin\variable.py:64
 #: .\apps\variables\admin\variable.py:100
-#: .\apps\variables\models\variable.py:25
+#: .\apps\variables\models\variable.py:37
 #: .\apps\windows\admin\variables_inline.py:24
 #: .\apps\windows\admin\window.py:64 .\apps\windows\admin\window.py:107
 #: .\apps\windows\admin\window_keyword_inline.py:12 .\apps\windows\models.py:18
@@ -165,7 +165,7 @@ msgstr "Select a Window"
 #: .\apps\keywords\admin\keyword.py:25
 #: .\apps\variables\admin\windows_inline.py:31
 #: .\apps\variables\admin\windows_inline.py:33
-#: .\apps\variables\models\variable.py:38 .\apps\windows\apps.py:8
+#: .\apps\variables\models\variable.py:50 .\apps\windows\apps.py:8
 #: .\apps\windows\models.py:59 .\apps\windows\models.py:73
 #: .\apps\windows\models.py:80
 msgid "Masken"
@@ -179,7 +179,7 @@ msgstr "Actions"
 
 #: .\apps\actions\forms\action.py:17
 #: .\apps\keywords\models\window_keyword.py:41
-#: .\apps\testcases\models\testcase.py:127
+#: .\apps\testcases\models\testcase.py:203
 msgid " Kopie"
 msgstr " Copy"
 
@@ -224,7 +224,7 @@ msgid "Aktion"
 msgstr "Action"
 
 #: .\apps\actions\models\action_step.py:28
-#: .\apps\keywords\models\keywordcall.py:487
+#: .\apps\keywords\models\keywordcall.py:484
 #: .\apps\sequences\models\sequence_step.py:9
 #: .\apps\testcases\models\test_step.py:28
 msgid "Schritt"
@@ -239,12 +239,12 @@ msgid "Zuweisungen zu Masken"
 msgstr "Relationships to Windows"
 
 #: .\apps\executions\admin\execution_inline.py:25
-#: .\apps\executions\models\user_execution.py:31
+#: .\apps\executions\models\user_execution.py:43
 msgid "Ergebnis"
 msgstr "Result"
 
 #: .\apps\executions\admin\execution_inline.py:29
-#: .\apps\executions\models\user_execution.py:23
+#: .\apps\executions\models\user_execution.py:35
 msgid "Protokoll"
 msgstr "Log"
 
@@ -257,15 +257,15 @@ msgid "Einstellungen"
 msgstr "Settings"
 
 #: .\apps\executions\admin\execution_inline.py:45
-#: .\apps\executions\models\execution.py:215
-#: .\apps\executions\models\execution.py:216
-#: .\apps\executions\models\keyword_execution.py:144
+#: .\apps\executions\models\execution.py:228
+#: .\apps\executions\models\execution.py:229
 #: .\apps\executions\models\keyword_execution.py:145
-#: .\apps\executions\models\testcase_execution.py:134
-#: .\apps\executions\models\testcase_execution.py:135
+#: .\apps\executions\models\keyword_execution.py:146
+#: .\apps\executions\models\testcase_execution.py:154
+#: .\apps\executions\models\testcase_execution.py:155
 #: .\apps\libraries\models\library_import.py:46
 #: .\apps\resources\models\resource_import.py:46
-#: .\apps\testcases\admin\base_testcase_admin.py:100
+#: .\apps\testcases\admin\base_testcase_admin.py:101
 msgid "Ausführung"
 msgstr "Execution"
 
@@ -279,15 +279,21 @@ msgstr "Attach to a running system"
 msgid "Nachbereitung"
 msgstr "Teardown"
 
-#: .\apps\executions\admin\testcase_execution.py:25
+#: .\apps\executions\admin\testcase_execution.py:28
 #: .\apps\keywords\models\keywordcall.py:25
 msgid "Testvorbereitung"
 msgstr "Test Setup"
 
-#: .\apps\executions\admin\testcase_execution.py:32
+#: .\apps\executions\admin\testcase_execution.py:35
 #: .\apps\keywords\models\keywordcall.py:26
 msgid "Testnachbereitung"
 msgstr "Test Teardown"
+
+#: .\apps\executions\admin\testcase_execution.py:53
+#, fuzzy
+#| msgid "System auswählen"
+msgid "Testdaten auswählen"
+msgstr "Select a System"
 
 #: .\apps\executions\errors.py:15
 msgid "Die Aufrufparameter (Werte) sind unvollständig."
@@ -347,6 +353,12 @@ msgstr "Test Case Execution"
 msgid "Vorbereitung"
 msgstr "Setup"
 
+#: .\apps\executions\models\testcase_execution.py:51
+#, fuzzy
+#| msgid "Testdaten"
+msgid "Testdata"
+msgstr "Test Data"
+
 #: .\apps\executions\models\user_execution.py:10
 msgid "Erfolgreich"
 msgstr "Successful"
@@ -355,23 +367,30 @@ msgstr "Successful"
 msgid "Fehlgeschlagen"
 msgstr "Failed"
 
-#: .\apps\executions\models\user_execution.py:35
-msgid "Beim 1. Fehler abbrechen"
-msgstr "Stop after first error"
+#: .\apps\executions\models\user_execution.py:23
+#: .\apps\testcases\models\testdata.py:519
+#: .\apps\testcases\models\testdata.py:520
+msgid "Testdaten"
+msgstr "Test Data"
 
-#: .\apps\executions\models\user_execution.py:40
+#: .\apps\executions\models\user_execution.py:28
 msgid "Benutzer"
 msgstr "Users"
 
-#: .\apps\executions\models\user_execution.py:52
+#: .\apps\executions\models\user_execution.py:47
+msgid "Beim 1. Fehler abbrechen"
+msgstr "Stop after first error"
+
+#: .\apps\executions\models\user_execution.py:59
 msgid "Benutzer-bezogene Ausführung"
 msgstr "User-related execution"
 
-#: .\apps\executions\models\user_execution.py:53
+#: .\apps\executions\models\user_execution.py:60
 msgid "Benutzer-bezogene Ausführungen"
 msgstr "User-related executions"
 
 #: .\apps\executions\templates\execution_inline_tabular.html:48
+#: .\apps\testcases\templates\testdata_inline_tabular.html:48
 #: .\templates\admin\edit_inline\tabular.html:46
 msgid "View on site"
 msgstr ""
@@ -486,7 +505,7 @@ msgid "Eingabe"
 msgstr "Input"
 
 #: .\apps\keywords\models\execution_keywordcall.py:36
-#: .\apps\keywords\models\keywordcall_parameters.py:158
+#: .\apps\keywords\models\keywordcall_parameters.py:149
 msgid "Eingabewerte"
 msgstr "Input values"
 
@@ -524,8 +543,8 @@ msgid "Ressource"
 msgstr "Resource"
 
 #: .\apps\keywords\models\keyword.py:49 .\apps\systems\models.py:16
-#: .\apps\testcases\models\testcase.py:29
-#: .\apps\variables\models\variable.py:44 .\apps\windows\models.py:24
+#: .\apps\testcases\models\testcase.py:34
+#: .\apps\variables\models\variable.py:56 .\apps\windows\models.py:24
 msgid "Beschreibung"
 msgstr "Description"
 
@@ -610,10 +629,10 @@ msgstr "Column"
 
 #: .\apps\keywords\models\keywordcall_parameter_source.py:15
 #: .\apps\testcases\admin\quick_change_variables_inline.py:20
-#: .\apps\variables\models\variable.py:121
-#: .\apps\variables\models\variable.py:128
-#: .\apps\variables\models\variable.py:135
-#: .\apps\variables\models\variable.py:142
+#: .\apps\variables\models\variable.py:147
+#: .\apps\variables\models\variable.py:154
+#: .\apps\variables\models\variable.py:161
+#: .\apps\variables\models\variable.py:168
 #: .\apps\variables\models\variable_window_relation.py:14
 #: .\apps\windows\admin\variables_inline.py:18
 msgid "Referenzwert"
@@ -627,7 +646,7 @@ msgstr "Parameter reference"
 msgid "Parameter-Referenzen"
 msgstr "Parameter references"
 
-#: .\apps\keywords\models\keywordcall_parameters.py:157
+#: .\apps\keywords\models\keywordcall_parameters.py:148
 msgid "Eingabewert"
 msgstr "Input value"
 
@@ -636,7 +655,7 @@ msgid "Kein Rückgabewert"
 msgstr "No return value"
 
 #: .\apps\keywords\models\window_keyword.py:42
-#: .\apps\testcases\models\testcase.py:128
+#: .\apps\testcases\models\testcase.py:204
 msgid " Kopie "
 msgstr " Copy "
 
@@ -715,7 +734,7 @@ msgstr "Filepath just like when importing a Resource in a .robot file"
 
 #: .\apps\resources\admin\resource_import.py:61
 #: .\apps\sequences\admin\uses_inline.py:33
-#: .\apps\testcases\models\testcase.py:173
+#: .\apps\testcases\models\testcase.py:297
 msgid "Testfall"
 msgstr "Test Case"
 
@@ -750,11 +769,12 @@ msgstr "Resource Import"
 msgid "Ressource-Imports"
 msgstr "Resource Imports"
 
-#: .\apps\sequences\admin\sequence.py:134
+#: .\apps\sequences\admin\sequence.py:137
 msgid ""
 "Die Sequenz ist zur Bearbeitung gesperrt. Zum Entsperren das offene Schloss "
 "anklicken."
-msgstr "The Sequence is locked for modification. To unlock it click on the open lock."
+msgstr ""
+"The Sequence is locked for modification. To unlock it click on the open lock."
 
 #: .\apps\sequences\admin\uses_inline.py:16
 msgid "Verwendungen"
@@ -806,7 +826,8 @@ msgid ""
 "Auswirkungen zu vermeiden, soll eine Kopie erstellt werden."
 msgstr ""
 "Changes to the object '%(escaped_object)s' affect the following objects. "
-"Continue anyway?<br><b>Hint</b>: In order to avoid undesired side effects it is better to create a copy."
+"Continue anyway?<br><b>Hint</b>: In order to avoid undesired side effects it "
+"is better to create a copy."
 
 #: .\apps\sequences\templates\unlock_confirmation.html:49
 #: .\templates\admin\delete_confirmation.html:67
@@ -838,11 +859,11 @@ msgstr "Attach to a running system"
 msgid "Automatisierung"
 msgstr "Automation"
 
-#: .\apps\testcases\admin\base_testcase_admin.py:63
+#: .\apps\testcases\admin\base_testcase_admin.py:64
 msgid "Ausgewählte Testfälle exportieren"
 msgstr "Export selected Test Cases"
 
-#: .\apps\testcases\admin\base_testcase_admin.py:67
+#: .\apps\testcases\admin\base_testcase_admin.py:68
 #, python-brace-format
 msgid "Der Testfall \"{testcase_name}\" hat keine Schritte."
 msgstr "The Test Case \"{testcase_name}\" has no steps."
@@ -851,16 +872,29 @@ msgstr "The Test Case \"{testcase_name}\" has no steps."
 msgid "Sequenz auswählen"
 msgstr "Select a Sequence"
 
-#: .\apps\testcases\apps.py:8 .\apps\testcases\models\testcase.py:174
+#: .\apps\testcases\admin\testdata_inline.py:28
+#: .\apps\testcases\models\testdata.py:390
+msgid "Letzte Aktualisierung"
+msgstr "Last Update"
+
+#: .\apps\testcases\apps.py:8 .\apps\testcases\models\testcase.py:298
 msgid "Testfälle"
 msgstr "Test Cases"
+
+#: .\apps\testcases\models\testdata.py:269
+msgid ""
+"Die Tabellen in der Excel-Datei entsprechen nicht den Parametern der "
+"Testschritte."
+msgstr ""
+"The tables in the Excel file do not correspond to the Parameters of the Test "
+"Steps."
 
 #: .\apps\testcases\templates\test_step_tabs.html:2
 #: .\templates\jazzmin\includes\horizontal_tabs.html:2
 msgid "General"
 msgstr ""
 
-#: .\apps\testcases\templates\testcase_change_form.html:45
+#: .\apps\testcases\templates\testcase_change_form.html:59
 msgid "Sicher?"
 msgstr "Are you sure?"
 
@@ -881,10 +915,10 @@ msgstr "This name already exists."
 msgid "Dieser Wert ist bereits vorhanden."
 msgstr "This value already exists."
 
-#: .\apps\variables\apps.py:7 .\apps\variables\models\variable.py:122
-#: .\apps\variables\models\variable.py:129
-#: .\apps\variables\models\variable.py:136
-#: .\apps\variables\models\variable.py:143
+#: .\apps\variables\apps.py:7 .\apps\variables\models\variable.py:148
+#: .\apps\variables\models\variable.py:155
+#: .\apps\variables\models\variable.py:162
+#: .\apps\variables\models\variable.py:169
 #: .\apps\variables\models\variable_window_relation.py:15
 msgid "Referenzwerte"
 msgstr "Reference Values"
@@ -905,24 +939,24 @@ msgstr ""
 "A Reference Value with this name already exists in the Window \"{window."
 "name}\""
 
-#: .\apps\variables\models\variable.py:13
+#: .\apps\variables\models\variable.py:25
 msgid "Formular"
 msgstr "Form"
 
-#: .\apps\variables\models\variable.py:14
+#: .\apps\variables\models\variable.py:26
 msgid "Werteliste"
 msgstr "List of values"
 
-#: .\apps\variables\models\variable.py:15
-#: .\apps\variables\models\variable.py:33
+#: .\apps\variables\models\variable.py:27
+#: .\apps\variables\models\variable.py:45
 msgid "Tabelle"
 msgstr "Table"
 
-#: .\apps\variables\models\variable.py:52
+#: .\apps\variables\models\variable.py:64
 msgid "Vorlage"
 msgstr "Template"
 
-#: .\apps\variables\models\variable.py:58
+#: .\apps\variables\models\variable.py:70
 msgid "Art"
 msgstr "Kind"
 
@@ -1151,6 +1185,6 @@ msgstr "Robot Framework could not be executed."
 msgid "Robot Framework wird ausgeführt."
 msgstr "Robot Framework is running."
 
-#: .\widgets.py:319
+#: .\widgets.py:322
 msgid "Klicke auf das Plus-Symbol"
 msgstr "Click the plus icon"

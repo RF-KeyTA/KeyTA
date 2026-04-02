@@ -2,6 +2,9 @@ from django.contrib import admin
 from django.contrib.admin import StackedInline
 from django.utils.translation import gettext_lazy as _
 
+from keyta.apps.testcases.models import TestData
+from keyta.widgets import ModelSelect2AdminWidget
+
 from ..forms import SetupTeardownFormset
 from ..models import TestCaseExecution, UserExecution
 from .execution import ExecutionAdmin
@@ -37,10 +40,29 @@ class TestTeardownInline(TeardownInline):
 
 class UserExecutionInline(StackedInline):
     model = UserExecution
-    fields = ['stop_on_failure']
+    fields = ['testdata', 'stop_on_failure']
     max_num = 1
     template = 'execution_user_settings.html'
     verbose_name_plural = ''
+
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        execution_id = request.resolver_match.kwargs.get('object_id')
+        execution = TestCaseExecution.objects.get(pk=execution_id)
+        field = super().formfield_for_dbfield(db_field, request, **kwargs)
+
+        if db_field.name == 'testdata':
+            field.queryset = TestData.objects.filter(testcase=execution.testcase)
+            field.widget.widget = ModelSelect2AdminWidget(
+                placeholder=_('Testdaten auswählen'),
+                model=TestData,
+                search_fields=['name__icontains'],
+                attrs={'data-allow-clear': 'true'}
+            )
+            field.widget.can_add_related = False
+            field.widget.can_change_related = False
+            field.widget.can_view_related = False
+
+        return field
 
     def get_queryset(self, request):
         return super().get_queryset(request).filter(user=request.user)

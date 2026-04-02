@@ -1,12 +1,24 @@
 from collections import defaultdict
 
 from django.db import models
+from django.db.models import F, QuerySet
 from django.db.models.functions import Lower
 from django.utils.translation import gettext_lazy as _
 
 from keyta.models.base_model import AbstractBaseModel
 
 from .variable_value import VariableValue
+
+
+def get_row_variables(table_name: str, table: list[list[str]]):
+    return {
+        row_variable(table_name, index): [col or '${EMPTY}' for col in row]
+        for index, row in enumerate(table)
+    }
+
+
+def row_variable(name, index):
+    return '@{%s__%s}' % (name, index)
 
 
 class VariableType(models.TextChoices):
@@ -61,23 +73,31 @@ class Variable(AbstractBaseModel):
     def __str__(self):
         return self.name
 
-    def get_rows(self):
-        def row_variable(index):
-            return '@{%s__%s}' % (self.name, index)
+    def get_column_titles(self):
+        return [
+            column.name
+            for column in self.columns.all()
+        ]
 
-        table_values = (
+    def get_rows(self, columns: list['Variable']|QuerySet):
+        cells = (
             VariableValue.objects
-            .filter(variable__in=self.columns.all())
-            .values_list('index', 'variable__index', 'value')
+            .filter(variable__in=columns)
+            .annotate(column_index=F('variable__index'))
+            .annotate(row_index=F('index'))
+            .order_by('row_index')
+            .values_list('row_index', 'column_index', 'value')
         )
-        row_variables = defaultdict(lambda: ['${EMPTY}']*self.columns.count())
+        column_order = {
+            column.index: c
+            for c, column in enumerate(columns)
+        }
+        table = defaultdict(lambda: ['']*len(columns))
 
-        for row_index, col_index, value in table_values:
-            row_variables[row_variable(row_index)][col_index-1] = value
+        for row_index, column_index, value in cells:
+            table[row_index][column_order[column_index]] = value
 
-        table_variable = ('@{%s}' % self.name, list(row_variables.keys()))
-
-        return table_variable, list(row_variables.items())
+        return list(table.values())
 
     @property
     def is_column(self):
@@ -109,12 +129,12 @@ class Variable(AbstractBaseModel):
 
             super().save(*args, **kwargs)
 
-    def to_robot(self, get_variable_value):
+    def to_robot(self):
         if self.is_dict:
             return (
                 '&{%s}' % self.name,
                 {
-                    value.name: get_variable_value(value.pk)
+                    value.name: value.value
                     for value in self.values.all()
                 }
             )
@@ -123,10 +143,15 @@ class Variable(AbstractBaseModel):
             return (
                 '@{%s}' % self.name,
                 [
-                    get_variable_value(value.pk)
+                    value.value
                     for value in self.values.all()
                 ]
             )
+
+        if self.is_table:
+            table_row_variables = get_row_variables(self.name, self.get_rows(self.columns.all()))
+            table_variable = ('@{%s}' % self.name, list(table_row_variables.keys()))
+            return table_variable, list(table_row_variables.items())
 
     class Meta:
         ordering = ['index', Lower('name')]

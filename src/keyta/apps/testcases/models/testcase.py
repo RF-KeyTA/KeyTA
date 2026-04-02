@@ -1,21 +1,26 @@
 import re
+from typing import Optional
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models import Q, QuerySet
-from django.db.models.functions import Lower
 from django.utils.translation import gettext_lazy as _
 
 from model_clone import CloneMixin
 from taggit_selectize.managers import TaggableManager
 
 from keyta.apps.executions.models import Execution, Setup
-from keyta.apps.keywords.models import KeywordCallParameter, KeywordCallParameterSource
+from keyta.apps.keywords.models import KeywordCallParameter
 from keyta.apps.libraries.models import Library, LibraryImport
 from keyta.apps.variables.models import Variable
+from keyta.apps.variables.models.variable import get_row_variables
 from keyta.models.base_model import AbstractBaseModel
 from keyta.models.html2text import HTML2Text
 from keyta.rf_export.testcases import RFTestCase
+
+from ..types import ParamData, ParamMetadata, StepData, StepMetadata, TestStepsData, StepParameterValues
+from .testdata import TestData
+from .test_step import TestStep
 
 
 class TestCase(CloneMixin, AbstractBaseModel):
@@ -79,31 +84,107 @@ class TestCase(CloneMixin, AbstractBaseModel):
             .exclude(Q(to_keyword__isnull=True) | Q(index__in=execution_state.get('SKIP_EXECUTION', [])))
         )
 
-    def get_tables_rows(self):
-        table_variables = []
-        row_variables = []
-
-        value_ref_pks = (
+    def get_tables(self, user: AbstractUser):
+        kw_call_params = (
             KeywordCallParameter.objects
-            .filter(keyword_call__in=self.steps.all())
+            .filter(keyword_call__pk__in=self.steps.all())
+            .filter(user=user)
             .filter(value_ref__isnull=False)
-            .values_list('value_ref', flat=True)
+            .filter(value_ref__table_column__isnull=False)
         )
+        tables: dict[int, Variable] = {}
 
-        table_pks = (
-            KeywordCallParameterSource.objects
-            .filter(pk__in=value_ref_pks)
-            .filter(table_column__isnull=False)
-            .values_list('table_column__table', flat=True)
-            .distinct()
-        )
+        param: KeywordCallParameter
+        for param in kw_call_params:
+            step = param.keyword_call
+            column = param.value_ref.table_column
+            tables[step.pk] = column.table
 
-        for table in Variable.objects.filter(pk__in=table_pks):
-            table_variable, table_row_variables = table.get_rows()
-            table_variables.append(table_variable)
-            row_variables.extend(table_row_variables)
+        return tables
 
-        return table_variables, row_variables
+    def get_test_steps_data(self, user: AbstractUser) -> TestStepsData:
+        data = []
+        metadata = []
+        result: TestStepsData = {
+            'steps': data,
+            'metadata': metadata
+        }
+
+        step: TestStep
+        for step in self.steps.all():
+            parameters = (
+                step.parameters
+                .prefetch_related('parameter')
+                .prefetch_related('value_ref')
+                .filter(user=user)
+                .order_by('parameter__position')
+            )
+            parameter_values = []
+            step_data: StepData = {
+                'index': step.index,
+                'name': step.window.name,
+                'params': []
+            }
+            step_metadata: StepMetadata = {
+                'index': step.index,
+                'params': [],
+                'pk': step.pk,
+                'to_keyword_pk': step.to_keyword.pk,
+                'type': 'DICT'
+            }
+            table = None
+            columns = []
+            column_names = []
+
+            for param in parameters:
+                param_data: ParamData = {
+                    'index': param.parameter.position,
+                    'name': param.name,
+                    'value': ''
+                }
+                param_metadata: ParamMetadata = {
+                    'index': param.parameter.position,
+                    'pk': param.pk
+                }
+                step_metadata['params'].append(param_metadata)
+
+                if param.value_ref:
+                    if column := param.value_ref.table_column:
+                        columns.append(column)
+                        column_names.append({
+                            'index': param.parameter.position,
+                            'name': param.name
+                        })
+                        if not table:
+                            table = column.table
+                    if variable := param.value_ref.variable_value:
+                        parameter_values.append(param_data | {'value': variable.value})
+                    if return_value := param.value_ref.kw_call_ret_val:
+                        parameter_values.append(param_data | {'value': '${%s}' % str(return_value)})
+                else:
+                    user_input = param.json_value.user_input
+                    if user_input == '${EMPTY}':
+                        user_input = ''
+                    parameter_values.append(param_data | {'value': user_input})
+
+            if table:
+                rows = table.get_rows(columns)
+                table = [
+                    column_names,
+                    *rows
+                ]
+                step_data['params'] = table
+                step_metadata['type'] = 'LIST'
+
+            if parameter_values:
+                step_data['params'] = parameter_values
+                step_metadata['type'] = 'DICT'
+
+            if step_data['params']:
+                result['steps'].append(step_data)
+                result['metadata'].append(step_metadata)
+
+        return result
 
     @property
     def has_empty_sequence(self):
@@ -136,13 +217,48 @@ class TestCase(CloneMixin, AbstractBaseModel):
         self.name = re.sub(r"\s{2,}", ' ', self.name)
         super().save(force_insert, force_update, using, update_fields)
 
-    def to_robot(self, get_variable_value, user: AbstractUser, execution_state: dict, setup, teardown, stop_on_failure: bool, include_doc=False) -> RFTestCase:
+    def to_robot(
+        self,
+        testdata: Optional[TestData],
+        user: AbstractUser,
+        execution_state: dict,
+        setup,
+        teardown,
+        stop_on_failure: bool,
+        include_doc=False
+    ) -> RFTestCase:
         if include_doc:
             documentation = HTML2Text.parse(self.documentation)
         else:
             documentation = self.get_admin_url(absolute=True) + '?steps_tab'
 
-        tables, rows = self.get_tables_rows()
+        parameter_values: dict[int, StepParameterValues] = {}
+
+        if testdata:
+            parameter_values = testdata.get_parameter_values()
+        row_variables = []
+        table_columns: dict[int, list[str]] = {}
+        table_variables: dict[int, tuple[str, list]] = {}
+
+        for step_pk, step_param_values in parameter_values.items():
+            if table := step_param_values['table']:
+                table_name, rows = table
+                column_titles, *data = rows
+                table_columns[step_pk] = ['${%s}' % column for column in column_titles]
+                table_row_variables = get_row_variables(table_name, data)
+                row_variables.extend(list(table_row_variables.items()))
+                table_variable = ('@{%s}' % table_name, list(table_row_variables.keys()))
+                table_variables[step_pk] = table_variable
+
+        if not table_variables:
+            table_pks = set()
+            for step_pk, table in self.get_tables(user).items():
+                if table.pk not in table_pks:
+                    table_pks.add(table.pk)
+                    table_columns[step_pk] = ['${%s}' % column for column in table.get_column_titles()]
+                    table_variable, table_row_variables = table.to_robot()
+                    row_variables.extend(table_row_variables)
+                    table_variables[step_pk] = table_variable
 
         def teardown_disabled():
             return (
@@ -156,17 +272,30 @@ class TestCase(CloneMixin, AbstractBaseModel):
         if not stop_on_failure:
             tags.append('robot:recursive-continue-on-failure')
 
+        def get_step_params(test_step: TestStep):
+            if step_param_values := parameter_values.get(test_step.pk):
+                return step_param_values['params']
+
+            return {}
+
+        def get_step_table(test_step: TestStep):
+            if table_variable := table_variables.get(test_step.pk):
+                table_name, _row_variables = table_variable
+                return table_name, table_columns[test_step.pk]
+
+            return None
+
         return {
             'name': self.name,
             'doc': documentation,
             'tags': tags,
-            'setup': setup.to_robot(get_variable_value, user) if setup else None,
+            'setup': setup.to_robot({}, user=user) if setup else None,
             'steps': [
-                test_step.to_robot(get_variable_value, user=user)
+                test_step.to_robot(get_step_params(test_step), table=get_step_table(test_step), user=user)
                 for test_step in self.executable_steps(execution_state)
             ],
-            'teardown': teardown.to_robot(get_variable_value, user) if teardown and not teardown_disabled() else None,
-            'variables': [*rows, *tables]
+            'teardown': teardown.to_robot({}, user=user) if teardown and not teardown_disabled() else None,
+            'variables': [*row_variables, *list(table_variables.values())]
         }
 
     class Meta:
