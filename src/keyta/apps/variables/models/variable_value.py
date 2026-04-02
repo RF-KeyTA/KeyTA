@@ -32,6 +32,12 @@ class VariableValue(AbstractBaseModel):
     def current_value(self):
         return self.value
 
+    def delete(self, using=None, keep_parents=False):
+        super().delete(using, keep_parents)
+
+        if self.variable.is_column:
+            self.variable.reindex_column()
+
     def save(
         self, force_insert=False, force_update=False, using=None,
             update_fields=None

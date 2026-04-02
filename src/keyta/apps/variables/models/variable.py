@@ -90,6 +90,10 @@ class Variable(AbstractBaseModel):
         return table_variable, list(row_variables.items())
 
     @property
+    def is_column(self):
+        return self.table is not None
+
+    @property
     def is_dict(self):
         return self.type == VariableType.DICT
 
@@ -100,6 +104,11 @@ class Variable(AbstractBaseModel):
     @property
     def is_table(self):
         return self.type == VariableType.TABLE
+
+    def reindex_column(self):
+        for index, value in enumerate(self.values.all(), start=1):
+            value.index = index
+            value.save()
 
     def reindex_columns(self):
         for index, column in enumerate(self.columns.all(), start=1):
