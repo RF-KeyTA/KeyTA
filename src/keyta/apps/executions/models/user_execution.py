@@ -15,6 +15,18 @@ class UserExecution(AbstractBaseModel):
         on_delete=models.CASCADE,
         related_name='user_execs'
     )
+    testdata = models.OneToOneField(
+        'testcases.TestData',
+        blank=True,
+        null=True,
+        on_delete=models.CASCADE,
+        verbose_name=_('Testdaten')
+    )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        verbose_name=_('Benutzer')
+    )
     log = models.CharField(
         max_length=255,
         null=True,
@@ -33,11 +45,6 @@ class UserExecution(AbstractBaseModel):
     stop_on_failure = models.BooleanField(
         default=True,
         verbose_name=_('Beim 1. Fehler abbrechen')
-    )
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        verbose_name=_('Benutzer')
     )
 
     def __str__(self):

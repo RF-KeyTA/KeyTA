@@ -8,6 +8,7 @@ class ErrorType(str, enum.Enum):
     STEPS = 'steps'
     SETTINGS = 'settings'
     SYSTEM = 'system'
+    TEST_DATA = 'test_data'
 
 
 class ValidationError(dict, enum.Enum):
@@ -34,6 +35,14 @@ class ValidationError(dict, enum.Enum):
     INCOMPLETE_TEST_TEARDOWN_PARAMS = {
         'error': _('Die Parameter (Werte) der Testnachbereitung (unter Einstellungen) sind unvollständig.'),
         'type': ErrorType.SETTINGS
+    }
+    INVALID_EXCEL_FILE = {
+        'error': _('Die Tabellen in der Excel-Datei entsprechen nicht den Parametern der Testschritte.'),
+        'type': ErrorType.TEST_DATA
+    }
+    INVALID_TESTDATA = {
+        'error': _('Die ausgewählten Testdaten entsprechen nicht den Parametern der Testschritte.'),
+        'type': ErrorType.TEST_DATA
     }
     NO_ATTACH_TO_SYSTEM = {
         'error': _('Die Anbindung ans laufende System muss in den Einstellungen gepflegt werden.'),
