@@ -156,6 +156,9 @@ class Execution(CloneMixin, AbstractBaseModel):
     def get_rf_metadata(self, user: AbstractUser):
         return {}
 
+    def get_rf_metadata(self, user: AbstractUser):
+        return {}
+
     def get_rf_settings(self, user: AbstractUser) -> RFSettings:
         return {
             'documentation': None,

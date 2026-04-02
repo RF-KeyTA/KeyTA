@@ -153,14 +153,15 @@ class RobotLog:
     def __init__(self, testsuite_name: str):
         self.keyword_args = {}
         self.items = {
-            "errors": dict(),
+            'errors': dict(),
             "exec_type": None,
             "failed_step": {},
-            "keywords": dict(),
+            'keywords': dict(),
+            'metadata': dict(),
             "metadata": dict(),
             "screenshots": dict(),
-            "test_cases": [],
-            "testsuite": {
+            'test_cases': [],
+            'testsuite': {
                 'name': testsuite_name
             }
         }
