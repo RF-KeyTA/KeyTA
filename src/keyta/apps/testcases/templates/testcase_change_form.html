@@ -23,6 +23,8 @@
 <script type="text/javascript">
     function onFormsetAdded(event) {
         const row = event.target
+        const input_texts = django.jQuery('input[type=text]', row)
+        input_texts.first().focus()
         const add_related_link = django.jQuery('a.add-related', row)
 
         if (add_related_link.length === 1) {
