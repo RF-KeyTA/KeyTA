@@ -15,7 +15,7 @@ class UserExecution(AbstractBaseModel):
         on_delete=models.CASCADE,
         related_name='user_execs'
     )
-    testdata = models.OneToOneField(
+    testdata = models.ForeignKey(
         'testcases.TestData',
         blank=True,
         null=True,
