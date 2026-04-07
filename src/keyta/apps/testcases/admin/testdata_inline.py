@@ -27,7 +27,7 @@ class TestDataFormset(forms.BaseInlineFormSet):
 
 class TestDataInline(DeleteRelatedField, BaseTabularInline):
     model = TestData
-    fields = ['name', 'last_update_field', 'download', 'upload']
+    fields = ['user', 'name', 'last_update_field', 'download', 'upload']
     formset = TestDataFormset
     readonly_fields = ['last_update_field', 'download', 'upload']
     template = 'testdata_inline_tabular.html'
@@ -41,6 +41,10 @@ class TestDataInline(DeleteRelatedField, BaseTabularInline):
 
         if db_field.name == 'name':
             field.widget.attrs['style'] = 'width: 100%'
+
+        if db_field.name == 'user':
+            field.initial = request.user.id
+            field.widget = forms.HiddenInput()
 
         return field
 

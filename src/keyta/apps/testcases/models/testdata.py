@@ -412,6 +412,11 @@ class TestData(AbstractBaseModel):
         on_delete=models.CASCADE,
         related_name='testdata'
     )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        verbose_name=_('Benutzer')
+    )
     data = models.JSONField(
         default=dict
     )
@@ -426,8 +431,8 @@ class TestData(AbstractBaseModel):
     def __str__(self):
         return self.name
 
-    def export_to_excel(self, user: AbstractUser):
-        self.update(self.testcase.get_test_steps_data(user))
+    def export_to_excel(self):
+        self.update(self.testcase.get_test_steps_data(self.user))
         excel_file_path = get_excel_file_path(self.name)
         save_to_excel(self.data, str(excel_file_path))
         return excel_file_path
