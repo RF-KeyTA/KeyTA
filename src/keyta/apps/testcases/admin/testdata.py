@@ -14,7 +14,7 @@ class TestDataAdmin(BaseAdmin):
         if 'export' in request.GET:
             pk = request.resolver_match.kwargs['object_id']
             testdata = TestData.objects.get(pk=pk)
-            excel_file_path = testdata.export_to_excel(request.user)
+            excel_file_path = testdata.export_to_excel()
 
             return FileResponse(
                 open(excel_file_path, 'rb'),
