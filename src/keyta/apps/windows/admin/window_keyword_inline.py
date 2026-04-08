@@ -26,6 +26,7 @@ class WindowKeywordInline(BaseTabularInline):
         return (
             super().get_queryset(request)
             .prefetch_related('keyword')
+            .prefetch_related('window')
             .order_by('keyword__name')
         )
 
