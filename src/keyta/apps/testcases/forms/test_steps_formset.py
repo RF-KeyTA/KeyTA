@@ -21,6 +21,10 @@ class TestStepsFormset(CustomInlineFormSet):
         self.testcase: TestCase = kwargs['instance']
         # Perform all DB queries once when the formset is initialized
         self.system_pks = list(self.testcase.systems.values_list('pk', flat=True))
+        self.test_steps: dict[int, TestStep] = {
+            test_step.pk: test_step
+            for test_step in self.testcase.steps.prefetch_related('to_keyword').all()
+        }
 
     def add_fields(self, form, index):
         super().add_fields(form, index)
@@ -44,7 +48,7 @@ class TestStepsFormset(CustomInlineFormSet):
             })
         else:
             if form.instance.pk:
-                test_step = TestStep.objects.get(pk=form.instance.pk)
+                test_step = self.test_steps[form.instance.pk]
 
                 if not test_step.to_keyword:
                     to_keyword_field.widget.can_change_related = False
