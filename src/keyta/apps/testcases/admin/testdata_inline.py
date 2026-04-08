@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib import admin
 from django.forms.utils import ErrorDict, ErrorList
+from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 
 from keyta.admin.base_inline import BaseTabularInline
@@ -29,7 +30,7 @@ class TestDataInline(DeleteRelatedField, BaseTabularInline):
     model = TestData
     fields = ['user', 'name', 'last_update_field', 'download', 'upload']
     formset = TestDataFormset
-    readonly_fields = ['last_update_field', 'download', 'upload']
+    readonly_fields = ['last_update_field', 'download']
     template = 'testdata_inline_tabular.html'
 
     @admin.display(description='')
@@ -48,10 +49,20 @@ class TestDataInline(DeleteRelatedField, BaseTabularInline):
 
         return field
 
+    def get_readonly_fields(self, request: HttpRequest, obj=None):
+        readonly_fields = super().get_readonly_fields(request, obj)
+
+        @admin.display(description='')
+        def upload(self, testdata: TestData):
+            if request.user == testdata.user:
+                return testdata.get_file_input() + testdata.get_upload_icon()
+
+            return '-'
+
+        TestDataInline.upload = upload
+
+        return readonly_fields + ['upload']
+
     @admin.display(description=_('Letzte Aktualisierung'))
     def last_update_field(self, testdata: TestData):
         return testdata.get_last_update_field()
-
-    @admin.display(description='')
-    def upload(self, testdata: TestData):
-        return testdata.get_file_input() + testdata.get_upload_icon()
