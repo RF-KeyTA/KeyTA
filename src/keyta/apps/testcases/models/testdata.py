@@ -487,8 +487,8 @@ class TestData(AbstractBaseModel):
             last_update
         ))
 
-    def get_metadata(self, user: AbstractUser):
-        return self.testcase.get_test_steps_data(user)['metadata']
+    def get_metadata(self):
+        return self.testcase.get_test_steps_data(self.user)['metadata']
 
     def get_parameter_values(self) -> dict[int, StepParameterValues]:
         data: TestStepsData = self.data

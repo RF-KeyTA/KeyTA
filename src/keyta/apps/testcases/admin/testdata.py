@@ -50,7 +50,7 @@ class TestDataAdmin(BaseAdmin):
                 file.close()
 
             try:
-                testdata.import_from_excel(excel_file_path, testdata.get_metadata(request.user))
+                testdata.import_from_excel(excel_file_path, testdata.get_metadata())
                 return JsonResponse({})
             except TestDataError:
                 return JsonResponse(ValidationError.INVALID_EXCEL_FILE)
