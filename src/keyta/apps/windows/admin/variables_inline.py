@@ -26,13 +26,11 @@ class Variables(BaseTabularInline):
         return ', '.join(obj.variable.systems.values_list('name', flat=True))
 
     def get_field_queryset(self, db, db_field, request):
-        window_pk = request.resolver_match.kwargs['object_id']
-        queryset = super().get_field_queryset(db, db_field, request)
-
         if db_field.name == 'variable':
+            window_pk = request.resolver_match.kwargs['object_id']
             return self.model.objects.filter(window=window_pk)
 
-        return queryset
+        return super().get_field_queryset(db, db_field, request)
 
     def get_queryset(self, request):
         return super().get_queryset(request).exclude(variable__table__isnull=False)

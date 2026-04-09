@@ -7,7 +7,7 @@ from .variable import Variable
 
 class VariableWindowRelation(AbstractBaseModel, Variable.windows.through):
     def __str__(self):
-        return str(self.window)
+        return f'{self.variable} -> {self.window}'
 
     class Meta:
         proxy = True
