@@ -36,7 +36,6 @@ class SetupInline(SetupTeardownKeywordCallValuesField, BaseTabularInline):
 
             if keyword := execution.keyword:
                 systems = keyword.systems.all()
-                queryset = queryset.exclude(pk=keyword.pk)
 
             if testcase := execution.testcase:
                 systems = testcase.systems.all()
