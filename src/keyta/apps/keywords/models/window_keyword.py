@@ -1,8 +1,10 @@
-from django.apps import apps
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 
 from model_clone import CloneMixin
+
+from keyta.apps.executions.models import Execution
+from keyta.apps.libraries.models import Library, LibraryImport
 
 from .execution_keywordcall import ExecutionKeywordCall
 from .keyword import Keyword
@@ -16,7 +18,6 @@ class WindowKeyword(CloneMixin, Keyword):
     _clone_o2o_fields = ['execution']
 
     def create_execution(self, user: AbstractUser):
-        Execution = apps.get_model('executions', 'Execution')
         execution = Execution.objects.create(keyword=self)
         kw_call = ExecutionKeywordCall.objects.create(
             execution=execution,
@@ -27,9 +28,6 @@ class WindowKeyword(CloneMixin, Keyword):
             kw_call.add_parameter(param, user)
 
         library_ids = self.systems.values_list('library', flat=True).distinct()
-
-        Library = apps.get_model('libraries', 'Library')
-        LibraryImport = apps.get_model('libraries', 'LibraryImport')
 
         for library in Library.objects.filter(id__in=library_ids):
             LibraryImport.objects.create(
