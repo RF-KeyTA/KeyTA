@@ -23,3 +23,24 @@ class SequenceSteps(ExecutionStateField, StepsInline):
     )
     formset = SequenceStepsFormset
     template = 'sequence_steps_sortable_tabular.html'
+
+    def get_fields(self, request, obj=None):
+        fields = super().get_fields(request, obj)
+
+        if 'split' in request.GET:
+            self.template = 'admin/edit_inline/tabular.html'
+            return ['enabled'] + ['to_keyword']
+
+        return fields
+
+    def get_max_num(self, request, obj=None, **kwargs):
+        if 'split' in request.GET:
+            return 0
+
+        return super().get_max_num(request, obj, **kwargs)
+
+    def get_readonly_fields(self, request, obj=None):
+        if 'split' in request.GET:
+            return []
+
+        return super().get_readonly_fields(request, obj)

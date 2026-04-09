@@ -21,4 +21,18 @@
         </a>
     </div>
     {% endif %}
+
+    <div class="form-group" style="display: inline-flex; margin-right: 5px">
+        <a id="split-button" href="{{ request.path }}?split">
+            <span class="icon-wrapper">
+                <i class="action-icon {% icon 'split_sequence' %}"></i>
+            </span>
+        </a>
+    </div>
+    <script>
+        django.jQuery('#split-button').on('click', function (e) {
+            e.preventDefault()
+            window.location = this.getAttribute('href') + window.location.hash
+        })
+    </script>
 {% endblock %}

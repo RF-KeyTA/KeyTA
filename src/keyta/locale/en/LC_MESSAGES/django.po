@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-09 09:01+0200\n"
+"POT-Creation-Date: 2026-04-09 16:04+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,7 +21,7 @@ msgstr ""
 msgid "Action:"
 msgstr "Action"
 
-#: .\admin\base_admin.py:47 .\apps\executions\admin\setup_teardown_inline.py:47
+#: .\admin\base_admin.py:47 .\apps\executions\admin\setup_teardown_inline.py:46
 #: .\apps\sequences\admin\steps_inline.py:17 .\apps\systems\admin.py:51
 msgid "Aktion auswählen"
 msgstr "Select an Action"
@@ -91,7 +91,7 @@ msgstr "Window-independent"
 #: .\apps\keywords\models\keyword.py:74
 #: .\apps\keywords\models\keywordcall.py:102
 #: .\apps\resources\admin\resource_import.py:20
-#: .\apps\sequences\admin\sequence.py:283
+#: .\apps\sequences\admin\sequence.py:314
 #: .\apps\variables\admin\windows_inline.py:21
 #: .\apps\variables\admin\windows_inline.py:32 .\apps\windows\models.py:58
 #: .\apps\windows\models.py:72 .\apps\windows\models.py:79
@@ -113,7 +113,7 @@ msgid "Schritte"
 msgstr "Steps"
 
 #: .\apps\actions\admin\action.py:110 .\apps\keywords\models\keyword.py:79
-#: .\apps\sequences\admin\sequence.py:69 .\apps\sequences\admin\sequence.py:217
+#: .\apps\sequences\admin\sequence.py:69 .\apps\sequences\admin\sequence.py:248
 #: .\apps\systems\apps.py:8 .\apps\systems\models.py:37
 #: .\apps\testcases\admin\base_testcase_admin.py:130
 #: .\apps\testcases\models\testcase.py:34 .\apps\variables\admin\variable.py:64
@@ -178,7 +178,7 @@ msgid "Aktionen"
 msgstr "Actions"
 
 #: .\apps\actions\forms\action.py:17
-#: .\apps\keywords\models\window_keyword.py:41
+#: .\apps\keywords\models\window_keyword.py:39
 #: .\apps\testcases\models\testcase.py:127
 msgid " Kopie"
 msgstr " Copy"
@@ -214,7 +214,7 @@ msgstr "Select or enter a Value"
 
 #: .\apps\actions\models\action.py:36 .\apps\actions\models\action.py:43
 #: .\apps\actions\models\action.py:50
-#: .\apps\executions\admin\setup_teardown_inline.py:44
+#: .\apps\executions\admin\setup_teardown_inline.py:43
 #: .\apps\keywords\models\keyword.py:23
 #: .\apps\libraries\admin\library_import.py:19
 #: .\apps\sequences\admin\steps_inline.py:19
@@ -259,8 +259,8 @@ msgstr "Settings"
 #: .\apps\executions\admin\execution_inline.py:45
 #: .\apps\executions\models\execution.py:215
 #: .\apps\executions\models\execution.py:216
-#: .\apps\executions\models\keyword_execution.py:144
-#: .\apps\executions\models\keyword_execution.py:145
+#: .\apps\executions\models\keyword_execution.py:138
+#: .\apps\executions\models\keyword_execution.py:139
 #: .\apps\executions\models\testcase_execution.py:134
 #: .\apps\executions\models\testcase_execution.py:135
 #: .\apps\libraries\models\library_import.py:46
@@ -273,7 +273,7 @@ msgstr "Execution"
 msgid "Anbindung an ein laufendes System"
 msgstr "Attach to a running system"
 
-#: .\apps\executions\admin\setup_teardown_inline.py:57
+#: .\apps\executions\admin\setup_teardown_inline.py:56
 #: .\apps\executions\models\setup_teardown.py:57
 #: .\apps\executions\models\setup_teardown.py:58
 msgid "Nachbereitung"
@@ -635,7 +635,7 @@ msgstr "Input value"
 msgid "Kein Rückgabewert"
 msgstr "No return value"
 
-#: .\apps\keywords\models\window_keyword.py:42
+#: .\apps\keywords\models\window_keyword.py:40
 #: .\apps\testcases\models\testcase.py:128
 msgid " Kopie "
 msgstr " Copy "
@@ -757,7 +757,17 @@ msgstr "Resource Import"
 msgid "Ressource-Imports"
 msgstr "Resource Imports"
 
+#: .\apps\sequences\admin\sequence.py:113
+msgid "Den Schritt markieren, an dem die Sequenz geteilt werden soll."
+msgstr "Select the step at which the Sequence will be split."
+
 #: .\apps\sequences\admin\sequence.py:137
+msgid ""
+"Die Sequenz wurde erfolgreich aufgespaltet. Die neue Sequenz wird gerade "
+"angezeigt."
+msgstr "The sequence was split successfully. This is the new sequence."
+
+#: .\apps\sequences\admin\sequence.py:168
 msgid ""
 "Die Sequenz ist zur Bearbeitung gesperrt. Zum Entsperren das offene Schloss "
 "anklicken."

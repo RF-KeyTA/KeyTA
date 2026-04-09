@@ -1,0 +1,59 @@
+{% extends "admin/change_form.html" %}
+{% load tags %}
+
+{% block submit_buttons_bottom %}
+    {% block object-tools %}
+        {% if change %}
+            {% if not is_popup %}
+                <div class="object-tools">
+                    {% block object-tools-items %}
+                        <div class="form-group" style="display: inline-flex; margin-right: 5px">
+                            <a href="{{ request.path }}?split_cancel">
+                                <span class="icon-wrapper">
+                                    <i class="action-icon {% icon 'split_cancel' %}"></i>
+                                </span>
+                            </a>
+                        </div>
+                        <div class="form-group" style="display: inline-flex; margin-right: 5px">
+                            <a id="split_ok" href="{{ request.path }}?split_ok">
+                                <span class="icon-wrapper">
+                                    <i class="action-icon {% icon 'split_ok' %}"></i>
+                                </span>
+                            </a>
+                        </div>
+                    {% endblock %}
+                </div>
+            {% endif %}
+        {% endif %}
+    {% endblock %}
+{% endblock %}
+
+{% block content %}
+    {{ block.super }}
+
+    <script type="text/javascript">
+    django.jQuery(document).ready(function () {
+        django.jQuery('tr.has_original input[id$="-enabled"]').each((index, checkbox) => {
+            checkbox.checked = false
+            django.jQuery(checkbox).on('change', function() {
+                django.jQuery('tr.has_original input[id$="-enabled"]').each((index2, checkbox2) => {
+                    if (index !== index2) {
+                        checkbox2.disabled = checkbox.checked
+                    }
+                })
+            })
+
+        })
+
+        django.jQuery('#split_ok').on('click', function(e) {
+            e.preventDefault()
+
+            django.jQuery('tr.has_original input[id$="-enabled"]').each((index, checkbox) => {
+                if (checkbox.checked) {
+                    window.location = this.getAttribute('href') + '=' + (index + 1)
+                }
+            })
+        })
+    })
+    </script>
+{% endblock %}

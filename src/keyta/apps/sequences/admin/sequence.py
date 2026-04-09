@@ -109,6 +109,37 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
             'title_icon': settings.FA_ICONS.sequence
         }
 
+        if 'split' in request.GET:
+            messages.info(request, _('Den Schritt markieren, an dem die Sequenz geteilt werden soll.'))
+            SequenceAdmin.change_form_template = 'split_sequence.html'
+            return super().change_view(request, object_id, form_url=form_url, extra_context=context | (extra_context or {}))
+
+        if 'split_cancel' in request.GET:
+            SequenceAdmin.change_form_template = 'window_keyword_change_form.html'
+            return HttpResponseRedirect(request.path)
+
+        if split_ok := request.GET.get('split_ok'):
+            sequence_id = request.resolver_match.kwargs.get('object_id')
+            sequence = self.model.objects.get(pk=sequence_id)
+            clone: Sequence = sequence.make_clone()
+            clone.save()
+
+            for idx, step in enumerate(sequence.calls.all(), start=1):
+                if idx >= int(split_ok):
+                    step.delete()
+
+            for idx, step in enumerate(clone.calls.all(), start=1):
+                if idx < int(split_ok):
+                    step.delete()
+
+            self.message_user(
+                request,
+                _("Die Sequenz wurde erfolgreich aufgespaltet. Die neue Sequenz wird gerade angezeigt."),
+            )
+            SequenceAdmin.change_form_template = 'window_keyword_change_form.html'
+
+            return HttpResponseRedirect(clone.get_admin_url())
+
         if 'lock' in request.GET:
             sequence.lock()
             return HttpResponseRedirect(request.path)
