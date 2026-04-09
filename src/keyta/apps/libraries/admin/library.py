@@ -1,5 +1,4 @@
 import json
-from importlib import import_module
 
 from django.conf import settings
 from django.contrib import admin, messages
@@ -53,29 +52,30 @@ class LibraryAdmin(BaseAdmin):
 
         return self.list_display
 
-    update_icon = Icon(
-        settings.FA_ICONS.update,
-        styles={'font-size': '18px'},
-        title=_('Aktualisierung')
-    )
-
-    @admin.display(description=mark_safe(str(update_icon)))
+    @admin.display(description='')
     def update(self, library: Library):
-        version = None
-
-        if library.name in Library.ROBOT_LIBRARIES:
-            version = import_module(f'robot.libraries.{library.name}').get_version()
+        if installed_version := library.get_installed_version():
+            if installed_version != library.version:
+                return link(
+                    reverse('admin:libraries_library_changelist') + f'?update&lib_id={library.id}',
+                    str(Icon(
+                        settings.FA_ICONS.library_update,
+                        styles={'font-size': '18px'},
+                        title=_('Bibliothek aktualisieren')
+                    ))
+                )
+            else:
+                return mark_safe(str(Icon(
+                    settings.FA_ICONS.library_up_to_date,
+                    styles={'font-size': '18px'},
+                    title=_('Bibliothek ist aktuell')
+                )))
         else:
-            try:
-                version = getattr(import_module(library.name), '__version__', None)
-            except ModuleNotFoundError as err:
-                self.errors.add(_('Eine Bibliothek ist nicht vorhanden: {err}').format(err=err))
-
-        if version and version != library.version:
-            return link(
-                reverse('admin:libraries_library_changelist') + f'?update&lib_id={library.id}',
-                str(Icon(settings.FA_ICONS.library_update, {'font-size': '18px'}))
-            )
+            return mark_safe(str(Icon(
+                settings.FA_ICONS.library_unavailable,
+                styles={'font-size': '18px'},
+                title=_('Bibliothek ist nicht vorhanden')
+            )))
 
     change_form_template = 'library_change_form.html'
     errors = set()

@@ -2,6 +2,7 @@ import json
 import re
 import urllib.parse
 import xml.dom.minidom
+from importlib import import_module
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -37,6 +38,15 @@ class Library(KeywordSource):
         'Telnet',
         'XML'
     }
+
+    def get_installed_version(self) -> str | None:
+        if self.name in self.ROBOT_LIBRARIES:
+            return import_module(f'robot.libraries.{self.name}').get_version()
+
+        try:
+            return getattr(import_module(self.name), '__version__', None)
+        except ModuleNotFoundError:
+            return None
 
     def get_typedocs(self) -> dict[str, TypeDoc]|None:
         return json.loads(self.typedocs)

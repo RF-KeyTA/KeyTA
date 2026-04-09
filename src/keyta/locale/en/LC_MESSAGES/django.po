@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-03 13:28+0100\n"
+"POT-Creation-Date: 2026-04-09 09:01+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,7 +30,7 @@ msgstr "Select an Action"
 msgid "Save"
 msgstr ""
 
-#: .\admin\base_admin.py:265 .\apps\actions\admin\action.py:68
+#: .\admin\base_admin.py:236 .\apps\actions\admin\action.py:68
 #: .\apps\sequences\admin\sequence.py:73
 msgid "System auswählen"
 msgstr "Select a System"
@@ -91,7 +91,7 @@ msgstr "Window-independent"
 #: .\apps\keywords\models\keyword.py:74
 #: .\apps\keywords\models\keywordcall.py:102
 #: .\apps\resources\admin\resource_import.py:20
-#: .\apps\sequences\admin\sequence.py:280
+#: .\apps\sequences\admin\sequence.py:283
 #: .\apps\variables\admin\windows_inline.py:21
 #: .\apps\variables\admin\windows_inline.py:32 .\apps\windows\models.py:58
 #: .\apps\windows\models.py:72 .\apps\windows\models.py:79
@@ -113,7 +113,7 @@ msgid "Schritte"
 msgstr "Steps"
 
 #: .\apps\actions\admin\action.py:110 .\apps\keywords\models\keyword.py:79
-#: .\apps\sequences\admin\sequence.py:69 .\apps\sequences\admin\sequence.py:214
+#: .\apps\sequences\admin\sequence.py:69 .\apps\sequences\admin\sequence.py:217
 #: .\apps\systems\apps.py:8 .\apps\systems\models.py:37
 #: .\apps\testcases\admin\base_testcase_admin.py:130
 #: .\apps\testcases\models\testcase.py:34 .\apps\variables\admin\variable.py:64
@@ -486,7 +486,7 @@ msgid "Eingabe"
 msgstr "Input"
 
 #: .\apps\keywords\models\execution_keywordcall.py:36
-#: .\apps\keywords\models\keywordcall_parameters.py:158
+#: .\apps\keywords\models\keywordcall_parameters.py:146
 msgid "Eingabewerte"
 msgstr "Input values"
 
@@ -511,7 +511,7 @@ msgstr "Sequence"
 
 #: .\apps\keywords\models\keyword.py:33
 #: .\apps\libraries\admin\library_import_inline.py:18
-#: .\apps\libraries\models\library.py:129
+#: .\apps\libraries\models\library.py:139
 #: .\apps\libraries\models\library_import.py:40
 msgid "Bibliothek"
 msgstr "Library"
@@ -627,7 +627,7 @@ msgstr "Parameter reference"
 msgid "Parameter-Referenzen"
 msgstr "Parameter references"
 
-#: .\apps\keywords\models\keywordcall_parameters.py:157
+#: .\apps\keywords\models\keywordcall_parameters.py:145
 msgid "Eingabewert"
 msgstr "Input value"
 
@@ -640,27 +640,30 @@ msgstr "No return value"
 msgid " Kopie "
 msgstr " Copy "
 
-#: .\apps\libraries\admin\library.py:38
+#: .\apps\libraries\admin\library.py:37
 #, python-brace-format
 msgid "Die Bibliothek \"{library_name}\" wurde erfolgreich aktualisiert"
 msgstr "The library \"{library_name}\" has been successfully updated"
 
-#: .\apps\libraries\admin\library.py:42
+#: .\apps\libraries\admin\library.py:41
 #, fuzzy, python-brace-format
 msgid "Die Bibliothek \"{library_name}\" konnte nicht importiert werden"
 msgstr "The library \"{library_name}\" could not be imported"
 
-#: .\apps\libraries\admin\library.py:59 .\apps\resources\admin\resource.py:42
-msgid "Aktualisierung"
-msgstr "Update"
+#: .\apps\libraries\admin\library.py:64
+msgid "Bibliothek aktualisieren"
+msgstr "Update Library"
 
-#: .\apps\libraries\admin\library.py:72
-#, python-brace-format
-msgid "Eine Bibliothek ist nicht vorhanden: {err}"
-msgstr "A library is not available: {err}"
+#: .\apps\libraries\admin\library.py:71
+msgid "Bibliothek ist aktuell"
+msgstr "Library is up-to-date"
+
+#: .\apps\libraries\admin\library.py:77
+msgid "Bibliothek ist nicht vorhanden"
+msgstr "Library not available"
 
 #: .\apps\libraries\admin\library_import_inline.py:19
-#: .\apps\libraries\apps.py:8 .\apps\libraries\models\library.py:130
+#: .\apps\libraries\apps.py:8 .\apps\libraries\models\library.py:140
 msgid "Bibliotheken"
 msgstr "Libraries"
 
@@ -679,7 +682,7 @@ msgstr "The library \"{name}\" is not available in PYTHONPATH."
 msgid "Die Bibliothek \"{library}\" wurde erfolgreich importiert."
 msgstr "The library \"{library}\" was imported successfully."
 
-#: .\apps\libraries\models\library.py:21
+#: .\apps\libraries\models\library.py:22
 msgid "Einrichtung"
 msgstr "Installation"
 
@@ -708,6 +711,10 @@ msgstr "Setting"
 #, python-brace-format
 msgid "Die Ressource \"{resource.name}\" wurde erfolgreich aktualisiert"
 msgstr "The Resource \"{resource.name}\" has been successfully updated"
+
+#: .\apps\resources\admin\resource.py:42
+msgid "Aktualisierung"
+msgstr "Update"
 
 #: .\apps\resources\admin\resource.py:62
 msgid "Dateipfad wie beim Importieren einer Ressource in einer .robot Datei"
@@ -750,11 +757,12 @@ msgstr "Resource Import"
 msgid "Ressource-Imports"
 msgstr "Resource Imports"
 
-#: .\apps\sequences\admin\sequence.py:134
+#: .\apps\sequences\admin\sequence.py:137
 msgid ""
 "Die Sequenz ist zur Bearbeitung gesperrt. Zum Entsperren das offene Schloss "
 "anklicken."
-msgstr "The Sequence is locked for modification. To unlock it click on the open lock."
+msgstr ""
+"The Sequence is locked for modification. To unlock it click on the open lock."
 
 #: .\apps\sequences\admin\uses_inline.py:16
 msgid "Verwendungen"
@@ -806,7 +814,8 @@ msgid ""
 "Auswirkungen zu vermeiden, soll eine Kopie erstellt werden."
 msgstr ""
 "Changes to the object '%(escaped_object)s' affect the following objects. "
-"Continue anyway?<br><b>Hint</b>: In order to avoid undesired side effects it is better to create a copy."
+"Continue anyway?<br><b>Hint</b>: In order to avoid undesired side effects it "
+"is better to create a copy."
 
 #: .\apps\sequences\templates\unlock_confirmation.html:49
 #: .\templates\admin\delete_confirmation.html:67
@@ -860,7 +869,7 @@ msgstr "Test Cases"
 msgid "General"
 msgstr ""
 
-#: .\apps\testcases\templates\testcase_change_form.html:45
+#: .\apps\testcases\templates\testcase_change_form.html:57
 msgid "Sicher?"
 msgstr "Are you sure?"
 
