@@ -30,25 +30,22 @@ class KeywordExecution(Execution):
         return []
 
     def add_attach_to_system(self, user: AbstractUser):
-        attach_to_system_id = (
-            self.keyword.systems
-            .values_list('attach_to_system', flat=True)
-            .distinct()
-            .first()
-        )
+        attach_to_system: Keyword|None = self.keyword.systems.first().attach_to_system
 
-        if attach_to_system_id:
-            attach_to_system = Keyword.objects.get(
-                id=attach_to_system_id
-            )
+        if attach_to_system:
             kw_call, created = KeywordCall.objects.get_or_create(
                 execution=self,
                 type=TestSetupTeardown.TEST_SETUP,
-                to_keyword=attach_to_system
+                to_keyword=attach_to_system,
+                enabled=True if attach_to_system else False
             )
 
             for param in attach_to_system.parameters.all():
                 kw_call.add_parameter(param, user)
+
+            return kw_call
+
+        return None
 
     @property
     def execution_keyword_call(self) -> Optional[KeywordCall]:
@@ -119,10 +116,7 @@ class KeywordExecution(Execution):
         if any(call.has_empty_arg() for call in self.keyword.calls.all()):
             return ValidationError.INCOMPLETE_STEP_PARAMS
 
-        test_setup: KeywordCall = self.test_setup().first()
-
-        if not test_setup:
-            self.add_attach_to_system(user)
+        test_setup: KeywordCall = self.test_setup().first() or self.add_attach_to_system(user)
 
         if test_setup and test_setup.has_empty_arg(user):
             return ValidationError.INCOMPLETE_ATTACH_TO_SYSTEM_PARAMS
