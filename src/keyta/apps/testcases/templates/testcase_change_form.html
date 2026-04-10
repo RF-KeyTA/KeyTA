@@ -19,7 +19,7 @@
         let failed_step = new URLSearchParams(window.location.search).get('failed_step')
         if (failed_step != null) {
             let step_index = Number(failed_step)
-            let row = $('tr[id^=steps]')[step_index-1]
+            let row = $('tr[id^=steps]')[step_index]
             row.style.backgroundColor = '#ffcccc'
             row.scrollIntoView()
         }
