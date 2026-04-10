@@ -5,6 +5,7 @@ from django.urls import reverse
 
 from keyta.apps.executions.models import TestCaseExecution
 from keyta.rf_export.rfgenerator import gen_testsuite
+from keyta.widgets import url_query_parameters
 
 from ..models import TestCase
 from .base_testcase_admin import BaseTestCaseAdmin
@@ -38,6 +39,6 @@ class TestCaseAdmin(BaseTestCaseAdmin):
         app = settings.MODEL_TO_APP.get(model)
 
         if app and app != current_app:
-            return HttpResponseRedirect(reverse('admin:%s_%s_change' % (app, model), args=(object_id,)))
+            return HttpResponseRedirect(reverse('admin:%s_%s_change' % (app, model), args=(object_id,)) + '?' + url_query_parameters(request.GET))
 
         return super().change_view(request, object_id, form_url, extra_context)
