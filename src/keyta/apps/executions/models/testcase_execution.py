@@ -140,7 +140,7 @@ class TestCaseExecution(Execution):
         user_exec = self.user_execs.get(user=user)
 
         if testdata := user_exec.testdata:
-            if testdata.validate_metadata(testdata.get_metadata(user)):
+            if testdata.validate_metadata(testdata.get_metadata()):
                 return ValidationError.INVALID_TESTDATA
 
         return None
