@@ -103,7 +103,8 @@ class KeywordCallParameterSource(CloneMixin, AbstractBaseModel):
         if self.type == KeywordCallParameterSourceType.VARIABLE_VALUE:
             return get_variable_value(self.variable_value.pk)
         else:
-            return '${' + str(self) + '}'
+            # RF 7 interprets : as preceding a type hint
+            return '${' + str(self).replace(':', '') + '}'
 
     class Meta:
         verbose_name = _('Parameter-Referenz')
