@@ -35,14 +35,6 @@ class ParameterFormset(CustomInlineFormSet):
 
 
 class ParameterForm(forms.ModelForm):
-    def clean_name(self):
-        name = self.cleaned_data.get('name')
-
-        if ':' in name:
-            raise forms.ValidationError("Doppelpunkt ist im Parameternamen nicht zulässig")
-
-        return name
-
     def save(self, commit=True):
         instance = super().save(commit)
 

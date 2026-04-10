@@ -11,7 +11,8 @@ _logger = logging.getLogger('django')
 
 
 def rf_var(name: str) -> str:
-    return "${" + name + "}"
+    # RF 7 interprets : as preceding a type hint
+    return "${" + name.replace(':', '') + "}"
 
 
 EMPTY = rf_var('EMPTY')
