@@ -61,6 +61,12 @@ class Variable(AbstractBaseModel):
     def __str__(self):
         return self.name
 
+    def delete(self, using=None, keep_parents=False):
+        super().delete(using, keep_parents)
+
+        if self.table:
+            self.table.reindex_columns()
+
     def get_rows(self):
         def row_variable(index):
             return '@{%s__%s}' % (self.name, index)
@@ -87,6 +93,11 @@ class Variable(AbstractBaseModel):
 
     def is_table(self):
         return self.type == VariableType.TABLE
+
+    def reindex_columns(self):
+        for index, column in enumerate(self.columns.all(), start=1):
+            column.index = index
+            column.save()
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
