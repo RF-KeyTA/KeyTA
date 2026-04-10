@@ -22,6 +22,7 @@
     </div>
     {% endif %}
 
+    {% if split_sequence %}
     <div class="form-group" style="display: inline-flex; margin-right: 5px">
         <a id="split-button" href="{{ request.path }}?split">
             <span class="icon-wrapper">
@@ -35,4 +36,5 @@
             window.location = this.getAttribute('href') + window.location.hash
         })
     </script>
+    {% endif %}
 {% endblock %}

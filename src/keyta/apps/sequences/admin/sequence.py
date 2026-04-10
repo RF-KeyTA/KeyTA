@@ -171,7 +171,8 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
                 'change_lock': {
                     'next_state': 'lock',
                     'icon': 'lock'
-                }
+                },
+                'split_sequence': True
             })
 
         return super().change_view(request, object_id, form_url=form_url, extra_context=context | (extra_context or {}))
