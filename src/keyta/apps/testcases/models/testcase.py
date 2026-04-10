@@ -140,7 +140,7 @@ class TestCase(CloneMixin, AbstractBaseModel):
         if include_doc:
             documentation = HTML2Text.parse(self.documentation)
         else:
-            documentation = self.get_admin_url(absolute=True) + '?steps_tab'
+            documentation = self.get_admin_url(absolute=True)
 
         tables, rows = self.get_tables_rows()
 
