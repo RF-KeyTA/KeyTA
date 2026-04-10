@@ -21,7 +21,7 @@
             let step_index = Number(failed_step)
             let row = $('tr[id^=steps]')[step_index]
             row.style.backgroundColor = '#ffcccc'
-            row.scrollIntoView()
+            new Promise(r => setTimeout(r, 300)).then(() => row.scrollIntoView())
         }
     })
 </script>
