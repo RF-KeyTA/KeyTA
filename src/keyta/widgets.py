@@ -17,7 +17,7 @@ from keyta.apps.systems.models import System
 
 def attrs_to_string(attrs: dict) -> str:
     return ' '.join([
-        f'{name}="{value}"'
+        f"{name}='{value}'"
         for name, value
         in attrs.items()
     ])
