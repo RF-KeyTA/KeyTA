@@ -14,7 +14,7 @@ from robot.run import run
 from robot.running import TestSuite
 
 from .IProcess import IProcess
-from .rf_log import save_log
+from .rf_log import RobotLog, save_log
 
 
 tmp_dir = Path(tempfile.gettempdir()) / 'KeyTA'
@@ -89,7 +89,8 @@ def robot_run(testsuite_name: str, testsuite: str):
     }
 
     result = run(str(robot_file), **robot_kwargs, stdout=io.StringIO(), stderr=io.StringIO())
-    log_file = save_log(testsuite_fs_name, testsuite_name, str(output_file), get_keywords(robot_file))
+    log_data = RobotLog(testsuite_name).simplify_output(get_keywords(robot_file), output_file)
+    log_file = save_log(testsuite_fs_name, log_data, output_dir)
 
     return {
         'log': str(log_file.relative_to(tmp_dir)),
