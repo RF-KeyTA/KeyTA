@@ -208,6 +208,7 @@
 {% endfor %}
 
 {% for keyword in rf.keywords.values() %}
+    {% if keyword.kind != 'ROBOT_KW' and keyword.status != 'NOT RUN' %}
     <div class="tab-pane fade container p-3" id="{{ keyword.id }}">
         <a href="#" onclick="clickNavLink('#{{ keyword.parent_id }}')">{{ icon.go_back }}</a>
         {% if keyword.message in rf.errors %}
@@ -299,6 +300,7 @@
         </div>
         {% endfor %}
     </div>
+    {% endif %}
 {% endfor %}
 </div>
 <script type="text/javascript">
