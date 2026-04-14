@@ -116,10 +116,14 @@ def template_assets():
 def translate(text):
     translations = {
         'Elapsed time': 'Laufzeit',
+        'Failed step': 'Fehlgeschlagener Schritt',
         'minutes': 'Minuten',
         'Robot Framework Log': 'Robot Framework Protokoll',
+        'seconds': 'Sekunden',
+        'Setup failed': 'Vorbereitungsschritt fehlgeschlagen',
         'Start time': 'Datum',
-        'seconds': 'Sekunden'
+        'steps': 'schritte',
+        'Teardown failed': 'Nachbereitungsschritt fehlgeschlagen'
     }
 
     lang = os.environ.get('KEYTA_LANG')

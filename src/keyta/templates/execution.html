@@ -111,6 +111,9 @@
             event.preventDefault();
 
             start_button.closest('tr').style.backgroundColor = ''
+            $('#exec-error').html('')
+            $('tr[id^=steps]').each((index, tr) => (tr.style.backgroundColor = '#fff'))
+            $('tr[id^=calls]').each((index, tr) => (tr.style.backgroundColor = '#fff'))
 
             const execution_state = {
                 'BEGIN_EXECUTION': null,
