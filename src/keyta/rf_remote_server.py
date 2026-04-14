@@ -3,6 +3,7 @@ import json
 import os
 import re
 import tempfile
+import threading
 import unicodedata
 from http import HTTPStatus
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
@@ -18,6 +19,8 @@ from .IProcess import IProcess
 from .rf_log import RobotLog, save_log, translate
 
 
+global_storage = {}
+global_storage_lock = threading.Lock()
 tmp_dir = Path(tempfile.gettempdir()) / 'KeyTA'
 
 
@@ -92,15 +95,16 @@ def robot_run(testsuite_name: str, testsuite: str):
     result = run(str(robot_file), **robot_kwargs, stdout=io.StringIO(), stderr=io.StringIO())
     log_data = RobotLog(testsuite_name).simplify_output(get_keywords(robot_file), output_file)
     log_file = save_log(testsuite_fs_name, log_data, output_dir)
-
-    # Save log data to a temp file in order to access it from another thread
-    with open(tmp_dir / 'simple_output.json', 'w', encoding='utf-8') as file:
-        file.write(json.dumps(log_data))
-
-    return {
+    robot_result = {
         'log': str(log_file.relative_to(tmp_dir)),
         'result': 'PASS' if result == 0 else 'FAIL'
     }
+
+    with global_storage_lock:
+        global_storage.update(**log_data)
+        global_storage.update(**robot_result)
+
+    return robot_result
 
 
 def slugify(value, allow_unicode=False):
@@ -130,10 +134,9 @@ class RequestHandler(SimpleHTTPRequestHandler):
 
     def do_GET(self):
         if self.path.endswith('exec-error'):
-            with open(tmp_dir / 'simple_output.json', encoding='utf-8') as file:
-                log_data = json.loads(file.read())
-                failed_step = log_data['failed_step']
-                failed_step.update(**log_data['keywords'][failed_step['id']])
+            with global_storage_lock:
+                failed_step = global_storage['failed_step']
+                failed_step.update(**global_storage['keywords'][failed_step['id']])
                 env = Environment(loader=PackageLoader('keyta.rf_log', package_path='templates'))
                 env.filters['translate'] = translate
                 template = env.get_template('failed_step.jinja.html')
