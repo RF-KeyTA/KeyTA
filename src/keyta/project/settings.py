@@ -30,7 +30,7 @@ BASE_URL = 'http://localhost:6227'
 
 KEYTA_DIR = get_home_dir() / 'KeyTA'
 KEYTA_DIR.mkdir(exist_ok=True)
-RF_SERVER = 'http://localhost:1471'
+RF_SERVER = 'http://127.0.0.1:1471'
 
 
 admin.AdminSite.index_title = 'Dashboard'
