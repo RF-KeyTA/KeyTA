@@ -148,6 +148,41 @@ class RequestHandler(SimpleHTTPRequestHandler):
                 self.end_headers()
                 self.wfile.write(response)
 
+        if self.path.endswith('log-icon'):
+            with global_storage_lock:
+                log = global_storage['log']
+                icon = '<i class="fa-regular fa-file-lines" style="font-size: 36px"></i>'
+                url =  f'http://127.0.0.1:1471/{log}'
+
+                response = f'<a href="{url}" target="_blank">{icon}</a>'.encode('utf-8')
+
+                self.send_response(HTTPStatus.OK)
+                self.send_header("Access-Control-Allow-Origin", '*')
+                self.send_header("Content-type", 'text/html')
+                self.send_header("Content-Length", str(len(response)))
+                self.end_headers()
+                self.wfile.write(response)
+
+        if self.path.endswith('result-icon'):
+            with global_storage_lock:
+                icon = ''
+                result = global_storage['result']
+
+                if result == 'FAIL':
+                    icon = '<i class="fa-solid fa-circle-xmark" style="color: #dc3545; font-size: 36px"></i>'
+
+                if result == 'PASS':
+                    icon = '<i class="fa-solid fa-circle-check" style="color: green; font-size: 36px"></i>'
+
+                response = str(icon).encode('utf-8')
+
+                self.send_response(HTTPStatus.OK)
+                self.send_header("Access-Control-Allow-Origin", '*')
+                self.send_header("Content-type", 'text/html')
+                self.send_header("Content-Length", str(len(response)))
+                self.end_headers()
+                self.wfile.write(response)
+
         if self.path.endswith('.html') or self.path.endswith('.jpg') or self.path.endswith('.png') or self.path.endswith('.robot'):
             path = Path(str(tmp_dir) + self.path)
 

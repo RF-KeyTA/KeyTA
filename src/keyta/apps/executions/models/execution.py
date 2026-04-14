@@ -16,7 +16,7 @@ from keyta.models.base_model import AbstractBaseModel
 from keyta.rf_export.rfgenerator import gen_testsuite
 from keyta.rf_export.settings import RFSettings
 from keyta.rf_export.testsuite import RFTestSuite
-from keyta.widgets import Icon
+from keyta.widgets import Icon, html_to_string, link
 
 
 @dataclass
@@ -83,7 +83,22 @@ class Execution(CloneMixin, AbstractBaseModel):
         if user_exec.result:
             url = server_url + '/' + user_exec.log
             title = str(Icon(settings.FA_ICONS.exec_log))
-            return '<a href="%s" id="log-btn" target="_blank">%s</a>' % (url, title)
+
+            return html_to_string(
+                'span',
+                {
+                    'hx-get': 'http://127.0.0.1:1471/log-icon',
+                    'hx-request': '{"noHeaders": true}',
+                    'hx-swap': 'innerHTML',
+                    'hx-trigger': 'update-log-icon from:body',
+                    'id': 'log-icon'
+                },
+                link(
+                    url,
+                    title,
+                    new_page=True
+                )
+            )
 
         return '-'
 
@@ -91,19 +106,31 @@ class Execution(CloneMixin, AbstractBaseModel):
         user_exec = self.user_execs.get(user=user)
 
         if result := user_exec.result:
+            icon = ''
+
             if result == 'FAIL':
                 icon = Icon(
                     settings.FA_ICONS.exec_fail,
-                    {'color': 'red'}
+                    {'color': '#dc3545'}
                 )
-                return str(icon)
 
             if result == 'PASS':
                 icon = Icon(
                     settings.FA_ICONS.exec_pass,
                     {'color': 'green'}
                 )
-                return str(icon)
+
+            return html_to_string(
+                'span',
+                {
+                    'hx-get': 'http://127.0.0.1:1471/result-icon',
+                    'hx-request': '{"noHeaders": true}',
+                    'hx-swap': 'innerHTML',
+                    'hx-trigger': 'update-result-icon from:body',
+                    'id': 'result-icon'
+                },
+                str(icon)
+            )
 
         return '-'
 
