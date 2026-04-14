@@ -79,11 +79,8 @@ def parse_object(pairs):
     return dict(result)
 
 
-def save_log(filename: str, testsuite_name: str, output_file: str, keywords: list) -> Path:
-    output_dir = Path(output_file).parent
-
+def save_log(filename: str, log_data: dict, output_dir: Path) -> Path:
     try:
-        log_data = RobotLog(testsuite_name).simplify_output(keywords, output_file)
         env = Environment(loader=PackageLoader('keyta.rf_log', package_path='templates'))
         env.filters['translate'] = translate
         template = env.get_template('testcase_log.jinja.html')
@@ -160,7 +157,7 @@ class RobotLog:
             }
         }
 
-    def simplify_output(self, keywords: list, output_json: str) -> dict:
+    def simplify_output(self, keywords: list, output_json: Path) -> dict:
         for keyword in keywords:
             name = keyword['name']
 
