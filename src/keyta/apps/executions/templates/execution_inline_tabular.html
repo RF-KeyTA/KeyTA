@@ -9,7 +9,7 @@
         {{ inline_admin_formset.formset.management_form }}
         <fieldset class="module {{ inline_admin_formset.classes }}">
             {{ inline_admin_formset.formset.non_form_errors }}
-            <table class="table table-hover text-nowrap">
+            <table class="table text-nowrap" style="margin-bottom: 0">
                 <thead><tr>
                     <th class="original"></th>
                     {% for field in inline_admin_formset.fields %}
@@ -87,6 +87,14 @@
                     </tr>
                 {% endfor %}
                 </tbody>
+            <tfoot>
+                <tr>
+                    <td></td>
+                    {% for field in inline_admin_formset.fields %}
+                    <td></td>
+                    {% endfor %}
+                </tr>
+            </tfoot>
             </table>
         </fieldset>
     </div>
