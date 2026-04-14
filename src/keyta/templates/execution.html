@@ -15,8 +15,8 @@
 
     const error_message = document.querySelector("#error-message")
     const info_message = document.querySelector("#info-message")
-    const log_icon = document.querySelector(".field-log_icon > p")
-    const result_icon = document.querySelector(".field-result_icon > p")
+    const log_icon = document.getElementById("log-icon")
+    const result_icon = document.getElementById("result-icon")
 
     const error = (message) => {
         error_message.querySelector("#error-text").textContent = message
@@ -48,8 +48,8 @@
         const start_icon = start_button.querySelector("i")
         start_icon.classList.replace("fa-circle-play", "fa-arrows-rotate")
         start_icon.style.animation = "spin 3s linear infinite"
-        $(result_icon).hide()
-        $(log_icon).hide()
+        $(log_icon).html('')
+        $(result_icon).html('')
 
         return fetch(
             robot_server + "/robot_run",
