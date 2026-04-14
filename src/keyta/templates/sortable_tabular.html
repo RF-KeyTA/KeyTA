@@ -31,7 +31,8 @@
                 <tbody id="{{ inline_admin_formset.formset.prefix }}-sortable">
                     {% for inline_admin_form in inline_admin_formset %}
                         <tr class="form-row {% if inline_admin_form.original or inline_admin_form.show_url %}has_original{% endif %}{% if forloop.last and inline_admin_formset.has_add_permission %}empty-form{% endif %}"
-                            id="{{ inline_admin_formset.formset.prefix }}-{% if forloop.last and inline_admin_formset.has_add_permission %}empty{% else %}{{ forloop.counter0 }}{% endif %}">
+                            id="{{ inline_admin_formset.formset.prefix }}-{% if forloop.last and inline_admin_formset.has_add_permission %}empty{% else %}{{ forloop.counter0 }}{% endif %}"
+                            style="scroll-margin-top: 80px;">
                             <td class="original">
                                 <p style="font-size: 28px; background-image: none">
                                     {% if inline_admin_form.original and inline_admin_formset.has_change_permission %}
