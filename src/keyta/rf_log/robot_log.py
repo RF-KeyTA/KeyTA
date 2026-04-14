@@ -149,11 +149,12 @@ class RobotLog:
     def __init__(self, testsuite_name: str):
         self.keyword_args = {}
         self.items = {
-            'errors': dict(),
-            'keywords': dict(),
-            'metadata': dict(),
-            'test_cases': [],
-            'testsuite': {
+            "errors": dict(),
+            "exec_type": None,
+            "keywords": dict(),
+            "metadata": dict(),
+            "test_cases": [],
+            "testsuite": {
                 'name': testsuite_name
             }
         }
@@ -329,6 +330,12 @@ class RobotLog:
             result.update({'setup': setup})
 
         if 'body' in test:
+            first_step = test['body'][0]
+            if first_step['name'].endswith(test['name']):
+                self.items['exec_type'] = 'KEYWORD'
+            else:
+                self.items['exec_type'] = 'TEST_CASE'
+
             step_index = -1
             for step in test['body']:
                 if step.get('type') == 'VAR':
