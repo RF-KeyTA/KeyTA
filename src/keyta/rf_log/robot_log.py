@@ -151,6 +151,7 @@ class RobotLog:
         self.items = {
             "errors": dict(),
             "exec_type": None,
+            "failed_step": {},
             "keywords": dict(),
             "metadata": dict(),
             "test_cases": [],
@@ -200,6 +201,28 @@ class RobotLog:
 
         parent_id = parent_ids[-1]
         step_id = str(uuid.uuid4())
+
+        if step['status'] == 'FAIL':
+            if len(parent_ids) == 3:
+                test_id, sequence_id, action_id = parent_ids
+
+                if self.items['exec_type'] == 'KEYWORD':
+                    self.items['failed_step'] = {
+                        'id': action_id,
+                        'type': 'STEP'
+                    }
+
+                if self.items['exec_type'] == 'TEST_CASE':
+                    self.items['failed_step'] = {
+                        'id': sequence_id,
+                        'type': 'STEP'
+                    }
+
+            if len(parent_ids) == 2:
+                self.items['failed_step'] = {
+                    'id': step_id,
+                    'type': 'STEP'
+                }
 
         result = {
             'parent_id': parent_id,
@@ -329,6 +352,13 @@ class RobotLog:
             result['steps'].append(setup_id)
             result.update({'setup': setup})
 
+            if setup['status'] == 'FAIL':
+                self.items['failed_step'] = {
+                    'id': setup_id,
+                    'type': 'SETUP'
+                }
+                return result
+
         if 'body' in test:
             first_step = test['body'][0]
             if first_step['name'].endswith(test['name']):
@@ -363,5 +393,11 @@ class RobotLog:
             self.items['keywords'][teardown_id] = teardown
             result['steps'].append(teardown_id)
             result.update({'teardown': teardown})
+
+            if teardown['status'] == 'FAIL':
+                self.items['failed_step'] = {
+                    'id': teardown,
+                    'type': 'TEARDOWN'
+                }
 
         return result
