@@ -1,0 +1,52 @@
+<div class="row p-2 rounded-top bg-danger">
+    <b>
+        {% if step.type == 'SETUP' %}
+        {{ "Setup failed"|translate }}
+        {% elif step.type == 'TEARDOWN' %}
+        {{ "Teardown failed"|translate }}
+        {% else %}
+        {{ "Failed step"|translate }}
+        {% endif %}
+    </b>
+</div>
+<div class="row p-3 bg-danger-subtle">
+    <div class="col-4">
+        {{ step.name }}
+        {% if step.type == 'STEP' %}
+        <a href="#" id="goto-step">🎯</a>
+        {% endif %}
+    </div>
+    {% if step.args|length > 3 %}
+        <div class="col">
+            <table class="table">
+                {% for arg_name, arg in step.args.items() %}
+                    <tr><td><i style="color: gray">{{ arg_name }}</i></td><td>{{ arg }}</td></tr>
+                {% endfor %}
+            </table>
+        </div>
+    {% else %}
+        {% for arg_name, arg in step.args.items() %}
+        <div class="col">
+            <span>{{ arg }}</span>
+            <br>
+            <i style="color: gray">{{ arg_name }}</i>
+        </div>
+        {% endfor %}
+    {% endif %}
+</div>
+<div class="row p-3 rounded-bottom bg-light">
+    <div class="col" style="word-break: break-word">
+    {{ step.message }}
+    </div>
+</div>
+<script>
+    django.jQuery('#goto-step').on('click', function(e) {
+        e.preventDefault()
+        document.querySelector('a[href="#{{ "steps"|translate }}-tab"]').click()
+        let calls = document.querySelectorAll('tr[id^=calls]')
+        let steps = document.querySelectorAll('tr[id^=steps]')
+        let row = [...calls, ...steps][{{ step.index }}]
+        row.style.backgroundColor = '#ffcccc'
+        new Promise(r => setTimeout(r, 300)).then(() => row.scrollIntoView())
+    })
+</script>

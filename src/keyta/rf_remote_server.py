@@ -9,12 +9,13 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from zlib import crc32
 
+from jinja2 import Environment, PackageLoader
 from robot.libdoc import libdoc_cli
 from robot.run import run
 from robot.running import TestSuite
 
 from .IProcess import IProcess
-from .rf_log import RobotLog, save_log
+from .rf_log import RobotLog, save_log, translate
 
 
 tmp_dir = Path(tempfile.gettempdir()) / 'KeyTA'
@@ -92,6 +93,10 @@ def robot_run(testsuite_name: str, testsuite: str):
     log_data = RobotLog(testsuite_name).simplify_output(get_keywords(robot_file), output_file)
     log_file = save_log(testsuite_fs_name, log_data, output_dir)
 
+    # Save log data to a temp file in order to access it from another thread
+    with open(tmp_dir / 'simple_output.json', 'w', encoding='utf-8') as file:
+        file.write(json.dumps(log_data))
+
     return {
         'log': str(log_file.relative_to(tmp_dir)),
         'result': 'PASS' if result == 0 else 'FAIL'
@@ -124,6 +129,22 @@ class RequestHandler(SimpleHTTPRequestHandler):
         super().__init__(request, client_address, server_class, directory=str(Path(__file__).resolve().parent))
 
     def do_GET(self):
+        if self.path.endswith('exec-error'):
+            with open(tmp_dir / 'simple_output.json', encoding='utf-8') as file:
+                log_data = json.loads(file.read())
+                failed_step = log_data['failed_step']
+                failed_step.update(**log_data['keywords'][failed_step['id']])
+                env = Environment(loader=PackageLoader('keyta.rf_log', package_path='templates'))
+                env.filters['translate'] = translate
+                template = env.get_template('failed_step.jinja.html')
+                response = template.render({'step': failed_step}).encode('utf-8')
+                self.send_response(HTTPStatus.OK)
+                self.send_header("Access-Control-Allow-Origin", '*')
+                self.send_header("Content-type", 'text/html')
+                self.send_header("Content-Length", str(len(response)))
+                self.end_headers()
+                self.wfile.write(response)
+
         if self.path.endswith('.html') or self.path.endswith('.jpg') or self.path.endswith('.png') or self.path.endswith('.robot'):
             path = Path(str(tmp_dir) + self.path)
 

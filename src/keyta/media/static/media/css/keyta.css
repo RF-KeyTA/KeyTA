@@ -5,6 +5,10 @@ html {
     --keyta-light-color: rgba(0, 159, 227, 0.09);
 }
 
+.bg-danger-subtle {
+    background-color: #f8d7da;
+}
+
 .fa-solid {
     color: var(--keyta-secondary-color);
 }
