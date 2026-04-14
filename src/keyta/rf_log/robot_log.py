@@ -179,7 +179,7 @@ class RobotLog:
 
         return self.items
 
-    def simplify_step(self, step: dict, parent_id: str, assign: dict|None = None, level=0) -> dict:
+    def simplify_step(self, step_index: int, step: dict, parent_ids: list[str], assign: dict|None = None, level=0) -> dict:
         name = step['name']
         kind = 'ROBOT_KW'
 
@@ -193,11 +193,13 @@ class RobotLog:
         if 'owner' in step:
             name = step['owner'] + '.' + step['name']
 
+        parent_id = parent_ids[-1]
         step_id = str(uuid.uuid4())
 
         result = {
             'parent_id': parent_id,
             'id': step_id,
+            'index': step_index,
             'name': format_kw_name(name),
             'kind': kind,
             'status': step['status'],
@@ -216,7 +218,9 @@ class RobotLog:
             messages.add(message)
 
         if 'body' in step:
+            substep_index = -1
             for item in step['body']:
+                substep_index += 1
                 if item.get('type') == 'MESSAGE' and not item.get('html'):
                     message = format_newline(str(escape(item['message'])))
                     if step['status'] == 'FAIL':
@@ -231,14 +235,13 @@ class RobotLog:
                 if item.get('type') == 'IF/ELSE ROOT':
                     for branch in item['body']:
                         for branch_step in branch['body']:
-                            branch_step_id = str(uuid.uuid4())
-                            simple_step = self.simplify_step(branch_step, branch_step_id, level=level + 1)
+                            simple_step = self.simplify_step(substep_index, branch_step, parent_ids + [step_id], level=level + 1)
                             simple_step_id = simple_step['id']
                             result['steps'].append(simple_step_id)
                             self.items['keywords'][simple_step_id] = simple_step
 
                 if not 'type' in item:
-                    simple_step = self.simplify_step(item, step_id, level=level + 1)
+                    simple_step = self.simplify_step(substep_index, item, parent_ids + [step_id], level=level + 1)
                     simple_step_id = simple_step['id']
                     result['steps'].append(simple_step_id)
                     self.items['keywords'][simple_step_id] = simple_step
@@ -315,33 +318,36 @@ class RobotLog:
         }
 
         if 'setup' in test:
-            setup = self.simplify_step(test['setup'], test_id)
+            setup = self.simplify_step(-1, test['setup'], [test_id])
             setup_id = setup['id']
             self.items['keywords'][setup_id] = setup
             result['steps'].append(setup_id)
             result.update({'setup': setup})
 
         if 'body' in test:
+            step_index = -1
             for step in test['body']:
                 if step.get('type') == 'VAR':
                     continue
 
                 if 'name' in step:
-                    simple_step = self.simplify_step(step, test_id)
+                    step_index += 1
+                    simple_step = self.simplify_step(step_index, step, [test_id])
                     step_id = simple_step['id']
                     result['steps'].append(step_id)
                     self.items['keywords'][step_id] = simple_step
 
                 if step.get('type') == 'FOR':
+                    step_index += 1
                     for iter in step['body']:
                         for step in iter['body']:
-                            simple_step = self.simplify_step(step, test_id, assign=iter['assign'])
+                            simple_step = self.simplify_step(step_index, step, [test_id], assign=iter['assign'])
                             step_id = simple_step['id']
                             result['steps'].append(step_id)
                             self.items['keywords'][step_id] = simple_step
 
         if 'teardown' in test:
-            teardown = self.simplify_step(test['teardown'], test_id)
+            teardown = self.simplify_step(-1, test['teardown'], [test_id])
             teardown_id = teardown['id']
             self.items['keywords'][teardown_id] = teardown
             result['steps'].append(teardown_id)
