@@ -138,6 +138,7 @@ class RequestHandler(SimpleHTTPRequestHandler):
             with global_storage_lock:
                 failed_step = global_storage['failed_step']
                 failed_step.update(**global_storage['keywords'][failed_step['id']])
+                failed_step['index'] = (global_storage['BEGIN_EXECUTION'] or 1) - 1 + failed_step['index']
                 env = Environment(loader=PackageLoader('keyta.rf_log', package_path='templates'))
                 env.filters['translate'] = translate
                 template = env.get_template('failed_step.jinja.html')
