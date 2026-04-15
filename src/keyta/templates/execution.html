@@ -16,6 +16,16 @@
     const error_message = document.querySelector("#error-message")
     const info_message = document.querySelector("#info-message")
     const log_icon = document.getElementById("log-icon")
+    const log_link = document.querySelector("#log-icon > a")
+    if (log_link) {
+        log_link.addEventListener('click', function(event) {
+            event.preventDefault();
+
+            fetch(robot_server)
+            .then(_ => window.open(log_link.getAttribute("href"), '_blank'))
+            .catch(e => {console.log(e); error(errors.LOG_NO_KEYTA)})
+        });
+    }
     const result_icon = document.getElementById("result-icon")
 
     const error = (message) => {
@@ -28,9 +38,17 @@
         $(info_message).show()
     }
 
-    const get_csrf_token = () => fetch(csrf_token_url)
-    .then(res => res.text())
-    .catch(_ => error(errors.ROBOT_ERROR))
+    const start_animation = (start_button) => {
+        const start_icon = start_button.querySelector("i")
+        start_icon.classList.replace("fa-circle-play", "fa-arrows-rotate")
+        start_icon.style.animation = "spin 3s linear infinite"
+    }
+
+    const stop_animation = (start_button) => {
+        const start_icon = start_button.querySelector("i")
+        start_icon.classList.replace("fa-arrows-rotate", "fa-circle-play")
+        start_icon.style.animation = null
+    }
 
     const save_result = (after_save_result, csrf_token, exec_url, data, start_button) =>
         fetch(exec_url,
@@ -45,11 +63,6 @@
 
     const robot_run = (csrf_token, data, exec_url, start_button) => {
         info("{% translate 'Robot Framework wird ausgeführt.' %}")
-        const start_icon = start_button.querySelector("i")
-        start_icon.classList.replace("fa-circle-play", "fa-arrows-rotate")
-        start_icon.style.animation = "spin 3s linear infinite"
-        $(log_icon).html('')
-        $(result_icon).html('')
 
         return fetch(
             robot_server + "/robot_run",
@@ -62,8 +75,7 @@
             .catch(e => {console.log(e); error(errors.ROBOT_ERROR)})
             .finally(_ => {
                 $(info_message).hide()
-                start_icon.classList.replace("fa-arrows-rotate", "fa-circle-play")
-                start_icon.style.animation = null
+                stop_animation(start_button)
             })
     }
 
@@ -86,22 +98,16 @@
         .catch(e => {console.log(e); error(errors.ROBOT_ERROR)})
     }
 
+    const get_csrf_token = () =>
+        fetch(csrf_token_url)
+        .then(res => res.text())
+        .catch(_ => error(errors.ROBOT_ERROR))
+
     const start = (start_button, execution_state) => {
         fetch(robot_server)
         .then(_ => get_csrf_token())
         .then(csrf_token => to_robot(csrf_token, start_button, execution_state))
-        .catch(e => {console.log(e); error(errors.EXEC_NO_KEYTA)})
-    }
-
-    const log_button = document.getElementById("log-btn")
-    if (log_button) {
-        log_button.addEventListener('click', function(event) {
-            event.preventDefault();
-
-            fetch(robot_server)
-            .then(_ => window.open(log_button.getAttribute("href"), '_blank'))
-            .catch(e => {console.log(e); error(errors.LOG_NO_KEYTA)})
-        });
+        .catch(e => {console.log(e); error(errors.EXEC_NO_KEYTA); stop_animation(start_button)})
     }
 
     const start_buttons = document.querySelectorAll('a[id^="exec-btn"]')
@@ -110,10 +116,14 @@
         start_button.addEventListener('click', function(event) {
             event.preventDefault();
 
-            start_button.closest('tr').style.backgroundColor = ''
+            $(error_message).hide()
             $('#exec-error').html('')
-            $('tr[id^=steps]').each((index, tr) => (tr.style.backgroundColor = '#fff'))
-            $('tr[id^=calls]').each((index, tr) => (tr.style.backgroundColor = '#fff'))
+            $(log_icon).html('-')
+            $(result_icon).html('-')
+            start_button.closest('tr').style.backgroundColor = ''
+            start_animation(start_button)
+            $('tr[id^=steps]').each((index, tr) => (tr.style.backgroundColor = ''))
+            $('tr[id^=calls]').each((index, tr) => (tr.style.backgroundColor = ''))
 
             const execution_state = {
                 'BEGIN_EXECUTION': null,
@@ -136,7 +146,6 @@
             })
 
             start(start_button, execution_state)
-            $(error_message).hide()
         });
     }
 </script>
