@@ -110,7 +110,7 @@
 </div>
 
 <script>
-    function after_save_result(exec_url, robot_server, data, start_button) {
+    function after_save_result(robot_server, data, start_button) {
         if (data.result === 'FAIL') {
             htmx.trigger('body', 'show-exec-error')
         }
