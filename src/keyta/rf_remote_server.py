@@ -79,7 +79,7 @@ def get_keywords(robot_file: Path) -> list:
     return keywords
 
 
-def robot_run(testsuite_name: str, testsuite: str):
+def robot_run(testsuite_name: str, testsuite: str, execution_state: dict):
     testsuite_fs_name = format_filename(testsuite_name)
     dest_dir = tmp_dir / testsuite_fs_name
     robot_file = export_robot_file(testsuite, dest_dir)
@@ -101,6 +101,7 @@ def robot_run(testsuite_name: str, testsuite: str):
     }
 
     with global_storage_lock:
+        global_storage.update(**execution_state)
         global_storage.update(**log_data)
         global_storage.update(**robot_result)
 

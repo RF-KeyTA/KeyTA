@@ -61,14 +61,14 @@
         .then(_ => after_save_result(robot_server, data, start_button))
         .catch(e => {console.log(e); error(errors.ROBOT_ERROR); stop_animation(start_button)})
 
-    const robot_run = (csrf_token, data, exec_url, start_button) => {
+    const robot_run = (csrf_token, data, exec_url, execution_state, start_button) => {
         info("{% translate 'Robot Framework wird ausgeführt.' %}")
 
         return fetch(
             robot_server + "/robot_run",
             {
                 method: "POST",
-                body: JSON.stringify(data)
+                body: JSON.stringify({...data, execution_state: execution_state})
             })
             .then(res => res.json())
             .then(json => save_result(after_save_result, csrf_token, exec_url, json, start_button))
@@ -93,7 +93,7 @@
         .then(res => res.json())
         .then(json => {
             if (json.error) {error(json.error); stop_animation(start_button)}
-            else robot_run(csrf_token, json, exec_url, start_button)
+            else robot_run(csrf_token, json, exec_url, execution_state, start_button)
         })
         .catch(e => {console.log(e); error(errors.ROBOT_ERROR); stop_animation(start_button)})
     }
