@@ -92,7 +92,7 @@
         )
         .then(res => res.json())
         .then(json => {
-            if (json.error) error(json.error)
+            if (json.error) {error(json.error); stop_animation(start_button)}
             else robot_run(csrf_token, json, exec_url, start_button)
         })
         .catch(e => {console.log(e); error(errors.ROBOT_ERROR)})
