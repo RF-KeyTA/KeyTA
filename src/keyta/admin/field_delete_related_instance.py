@@ -34,7 +34,7 @@ class DeleteRelatedField:
                     )
                 ),
                 attrs={
-                    'onclick': "window.onbeforeunload = function(e) {localStorage.setItem('scrollpos', window.scrollY)}"
+                    'onclick': 'window.onbeforeunload = function(e) {localStorage.setItem("scrollpos", window.scrollY)}'
                 }
             )
 
