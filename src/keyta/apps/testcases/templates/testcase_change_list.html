@@ -21,7 +21,7 @@
 
 {% block execution %}
 <script>
-    function after_save_result(exec_url, robot_server, data, start_button) {
+    function after_save_result(robot_server, data, start_button) {
         const table_cell = start_button.closest('td')
         const table_row = start_button.closest('tr')
 

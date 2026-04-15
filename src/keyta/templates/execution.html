@@ -58,7 +58,7 @@
                 headers: {'X-CSRFToken': csrf_token, 'Content-Type': 'application/json'}
             }
         )
-        .then(_ => after_save_result(exec_url, robot_server, data, start_button))
+        .then(_ => after_save_result(robot_server, data, start_button))
         .catch(e => {console.log(e); error(errors.ROBOT_ERROR)})
 
     const robot_run = (csrf_token, data, exec_url, start_button) => {
