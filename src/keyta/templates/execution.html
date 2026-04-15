@@ -59,7 +59,7 @@
             }
         )
         .then(_ => after_save_result(robot_server, data, start_button))
-        .catch(e => {console.log(e); error(errors.ROBOT_ERROR)})
+        .catch(e => {console.log(e); error(errors.ROBOT_ERROR); stop_animation(start_button)})
 
     const robot_run = (csrf_token, data, exec_url, start_button) => {
         info("{% translate 'Robot Framework wird ausgeführt.' %}")
@@ -95,7 +95,7 @@
             if (json.error) {error(json.error); stop_animation(start_button)}
             else robot_run(csrf_token, json, exec_url, start_button)
         })
-        .catch(e => {console.log(e); error(errors.ROBOT_ERROR)})
+        .catch(e => {console.log(e); error(errors.ROBOT_ERROR); stop_animation(start_button)})
     }
 
     const get_csrf_token = () =>
