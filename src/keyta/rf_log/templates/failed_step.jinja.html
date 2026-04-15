@@ -1,15 +1,14 @@
-<div class="row p-2 rounded-top bg-danger">
-    <b>
-        {% if step.type == 'SETUP' %}
-        {{ "Setup failed"|translate }}
-        {% elif step.type == 'TEARDOWN' %}
-        {{ "Teardown failed"|translate }}
-        {% else %}
-        {{ "Failed step"|translate }}
-        {% endif %}
-    </b>
+<div class="alert alert-danger" style="margin-bottom: 0; border-bottom-right-radius: 0; border-bottom-left-radius: 0">
+    <i class="icon fa fa-exclamation-triangle"></i>
+    {% if step.type == 'SETUP' %}
+    {{ "Setup failed"|translate }}
+    {% elif step.type == 'TEARDOWN' %}
+    {{ "Teardown failed"|translate }}
+    {% else %}
+    {{ "Failed step"|translate }}
+    {% endif %}
 </div>
-<div class="row p-3 bg-danger-subtle">
+<div class="row p-3 bg-danger-subtle" style="margin-left: 0; margin-right: 0">
     <div class="col-4">
         {{ step.name }}
         {% if step.type == 'STEP' %}
@@ -34,7 +33,7 @@
         {% endfor %}
     {% endif %}
 </div>
-<div class="row p-3 rounded-bottom bg-light">
+<div class="row p-3 rounded-bottom bg-light" style="margin-left: 0; margin-right: 0">
     <div class="col" style="word-break: break-word">
     {{ step.message }}
     </div>
