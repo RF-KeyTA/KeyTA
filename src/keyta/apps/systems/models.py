@@ -20,6 +20,7 @@ class System(AbstractBaseModel):
         on_delete=models.SET_NULL,
         blank=True,
         null=True,
+        related_name='attached_systems',
         verbose_name=_('Anbindung an laufendes System')
     )
     library = models.ForeignKey(
