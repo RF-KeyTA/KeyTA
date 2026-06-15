@@ -68,6 +68,11 @@ class KeywordExecution(Execution):
         
         return sequence_calls | action_calls | setup_teardown_calls
 
+    def get_rf_metadata(self, user: AbstractUser):
+        return {
+            '_EXEC_TYPE': 'KEYWORD'
+        }
+
     def get_rf_testsuite(self, user: AbstractUser, execution_state: dict, include_doc: bool) -> RFTestSuite:
         keyword: Keyword = self.keyword
         keywords = {

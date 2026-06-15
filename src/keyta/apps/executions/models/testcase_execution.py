@@ -48,6 +48,7 @@ class TestCaseExecution(Execution):
     def get_rf_metadata(self, user: AbstractUser):
         if testdata := self.get_testdata(user):
             return {
+                '_EXEC_TYPE': 'TEST_CASE',
                 _('Testdaten'): testdata.name
             }
 
