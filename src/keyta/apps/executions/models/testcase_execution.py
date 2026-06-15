@@ -45,6 +45,11 @@ class TestCaseExecution(Execution):
         
         return setup_teardown_calls | test_calls | sequence_calls | action_calls
 
+    def get_rf_metadata(self, user: AbstractUser):
+        return {
+            '_EXEC_TYPE': 'TEST_CASE'
+        }
+
     def get_rf_testsuite(self, get_variable_value, user: AbstractUser, execution_state: dict, include_doc: bool) -> RFTestSuite:
         sequence_pks = self.sequence_ids(self.testcase.executable_steps(execution_state))
 
