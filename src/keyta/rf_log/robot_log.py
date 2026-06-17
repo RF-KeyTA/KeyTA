@@ -173,17 +173,6 @@ class RobotLog:
         with open(output_json, encoding='utf-8') as file:
             output = json.load(file, object_pairs_hook=parse_object)
 
-        for error in output['errors']:
-            error['message'] = format_newline(str(escape(error['message'])))
-            message = error['message']
-            self.items['errors'][message] = {
-                'id': str(uuid.uuid4())
-            } | error
-
-        for test in output['suite']['tests']:
-            simple_test = self.simplify_test(test)
-            self.items['test_cases'].append(simple_test)
-
         if metadata := output['suite'].get('metadata'):
             self.items['exec_type'] = metadata.get('_EXEC_TYPE')
             self.items['metadata'] = {
@@ -191,6 +180,23 @@ class RobotLog:
                 for name, value in metadata.items()
                 if not name.startswith('_')
             }
+
+        for test in output['suite']['tests']:
+            simple_test = self.simplify_test(test)
+            self.items['test_cases'].append(simple_test)
+
+            if message := test.get('message'):
+                message = format_newline(str(escape(
+                    message
+                    .replace('Setup failed:\n', '')
+                    .replace('Teardown failed:\n', '')
+                )))
+                error_id = str(uuid.uuid4())
+                self.items['errors'][simple_test['id']] = {
+                    'id': error_id,
+                    'level': 'ERROR',
+                    'message': message
+                }
 
         return self.items
 
@@ -253,6 +259,14 @@ class RobotLog:
             message = format_newline(str(escape(step['message'])))
             result['message'] = message
             messages.add(message)
+
+            if step['status'] == 'FAIL':
+                error_id = str(uuid.uuid4())
+                self.items['errors'][step_id] = {
+                    'id': error_id,
+                    'level': 'ERROR',
+                    'message': message
+                }
 
         if 'body' in step:
             substep_index = -1
