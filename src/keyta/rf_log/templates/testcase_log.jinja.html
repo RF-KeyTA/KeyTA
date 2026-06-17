@@ -115,18 +115,19 @@
 <div class="tab-content mt-3" id="nav-tabContent">
 {% for testcase in rf.test_cases %}
     <div class="tab-pane fade container p-3" id="{{ testcase.id }}">
-        {% for error in rf.errors.values() %}
+        {% if testcase.id in rf.errors %}
+        {% set error = rf.errors[testcase.id] %}
         <div class="container border border-danger rounded p-3 mb-4">
             <div class="col">
                 <span class="badge {% if error.level == 'ERROR' %}text-bg-danger{% elif error.level == 'INFO' %}text-bg-info{% endif %}">{{ error.level }}</span>
                 {% if 'Setup failed' in error.message or 'teardown failed' in error.message %}
-                <a href="#{{ error.id }}">{{ error.message }}</a>
+                <a href="#{{ error.id }}">{{ error.message.split('<br>')[:2]|join(' ') }}</a>
                 {% else %}
                 <a href="#{{ error.id }}">{{ error.message.split('<br>')|first }}</a>
                 {% endif %}
             </div>
         </div>
-        {% endfor %}
+        {% endif %}
         <h3>
             <div class="d-flex justify-content-between">
                 <div>
@@ -145,7 +146,7 @@
 
         {% for step_id in testcase.steps %}
         {% set step = rf.keywords[step_id] %}
-        <div class="row p-3 rounded-top {% if step.status == 'PASS' %}bg-success-subtle{% elif step.status == 'FAIL' %}bg-danger-subtle{% else %}bg-light{% endif %}" {% if step.message in rf.errors %}id="{{ rf.errors[step.message].id }}" style="scroll-margin-top: 80px;"{% endif %}>
+        <div class="row p-3 rounded-top {% if step.status == 'PASS' %}bg-success-subtle{% elif step.status == 'FAIL' %}bg-danger-subtle{% else %}bg-light{% endif %}" {% if testcase.id in rf.errors and rf.errors[testcase.id].message == step.message %}id="{{ rf.errors[testcase.id].id }}" style="scroll-margin-top: 80px;"{% endif %}>
             <div class="col-4">
             {% if step.url and step.status != 'NOT RUN' %}
                 <a href="#" class="text-decoration-none" onclick="clickNavLink('#{{ step_id }}')">{{ step.name }}</a>
@@ -211,12 +212,12 @@
     {% if keyword.kind != 'ROBOT_KW' and keyword.status != 'NOT RUN' %}
     <div class="tab-pane fade container p-3" id="{{ keyword.id }}">
         <a href="#" onclick="clickNavLink('#{{ keyword.parent_id }}')">{{ icon.go_back }}</a>
-        {% if keyword.message in rf.errors %}
-            {% set error = rf.errors[keyword.message] %}
+        {% if keyword.id in rf.errors and rf.errors[keyword.id].message == keyword.message %}
+            {% set error = rf.errors[keyword.id] %}
             <div class="container border border-danger rounded p-3 mb-4">
                 <div class="col">
                     <span class="badge text-bg-danger">{{ keyword.status }}</span>
-                    <a href="#{{ keyword.id }}{{ error.id }}">{{ error.message.split('<br>')|first }}</a>
+                    <a href="#{{ error.id }}">{{ error.message.split('<br>')|first }}</a>
                 </div>
             </div>
         {% endif %}
@@ -238,7 +239,7 @@
 
         {% for step_id in keyword.steps %}
         {% set step = rf.keywords[step_id] %}
-        <div class="row p-3 rounded-top {% if step.status == 'PASS' %}bg-success-subtle{% elif step.status == 'FAIL' %}bg-danger-subtle{% else %}bg-light{% endif %}" {% if step.message in rf.errors %}id="{{ keyword.id }}{{ rf.errors[step.message].id }}" style="scroll-margin-top: 80px;"{% endif %}>
+        <div class="row p-3 rounded-top {% if step.status == 'PASS' %}bg-success-subtle{% elif step.status == 'FAIL' %}bg-danger-subtle{% else %}bg-light{% endif %}" {% if keyword.id in rf.errors and rf.errors[keyword.id].message == step.message%}id="{{ rf.errors[keyword.id].id }}" style="scroll-margin-top: 80px;"{% endif %}>
             <div class="col-3" style="word-break: break-all">
             {% if step.url and step.status != 'NOT RUN' %}
                 <a href="#" class="text-decoration-none" onclick="clickNavLink('#{{ step_id }}')">{{ step.name }}</a>
