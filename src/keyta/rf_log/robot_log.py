@@ -368,6 +368,9 @@ class RobotLog:
             'steps': []
         }
 
+        if 'doc' in test and test['doc'].startswith('http'):
+            result.update({'url': test['doc']})
+
         if 'setup' in test:
             setup = self.simplify_step(-1, test['setup'], [test_id])
             setup_id = setup['id']

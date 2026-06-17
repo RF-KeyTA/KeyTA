@@ -151,6 +151,9 @@
             {% if step.url and step.status != 'NOT RUN' %}
                 <a href="#" class="text-decoration-none" onclick="clickNavLink('#{{ step_id }}')">{{ step.name }}</a>
                 <a href="{{ step.url }}" target="_blank" class="text-decoration-none" style="margin-left: 3px">{{ icon.go_to }}</a>
+                {% if step.status == 'FAIL' and step.index > -1 %}
+                <a href="{{ testcase.url }}?failed_step={{ step.index }}" target="_blank" class="text-decoration-none">🎯</a>
+                {% endif %}
             {% else %}
                 <p class="pt-2">{{ step.name }}</p>
             {% endif %}
