@@ -7,7 +7,7 @@ from keyta.admin.base_admin import BaseAdmin
 from keyta.apps.libraries.admin import LibraryImportInline
 from keyta.apps.resources.admin import ResourceImportsInline
 
-from ..models import Execution, UserExecution
+from ..models import Execution
 from .setup_teardown_inline import SetupInline, TeardownInline
 
 
@@ -19,10 +19,6 @@ class ExecutionAdmin(BaseAdmin):
 
     def change_view(self, request: HttpRequest, object_id, form_url="", extra_context=None):
         execution: Execution = self.model.objects.get(id=object_id)
-        user_exec, _ = UserExecution.objects.get_or_create(
-            execution=execution,
-            user=request.user
-        )
 
         if 'log_icon' in request.GET:
             return HttpResponse(execution.get_log_icon(settings.RF_SERVER, request.user))
