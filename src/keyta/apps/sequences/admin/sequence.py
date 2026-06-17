@@ -15,6 +15,7 @@ from model_clone import CloneModelAdminMixin
 from keyta.admin.base_admin import BaseQuickAddAdmin
 from keyta.admin.list_filters import SystemListFilter
 from keyta.apps.executions.admin import KeywordExecutionInline
+from keyta.apps.executions.models import UserExecution
 from keyta.apps.keywords.admin import (
     ParametersInline,
     ReturnValueInline,
@@ -90,6 +91,10 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
 
     def change_view(self, request: HttpRequest, object_id, form_url="", extra_context=None):
         sequence = Sequence.objects.get(id=object_id)
+        UserExecution.objects.get_or_create(
+            execution=sequence.execution,
+            user=request.user
+        )
         steps_tab = '#%s-tab' % _('Schritte').lower()
 
         if 'steps_tab' in request.GET:

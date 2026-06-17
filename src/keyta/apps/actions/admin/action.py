@@ -10,6 +10,7 @@ from model_clone import CloneModelAdminMixin
 
 from keyta.admin.base_admin import BaseQuickAddAdmin
 from keyta.apps.executions.admin import KeywordExecutionInline
+from keyta.apps.executions.models import UserExecution
 from keyta.apps.keywords.admin import (
     ParametersInline,
     ReturnValueInline,
@@ -79,6 +80,11 @@ class ActionAdmin(ActionAdminMixin, CloneModelAdminMixin, WindowKeywordAdmin):
         return super().autocomplete_name_queryset(name, request).filter(windows__isnull=True)
 
     def change_view(self, request, object_id, form_url="", extra_context=None):
+        keyword = self.model.objects.get(pk=object_id)
+        UserExecution.objects.get_or_create(
+            execution=keyword.execution,
+            user=request.user
+        )
         steps_tab = '#%s-tab' % _('Schritte').lower()
 
         if 'steps_tab' in request.GET:

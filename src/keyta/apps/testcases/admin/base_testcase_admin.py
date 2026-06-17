@@ -17,7 +17,7 @@ from keyta.admin.base_admin import BaseAdmin
 from keyta.admin.field_documentation import DocumentationField
 from keyta.admin.list_filters import SystemListFilter
 from keyta.apps.executions.admin import ExecutionInline
-from keyta.apps.executions.models import TestCaseExecution
+from keyta.apps.executions.models import TestCaseExecution, UserExecution
 from keyta.apps.systems.models import System
 from keyta.apps.variables.models import VariableValue
 from keyta.rf_export.rfgenerator import gen_testsuite
@@ -116,6 +116,15 @@ class BaseTestCaseAdmin(DocumentationField, CloneModelAdminMixin, SortableAdminB
         TestStepsInline,
         LocalExecution
     ]
+
+    def change_view(self, request, object_id, form_url="", extra_context=None):
+        testcase: TestCase = self.model.objects.get(id=object_id)
+        user_exec, _ = UserExecution.objects.get_or_create(
+            execution=testcase.execution,
+            user=request.user
+        )
+
+        return super().change_view(request, object_id, form_url, extra_context)
 
     def formfield_for_dbfield(self, db_field, request, **kwargs):
         field = super().formfield_for_dbfield(db_field, request, **kwargs)
