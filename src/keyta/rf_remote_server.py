@@ -94,6 +94,10 @@ def robot_run(testsuite_name: str, testsuite: str, execution_state: dict):
 
     result = run(str(robot_file), **robot_kwargs, stdout=io.StringIO(), stderr=io.StringIO())
     log_data = RobotLog(testsuite_name).simplify_output(get_keywords(robot_file), output_file)
+
+    with open(output_dir / 'simple_output.json', 'w', encoding='utf-8') as file_handle:
+        file_handle.write(json.dumps(log_data))
+
     log_file = save_log(testsuite_fs_name, log_data, output_dir)
     robot_result = {
         'log': str(log_file.relative_to(tmp_dir)),
