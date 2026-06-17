@@ -78,6 +78,13 @@ class Execution(CloneMixin, AbstractBaseModel):
         return dependencies
 
     def get_log_icon(self, server_url: str, user: AbstractUser):
+        attrs = {
+            'hx-get': 'http://127.0.0.1:1471/log-icon',
+            'hx-request': '{"noHeaders": true}',
+            'hx-swap': 'innerHTML',
+            'hx-trigger': 'update-log-icon from:body',
+            'id': 'log-icon'
+        }
         user_exec = self.user_execs.get(user=user)
 
         if user_exec.result:
@@ -86,13 +93,7 @@ class Execution(CloneMixin, AbstractBaseModel):
 
             return html_to_string(
                 'span',
-                {
-                    'hx-get': 'http://127.0.0.1:1471/log-icon',
-                    'hx-request': '{"noHeaders": true}',
-                    'hx-swap': 'innerHTML',
-                    'hx-trigger': 'update-log-icon from:body',
-                    'id': 'log-icon'
-                },
+                attrs,
                 link(
                     url,
                     title,
@@ -100,9 +101,20 @@ class Execution(CloneMixin, AbstractBaseModel):
                 )
             )
 
-        return '-'
+        return html_to_string(
+            'span',
+            attrs,
+            '-'
+        )
 
     def get_result_icon(self, user: AbstractUser):
+        attrs = {
+            'hx-get': 'http://127.0.0.1:1471/result-icon',
+            'hx-request': '{"noHeaders": true}',
+            'hx-swap': 'innerHTML',
+            'hx-trigger': 'update-result-icon from:body',
+            'id': 'result-icon'
+        }
         user_exec = self.user_execs.get(user=user)
 
         if result := user_exec.result:
@@ -122,17 +134,15 @@ class Execution(CloneMixin, AbstractBaseModel):
 
             return html_to_string(
                 'span',
-                {
-                    'hx-get': 'http://127.0.0.1:1471/result-icon',
-                    'hx-request': '{"noHeaders": true}',
-                    'hx-swap': 'innerHTML',
-                    'hx-trigger': 'update-result-icon from:body',
-                    'id': 'result-icon'
-                },
+                attrs,
                 str(icon)
             )
 
-        return '-'
+        return html_to_string(
+            'span',
+            attrs,
+            '-'
+        )
 
     def get_rf_metadata(self, user: AbstractUser):
         return {}
