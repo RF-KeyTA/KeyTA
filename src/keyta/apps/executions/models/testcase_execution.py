@@ -10,6 +10,7 @@ from keyta.rf_export.testsuite import RFTestSuite
 
 from ..errors import ValidationError
 from .execution import Execution, ExecutionType
+from .user_execution import UserExecution
 
 
 class TestCaseExecution(Execution):
@@ -103,7 +104,10 @@ class TestCaseExecution(Execution):
         }
 
     def get_testdata(self, user: AbstractUser) -> Optional[TestData]:
-        user_execution = self.user_execs.get(user=user)
+        user_execution, _ = UserExecution.objects.get_or_create(
+            execution=self,
+            user=user
+        )
         return user_execution.testdata
 
     def save(
