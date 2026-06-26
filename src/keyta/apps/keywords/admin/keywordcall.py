@@ -40,46 +40,45 @@ class KeywordCallAdmin(UpdateIconHtmx, BaseAdmin):
     change_form_template = 'keywordcall_change_form.html'
 
     def change_view(self, request, object_id, form_url="", extra_context=None):
-        kw_call = KeywordCall.objects.get(pk=object_id)
+        if kw_call := KeywordCall.objects.filter(pk=object_id).first():
+            if request.GET.get('update-icon'):
+                return self.update_icon(request, kw_call)
 
-        if request.GET.get('update-icon'):
-            return self.update_icon(request, kw_call)
+            kw_call.update_parameter_values()
 
-        kw_call.update_parameter_values()
+            if param_position := request.GET.get('update-param'):
+                if param := kw_call.get_parameter(int(param_position)):
+                    return HttpResponse(repr_param(param))
 
-        if param_position := request.GET.get('update-param'):
-            if param := kw_call.get_parameter(int(param_position)):
-                return HttpResponse(repr_param(param))
+                return HttpResponse('')
 
-            return HttpResponse('')
+            if kw_call.execution:
+                if kw_call.type == KeywordCallType.KEYWORD_EXECUTION:
+                    execution_kwcall = ExecutionKeywordCall.objects.get(id=kw_call.pk)
+                    return HttpResponseRedirect(execution_kwcall.get_admin_url() + '?' + url_query_parameters(request.GET))
 
-        if kw_call.execution:
-            if kw_call.type == KeywordCallType.KEYWORD_EXECUTION:
-                execution_kwcall = ExecutionKeywordCall.objects.get(id=kw_call.pk)
-                return HttpResponseRedirect(execution_kwcall.get_admin_url() + '?' + url_query_parameters(request.GET))
+                if kw_call.type == TestSetupTeardown.TEST_SETUP:
+                    test_setup = Setup.objects.get(id=kw_call.pk)
+                    return HttpResponseRedirect(test_setup.get_admin_url() + '?' + url_query_parameters(request.GET))
 
-            if kw_call.type == TestSetupTeardown.TEST_SETUP:
-                test_setup = Setup.objects.get(id=kw_call.pk)
-                return HttpResponseRedirect(test_setup.get_admin_url() + '?' + url_query_parameters(request.GET))
+                if kw_call.type == TestSetupTeardown.TEST_TEARDOWN:
+                    test_teardown = Teardown.objects.get(id=kw_call.pk)
+                    return HttpResponseRedirect(test_teardown.get_admin_url() + '?' + url_query_parameters(request.GET))
 
-            if kw_call.type == TestSetupTeardown.TEST_TEARDOWN:
-                test_teardown = Teardown.objects.get(id=kw_call.pk)
-                return HttpResponseRedirect(test_teardown.get_admin_url() + '?' + url_query_parameters(request.GET))
+            if kw_call.from_keyword:
+                if kw_call.from_keyword.is_action:
+                    library_kw_call = ActionStep.objects.get(id=kw_call.pk)
+                    # Do not forward the URL params of the current request. It breaks the conditions inline.
+                    return HttpResponseRedirect(library_kw_call.get_admin_url())
 
-        if kw_call.from_keyword:
-            if kw_call.from_keyword.is_action:
-                library_kw_call = ActionStep.objects.get(id=kw_call.pk)
-                # Do not forward the URL params of the current request. It breaks the conditions inline.
-                return HttpResponseRedirect(library_kw_call.get_admin_url())
+                if kw_call.from_keyword.is_sequence:
+                    sequence_step = SequenceStep.objects.get(pk=kw_call.pk)
+                    # Do not forward the URL params of the current request. It breaks the conditions inline.
+                    return HttpResponseRedirect(sequence_step.get_admin_url())
 
-            if kw_call.from_keyword.is_sequence:
-                sequence_step = SequenceStep.objects.get(pk=kw_call.pk)
-                # Do not forward the URL params of the current request. It breaks the conditions inline.
-                return HttpResponseRedirect(sequence_step.get_admin_url())
-
-        if kw_call.testcase:
-            test_step = TestStep.objects.get(pk=kw_call.pk)
-            return HttpResponseRedirect(test_step.get_admin_url()  + '?' + url_query_parameters(request.GET))
+            if kw_call.testcase:
+                test_step = TestStep.objects.get(pk=kw_call.pk)
+                return HttpResponseRedirect(test_step.get_admin_url()  + '?' + url_query_parameters(request.GET))
 
         return super().change_view(request, object_id, form_url, extra_context)
 
