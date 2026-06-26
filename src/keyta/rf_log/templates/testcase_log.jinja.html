@@ -162,7 +162,7 @@
                 <div class="col">
                     <table class="table">
                         {% for arg_name, arg in step.args.items() %}
-                            <tr><td><i style="color: gray">{{ arg_name }}</i></td><td>{{ arg }}</td></tr>
+                            <tr><td><i style="color: gray">{{ arg_name }}</i></td><td>{{ arg|escape|replace('    ', '&nbsp;&nbsp;&nbsp;&nbsp;') }}</td></tr>
                         {% endfor %}
                     </table>
                 </div>
@@ -255,7 +255,7 @@
                 <div class="col">
                     <table class="table">
                         {% for arg_name, arg in step.args.items() %}
-                            <tr><td><i style="color: gray">{{ arg_name }}</i></td><td>{{ arg|e }}</td></tr>
+                            <tr><td><i style="color: gray">{{ arg_name }}</i></td><td>{{ arg|escape|replace('    ', '&nbsp;&nbsp;&nbsp;&nbsp;') }}</td></tr>
                         {% endfor %}
                     </table>
                 </div>

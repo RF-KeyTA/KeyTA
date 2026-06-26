@@ -344,10 +344,10 @@ class RobotLog:
                     args[arg_name] = format_arg_value(arg_name, arg)
 
             if vararg_name:
-                args[vararg_name] = (4 * '&nbsp;').join(varargs)
+                args[vararg_name] = (4 * ' ').join(varargs)
 
             if varkwarg_name:
-                args[varkwarg_name] = (4 * '&nbsp;').join(varkwargs)
+                args[varkwarg_name] = (4 * ' ').join(varkwargs)
 
             result.update({'args': args})
 
