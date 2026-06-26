@@ -213,7 +213,7 @@
             {% endif %}
 
             {% if add %}
-                $('input:text, select').first().focus()
+                $('input:text:visible, select').first().focus()
             {% endif %}
 
             if (url.includes("/change")) {
