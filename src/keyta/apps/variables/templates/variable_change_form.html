@@ -21,6 +21,8 @@
         const selects = django.jQuery('select', row)
         const inputs = django.jQuery('input[type="text"]', row)
 
+        inputs.first().focus()
+
         if (inputs.length > 1) {
             $('a.save-row').show()
         }
