@@ -205,6 +205,7 @@
             <div class="col" style="word-break: break-all">
             <span class="badge {% if step.status == 'FAIL' %}text-bg-danger{% elif step.status == 'PASS' %}text-bg-success{% else %}text-bg-info{% endif %}">{{ step.status }}</span>
             {{ step.message }}
+            {{ rf.screenshots.get(step.id, '') }}
             </div>
         </div>
         {% endfor %}
