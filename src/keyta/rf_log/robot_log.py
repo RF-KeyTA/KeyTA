@@ -218,26 +218,20 @@ class RobotLog:
         step_id = str(uuid.uuid4())
 
         if step['status'] == 'FAIL':
-            if len(parent_ids) == 3:
-                test_id, sequence_id, action_id = parent_ids
-
+            if not self.items['failed_step']:
                 if self.items['exec_type'] == 'KEYWORD':
-                    self.items['failed_step'] = {
-                        'id': action_id,
-                        'type': 'STEP'
-                    }
+                    if len(parent_ids) == 2:
+                        self.items['failed_step'] = {
+                            'id': step_id,
+                            'type': 'STEP'
+                        }
 
                 if self.items['exec_type'] == 'TEST_CASE':
-                    self.items['failed_step'] = {
-                        'id': sequence_id,
-                        'type': 'STEP'
-                    }
-
-            if len(parent_ids) == 2:
-                self.items['failed_step'] = {
-                    'id': step_id,
-                    'type': 'STEP'
-                }
+                    if len(parent_ids) == 1:
+                        self.items['failed_step'] = {
+                            'id': step_id,
+                            'type': 'STEP'
+                        }
 
         result = {
             'parent_id': parent_id,
