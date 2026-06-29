@@ -23,6 +23,6 @@ A tutorial for using the app was [presented](https://www.youtube.com/watch?v=7gb
 
 Nach der Ausführung des Befehls `keyta-de` (bzw. `python -m keyta.de`) erscheint das KeyTA-Logo in der Taskleiste. Mit einem Klick auf das Symbol wird KeyTA im Webbrowser geöffnet.
 
-Die Verwendung der Webanwendung wird im [Tutorial](https://github.com/RF-KeyTA/KeyTA/blob/main/Tutorial.md) erklärt.
+Die Verwendung der Webanwendung wurde bei der Online RoboCon 2025 [demonstriert](https://www.youtube.com/watch?v=7gb7ECYQmgQ)!
 
 KeyTA wurde von imbus für einen Kunden entwickelt. Neue Features können bei imbus via E-Mail (testautomatisierung at imbus de) bestellt werden.
