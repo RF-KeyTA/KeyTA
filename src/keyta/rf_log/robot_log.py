@@ -158,6 +158,7 @@ class RobotLog:
             "failed_step": {},
             "keywords": dict(),
             "metadata": dict(),
+            "screenshots": dict(),
             "test_cases": [],
             "testsuite": {
                 'name': testsuite_name
@@ -275,7 +276,24 @@ class RobotLog:
                         messages.add(message)
 
                 if item.get('html'):
-                    messages.add(re.sub(r'width="[^"]+"', 'width="100%"', item['message']))
+                    screenshot = re.sub(r'width="[^"]+"', 'width="100%"', item['message'])
+                    messages.add(screenshot)
+                    if step['status'] == 'FAIL':
+                        if self.items['exec_type'] == 'KEYWORD':
+                            if len(parent_ids) == 3:
+                                test_id, sequence_id, action_id = parent_ids
+                                self.items['screenshots'][sequence_id] = screenshot
+                                self.items['screenshots'][action_id] = screenshot
+
+                            if len(parent_ids) == 2:
+                                test_id, action_id = parent_ids
+                                self.items['screenshots'][action_id] = screenshot
+                                self.items['screenshots'][step_id] = screenshot
+
+                        if self.items['exec_type'] == 'TEST_CASE':
+                            if len(parent_ids) == 3:
+                                test_id, sequence_id, action_id = parent_ids
+                                self.items['screenshots'][sequence_id] = screenshot
 
                 if item.get('type') == 'IF/ELSE ROOT':
                     for branch in item['body']:
