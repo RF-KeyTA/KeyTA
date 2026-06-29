@@ -17,7 +17,7 @@ pip install robotframework-keyta
 
 Execute the command `keyta` (or `python -m keyta`). The KeyTA icon will appear in the taskbar. Click on the icon in order to open KeyTA in the default browser.
 
-A tutorial for using the app will be [presented](https://robocon.io/program#online-keyta-a-simple-web-ui-for-robot-framework) at the online RoboCon 2025 on March 6th. Stay tuned!
+A tutorial for using the app was [presented](https://www.youtube.com/watch?v=7gb7ECYQmgQ) at the online RoboCon 2025!
 
 ## Deutsch
 
