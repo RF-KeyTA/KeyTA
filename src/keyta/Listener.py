@@ -70,7 +70,11 @@ class Listener(ListenerV3):
     def end_library_keyword(self, data: running.Keyword, implementation: running.LibraryKeyword, result: result.Keyword):
         if result.failed and implementation.full_name.startswith('RoboSAPiens'):
             if robosapiens := get_robosapiens():
-                robosapiens.save_screenshot('LOG')
+                try:
+                    # This keyword only works when there is an active SAP Session
+                    robosapiens.save_screenshot('LOG')
+                except:
+                    pass
 
     def end_test(self, data: running.TestCase, result: result.TestCase):
         if result.failed:
