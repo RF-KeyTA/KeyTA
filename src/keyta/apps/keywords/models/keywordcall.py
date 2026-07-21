@@ -252,9 +252,13 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
 
     def get_parameter(self, param_index: int):
         kwcall_params = {}
+        params = sorted(
+            self.parameters.all(),
+            key=lambda p: 1 if p.current_value == '${None}' else -1
+        )
 
         kwcall_param: KeywordCallParameter
-        for kwcall_param in self.parameters.all():
+        for kwcall_param in params:
             name = kwcall_param.name
             param = kwcall_param.parameter
             type = None
