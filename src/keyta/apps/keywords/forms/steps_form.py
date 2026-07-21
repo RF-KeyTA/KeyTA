@@ -20,5 +20,6 @@ class StepsForm(BaseForm):
                 kw_call.delete_conditions()
                 kw_call.delete_parameters()
                 kw_call.delete_return_values()
+                kw_call.save()
 
         return kw_call
