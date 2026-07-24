@@ -144,6 +144,10 @@ class KeywordParameter(CloneMixin, AbstractBaseModel):
         return self.kind == 'NAMED_ONLY'
 
     @property
+    def is_positional_only(self):
+        return self.kind == 'POSITIONAL_ONLY'
+
+    @property
     def is_positional_or_named(self):
         return self.kind == 'POSITIONAL_OR_NAMED'
 
