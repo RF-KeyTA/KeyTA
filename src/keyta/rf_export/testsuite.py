@@ -20,6 +20,7 @@ def make_rf_testsuite(name: str, testcases: QuerySet, testcase_to_testsuite) -> 
         'settings': {
             'documentation': None,
             'library_imports': {},
+            'metadata': {},
             'resource_imports': {},
             'suite_setup': None,
             'suite_teardown': None
