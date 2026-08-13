@@ -227,7 +227,7 @@ class Execution(CloneMixin, AbstractBaseModel):
             'testsuite': gen_testsuite(testsuite)
         }
 
-    def update_imports(self, user: AbstractUser):
+    def update_imports(self, user: Optional[AbstractUser]=None):
         dependencies = self.get_keyword_dependencies()
         
         for library in Library.objects.filter(id__in=dependencies.libraries):
