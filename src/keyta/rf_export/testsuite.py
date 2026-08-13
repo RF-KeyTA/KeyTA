@@ -1,10 +1,10 @@
-from typing import TypedDict, Optional
+from typing import TypedDict
 
 from django.db.models import QuerySet
 
-from .keywords import RFKeyword, RFKeywordCall
-from .settings import RFSettings
-from .testcases import RFTestCase
+from keyta.rf_export.keywords import RFKeyword
+from keyta.rf_export.settings import RFSettings
+from keyta.rf_export.testcases import RFTestCase
 
 
 class RFTestSuite(TypedDict):
@@ -14,7 +14,7 @@ class RFTestSuite(TypedDict):
     testcases: list[RFTestCase]
 
 
-def make_rf_testsuite(name: str, testcases: QuerySet, testcase_to_testsuite, suite_setup: Optional[RFKeywordCall]=None) -> RFTestSuite:
+def make_rf_testsuite(name: str, testcases: QuerySet, testcase_to_testsuite) -> RFTestSuite:
     testsuite: RFTestSuite = {
         'name': name,
         'settings': {
@@ -22,7 +22,7 @@ def make_rf_testsuite(name: str, testcases: QuerySet, testcase_to_testsuite, sui
             'library_imports': {},
             'metadata': {},
             'resource_imports': {},
-            'suite_setup': suite_setup,
+            'suite_setup': None,
             'suite_teardown': None
         },
         'keywords': {},
