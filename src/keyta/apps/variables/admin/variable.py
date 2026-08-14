@@ -48,7 +48,7 @@ class VariableAdmin(SortableAdminBase, BaseAdmin):
     def empty(self, obj):
         return mark_safe('&nbsp;')
 
-    fields = ['systems', 'name', 'description', 'type']
+    fields = ['setup_teardown', 'systems', 'name', 'description', 'type']
     form = form_with_select(
         Variable,
         'type',

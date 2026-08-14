@@ -46,6 +46,10 @@ class Variable(AbstractBaseModel):
     index = models.PositiveSmallIntegerField(
         default=0
     )
+    setup_teardown = models.BooleanField(
+        default=False,
+        verbose_name=_('Vor-/Nachbereitung')
+    )
     template = models.CharField(
         max_length=255,
         blank=True,
