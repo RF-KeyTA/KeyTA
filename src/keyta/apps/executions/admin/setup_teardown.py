@@ -23,6 +23,8 @@ class SetupTeardownAdmin(
     KeywordDocField,
     KeywordCallAdmin
 ):
+    parameters_inline = SetupTeardownParametersInline
+
     def change_view(self, request, object_id, form_url="", extra_context=None):
         kw_call = KeywordCall.objects.get(pk=object_id)
 
@@ -37,6 +39,6 @@ class SetupTeardownAdmin(
         setup: Setup = obj
 
         if setup.parameters.exists():
-            return [SetupTeardownParametersInline]
+            return [self.parameters_inline]
 
         return []
