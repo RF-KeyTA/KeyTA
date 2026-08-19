@@ -92,7 +92,6 @@ class TestCaseExecution(Execution):
             'keywords': keywords,
             'testcases': [
                 self.testcase.to_robot(
-                    self.get_testdata(user),
                     user,
                     execution_state,
                     test_setup,
