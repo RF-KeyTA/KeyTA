@@ -109,10 +109,11 @@ def robot_run(testsuite_name: str, testsuite: str, execution_state: dict):
         global_storage.update(**log_data)
         global_storage.update(**robot_result)
         failed_step = global_storage['failed_step']
-        failed_step.update(**global_storage['keywords'][failed_step['id']])
-        failed_step['index'] = (global_storage['BEGIN_EXECUTION'] or 1) - 1 + failed_step['index']
-        failed_step['screenshot'] = global_storage['screenshots'].get(failed_step['id'], '')
-        failed_step['screenshot'] = failed_step['screenshot'].replace('browser/screenshot', f'http://127.0.0.1:1471/{testsuite_fs_name}/output/browser/screenshot')
+        if failed_step:
+            failed_step.update(**global_storage['keywords'][failed_step['id']])
+            failed_step['index'] = (global_storage['BEGIN_EXECUTION'] or 1) - 1 + failed_step['index']
+            failed_step['screenshot'] = global_storage['screenshots'].get(failed_step['id'], '')
+            failed_step['screenshot'] = failed_step['screenshot'].replace('browser/screenshot', f'http://127.0.0.1:1471/{testsuite_fs_name}/output/browser/screenshot')
 
     return robot_result
 
