@@ -85,11 +85,11 @@ def robot_run(testsuite_name: str, testsuite: str, execution_state: dict):
     robot_file = export_robot_file(testsuite, dest_dir)
     output_dir = dest_dir / 'output'
     output_file = output_dir / 'output.json'
-    robot_kwargs = {
+    robot_kwargs: dict[str, str] = {
         'listener': 'keyta.Listener',
         'maxassignlength': '1000', # RF truncates return values larger than this in the log
-        'outputdir': output_dir,
-        'output': 'output.json'
+        'outputdir': str(output_dir),
+        'output': output_file.name
     }
 
     result = run(str(robot_file), **robot_kwargs, stdout=io.StringIO(), stderr=io.StringIO())
