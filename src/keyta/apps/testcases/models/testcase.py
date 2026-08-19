@@ -215,13 +215,13 @@ class TestCase(CloneMixin, AbstractBaseModel):
 
     def to_robot(
         self,
-        testdata: Optional[TestData],
         user: AbstractUser,
         execution_state: dict,
         setup,
         teardown,
         stop_on_failure: bool,
-        include_doc=False
+        include_doc=False,
+        testdata: Optional[TestData]=None
     ) -> RFTestCase:
         if include_doc:
             documentation = HTML2Text.parse(self.documentation)

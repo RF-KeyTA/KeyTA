@@ -105,7 +105,8 @@ class TestCaseExecution(Execution):
                     test_setup,
                     test_teardown,
                     stop_on_failure,
-                    include_doc=include_doc
+                    include_doc=include_doc,
+                    testdata=self.get_testdata(user)
                 )
             ]
         }
