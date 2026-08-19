@@ -2,8 +2,8 @@
 {% load i18n static jazzmin admin_urls %}
 
 {% block navbar %}
-    <nav class="main-header navbar navbar-expand {{ jazzmin_ui.navbar_classes }}" id="jazzy-navbar">
-        <ul class="navbar-nav ml-auto">
+    <nav class="main-header navbar navbar-expand {{ jazzmin_ui.navbar_classes }}" id="jazzy-navbar" style="padding: .5rem 1rem">
+        <ul class="navbar-nav" style="margin-left: 0.5rem">
             {% if jazzmin_settings.show_sidebar %}
                 <li class="nav-item">
                     <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
