@@ -537,7 +537,7 @@ class TestData(AbstractBaseModel):
             self.get_tab_url(),
             title,
             attrs={
-                'hx-on:click': f"document.getElementById('excel-file-{self.pk}').click()",
+                'hx-on:click': f'document.getElementById("excel-file-{self.pk}").click()',
                 'hx-get': self.get_admin_url() + '?upload_icon',
                 'hx-swap': 'outerHTML',
                 'hx-target': 'this',
