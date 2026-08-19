@@ -73,7 +73,7 @@ class KeywordExecution(Execution):
             '_EXEC_TYPE': 'KEYWORD'
         }
 
-    def get_rf_testsuite(self, get_variable_value, user: AbstractUser, execution_state: dict, include_doc: bool) -> RFTestSuite:
+    def get_rf_testsuite(self, user: AbstractUser, execution_state: dict, include_doc: bool) -> RFTestSuite:
         keyword: Keyword = self.keyword
         keywords = {
             keyword.pk: keyword.to_robot(execution_state)

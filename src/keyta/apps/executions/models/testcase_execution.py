@@ -50,7 +50,7 @@ class TestCaseExecution(Execution):
             '_EXEC_TYPE': 'TEST_CASE'
         }
 
-    def get_rf_testsuite(self, get_variable_value, user: AbstractUser, execution_state: dict, include_doc: bool) -> RFTestSuite:
+    def get_rf_testsuite(self, user: AbstractUser, execution_state: dict, include_doc: bool) -> RFTestSuite:
         sequence_pks = self.sequence_ids(self.testcase.executable_steps(execution_state))
 
         keyword: Keyword
