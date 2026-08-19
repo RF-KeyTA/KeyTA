@@ -400,7 +400,6 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
 
         if table:
             table_var, table_columns = table
-            params = table_columns
 
         return {
             'condition': ' and '.join([str(condition) for condition in self.conditions.all()]),
