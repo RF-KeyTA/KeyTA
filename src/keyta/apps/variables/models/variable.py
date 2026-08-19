@@ -1,24 +1,8 @@
-from collections import defaultdict
-
 from django.db import models
-from django.db.models import F, QuerySet
 from django.db.models.functions import Lower
 from django.utils.translation import gettext_lazy as _
 
 from keyta.models.base_model import AbstractBaseModel
-
-from .variable_value import VariableValue
-
-
-def get_row_variables(table_name: str, table: list[list[str]]):
-    return {
-        row_variable(table_name, index): [col or '${EMPTY}' for col in row]
-        for index, row in enumerate(table, start=1)
-    }
-
-
-def row_variable(name, index):
-    return '@{%s__%s}' % (name, index)
 
 
 class VariableType(models.TextChoices):
@@ -83,32 +67,6 @@ class Variable(AbstractBaseModel):
         if self.table:
             self.table.reindex_columns()
 
-    def get_column_titles(self):
-        return [
-            column.name
-            for column in self.columns.all()
-        ]
-
-    def get_rows(self, columns: list['Variable']|QuerySet):
-        cells = (
-            VariableValue.objects
-            .filter(variable__in=columns)
-            .annotate(column_index=F('variable__index'))
-            .annotate(row_index=F('index'))
-            .order_by('row_index')
-            .values_list('row_index', 'column_index', 'value')
-        )
-        column_order = {
-            column.index: c
-            for c, column in enumerate(columns)
-        }
-        table = defaultdict(lambda: ['']*len(columns))
-
-        for row_index, column_index, value in cells:
-            table[row_index][column_order[column_index]] = value
-
-        return list(table.values())
-
     @property
     def is_column(self):
         return self.table is not None
@@ -162,11 +120,6 @@ class Variable(AbstractBaseModel):
                     for value in self.values.all()
                 ]
             )
-
-        if self.is_table:
-            table_row_variables = get_row_variables(self.name, self.get_rows(self.columns.all()))
-            table_variable = ('@{%s}' % self.name, list(table_row_variables.keys()))
-            return table_variable, list(table_row_variables.items())
 
     class Meta:
         ordering = ['index', Lower('name')]

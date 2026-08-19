@@ -1,3 +1,4 @@
+from .table import Table
 from .table_column import TableColumn
 from .variable import (
     Variable,

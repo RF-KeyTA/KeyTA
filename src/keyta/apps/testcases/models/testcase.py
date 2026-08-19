@@ -11,7 +11,7 @@ from taggit_selectize.managers import TaggableManager
 from keyta.apps.executions.models import Execution, Setup
 from keyta.apps.keywords.models import KeywordCallParameter
 from keyta.apps.libraries.models import Library, LibraryImport
-from keyta.apps.variables.models import Variable
+from keyta.apps.variables.models import Table
 from keyta.models.base_model import AbstractBaseModel
 from keyta.models.html2text import HTML2Text
 from keyta.rf_export.testcases import RFTestCase
@@ -86,13 +86,13 @@ class TestCase(CloneMixin, AbstractBaseModel):
             .filter(value_ref__isnull=False)
             .filter(value_ref__table_column__isnull=False)
         )
-        tables: dict[int, Variable] = {}
+        tables: dict[int, Table] = {}
 
         param: KeywordCallParameter
         for param in kw_call_params:
             step = param.keyword_call
             column = param.value_ref.table_column
-            tables[step.pk] = column.table
+            tables[step.pk] = Table.objects.get(pk=column.table.pk)
 
         return tables
 
