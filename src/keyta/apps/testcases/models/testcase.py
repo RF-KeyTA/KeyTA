@@ -3,14 +3,13 @@ import re
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models import Q, QuerySet
-from django.db.models.functions import Lower
 from django.utils.translation import gettext_lazy as _
 
 from model_clone import CloneMixin
 from taggit_selectize.managers import TaggableManager
 
 from keyta.apps.executions.models import Execution, Setup
-from keyta.apps.keywords.models import KeywordCallParameter, KeywordCallParameterSource
+from keyta.apps.keywords.models import KeywordCallParameter
 from keyta.apps.libraries.models import Library, LibraryImport
 from keyta.apps.variables.models import Variable
 from keyta.models.base_model import AbstractBaseModel
@@ -79,31 +78,23 @@ class TestCase(CloneMixin, AbstractBaseModel):
             .exclude(Q(to_keyword__isnull=True) | Q(index__in=execution_state.get('SKIP_EXECUTION', [])))
         )
 
-    def get_tables_rows(self):
-        table_variables = []
-        row_variables = []
-
-        value_ref_pks = (
+    def get_tables(self, user: AbstractUser):
+        kw_call_params = (
             KeywordCallParameter.objects
-            .filter(keyword_call__in=self.steps.all())
+            .filter(keyword_call__pk__in=self.steps.all())
+            .filter(user=user)
             .filter(value_ref__isnull=False)
-            .values_list('value_ref', flat=True)
+            .filter(value_ref__table_column__isnull=False)
         )
+        tables: dict[int, Variable] = {}
 
-        table_pks = (
-            KeywordCallParameterSource.objects
-            .filter(pk__in=value_ref_pks)
-            .filter(table_column__isnull=False)
-            .values_list('table_column__table', flat=True)
-            .distinct()
-        )
+        param: KeywordCallParameter
+        for param in kw_call_params:
+            step = param.keyword_call
+            column = param.value_ref.table_column
+            tables[step.pk] = column.table
 
-        for table in Variable.objects.filter(pk__in=table_pks):
-            table_variable, table_row_variables = table.get_rows()
-            table_variables.append(table_variable)
-            row_variables.extend(table_row_variables)
-
-        return table_variables, row_variables
+        return tables
 
     @property
     def has_empty_sequence(self):
@@ -142,7 +133,25 @@ class TestCase(CloneMixin, AbstractBaseModel):
         else:
             documentation = self.get_admin_url(absolute=True)
 
-        tables, rows = self.get_tables_rows()
+        row_variables = []
+        table_columns: dict[int, list[str]] = {}
+        table_variables: dict[int, tuple[str, list]] = {}
+
+        table_pks = set()
+        for step_pk, table in self.get_tables(user).items():
+            if table.pk not in table_pks:
+                table_pks.add(table.pk)
+                table_columns[step_pk] = ['${%s}' % column for column in table.get_column_titles()]
+                table_variable, table_row_variables = table.to_robot()
+                row_variables.extend(table_row_variables)
+                table_variables[step_pk] = table_variable
+
+        def get_step_table(test_step_pk):
+            if table_variable := table_variables.get(test_step_pk):
+                table_name, _row_variables = table_variable
+                return table_name, table_columns[test_step_pk]
+
+            return None
 
         def teardown_disabled():
             return (
@@ -162,11 +171,11 @@ class TestCase(CloneMixin, AbstractBaseModel):
             'tags': tags,
             'setup': setup.to_robot({}, user=user) if setup else None,
             'steps': [
-                test_step.to_robot({}, user=user)
+                test_step.to_robot({}, table=get_step_table(test_step.pk), user=user)
                 for test_step in self.executable_steps(execution_state)
             ],
             'teardown': teardown.to_robot({}, user=user) if teardown and not teardown_disabled() else None,
-            'variables': [*rows, *tables]
+            'variables': [*row_variables, *list(table_variables.values())]
         }
 
     class Meta:

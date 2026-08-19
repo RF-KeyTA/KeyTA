@@ -83,6 +83,12 @@ class Variable(AbstractBaseModel):
         if self.table:
             self.table.reindex_columns()
 
+    def get_column_titles(self):
+        return [
+            column.name
+            for column in self.columns.all()
+        ]
+
     def get_rows(self, columns: list['Variable']|QuerySet):
         cells = (
             VariableValue.objects
