@@ -33,7 +33,7 @@
                     {{ opts.verbose_name_plural|capfirst }}
                 {% endif %}
             </li>
-            <li class="breadcrumb-item active" style="white-space: nowrap; width: 500px; text-overflow: ellipsis; overflow: hidden;">
+            <li class="breadcrumb-item active" style="white-space: nowrap; max-width: 500px; text-overflow: ellipsis; overflow: hidden;">
                 {% if add %}
                     {% blocktrans with name=opts.verbose_name %}Add {{ name }}{% endblocktrans %}
                 {% else %}
