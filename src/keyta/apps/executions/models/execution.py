@@ -18,6 +18,8 @@ from keyta.rf_export.settings import RFSettings
 from keyta.rf_export.testsuite import RFTestSuite
 from keyta.widgets import Icon, html_to_string, link
 
+from .user_execution import UserExecution
+
 
 @dataclass
 class Dependencies:
@@ -200,7 +202,10 @@ class Execution(CloneMixin, AbstractBaseModel):
         super().save(force_insert, force_update, using, update_fields)
 
     def save_execution_result(self, user: AbstractUser, log: str, result: str):
-        user_exec = self.user_execs.get(user=user)
+        user_exec, _ = UserExecution.objects.get_or_create(
+            execution=self,
+            user=user
+        )
         user_exec.save_execution_result(log, result)
 
     def suite_setup(self):
