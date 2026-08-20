@@ -270,7 +270,17 @@ class TestCase(CloneMixin, AbstractBaseModel):
 
         def get_step_params(test_step: TestStep):
             if step_param_values := parameter_values.get(test_step.pk):
-                return step_param_values['params']
+                if params := step_param_values['params']:
+                    return params
+
+                if table := step_param_values['table']:
+                    table_name, rows = table
+                    column_titles, *data = rows
+                    params = test_step.parameters.filter(user=user).order_by('parameter__position')
+                    return {
+                        param.pk: '${%s}' % column_title
+                        for param, column_title in zip(params, column_titles)
+                    }
 
             return {}
 
