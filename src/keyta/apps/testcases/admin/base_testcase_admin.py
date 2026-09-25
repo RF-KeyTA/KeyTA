@@ -143,8 +143,9 @@ class BaseTestCaseAdmin(DocumentationField, CloneModelAdminMixin, SortableAdminB
             if testcase_id := request.resolver_match.kwargs.get('object_id'):
                 testcase = TestCase.objects.get(id=testcase_id)
                 testcase_systems = testcase.systems.values_list('pk', flat=True)
-                teststep_systems = testcase.steps.values_list('window__systems', flat=True)
-                field.widget.in_use = set(testcase_systems).intersection(teststep_systems)
+                one_system = testcase.steps.annotate(systems_count=Count('window__systems')).filter(systems_count=1)
+                teststep_systems = testcase.steps.filter(pk__in=one_system).values_list('window__systems', flat=True)
+                field.widget.in_use = set(testcase_systems).intersection(set(teststep_systems))
 
         return field
 
