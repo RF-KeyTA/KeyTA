@@ -24,6 +24,10 @@ class KeywordType(models.TextChoices):
     SEQUENCE = 'SEQUENCE', _('Sequenz')
 
 
+def yesterday():
+    return timezone.localtime() - datetime.timedelta(days=1)
+
+
 class Keyword(AbstractBaseModel):
     library = models.ForeignKey(
         'libraries.Library',
@@ -62,7 +66,7 @@ class Keyword(AbstractBaseModel):
         default=False
     )
     last_unlocked = models.DateTimeField(
-        default=timezone.localtime() - datetime.timedelta(days=1)
+        default=yesterday
     )
     setup_teardown = models.BooleanField(
         default=False,
