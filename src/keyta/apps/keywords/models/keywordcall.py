@@ -2,7 +2,7 @@ from typing import Optional
 
 from django.conf import settings
 from django.db import models
-from django.db.models import Q, QuerySet
+from django.db.models import CheckConstraint, Q, QuerySet
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 
@@ -486,6 +486,15 @@ class KeywordCall(CloneMixin, AbstractBaseModel):
     objects = Manager()
 
     class Meta:
+        constraints = [
+            CheckConstraint(
+                condition=(
+                    Q(testcase__isnull=False) & Q(window__isnull=False) |
+                    Q(testcase__isnull=True) & Q(window__isnull=True)
+                ),
+                name='teststep_has_window'
+            )
+        ]
         ordering = ['index']
         verbose_name = _('Schritt')
         verbose_name_plural = _('Schritte')
