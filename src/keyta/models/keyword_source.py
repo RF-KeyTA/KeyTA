@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import TypedDict
 
 from jinja2 import Template
-from robot.libdoc import libdoc
+from robot.libdoc import LibDoc
 
 from django.db import models
 from django.db.models.functions import Lower
@@ -173,7 +173,7 @@ def get_init_doc(library_json):
 
 def get_libdoc_dict(library_or_resource: str) -> dict:
     libdoc_json = Path(tempfile.gettempdir()) / f"{library_or_resource}.json"
-    libdoc(library_or_resource, str(libdoc_json))
+    LibDoc().main([library_or_resource, str(libdoc_json)])
 
     with open(libdoc_json, encoding='utf-8') as file:
         return json.load(file)
