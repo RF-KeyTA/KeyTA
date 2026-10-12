@@ -324,7 +324,7 @@ class RobotLog:
             varkwargs = []
 
             def format_arg_value(arg_name, arg_value):
-                value = arg_value.removeprefix(f'{arg_name}=')
+                value = arg_value.removeprefix(f'{arg_name}=').replace('\\\\', '\\')
 
                 if assign: return assign[value]
                 if level < 2: return unrobot(value)
