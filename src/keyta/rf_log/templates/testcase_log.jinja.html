@@ -147,7 +147,7 @@
         {% for step_id in testcase.steps %}
         {% set step = rf.keywords[step_id] %}
         <div class="row p-3 rounded-top {% if step.status == 'PASS' %}bg-success-subtle{% elif step.status == 'FAIL' %}bg-danger-subtle{% else %}bg-light{% endif %}" {% if testcase.id in rf.errors and rf.errors[testcase.id].message == step.message %}id="{{ rf.errors[testcase.id].id }}" style="scroll-margin-top: 80px;"{% endif %}>
-            <div class="col-4">
+            <div class="col-3">
             {% if step.url and step.status != 'NOT RUN' %}
                 <a href="#" class="text-decoration-none" onclick="clickNavLink('#{{ step_id }}')">{{ step.name }}</a>
                 <a href="{{ step.url }}" target="_blank" class="text-decoration-none" style="margin-left: 3px">{{ icon.go_to }}</a>
@@ -168,7 +168,7 @@
                 </div>
             {% else %}
                 {% for arg_name, arg in step.args.items() %}
-                <div class="col">
+                <div class="col-3">
                     <span>{{ arg }}</span>
                     <br>
                     <i style="color: gray">{{ arg_name }}</i>
@@ -262,7 +262,7 @@
                 </div>
             {% else %}
                 {% for arg_name, arg in step.args.items() %}
-                <div class="col">
+                <div class="col-3">
                     <span>{{ arg|e }}</span>
                     <br>
                     <i style="color: gray">{{ arg_name }}</i>
