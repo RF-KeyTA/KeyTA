@@ -229,9 +229,9 @@
 
                             if (modal_iframe) {
                                 const location = modal_iframe.contentWindow.location
-                                const keyword_quick_add_pk = location.pathname.match(/(action|sequence)quickadd\/(\d+)\//)
+                                const keyword_quick_add_pk = location.pathname.match(/(action|sequence)(quickadd|quickchange)\/(?<pk>\d+)\//)
                                 if (keyword_quick_add_pk) {
-                                    const keyword_pk = keyword_quick_add_pk[2]
+                                    const keyword_pk = keyword_quick_add_pk.groups.pk
                                     const keyword_name = django.jQuery('#related-modal-iframe').contents().find('#card-title').text().trim()
                                     const to_keyword_select_id = sessionStorage.getItem('add-related-select-id')
                                     if (to_keyword_select_id) {
