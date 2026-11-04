@@ -5,6 +5,7 @@ from django.contrib.admin.options import csrf_protect_m
 from django.db import transaction, router
 from django.forms import ModelMultipleChoiceField
 from django.http import HttpResponseRedirect, HttpRequest
+from django.http.response import HttpResponse
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.utils.safestring import mark_safe
@@ -332,6 +333,16 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
 @admin.register(SequenceQuickAdd)
 class SequenceQuickAddAdmin(WindowKeywordAdminMixin, BaseQuickAddAdmin):
     form = QuickAddSequenceForm
+
+    def change_view(self, request, object_id, form_url="", extra_context=None):
+            query_params = url_query_parameters(request.GET.dict() | {'ref': request.path})
+            redirect_url = SequenceQuickChange.objects.get(id=object_id).get_admin_url() + '?' + query_params
+            
+            return HttpResponse("""
+                <script type="text/javascript">
+                    window.location.href = "%s";
+                </script>
+            """ % redirect_url)
 
     def formfield_for_dbfield(self, db_field, request, **kwargs):
         field = super().formfield_for_dbfield(db_field, request, **kwargs)
