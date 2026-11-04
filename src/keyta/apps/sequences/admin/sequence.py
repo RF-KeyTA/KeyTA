@@ -333,6 +333,14 @@ class SequenceAdmin(CloneModelAdminMixin, WindowKeywordAdmin):
 class SequenceQuickAddAdmin(WindowKeywordAdminMixin, BaseQuickAddAdmin):
     form = QuickAddSequenceForm
 
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        field = super().formfield_for_dbfield(db_field, request, **kwargs)
+
+        if db_field.name == 'systems':
+            field.widget = forms.MultipleHiddenInput()
+
+        return field
+
 
 class SequenceQuickChangeSteps(SequenceSteps):
     def get_fields(self, request, obj=None):
